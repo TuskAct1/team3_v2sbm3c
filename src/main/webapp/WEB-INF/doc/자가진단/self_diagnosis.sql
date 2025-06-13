@@ -35,7 +35,7 @@ WHERE memberno = 1;
 
 -- 수정
 UPDATE self_diagnosis
-SET resilt = 10, created_at = SYSDATE
+SET result = 10, created_at = SYSDATE
 WHERE diagnosisno = 1;
 
 -- 삭제
