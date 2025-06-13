@@ -6,7 +6,7 @@
   <!-- 게시글 추천 등록 -->
   <insert id="create" parameterType="dev.mvc.board_recommend.Board_recommendVO">
     INSERT INTO board_recommend(board_recommendno, boardno, memberno, rdate)
-    VALUES (board_recommend_seq.nextval, sysdate, #{boardno}, #{memberno})
+    VALUES (board_recommend_seq.nextval, #{boardno}, #{memberno}, sysdate)
   </insert>
   
   <!-- 게시글 추천 전체 목록 -->
