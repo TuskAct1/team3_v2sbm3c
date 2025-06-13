@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.chatbot.ChatbotDAOInter">
+
+  <insert id="create" parameterType="dev.mvc.chatbot.ChatbotVO">
+    INSERT INTO chatbot(chatbotno, memberno)
+    VALUES (chatbot_seq.nextval, #{memberno})
+  </insert>
+
+  <select id="read" resultType="dev.mvc.chatbot.ChatbotVO" parameterType="int">
+    SELECT chatbotno, memberno
+    FROM chatbot
+    WHERE chatbotno = #{chatbotno}
+  </select>
+
+  <update id="update" parameterType="dev.mvc.chatbot.ChatbotVO">
+    UPDATE chatbot
+    SET memberno = #{memberno}
+    WHERE chatbotno = #{chatbotno}
+  </update>
+
+  <delete id="delete" parameterType="int">
+    DELETE FROM chatbot
+    WHERE chatbotno = #{chatbotno}
+  </delete>
+
+</mapper>
