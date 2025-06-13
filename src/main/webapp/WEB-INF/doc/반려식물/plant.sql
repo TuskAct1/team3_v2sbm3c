@@ -23,7 +23,7 @@ NOCYCLE;             -- 다시 1부터 생성되는 것을 방지
 -- CRUD
 -- 삽입
 INSERT INTO plant(plantno, memberno, growth_level, is_active, last_used_time, points)
-VALUES(plant_seq.nextval, 1, 1, 0, 'N', SYSTIMESTAMP, 0);
+VALUES(plant_seq.nextval, 1, 0, 'N', SYSTIMESTAMP, 0);
 
 -- 조회
 -- 전체 조회

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.self_diagnosis.SelfDiagnosisDAOInter">
+
+    <!-- 기본 CRUD -->
+
+    <!-- 자가 진단 결과 등록 -->
+    <insert id="create" parameterType="dev.mvc.self_diagnosis.SelfDiagnosisVO">
+        INSERT INTO self_diagnosis(diagnosisno, memberno, result, created_at)
+        VALUES(self_diagnosis_seq.nextval, #{memberno}, #{reuslt}, SYSDATE);
+    </insert>
+
+    <!-- 자가 진단 조회 -->
+    <select id="read" resultType="dev.mvc.self_diagnosis.SelfDiagnosisVO" parameterType="int">
+        SELECT diagnosisno, memberno, result, created_at
+        FROM self_diagnosis
+        WHERE memberno = #{memberno};
+    </select>
+
+    <!-- 자가 진단 최신화 -->
+    <update id="update" parameterType="dev.mvc.self_diagnosis.SelfDiagnosisVO">
+        UPDATE self_diagnosis
+        SET result = #{result}, created_at = SYSDATE
+        WHERE diagnosisno = #{diagnosisno};
+    </update>
+
+    <!-- 자가 진단 삭제 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM self_diagnosis
+        WHERE diagnosisno = #{diagnosisno};
+    </delete>
+
+    <!-- 추가 기능 -->
+
+</mapper>
