@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.replyRecommend.ReplyRecommendDAOInter">
+  <!-- 등록 -->
+  <insert id="create" parameterType="dev.mvc.replyRecommend.ReplyRecommendVO">
+    INSERT INTO replyRecommend(replyRecommendno, rdate, boardno, memberno)
+    VALUES (replyRecommend_seq.nextval, sysdate, #{boardno}, #{memberno})
+  </insert>
+  
+  <!-- 전체 목록 -->
+  <select id="list_all" resultType="dev.mvc.replyRecommend.ReplyRecommendVO">
+    SELECT replyRecommendno, rdate, boardno, memberno
+    FROM replyRecommend
+    ORDER BY replyRecommendno DESC
+  </select>
+  
+  <!-- 일반적인 조회 -->
+  <select id="read" resultType="dev.mvc.replyRecommend.ReplyRecommendVO" parameterType="int">
+    SELECT replyRecommendno, rdate, boardno, memberno
+    FROM replyRecommend
+    WHERE replyRecommendno = #{replyRecommendno}
+  </select>  
+  
+  <!-- 특정 컨텐츠의 특정 회원 추천 갯수 산출 -->
+  <select id="hartCnt" resultType="int" parameterType='HashMap'>
+    SELECT COUNT(*) as cnt
+    FROM replyRecommend
+    WHERE boardno=#{boardno} AND memberno=#{memberno}
+  </select>
+  
+  <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM replyRecommend
+    WHERE replyRecommendno = #{replyRecommendno}
+  </delete>
+  
+  
+  </mapper>
