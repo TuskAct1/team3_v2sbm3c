@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.admin.AdminDAOInter">
+
+  <insert id="create" parameterType="dev.mvc.admin.AdminVO">
+    INSERT INTO admin(adminno, name, email, password)
+    VALUES (admin_seq.nextval, #{name}, #{email}, #{password})
+  </insert>
+
+  <select id="read" resultType="dev.mvc.admin.AdminVO" parameterType="int">
+    SELECT adminno, name, email, password
+    FROM admin
+    WHERE adminno = #{adminno}
+  </select>
+
+  <update id="update" parameterType="dev.mvc.admin.AdminVO">
+    UPDATE admin
+    SET name = #{name}, email = #{email}, password = #{password}
+    WHERE adminno = #{adminno}
+  </update>
+
+  <delete id="delete" parameterType="int">
+    DELETE FROM admin
+    WHERE adminno = #{adminno}
+  </delete>
+
+</mapper>
