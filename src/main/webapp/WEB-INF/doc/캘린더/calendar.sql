@@ -1,17 +1,17 @@
 DROP TABLE Calendar;
 
 CREATE TABLE Calendar (
-    calendarno      NUMBER                  PRIMARY KEY,               -- 캘린더 번호 (PK)
-    memberno        NUMBER                  NOT NULL,                  -- 회원 번호 (FK)
-    adminno         NUMBER                  NOT NULL,                  -- 관리자 번호 (FK, NULL 허용)
-    title           VARCHAR2(200)           NOT NULL,                  -- 일정 제목
-    schedule_date            VARCHAR2(20)            NOT NULL,                  -- 일정 날짜 (YYYY-MM-DD)
-    schedule_time            VARCHAR2(5),                                       -- 일정 시간 (예: '14:30')
-    category        VARCHAR2(100),                                     -- 일정 분류 (예: 회의, 개인, 업무 등)
-    description     CLOB,                                              -- 상세 설명 (길이 제한 없음)
-    alarm_yn        CHAR(1) DEFAULT 'N'     NOT NULL,                  -- 일정 알림 여부
-    rdate           DATE                    NOT NULL,                  -- 일정 등록일
-    favorite_yn     CHAR(1) DEFAULT 'N'     NOT NULL,                  -- 즐겨찾기 여부
+    calendarno      NUMBER                  NOT NULL PRIMARY KEY,       -- 캘린더 번호 (PK)
+    memberno        NUMBER                  NOT NULL,                   -- 회원 번호 (FK)
+    adminno         NUMBER                  NOT NULL,                   -- 관리자 번호 (FK, NULL 허용)
+    title           VARCHAR2(200)           NOT NULL,                   -- 일정 제목
+    schedule_date            VARCHAR2(20)   NULL,                       -- 일정 날짜 (YYYY-MM-DD)
+    schedule_time            VARCHAR2(5)    NULL,                       -- 일정 시간 (예: '14:30')
+    category        VARCHAR2(100)           NULL,                       -- 일정 분류 (예: 회의, 개인, 업무 등)
+    description     CLOB                    NULL,                       -- 상세 설명 (길이 제한 없음)
+    alarm_yn        CHAR(1) DEFAULT 'N'     NULL,                       -- 일정 알림 여부
+    rdate           DATE                    NOT NULL,                   -- 일정 등록일
+    favorite_yn     CHAR(1) DEFAULT 'N'     NULL,                       -- 즐겨찾기 여부
 
     -- 외래 키 제약 조건 (옵션, 관련 테이블이 존재할 경우)
     FOREIGN KEY (memberno) REFERENCES member(memberno),
