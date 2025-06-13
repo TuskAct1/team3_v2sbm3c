@@ -14,11 +14,11 @@ CREATE TABLE board(
         passwd                               VARCHAR2(100)   NOT NULL,
         word                                 VARCHAR2(200)   NULL ,
         rdate                                DATE            NOT NULL,
+        visible                              CHAR(1)         DEFAULT 'Y'       NOT NULL,
         file1                                VARCHAR(100)    NULL,  -- 원본 파일명 image
         file1saved                           VARCHAR(100)    NULL,  -- 저장된 파일명, image
         thumb1                               VARCHAR(100)    NULL,   -- preview image
         size1                                NUMBER(10)      DEFAULT 0 NULL,  -- 파일 사이즈
-        visible                              CHAR(1)         DEFAULT 'Y' NOT NULL,
         FOREIGN KEY (memberno) REFERENCES member (memberno),
         FOREIGN KEY (categoryno) REFERENCES category (categoryno)
 );
@@ -35,11 +35,11 @@ COMMENT ON COLUMN board.replycnt is '댓글수';
 COMMENT ON COLUMN board.passwd is '패스워드';
 COMMENT ON COLUMN board.word is '검색어';
 COMMENT ON COLUMN board.rdate is '등록일';
+COMMENT ON COLUMN board.visible is '출력 모드';
 COMMENT ON COLUMN board.file1 is '메인 이미지';
 COMMENT ON COLUMN board.file1saved is '실제 저장된 메인 이미지';
 COMMENT ON COLUMN board.thumb1 is '메인 이미지 Preview';
 COMMENT ON COLUMN board.size1 is '메인 이미지 크기';
-COMMENT ON COLUMN board.visible is '출력 모드';
 
 DROP SEQUENCE board_seq;
 
@@ -52,14 +52,14 @@ CREATE SEQUENCE board_seq
 
 -- 등록
 INSERT INTO board(boardno, categoryno, memberno, title, content, recom, cnt, replycnt, passwd, 
-                     word, rdate, file1, file1saved, thumb1, size1)
-VALUES(board_seq.nextval, 1, 1, '고민', '우울해요..', 0, 0, 0, '1234',
-       '고민, 우울', sysdate, 'space.jpg', 'space_1.jpg', 'space_t.jpg', 1000);
+                     word, rdate, visible, file1, file1saved, thumb1, size1)
+VALUES(board_seq.nextval, 1, 1, '고민', '우울해요..', 0, 0, 0, '1234', '고민, 우울', sysdate, Y, 
+       'space.jpg', 'space_1.jpg', 'space_t.jpg', 1000);
             
 COMMIT;
 
 -- 전체 목록
-SELECT boardno, categoryno, memberno, title, content, recom, cnt, replycnt, passwd, word, rdate,
-           file1, file1saved, thumb1, size1
+SELECT boardno, categoryno, memberno, title, content, recom, cnt, replycnt, passwd, word, rdate, visible,
+       file1, file1saved, thumb1, size1
 FROM board
 ORDER BY boardno DESC;
