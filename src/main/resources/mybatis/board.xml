@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.board.ContentsDAOInter">
+  <!-- 게시글 등록 -->
+  <insert id="create" parameterType="dev.mvc.board.ContentsVO">
+    INSERT INTO board(boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
+                                file1, file1saved, thumb1, size1)
+    VALUES(board_seq.nextval, #{categoryno}, #{memberno}, #{title}, #{content}, #{passwd}, #{word},  sysdate, #{visible},
+                #{file1}, #{file1saved}, #{thumb1}, #{size1})
+  </insert>
+
+  <!-- 모든 카테고리의 등록된 게시글 목록 -->
+  <select id="list_all" resultType="dev.mvc.board.ContentsVO">
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
+               file1, file1saved, thumb1, size1
+    FROM board
+    ORDER BY boardno DESC
+  </select>
+  
+  <!-- 일반적인 게시글 조회 -->
+  <select id="read" resultType="dev.mvc.board.ContentsVO" parameterType="int">
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
+               file1, file1saved, thumb1, size1
+    FROM board
+    WHERE boardno = #{boardno}
+  </select>
+  
+  <!-- 카테고리별 검색 레코드 갯수 -->
+  <select id="list_by_categoryno_search_count" resultType="int" parameterType="HashMap">
+    SELECT COUNT(*) as cnt
+    FROM board
+    <choose>
+      <when test="word == null or word == ''"> <!-- 검색하지 않는 경우의 레코드 갯수 -->
+        WHERE categoryno=#{categoryno}
+      </when>
+      <otherwise> <!-- 검색하는 경우의 레코드 갯수 -->
+        WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%' 
+                                                  OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%' 
+                                                  OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+      </otherwise>
+    </choose>
+  </select>   
+  
+  <!-- 게시글 수정 -->
+  <update id="update_text" parameterType="dev.mvc.board.ContentsVO">
+    UPDATE board
+    SET title=#{title}, content=#{content},  word=#{word}
+    WHERE boardno = #{boardno}
+  </update>
+
+  <!-- 게시글 파일 수정 -->
+  <update id="update_file" parameterType="dev.mvc.board.ContentsVO">
+    UPDATE board
+    SET file1=#{file1}, file1saved=#{file1saved}, thumb1=#{thumb1}, size1=#{size1}
+    WHERE boardno = #{boardno}
+  </update>  
+
+  <!-- 게시글 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM board
+    WHERE boardno=#{boardno}
+  </delete>
+  
+  <!-- 게시글 추천 수 증가 -->
+  <update id="increaseRecom" parameterType="int">
+    UPDATE board
+    SET recom = recom + 1
+    WHERE boardno = #{boardno}
+  </update>
+      
+  <!-- 게시글 추천 수 감소 -->
+  <update id="decreaseRecom" parameterType="int">
+    UPDATE board
+    SET recom = recom - 1
+    WHERE boardno = #{boardno}
+  </update>   
+
+   <!-- 게시글 댓글 수 증가 -->
+   <update id="increaseReplycnt" parameterType="int">
+     UPDATE board
+     SET replycnt = replycnt + 1
+     WHERE boardno = #{boardno}
+   </update>
+
+   <!-- 게시글 댓글 수 감소 -->
+   <update id="decreaseReplycnt" parameterType="int">
+     UPDATE board
+     SET replycnt = replycnt - 1
+     WHERE boardno = #{boardno}
+   </update>
+               
+</mapper> 
