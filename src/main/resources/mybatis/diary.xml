@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.diary.DiaryDAOInter">
+
+    <!-- 기본 CRUD -->
+
+    <!-- 일기 등록 -->
+    <insert id="create" parameterType="dev.mvc.diary.DiaryVO">
+        INSERT INTO diary(diaryno, memberno, title, content, password, created_at, risk_flag)
+        VALUES(diary_seq.nextval, #{memberno}, #{title}, #{content}, #{password}, SYSDATE, #{risk_flag})
+    </insert>
+
+    <!-- 일기 전체 목록 -->
+    <select id="list_all" resultType="dev.mvc.diary.DiaryVO">
+        SELECT diaryno, memberno, title, content, password, created_at, risk_flag
+        FROM diary
+    </select>
+
+    <!-- 일기 단일 조회 -->
+    <select id="read" resultType="dev.mvc.diary.DiaryVO" parameterType="int">
+        SELECT diaryno, memberno, title, content, password, created_at, risk_flag
+        FROM diary
+        WHERE diaryno = #{diaryno}
+    </select>
+
+    <!-- 일기 수정 -->
+    <update id="update" parameterType="dev.mvc.diary.DiaryVO">
+        UPDATE diary
+        SET title = #{title}, content = #{content}
+        WHERE diaryno = #{diaryno}
+    </update>
+
+    <!-- 일기 삭제 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM diary
+        WHERE diaryno = #{diaryno}
+    </delete>
+
+    <!-- 추가 기능 -->
+<!--
+    &lt;!&ndash; 특정 달의 일기 조회 &ndash;&gt;
+    <select id="list_diary" resultType="dev.mvc.diary.DiaryVO" parameterType="String">
+        SELECT diaryno, title, content, created_at
+        FROM diary
+        WHERE SUBSTR(created_at, 1, 7) = #{created_at}
+        ORDER BY created_at ASC
+    </select>
+
+    &lt;!&ndash; 특정 날짜 조회 &ndash;&gt;
+    <select id="list_calendar_day" resultType="dev.mvc.diary.DiaryVO" parameterType="String">
+        SELECT diaryno, title, content, created_at
+        FROM diary
+        WHERE created_at = #{created_at}
+    </select>
+-->
+
+</mapper>
