@@ -6,7 +6,7 @@
   <!-- 게시글 신고 등록 -->
   <insert id="create" parameterType="dev.mvc.board_report.Board_reportVO">
     INSERT INTO board_report(board_reportno, boardno, memberno, rdate)
-    VALUES (board_report_seq.nextval, sysdate, #{boardno}, #{memberno})
+    VALUES (board_report_seq.nextval, #{boardno}, #{memberno}, sysdate)
   </insert>
   
   <!-- 게시글 신고 전체 목록 -->
