@@ -18,5 +18,8 @@ public class ReplyRecommendVO {
 
   /** 회원 번호 */
   private int memberno;
+  
+  /** 등록일 */
+  private int rdate;
 
 }

@@ -5,20 +5,20 @@
 <mapper namespace="dev.mvc.replyRecommend.ReplyRecommendDAOInter">
   <!-- 등록 -->
   <insert id="create" parameterType="dev.mvc.replyRecommend.ReplyRecommendVO">
-    INSERT INTO replyRecommend(replyRecommendno, rdate, boardno, memberno)
-    VALUES (replyRecommend_seq.nextval, sysdate, #{boardno}, #{memberno})
+    INSERT INTO replyRecommend(replyRecommendno, rdate, replyno, memberno)
+    VALUES (replyRecommend_seq.nextval, sysdate, #{replyno}, #{memberno})
   </insert>
   
   <!-- 전체 목록 -->
   <select id="list_all" resultType="dev.mvc.replyRecommend.ReplyRecommendVO">
-    SELECT replyRecommendno, rdate, boardno, memberno
+    SELECT replyRecommendno, rdate, replyno, memberno
     FROM replyRecommend
     ORDER BY replyRecommendno DESC
   </select>
   
   <!-- 일반적인 조회 -->
   <select id="read" resultType="dev.mvc.replyRecommend.ReplyRecommendVO" parameterType="int">
-    SELECT replyRecommendno, rdate, boardno, memberno
+    SELECT replyRecommendno, rdate, replyno, memberno
     FROM replyRecommend
     WHERE replyRecommendno = #{replyRecommendno}
   </select>  
@@ -27,7 +27,7 @@
   <select id="hartCnt" resultType="int" parameterType='HashMap'>
     SELECT COUNT(*) as cnt
     FROM replyRecommend
-    WHERE boardno=#{boardno} AND memberno=#{memberno}
+    WHERE replyno=#{replyno} AND memberno=#{memberno}
   </select>
   
   <!-- 삭제 -->
