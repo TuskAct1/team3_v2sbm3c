@@ -1,12 +1,10 @@
-package dev.mve.board_report;
+package dev.mvc.board_report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import dev.mve.board_report.Board_reportVO;
 
 @Component("dev.mvc.board_report.Board_reportProc")
 public class Board_reportProc implements Board_reportProcInter {
