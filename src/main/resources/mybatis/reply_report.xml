@@ -5,20 +5,20 @@
 <mapper namespace="dev.mvc.replyReport.ReplyReportDAOInter">
   <!-- 등록 -->
   <insert id="create" parameterType="dev.mvc.replyReport.ReplyReportVO">
-    INSERT INTO replyReport(replyReportno, rdate, boardno, memberno)
-    VALUES (replyReport_seq.nextval, sysdate, #{boardno}, #{memberno})
+    INSERT INTO replyReport(replyReportno, replyno ,rdate,  memberno)
+    VALUES (replyReport_seq.nextval, sysdate, #{replyno}, #{memberno})
   </insert>
   
   <!-- 전체 목록 -->
   <select id="list_all" resultType="dev.mvc.replyReport.ReplyReportVO">
-    SELECT replyReportno, rdate, boardno, memberno
+    SELECT replyReportno, rdate, replyno, memberno
     FROM replyReport
     ORDER BY replyReportno DESC
   </select>
   
   <!-- 일반적인 조회 -->
   <select id="read" resultType="dev.mvc.replyReport.ReplyReportVO" parameterType="int">
-    SELECT replyReportno, rdate, boardno, memberno
+    SELECT replyReportno, rdate, replyno, memberno
     FROM replyReport
     WHERE replyReportno = #{replyReportno}
   </select>  
@@ -27,7 +27,7 @@
   <select id="reportCnt" resultType="int" parameterType='HashMap'>
     SELECT COUNT(*) as cnt
     FROM replyReport
-    WHERE boardno=#{boardno} AND memberno=#{memberno}
+    WHERE replyno=#{replyno} AND memberno=#{memberno}
   </select>
   
   <!-- 삭제 -->

@@ -1,4 +1,4 @@
-package dev.mvc.reply_report;
+package dev.mvc.replyReport;
 
 
   import org.springframework.web.multipart.MultipartFile;
@@ -17,5 +17,8 @@ package dev.mvc.reply_report;
     
     /** 회원 번호 */
     private int memberno;
+    
+    /** 등록일 */
+    private int rdate;
         
   }
