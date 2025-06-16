@@ -1,12 +1,10 @@
-package dev.mve.board_recommend;
+package dev.mvc.board_recommend;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import dev.mve.board_recommend.Board_recommendVO;
 
 @Component("dev.mvc.board_recommend.Board_recommendProc")
 public class Board_recommendProc implements Board_recommendProcInter {

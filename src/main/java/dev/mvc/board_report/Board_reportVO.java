@@ -1,4 +1,4 @@
-package dev.mve.board_report;
+package dev.mvc.board_report;
 
 import lombok.Getter;
 import lombok.Setter;

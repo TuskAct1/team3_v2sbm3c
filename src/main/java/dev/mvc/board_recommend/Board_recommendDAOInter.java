@@ -1,9 +1,9 @@
-package dev.mve.board_recommend;
+package dev.mvc.board_recommend;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface Board_recommendProcInter {
+public interface Board_recommendDAOInter {
   /**
    * 게시글 추천 등록
    * @param board_recommendVO
@@ -46,6 +46,7 @@ public interface Board_recommendProcInter {
   public Board_recommendVO readByBoardnoMemberno(HashMap<String, Object> map);
   
 }
+
 
 
 

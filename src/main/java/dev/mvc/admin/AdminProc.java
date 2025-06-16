@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class AdminProc implements AdminProcInter {
   
   @Autowired
-  private AdminProcInter adminDAO;
+  private AdminDAOInter adminDAO;
 
   @Override
   public int create(AdminVO adminVO) {
