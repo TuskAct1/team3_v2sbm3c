@@ -1,4 +1,4 @@
-package dev.mvc.reply_recommend;
+package dev.mvc.replyRecommend;
 
 public class ReplyRecommendController {
 
