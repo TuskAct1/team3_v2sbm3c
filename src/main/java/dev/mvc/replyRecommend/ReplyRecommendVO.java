@@ -1,4 +1,4 @@
-package dev.mvc.reply_recommend;
+package dev.mvc.replyRecommend;
 
 
 import org.springframework.web.multipart.MultipartFile;
@@ -18,5 +18,8 @@ public class ReplyRecommendVO {
 
   /** 회원 번호 */
   private int memberno;
+  
+  /** 등록일 */
+  private int rdate;
 
 }

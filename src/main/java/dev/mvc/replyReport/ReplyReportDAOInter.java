@@ -1,10 +1,11 @@
-package dev.mvc.reply_report;
+package dev.mvc.replyReport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface ReplyReportProcInter {
 
+public interface ReplyReportDAOInter {
+  
   /**
    * 등록, 추상 메소드
    * @param ReplyReportVO

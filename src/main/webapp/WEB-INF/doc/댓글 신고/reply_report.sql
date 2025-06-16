@@ -2,8 +2,9 @@ DROP TABLE reply_report;
 
 CREATE TABLE reply_report(
         reply_reportno      NUMBER(10)    NOT NULL  PRIMARY KEY,
-        memberno               NUMBER(10)    NOT NULL,
-        replyno                NUMBER(10)    NOT NULL,
+        memberno            NUMBER(10)    NOT NULL,
+        replyno             NUMBER(10)    NOT NULL,
+        rdate               DATE          NOT NULL,
   FOREIGN KEY (replyno) REFERENCES reply (replyno),
   FOREIGN KEY (memberno) REFERENCES member (memberno)
 );
@@ -12,6 +13,7 @@ COMMENT ON TABLE reply_report is '댓글 신고';
 COMMENT ON COLUMN reply_report.reply_reportno is '댓글 신고 번호';
 COMMENT ON COLUMN reply_report.replyno is '댓글 번호';
 COMMENT ON COLUMN reply_report.memberno is '회원 번호';
+COMMENT ON COLUMN reply_report.rdate is '등록일';
 
 
 DROP SEQUENCE reply_report_seq;

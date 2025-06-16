@@ -1,4 +1,4 @@
-package dev.mvc.reply_report;
+package dev.mvc.replyReport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
