@@ -1,4 +1,4 @@
-package dev.mvc.reply_report;
+package dev.mvc.replyReport;
 
 
   import org.springframework.web.multipart.MultipartFile;
