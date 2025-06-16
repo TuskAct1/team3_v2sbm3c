@@ -1,9 +1,9 @@
-package dev.mve.board_report;
+package dev.mvc.board_report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface Board_reportDAOInter {
+public interface Board_reportProcInter {
   /**
    * 게시글 신고 등록
    * @param board_reportVO
@@ -46,7 +46,6 @@ public interface Board_reportDAOInter {
   public Board_reportVO readByBoardnoMemberno(HashMap<String, Object> map);
   
 }
-
 
 
 

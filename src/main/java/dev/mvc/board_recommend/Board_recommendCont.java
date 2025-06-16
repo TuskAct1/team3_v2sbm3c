@@ -1,4 +1,4 @@
-package dev.mve.board_recommend;
+package dev.mvc.board_recommend;
 
 public class Board_recommendCont {
 

@@ -35,7 +35,6 @@ public interface ReplyRecommendDAOInter {
    */
   public int hartCnt(HashMap<String, Object> map);  
 
-  
   /**
    * 삭제
    * @param replyRecommendVO
