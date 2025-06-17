@@ -33,4 +33,12 @@
     WHERE boardno=#{boardno}
   </delete>
 
+  <!-- 카테고리 선택시 관련 글 목록 -->
+  <select id="listByCategory" resultType="dev.mvc.board.BoardVO">
+    SELECT boardno, title, content
+    FROM board
+    WHERE categoryno = #{categoryno}
+    ORDER BY boardno DESC
+  </select>
+
 </mapper>
