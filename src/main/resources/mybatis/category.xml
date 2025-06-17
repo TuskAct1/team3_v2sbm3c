@@ -4,20 +4,20 @@
 
   <!-- 카테고리 등록 -->
   <insert id="create" parameterType="dev.mvc.category.CategoryVO">
-    INSERT INTO category(categoryno, grp, name, cnt, seqno, visible, rdate)
-    VALUES(category_seq.nextval, #{grp}, #{name}, #{cnt}, #{seqno}, #{visible}, sysdate)
+    INSERT INTO category(categoryno, name, cnt, seqno, visible, rdate)
+    VALUES(category_seq.nextval, #{name}, #{cnt}, #{seqno}, #{visible}, sysdate)
   </insert>
 
   <!-- 카테고리 전체 목록 -->
   <select id="list_all" resultType="dev.mvc.category.CategoryVO">
-    SELECT categoryno, grp, name, cnt, seqno, visible, rdate
+    SELECT categoryno, name, cnt, seqno, visible, rdate
     FROM category
     ORDER BY seqno ASC
   </select>
 
   <!-- 특정 카테고리 조회 -->
   <select id="read" resultType="dev.mvc.category.CategoryVO" parameterType="int">
-    SELECT categoryno, grp, name, cnt, seqno, visible, rdate
+    SELECT categoryno, name, cnt, seqno, visible, rdate
     FROM category
     WHERE categoryno = #{categoryno}
   </select>
@@ -25,7 +25,7 @@
   <!-- 카테고리 수정 -->
   <update id="update" parameterType="dev.mvc.category.CategoryVO">
     UPDATE category
-    SET grp = #{grp}, name = #{name}, cnt = #{cnt}, seqno = #{seqno}, visible = #{visible}, rdate=sysdate
+    SET name = #{name}, cnt = #{cnt}, seqno = #{seqno}, visible = #{visible}, rdate=sysdate
     WHERE categoryno = #{categoryno}
   </update>
 
