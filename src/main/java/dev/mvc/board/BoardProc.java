@@ -56,5 +56,10 @@ public class BoardProc implements BoardProcInter {
       return boardDAO.delete(boardno);
   }
 
+  @Override
+  public List<BoardVO> listByCategory(int categoryno) {
+    return boardDAO.listByCategory(categoryno);
+  }
+
 }
 
