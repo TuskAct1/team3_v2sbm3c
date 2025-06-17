@@ -2,7 +2,7 @@
  
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
-<mapper namespace="dev.mvc.board.ContentsDAOInter">
+<mapper namespace="dev.mvc.board.BoardDAOInter">
   <!-- 게시글 등록 -->
   <insert id="create" parameterType="dev.mvc.board.BoardVO">
     INSERT INTO board(boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
