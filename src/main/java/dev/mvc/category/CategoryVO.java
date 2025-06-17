@@ -9,7 +9,11 @@ public class CategoryVO {
   
   /** 카테고리 번호 */
   private int categoryno;
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 650b1f420dd155a769d65de7ff9529d95a7ded35
   /** 카테고리 이름 */
   private String name;
   
