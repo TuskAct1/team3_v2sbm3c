@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml"> <!-- layout.html 상속 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,8 +60,7 @@
         }
     </style>
 </head>
-<body>
-
+<div layout:fragment="content">
 <header>
     <h1>Law & Good</h1>
 </header>
@@ -72,10 +71,5 @@
 
     <a href="#" class="cta-button">상담 시작하기</a>
 </section>
-
-<footer>
-    &copy; 2025 Law & Good. All rights reserved.
-</footer>
-
-</body>
+</div>
 </html>
