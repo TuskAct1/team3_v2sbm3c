@@ -32,6 +32,8 @@ public interface BoardDAOInter {
    * @return 삭제된 레코드 갯수
    */
   public int delete(int boardno);
+
+  public List<BoardVO> listByCategory(int categoryno);
   
 }
  

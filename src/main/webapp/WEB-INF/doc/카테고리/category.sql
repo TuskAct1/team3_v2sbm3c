@@ -2,7 +2,6 @@ Drop TABLE Category;
 
 CREATE TABLE Category (
     categoryno      NUMBER                  NOT NULL PRIMARY KEY,  -- 카테고리 번호
-    grp         VARCHAR2(100)           NOT NULL,              -- 그룹 이름
     name        VARCHAR2(100)           NOT NULL,              -- 카테고리 이름
     cnt         NUMBER DEFAULT 0        NOT NULL,              -- 관련 자료 수
     seqno       NUMBER                  NOT NULL,              -- 출력 순서
@@ -20,21 +19,8 @@ CACHE 2              -- 2번은 메모리에서만 계산
 NOCYCLE;             -- 다시 1부터 생성되는 것을 방지
 
 -- 1. CREATE
-INSERT INTO CATEGORY (categoryno, grp, name, cnt, seqno, visible, rdate)
-VALUES (CATE_SEQ.NEXTVAL, '일반', '고민', 0, 1, 'Y', SYSDATE);
-
-INSERT INTO CATEGORY (categoryno, grp, name, cnt, seqno, visible, rdate)
-VALUES (CATE_SEQ.NEXTVAL, '일반', '자유', 0, 2, 'Y', SYSDATE);
-
-INSERT INTO CATEGORY (categoryno, grp, name, cnt, seqno, visible, rdate)
-VALUES (CATE_SEQ.NEXTVAL, '건강정보', '건강', 0, 3, 'Y', SYSDATE);
-
-INSERT INTO CATEGORY (categoryno, grp, name, cnt, seqno, visible, rdate)
-VALUES (CATE_SEQ.NEXTVAL, '재정', '금융', 0, 4, 'Y', SYSDATE);
-
-INSERT INTO CATEGORY (categoryno, grp, name, cnt, seqno, visible, rdate)
-VALUES (CATE_SEQ.NEXTVAL, '생활', '생활 꿀팁', 0, 5, 'Y', SYSDATE);
-
+INSERT INTO CATEGORY (categoryno, name, cnt, seqno, visible, rdate)
+VALUES (category_seq.NEXTVAL, '고민', 0, 1, 'Y', SYSDATE);
 
 -- 2. READ
 -- 전체 조회 (출력 순서 기준 정렬)
@@ -76,4 +62,6 @@ WHERE name = '고민';
 DELETE FROM CATEGORY
 WHERE visible = 'N';
 
+ALTER TABLE category DROP COLUMN grp;
 
+commit;

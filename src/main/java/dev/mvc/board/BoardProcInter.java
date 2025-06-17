@@ -1,9 +1,12 @@
 package dev.mvc.board;
 
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Service
 public interface BoardProcInter {
   /**
    * 게시글 등록
@@ -31,6 +34,11 @@ public interface BoardProcInter {
    * @return 삭제된 레코드 갯수
    */
   public int delete(int boardno);
+
+  /**
+   * 카테고리 선택시 관련 글 목록
+   */
+  public List<BoardVO> listByCategory(int categoryno);
   
 }
 
