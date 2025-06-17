@@ -9,10 +9,7 @@ public class CategoryVO {
   
   /** 카테고리 번호 */
   private int categoryno;
-  
-  /** 그룹 이름 */
-  private String grp;
-  
+
   /** 카테고리 이름 */
   private String name;
   
