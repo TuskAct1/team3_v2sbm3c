@@ -1,0 +1,14 @@
+<div th:fragment="list_search_fragment" xmlns:th="http://www.w3.org/1999/xhtml"> <!-- <div th:replace=... -->
+  <div style="text-align: right; clear: both;">
+    <form name="frm_search" method="get" action="/category/list_search">
+      <input type="text" name="word" id="word" th:value="${word}" >
+      <button type='submit' class='btn btn-secondary btn-sm'
+              style="padding: 2px 8px 3px 8px; margin: 0px 0px 2px 0px; background-color: #4D5050; color: white;">검색</button>
+      <span th:if="${word != null and word != ''}">
+        <button type='button' class='btn btn-secondary btn-sm'
+                style="padding: 2px 8px 3px 8px; margin: 0px 0px 2px 0px; background-color: #777777; color: white;"
+                th:onclick="location.href='/category/list_search'">검색 취소</button>
+      </span>
+    </form>
+  </div>
+</div>
