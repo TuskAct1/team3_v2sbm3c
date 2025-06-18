@@ -15,7 +15,7 @@
 
     <div class='menu_line'></div>
 
-    <form name='frm' method='post' th:object="${contentsVO}" action='/board/create' enctype="multipart/form-data">
+    <form name='frm' method='post' th:object="${boardVO}" action='/board/create' enctype="multipart/form-data">
         <input type="hidden" name="categoryno" th:value="${categoryVO.categoryno}">
 
         <div>
@@ -38,7 +38,7 @@
         </div>
         <div class="content_body_bottom">
             <button type="submit" class="btn btn-secondary btn-sm">등록</button>
-            <button type="button" th:attr="onclick=|location.href='./list_by_categoryno?categoryno=${categoryVO.categoryno}'|" class="btn btn-secondary btn-sm">목록</button>
+            <button type="button" th:attr="onclick=|location.href='./list_all'|" class="btn btn-secondary btn-sm">목록</button>
         </div>
 
     </form>

@@ -41,4 +41,11 @@
     ORDER BY boardno DESC
   </select>
 
+  <!-- 게시글 수정 -->
+  <update id="update" parameterType="dev.mvc.board.BoardVO">
+    UPDATE board
+    SET title = #{title}, content = #{content}
+    WHERE boardno = #{boardno}
+  </update>
+
 </mapper>
