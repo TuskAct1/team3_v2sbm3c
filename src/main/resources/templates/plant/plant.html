@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행복한 식물</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="text-center">
+        <img src="/static/images/minighlim.jpg" alt="식물" class="rounded-lg mx-auto" style="max-width: 300px; height: auto;">
+    </div>
+
+    <h1 class="text-xl font-bold text-center text-warning">행복한 식물</h1>
+
+    <!-- 나이와 경험치 표시 -->
+    <div class="text-center mb-6">
+        <div class="text-2xl font-bold mb-1">키운 지 30일</div>
+        <div class="text-sm">경험치 30</div>
+    </div>
+
+    <div class="mb-4 grid gris-cols-1 md:grid-cols-3 gap-4 w-full sm:w-3/4 lg:w-2/3 mx-auto">
+        <!-- 성장 -->
+        <div class="md:mb-2">
+            <p>🌱 성장</p>
+            <div class="text-sm font-medium text-blue-700 bg-blue-100 rounded-full overflow-hidden">
+                <div id="growthValue" style="width: 50%;">
+                    50%
+                </div>
+            </div>
+        </div>
+        <!-- 건강 -->
+        <div class="md:mb-2">
+            <p>💚 건강</p>
+            <div class="text-sm font-medium text-green-700 bg-green-100 rounded-full overflow-hidden">
+                <div id="healthValue" style="width: 70%;">
+                    70%
+                </div>
+            </div>
+        </div>
+        <!-- 수분 -->
+        <div class="md:mb-2">
+            <p>💧 수분</p>
+            <div class="text-sm font-medium text-purple-700 bg-purple-100 rounded-full overflow-hidden">
+                <div id="waterValue" style="width: 60%;">
+                    60%
+                </div>
+            </div>
+        </div>
+        <!-- 햇빛 -->
+        <div class="md:mb-2">
+            <p>☀️ 햇빛</p>
+            <div class="text-sm font-medium text-yellow-700 bg-yellow-100 rounded-full overflow-hidden">
+                <div id="sunlightValue" style="width: 80%;">
+                    80%
+                </div>
+            </div>
+        </div>
+        <!-- 영양 -->
+        <div class="md:mb-2">
+            <p>🍃 영양</p>
+            <div class="text-sm font-medium text-red-700 bg-red-100 rounded-full overflow-hidden">
+                <div id="nutritionValue" style="width: 40%;">
+                    40%
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+</html>
