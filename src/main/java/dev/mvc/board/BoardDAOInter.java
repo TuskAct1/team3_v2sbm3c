@@ -34,6 +34,8 @@ public interface BoardDAOInter {
   public int delete(int boardno);
 
   public List<BoardVO> listByCategory(int categoryno);
+
+  public int update(BoardVO boardVO);
   
 }
  

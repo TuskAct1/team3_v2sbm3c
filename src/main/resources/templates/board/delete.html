@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"> <!-- layout.html 상속-->
+<div layout:fragment="content">
+    <div class='title_line'>
+        <span th:text="${categoryVO.name}" class="title_line_text"></span >
+        > 게시글 삭제
+    </div>
+
+    <aside class="aside_right">
+        <a th:href="@{|/create?categoryno=${categoryVO.categoryno}|}">등록</a>
+    </aside>
+
+    <div class='menu_line'></div>
+
+    <fieldset class="fieldset_basic">
+        <ul>
+            <li class="li_none">
+                <div th:if="${boardVO.file1.endsWith('jpg') or boardVO.file1.endsWith('png') or boardVO.file1.endsWith('gif') or boardVO.file1.endsWith('jpeg')}"
+                     style="text-align: center; width: 50%; float: left;">
+                    <img th:src="@{|/contents/storage/${contentsVO.file1saved}|}" style="width: 90%;">
+                </div>
+
+                <div th:if="${((boardVO.file1.endsWith('jpg') or boardVO.file1.endsWith('png') or boardVO.file1.endsWith('gif') or boardVO.file1.endsWith('jpeg')) == false) and (boardVO.size1 > 0)}"
+                     class="display_table" style="float: left; width: 50%;">
+                    <div class="display_table_cell">
+                        <span th:text="${boardVO.file1}"></span>
+                    </div>
+                </div>
+
+                <div th:if="${boardVO.size1 == 0}" style="text-align: center; width: 50%; float: left;">
+                    <img src="/contents/images/none1.png" style="width: 90%;">
+                </div>
+
+                <div style='text-align: left; width: 47%; float: left;'>
+                    <span style='font-size: 1.5em;' th:text="${boardVO.title}"></span>
+                    <br>
+                    <form name='frm' method='POST' action='./delete'>
+                        <input type="hidden" name="categoryno" th:value="${categoryVO.categoryno}">
+                        <input type="hidden" name="boardno" th:value="${boardVO.boardno}">
+
+                        <br>
+                        <div style='margin-top: 20px; clear: both;'>
+                            <span style="color: #FF0000; font-weight: bold;">삭제를 진행 하시겠습니까? 삭제하시면 복구 할 수 없습니다.</span>
+                            <br><br><br>
+                            <button type="submit" class="btn btn-secondary btn-sm">삭제</button>
+                            <button type="button" onclick="history.back();" class="btn btn-secondary btn-sm">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </fieldset>
+
+</div>
+
+</html>

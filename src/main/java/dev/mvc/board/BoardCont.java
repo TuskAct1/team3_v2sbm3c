@@ -3,13 +3,11 @@ package dev.mvc.board;
 import dev.mvc.category.CategoryProc;
 import dev.mvc.category.CategoryVO;
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
-import org.json.JSONObject;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -60,12 +58,12 @@ public class BoardCont {
 
     /**
      * 게시글 작성
-     * http://localhost:9093/board/create
+     * http://localhost:9093/board/create?categoryno=4
      */
     @GetMapping("/create")
     public String boardCreate(Model model,
                               @ModelAttribute("boardVO") BoardVO boardVO,
-                              @RequestParam(name = "categoryno", defaultValue = "1") int categoryno) {
+                              @RequestParam(name = "categoryno", defaultValue = "0") int categoryno) {
 
         model.addAttribute("boardVO", boardVO);
 
@@ -74,7 +72,6 @@ public class BoardCont {
         model.addAttribute("categoryGroup", categoryGroup);
 
         CategoryVO categoryVO = categoryProc.read(categoryno);
-        System.out.println(categoryVO);
         model.addAttribute("categoryVO", categoryVO);
 
         return "board/create";
@@ -107,4 +104,90 @@ public class BoardCont {
         return "redirect:/board/list_all";
     }
 
+    /**
+     * 게시글 조회
+     * http://localhost:9093/board/read?boardno=1
+     */
+    @GetMapping("/read")
+    public String readForm(Model model,
+                           @RequestParam(name = "boardno", defaultValue = "0") int boardno) {
+
+        // 카테고리 전체 목록
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+        model.addAttribute("categoryGroup", categoryGroup);
+
+        // 게시글 조회
+        BoardVO boardVO = boardProc.read(boardno);
+        System.out.println(boardVO);
+        model.addAttribute("boardVO", boardVO);
+
+        CategoryVO categoryVO = categoryProc.read(boardVO.getCategoryno());
+        System.out.println(categoryVO);
+        model.addAttribute("categoryVO", categoryVO);
+
+        return "board/read";
+    }
+
+    /**
+     * 게시글 삭제
+     * http://localhost:9093/board/delete?boardno=1
+     */
+    @GetMapping("/delete")
+    public String deleteForm(Model model,
+                             @RequestParam(name = "boardno", defaultValue = "0") int boardno) {
+
+        // 카테고리 전체 목록
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+        model.addAttribute("categoryGroup", categoryGroup);
+
+        // 게시글 조회
+        BoardVO boardVO = boardProc.read(boardno);
+        model.addAttribute("boardVO", boardVO);
+
+        // 카테고리 조회
+        CategoryVO categoryVO = categoryProc.read(boardVO.getCategoryno());
+        model.addAttribute("categoryVO", categoryVO);
+
+        return "board/delete";
+    }
+
+    /**
+     * 게시글 삭제 처리
+     */
+    @PostMapping("/delete")
+    public String deleteProcess(@RequestParam(name = "boardno", defaultValue = "0") int boardno) {
+
+        // 게시글 삭제
+        boardProc.delete(boardno);
+
+        return "redirect:/board/list_all";
+    }
+
+    /**
+     * 게시글 수정
+     */
+    @GetMapping("/update")
+    public String updateForm(Model model, @RequestParam(name = "boardno", defaultValue = "0") int boardno) {
+        BoardVO boardVO = boardProc.read(boardno);
+        System.out.println("update: " + boardVO);
+        model.addAttribute("boardVO", boardVO);
+
+        CategoryVO categoryVO = categoryProc.read(boardVO.getCategoryno());
+        System.out.println("update: " + categoryVO);
+        model.addAttribute("categoryVO", categoryVO);
+
+        return "board/update";
+    }
+
+    /**
+     * 게시글 수정 처리
+     */
+    @PostMapping("/update")
+    public String updateProcess(@ModelAttribute("boardVO") BoardVO boardVO) {
+
+        // 게시글 수정
+        boardProc.update(boardVO);
+
+        return "redirect:/board/read?boardno=" + boardVO.getBoardno();
+    }
 }
