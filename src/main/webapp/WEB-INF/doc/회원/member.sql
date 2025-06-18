@@ -77,4 +77,7 @@ CREATE SEQUENCE member_seq
   
   
 
-select * from memo;
+select * from member;
+
+INSERT INTO member(memberno, mname, id, passwd, passwd2, nickname, birthdate, gender, zipcode, address1, address2, tel)
+VALUES(member_seq.nextval, '임광환', 'ghlim100@naver.com', '1234', '1234', '임광환', '970801', '남', 'zip', 'add1', 'add2', '0000000');

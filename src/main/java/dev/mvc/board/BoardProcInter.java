@@ -39,6 +39,8 @@ public interface BoardProcInter {
    * 카테고리 선택시 관련 글 목록
    */
   public List<BoardVO> listByCategory(int categoryno);
+
+  public int update(BoardVO boardVO);
   
 }
 
