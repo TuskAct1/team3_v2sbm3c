@@ -1,5 +1,6 @@
 package dev.mvc.category;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +20,10 @@ public class CategoryCont {
     @Autowired
     @Qualifier("dev.mvc.category.CategoryProc")
     private CategoryProcInter categoryProc;
+
+    public int record_per_page = 5;
+
+    public int page_per_block = 5;
 
 
     /**
@@ -57,7 +62,7 @@ public class CategoryCont {
 
         if (cnt == 1) {
             ra.addAttribute("word", word);
-            return "redirect:/category/list_all";
+            return "redirect:/category/list_search";
         } else {
             System.out.println("Fail");
         }
@@ -83,6 +88,46 @@ public class CategoryCont {
         return "category/list_all"; // /templates/cate/list_all.html
     }
 
+    @GetMapping(value="/list_search")
+    public String list_search_paging(Model model,
+                                     HttpSession session,
+                                     @RequestParam(name="categoryno", defaultValue = "0") int categoryno,
+                                     @RequestParam(name="word", defaultValue = "") String word,
+                                     @RequestParam(name="now_page", defaultValue="1") int now_page) {
+        CategoryVO categoryVO = new CategoryVO();
+
+        model.addAttribute("categoryVO", categoryVO);
+
+        if (word == null || "null".equals(word.trim())) {
+            word = "";
+        }
+
+        List<CategoryVO> list = this.categoryProc.list_search_paging(word, now_page, this.record_per_page);
+        model.addAttribute("list", list);
+
+        int search_cnt = this.categoryProc.list_search_count(word);
+        model.addAttribute("search_cnt", search_cnt);
+
+        model.addAttribute("word", word); // 검색어
+
+        // --------------------------------------------------------------------------------------
+        // 페이지 번호 목록 생성
+        // --------------------------------------------------------------------------------------
+        String list_url = "/category/list_search";
+        String paging = this.categoryProc.pagingBox(now_page, word, list_url, search_cnt, this.record_per_page, this.page_per_block);
+        model.addAttribute("paging", paging);
+        model.addAttribute("now_page", now_page);
+        // --------------------------------------------------------------------------------------
+
+        // 일련 변호 생성: 레코드 갯수 - ((현재 페이지수 -1) * 페이지당 레코드 수)
+        int no = (now_page - 1) * this.record_per_page + 1;
+        model.addAttribute("no", no);
+
+        // --------------------------------------------------------------------------------------
+
+        return "category/list_search";
+    }
+
     /**
      * 삭제 폼
      * @param model
@@ -93,15 +138,34 @@ public class CategoryCont {
     @GetMapping(value="/delete/{categoryno}")
     public String delete(Model model,
                          @PathVariable("categoryno") Integer categoryno,
-                         @RequestParam(name="word", defaultValue = "") String word) {
+                         @RequestParam(name="word", defaultValue = "") String word,
+                         @RequestParam(name="now_page", defaultValue="1") int now_page) {
 
         CategoryVO categoryVO = this.categoryProc.read(categoryno);
         model.addAttribute("categoryVO", categoryVO);
 
-        List<CategoryVO> list = this.categoryProc.list_all();
+        List<CategoryVO> list = this.categoryProc.list_search_paging(word, now_page, this.record_per_page);
         model.addAttribute("list", list);
 
-        model.addAttribute("word", word);
+        int search_cnt = this.categoryProc.list_search_count(word);
+        model.addAttribute("search_cnt", search_cnt);
+
+        model.addAttribute("word", word); // 검색어
+
+        // --------------------------------------------------------------------------------------
+        // 페이지 번호 목록 생성
+        // --------------------------------------------------------------------------------------
+        String list_url = "/category/delete/" +  + categoryno;
+        String paging = this.categoryProc.pagingBox(now_page, word, list_url, search_cnt, this.record_per_page, this.page_per_block);
+        model.addAttribute("paging", paging);
+        model.addAttribute("now_page", now_page);
+        // --------------------------------------------------------------------------------------
+
+        // 일련 변호 생성: 레코드 갯수 - ((현재 페이지수 -1) * 페이지당 레코드 수)
+        int no = (now_page - 1) * this.record_per_page + 1;
+        model.addAttribute("no", no);
+
+        // --------------------------------------------------------------------------------------
 
         return "category/delete"; // /templates/cate/delete.html
     }
@@ -128,7 +192,7 @@ public class CategoryCont {
         if (cnt == 1) {
             ra.addAttribute("word", word);
 
-            return "redirect:/category/list_all";
+            return "redirect:/category/list_search";
         } else {
             System.out.println("Fail");
         }
@@ -149,15 +213,34 @@ public class CategoryCont {
     @GetMapping(value="/read/{categoryno}")
     public String read (Model model,
                         @PathVariable("categoryno") Integer categoryno,
-                        @RequestParam(name="word", defaultValue = "") String word) {
+                        @RequestParam(name="word", defaultValue = "") String word,
+                        @RequestParam(name="now_page", defaultValue="1") int now_page) {
 
         CategoryVO categoryVO = this.categoryProc.read(categoryno);
         model.addAttribute("categoryVO", categoryVO);
 
-        model.addAttribute("word", word);
-
-        List<CategoryVO> list = this.categoryProc.list_all();
+        List<CategoryVO> list = this.categoryProc.list_search_paging(word, now_page, this.record_per_page);
         model.addAttribute("list", list);
+
+        int search_cnt = this.categoryProc.list_search_count(word);
+        model.addAttribute("search_cnt", search_cnt);
+
+        model.addAttribute("word", word); // 검색어
+
+        // --------------------------------------------------------------------------------------
+        // 페이지 번호 목록 생성
+        // --------------------------------------------------------------------------------------
+        String list_url = "/category/read/" + categoryno;
+        String paging = this.categoryProc.pagingBox(now_page, word, list_url, search_cnt, this.record_per_page, this.page_per_block);
+        model.addAttribute("paging", paging);
+        model.addAttribute("now_page", now_page);
+        // --------------------------------------------------------------------------------------
+
+        // 일련 변호 생성: 레코드 갯수 - ((현재 페이지수 -1) * 페이지당 레코드 수)
+        int no = (now_page - 1) * this.record_per_page + 1;
+        model.addAttribute("no", no);
+
+        // --------------------------------------------------------------------------------------
 
         return "category/read"; // /templates/cate/read.html
     }
@@ -172,15 +255,34 @@ public class CategoryCont {
     @GetMapping(value="/update/{categoryno}")
     public String update(Model model,
                          @PathVariable("categoryno") Integer categoryno,
-                         @RequestParam(name="word", defaultValue = "") String word) {
+                         @RequestParam(name="word", defaultValue = "") String word,
+                         @RequestParam(name="now_page", defaultValue="1") int now_page) {
 
         CategoryVO categoryVO = this.categoryProc.read(categoryno);
         model.addAttribute("categoryVO", categoryVO);
 
-        model.addAttribute("word", word);
-
-        List<CategoryVO> list = this.categoryProc.list_all(); // 검색 목록 + 페이징
+        List<CategoryVO> list = this.categoryProc.list_search_paging(word, now_page, this.record_per_page);
         model.addAttribute("list", list);
+
+        int search_cnt = this.categoryProc.list_search_count(word);
+        model.addAttribute("search_cnt", search_cnt);
+
+        model.addAttribute("word", word); // 검색어
+
+        // --------------------------------------------------------------------------------------
+        // 페이지 번호 목록 생성
+        // --------------------------------------------------------------------------------------
+        String list_url = "/category/update/" +  + categoryno;
+        String paging = this.categoryProc.pagingBox(now_page, word, list_url, search_cnt, this.record_per_page, this.page_per_block);
+        model.addAttribute("paging", paging);
+        model.addAttribute("now_page", now_page);
+        // --------------------------------------------------------------------------------------
+
+        // 일련 변호 생성: 레코드 갯수 - ((현재 페이지수 -1) * 페이지당 레코드 수)
+        int no = (now_page - 1) * this.record_per_page + 1;
+        model.addAttribute("no", no);
+
+        // --------------------------------------------------------------------------------------
 
         return "category/update";
     }
@@ -199,6 +301,7 @@ public class CategoryCont {
                               @Valid CategoryVO categoryVO,
                               BindingResult bindingResult,
                               @RequestParam(name="word", defaultValue = "") String word,
+                              @RequestParam(name="now_page", defaultValue="1") int now_page,
                               RedirectAttributes ra) {
 
         if (bindingResult.hasErrors()) {
@@ -209,6 +312,7 @@ public class CategoryCont {
 
         if (cnt == 1) {
             ra.addAttribute("word", word); // redirect로 데이터 전송, 한글 깨짐 방지
+            ra.addAttribute("now_page", now_page);
             return "redirect:/category/update/" + categoryVO.getCategoryno();
         } else {
             System.out.println("Fail");

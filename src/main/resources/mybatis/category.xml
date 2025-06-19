@@ -35,4 +35,39 @@
     WHERE categoryno = #{categoryno}
   </delete>
 
+  <select id="list_search" resultType="dev.mvc.category.CategoryVO" parameterType="String">
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY seqno ASC
+  </select>
+
+  <select id="list_search_count" resultType="Integer" parameterType="String">
+    SELECT COUNT(*)
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+  </select>
+
+  <select id="list_search_paging" resultType="dev.mvc.category.CategoryVO" parameterType="Map">
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM (
+    SELECT categoryno, name, cnt, seqno, visible, rdate, ROWNUM as r
+    FROM (
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY seqno ASC
+    )
+    WHERE ROWNUM &lt;= #{end_num}
+    )
+    WHERE r &gt;= #{start_num}
+  </select>
+
+
 </mapper>

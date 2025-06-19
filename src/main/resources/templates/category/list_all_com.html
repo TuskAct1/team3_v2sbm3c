@@ -21,7 +21,7 @@
     <tbody>
     <tr th:each="categoryVO, status:${list}">
       <td class="td_bs">
-        <a th:href="@{|/category/read/${categoryVO.categoryno}?word=${word}|}" style="display:block;" th:text="${categoryVO.name}"></a>
+        <a th:href="@{|/category/read/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}" style="display:block;" th:text="${categoryVO.name}"></a>
       </td>
       <td class="td_bs" th:text="${categoryVO.cnt}"></td>
       <td class="td_bs" th:text="${categoryVO.rdate.substring(0, 10)}"></td>
@@ -37,13 +37,13 @@
 <!--        <span th:text="${cateVO.seqno}"></span>-->
 <!--        <a th:href="@{|/cate/update_seqno_forward/${cateVO.cateno}?word=${word}&now_page=${now_page}|}"><img src="/cate/images/decrease.png" class="icon" title="우선순위 높임"></a>-->
 <!--        <a th:href="@{|/cate/update_seqno_backward/${cateVO.cateno}?word=${word}&now_page=${now_page}|}"><img src="/cate/images/increase.png" class="icon" title="우선순위 낮춤"></a>-->
-        <a th:href="@{|/category/update/${categoryVO.categoryno}|}">수정</a> <!-- /static 기준 -->
-        <span> | </span>
-        <a th:href="@{|/category/delete/${categoryVO.categoryno}|}">삭제</a> <!--/* /static 기준 */-->
+        <a th:href="@{|/category/update/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}">수정</a> <!-- /static 기준 -->
+        <span class="menu_divide">|</span>
+        <a th:href="@{|/category/delete/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}">삭제</a> <!--/* /static 기준 */-->
       </td>
     </tr>
     </tbody>
   </table>
-
+  <div class="Bottom_menu" th:utext="${paging}"></div>
 </div>
 

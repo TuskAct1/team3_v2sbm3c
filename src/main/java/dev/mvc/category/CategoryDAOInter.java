@@ -1,6 +1,7 @@
 package dev.mvc.category;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CategoryDAOInter {
   
@@ -18,4 +19,10 @@ public interface CategoryDAOInter {
   
   /** 카테고리 삭제 */
   int delete(int categoryno);
+
+  List<CategoryVO> list_search(String word);
+
+  int list_search_count(String word);
+
+  List<CategoryVO> list_search_paging(Map map);
 }

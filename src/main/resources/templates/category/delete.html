@@ -3,14 +3,15 @@
 <html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml" lang="ko"> <!-- layout.html 상속-->
 <div layout:fragment="content">
   <div class="title_line">카테고리 삭제</div>
-  <aside class="aside_right">
-    <a href="javascript: location.reload();">새로 고침</a>
-    <span class="menu_divide">|</span>
-    <a th:href="@{|/category/list_all|}">목록</a>
-    <span class="menu_divide">|</span>
-    <a th:href="@{|/category/update/${categoryVO.categoryno}|}">수정</a>
-    <span class="menu_divide">|</span>
-    <a th:href="@{|/category/create|}">등록</a>
+  <aside style="display: flex; align-items: center; justify-content: space-between;">
+    <div th:replace="~{category/list_search_com::list_search_fragment}"></div>
+    <div>
+      <a href="javascript: location.reload();">새로 고침</a>
+      <span class="menu_divide">|</span>
+      <a th:href="@{|/category/list_search|}">목록</a>
+      <span class="menu_divide">|</span>
+      <a th:href="@{|/category/update/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}">수정</a>
+    </div>
   </aside>
   <div class="menu_line"></div>
 
@@ -26,7 +27,7 @@
 
     <div class="content_body_bottom">
       <button type="submit" class="btn btn-secondary btn-sm">삭제</button>
-      <button type="button" th:attr="onclick=|location.href='/category/list_all'|" class="btn btn-secondary btn-sm">취소[목록]</button>
+      <button type="button" th:attr="onclick=|location.href='/category/list_search'|" class="btn btn-secondary btn-sm">취소[목록]</button>
     </div>
   </form>
 
