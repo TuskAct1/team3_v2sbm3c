@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml"> <!-- layout.html 상속 -->
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"> <!-- layout.html 상속 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,7 +69,7 @@
     <h2>법률, 더 쉽고 더 가까이</h2>
     <p>누구나 이해할 수 있는 언어로<br>전문가의 도움을 빠르게 받아보세요.</p>
     
-    <th:href="@{|/self_diagnosis/list_all|}" class="cta-button">상담 시작하기</a>
+    <a th:href="@{|/self_diagnosis/list_all|}" class="cta-button">상담 시작하기</a>
 </section>
 </div>
 </html>
