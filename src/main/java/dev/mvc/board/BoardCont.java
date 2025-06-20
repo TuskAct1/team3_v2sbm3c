@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/board")
 public class BoardCont {
 
@@ -50,10 +50,14 @@ public class BoardCont {
         List<CategoryVO> categoryGroup = categoryProc.list_all();
         model.addAttribute("categoryGroup", categoryGroup);
 
+        // 특정 카테고리 조회
+        CategoryVO categoryVO = categoryProc.read(categoryno);
+        model.addAttribute("categoryVO", categoryVO);
+
         // 특정 카테고리 게시글 목록
         List<BoardVO> list = boardProc.listByCategory(categoryno);
         model.addAttribute("list", list);
-        return "board/list_all";
+        return "board/list_all_category";
     }
 
     /**
@@ -97,11 +101,11 @@ public class BoardCont {
             Integer cnt1 = categoryVO.getCnt();
             categoryVO.setCnt(cnt1 + 1);
 
-            ra.addAttribute("categoryno", boardVO.getCategoryno()); // controller -> controller: O
-            return "redirect:/board/list_all";
+//            ra.addAttribute("categoryno", boardVO.getCategoryno()); // controller -> controller: O
+            return "redirect:/board/list_category/" + boardVO.getCategoryno();
 
         }
-        return "redirect:/board/list_all";
+        return "redirect:/board/list_category/" + boardVO.getCategoryno();
     }
 
     /**
@@ -109,8 +113,7 @@ public class BoardCont {
      * http://localhost:9093/board/read?boardno=1
      */
     @GetMapping("/read")
-    public String readForm(Model model,
-                           @RequestParam(name = "boardno", defaultValue = "0") int boardno) {
+    public String readForm(Model model, @RequestParam(name = "boardno", defaultValue = "0") int boardno) {
 
         // 카테고리 전체 목록
         List<CategoryVO> categoryGroup = categoryProc.list_all();
@@ -118,11 +121,10 @@ public class BoardCont {
 
         // 게시글 조회
         BoardVO boardVO = boardProc.read(boardno);
-        System.out.println(boardVO);
         model.addAttribute("boardVO", boardVO);
 
+
         CategoryVO categoryVO = categoryProc.read(boardVO.getCategoryno());
-        System.out.println(categoryVO);
         model.addAttribute("categoryVO", categoryVO);
 
         return "board/read";
