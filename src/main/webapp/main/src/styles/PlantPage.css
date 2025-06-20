@@ -1,0 +1,57 @@
+.plant-container {
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 800px;
+  padding: 1rem;
+}
+
+.plant-image {
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
+}
+
+.plant-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f59e0b; /* Tailwind: text-warning 대체 */
+  margin-top: 1rem;
+}
+
+.status-container {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .status-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.status-box {
+  margin-bottom: 0.5rem;
+}
+
+.status-bar-wrapper {
+  background-color: #e5e7eb; /* Light gray background */
+  border-radius: 9999px;
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status-bar-inner {
+  padding: 0.25rem 0.5rem;
+  color: white;
+}
+
+.blue { background-color: #3b82f6; }
+.green { background-color: #22c55e; }
+.purple { background-color: #a855f7; }
+.yellow { background-color: #eab308; }
+.red { background-color: #ef4444; }
