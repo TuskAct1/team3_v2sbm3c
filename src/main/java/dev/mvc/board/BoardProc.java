@@ -65,5 +65,20 @@ public class BoardProc implements BoardProcInter {
     public int update(BoardVO boardVO) {
       return boardDAO.update(boardVO);
     }
+
+    @Override
+    public int increaseCnt(int boardno) {
+        return boardDAO.increaseCnt(boardno);
+    }
+
+    @Override
+    public int increaseRecommend(int boardno) {
+        return boardDAO.increaseRecommend(boardno);
+    }
+
+    @Override
+    public int decreaseRecommend(int boardno) {
+        return boardDAO.decreaseRecommend(boardno);
+    }
 }
 

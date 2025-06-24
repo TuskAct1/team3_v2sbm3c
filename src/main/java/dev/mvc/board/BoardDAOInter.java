@@ -36,6 +36,15 @@ public interface BoardDAOInter {
   public List<BoardVO> listByCategory(int categoryno);
 
   public int update(BoardVO boardVO);
+
+  /** 조회수 증가 */
+  public int increaseCnt(int boardno);
+
+  /** 게시글 추천수 증가 */
+  public int increaseRecommend(int boardno);
+
+  /** 게시글 추천수 감소 */
+  public int decreaseRecommend(int boardno);
   
 }
  

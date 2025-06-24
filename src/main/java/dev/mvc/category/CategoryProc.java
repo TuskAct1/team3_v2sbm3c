@@ -24,7 +24,7 @@ public class CategoryProc implements CategoryProcInter {
     }
 
     @Override
-    public CategoryVO read(int categoryno) {
+    public CategoryVO read(Integer categoryno) {
         return categoryDAO.read(categoryno);
     }
 
