@@ -38,6 +38,8 @@ function CategoryGroupBar({ categoryGroup, selected, onChange }) {
       >
         전체
       </button>
+
+      {/* 게시판 카테고리 그룹 */}
       {categoryGroup.map(categoryVO => (
         <button
           key={categoryVO.categoryno}
@@ -68,17 +70,31 @@ function CategoryGroupBar({ categoryGroup, selected, onChange }) {
   );
 }
 
-
-function BoardPage() {
+function BoardByCategoryPage() {
   const [categoryGroup, setCategoryGroup] = useState([]);
-  const [boardList, setBoardList] = useState([]);
+  const [listByCategoryBoard, setListByCategoryBoard] = useState([]);
+  const [categoryVO, setCategoryVO] = useState({});
+  const [boardList, setBoardList] = useState({});
 
   const { categoryno } = useParams(); // categoryno는 문자열 (예: '3')
   const [selectedCategory, setSelectedCategory] = useState(categoryno || 'all');
 
-  // const { categoryno } = useParams(0);  // URL에서 boardno 추출
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get(`/board/list_category/${categoryno}`)
+      .then((res) => {
+        console.log(res);
+        setCategoryGroup(res.data.categoryGroup);
+        setListByCategoryBoard(res.data.listByCategoryBoard);
+        setCategoryVO(res.data.categoryVO);
+        setBoardList(res.data.boardList);
+      })
+      .catch((err) => {
+        console.error('게시판 데이터 불러오기 실패:', err);
+      });
+  }, []);
 
   const isImage = (filename) => {
     if (!filename) return false;
@@ -97,24 +113,11 @@ function BoardPage() {
     return content.length > 160 ? `${content.substring(0, 160)}...` : content;
   };
 
+
   function stripHtml(html) {
     if (!html) return ''; // undefined, null, '' 모두 빈 문자열 반환
     return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
   }
-
-  // 카테고리 및 전체 데이터 처음 로딩 (카테고리 그룹 + 전체글)
-  useEffect(() => {
-    axios
-      .get('/board/list_all')
-      .then((res) => {
-        console.log('useEffect: ' + res);
-        setCategoryGroup(res.data.categoryGroup);
-        setBoardList(res.data.boardList);
-      })
-      .catch((err) => {
-        console.error('게시판 데이터 불러오기 실패:', err);
-      });
-  }, []);
 
   // 카테고리 선택 시 게시글 목록 불러오기
   const handleCategoryChange = async (categoryno) => {
@@ -123,26 +126,29 @@ function BoardPage() {
     try {
       if (categoryno === 'all') {
         const res = await axios.get('/board/list_all');
+        console.log('all : categoryno' + res.data.categoryno);
         setSelectedCategory(res.data.categoryno);
         setBoardList(res.data.boardList);
         navigate(`/board/list_all`)
       } else {
         const res = await axios.get(`/board/list_category/${categoryno}`);
-        navigate(`/board/list_category/${categoryno}`)
+        console.log('else : categoryno' + res.data.categoryno);
+        setCategoryVO(res.data.categoryVO);
         setSelectedCategory(res.data.categoryno);
-        setBoardList(res.data.listByCategoryBoard);
+        setListByCategoryBoard(res.data.listByCategoryBoard);
+        navigate(`/board/list_category/${categoryno}`);
       }
     } catch (err) {
       alert('게시글 목록을 불러오지 못했습니다.');
     }
   };
-
+  
   return (
     <div>
-      <h1>전체 게시판 목록</h1>
-      <hr />
+      <h1>{categoryVO.name} 목록</h1>
+
       <a href={`/board/create/${categoryno}`}>등록</a>
-      <hr />
+
       {/* 카테고리 그룹 버튼바 */}
       <CategoryGroupBar
         categoryGroup={categoryGroup}
@@ -166,7 +172,7 @@ function BoardPage() {
       </thead>
       
       <tbody>
-        {boardList.map((boardVO) => (
+        {listByCategoryBoard.map((boardVO) => (
           <tr 
             key={boardVO.boardno} 
             onClick={() => handleRowClick(boardVO.boardno)}
@@ -189,7 +195,7 @@ function BoardPage() {
               ) : (
                 // 파일이 없는 경우 플레이스홀더 이미지
                 <img 
-                  src="/board/storage/none1.png" 
+                  src="./images/none1.png" 
                   alt="No file" 
                   style={{ width: '120px', height: '90px' }} 
                 />
@@ -213,10 +219,8 @@ function BoardPage() {
       </tbody>
       
     </table>
-
     </div>
-    
   );
 }
 
-export default BoardPage;
+export default BoardByCategoryPage;

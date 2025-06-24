@@ -13,16 +13,16 @@
 
   <!-- 모든 카테고리의 등록된 게시글 목록 -->
   <select id="list_all" resultType="dev.mvc.board.BoardVO">
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
-               file1, file1saved, thumb1, size1
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
+               file1, file1saved, thumb1, size1, recom
     FROM board
     ORDER BY boardno DESC
   </select>
   
   <!-- 일반적인 게시글 조회 -->
   <select id="read" resultType="dev.mvc.board.BoardVO" parameterType="int">
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
-               file1, file1saved, thumb1, size1
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
+               file1, file1saved, thumb1, size1, recom
     FROM board
     WHERE boardno = #{boardno}
   </select>
@@ -35,7 +35,7 @@
 
   <!-- 카테고리 선택시 관련 글 목록 -->
   <select id="listByCategory" resultType="dev.mvc.board.BoardVO">
-    SELECT boardno, title, content
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, file1, file1saved, thumb1, size1, cnt, recom
     FROM board
     WHERE categoryno = #{categoryno}
     ORDER BY boardno DESC
@@ -47,5 +47,27 @@
     SET title = #{title}, content = #{content}
     WHERE boardno = #{boardno}
   </update>
+
+  <!-- 조회수 증가 -->
+  <update id="increaseCnt" parameterType="int">
+    UPDATE board
+    SET cnt = cnt + 1
+    WHERE boardno = #{boardno}
+  </update>
+
+  <!-- 게시글 추천 수 증가 -->
+  <update id="increaseRecommend" parameterType="int">
+    UPDATE board
+    SET recom = recom + 1
+    WHERE boardno = #{boardno}
+  </update>
+
+  <!-- 게시글 추천 수 감소 -->
+  <update id="decreaseRecommend" parameterType="int">
+    UPDATE contents
+    SET recom = recom - 1
+    WHERE boardno = #{boardno}
+  </update>
+
 
 </mapper>

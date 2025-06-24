@@ -16,7 +16,7 @@
   </select>
 
   <!-- 특정 카테고리 조회 -->
-  <select id="read" resultType="dev.mvc.category.CategoryVO" parameterType="int">
+  <select id="read" resultType="dev.mvc.category.CategoryVO" parameterType="Integer">
     SELECT categoryno, name, cnt, seqno, visible, rdate
     FROM category
     WHERE categoryno = #{categoryno}

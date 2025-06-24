@@ -2,22 +2,22 @@
  
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
-<mapper namespace="dev.mvc.board_recommend.Board_recommendDAOInter">
+<mapper namespace="dev.mvc.board_recommend.BoardRecommendDAOInter">
   <!-- 게시글 추천 등록 -->
-  <insert id="create" parameterType="dev.mvc.board_recommend.Board_recommendVO">
+  <insert id="create" parameterType="dev.mvc.board_recommend.BoardRecommendVO">
     INSERT INTO board_recommend(board_recommendno, boardno, memberno, rdate)
     VALUES (board_recommend_seq.nextval, #{boardno}, #{memberno}, sysdate)
   </insert>
   
   <!-- 게시글 추천 전체 목록 -->
-  <select id="list_all" resultType="dev.mvc.board_recommend.Board_recommendVO">
+  <select id="list_all" resultType="dev.mvc.board_recommend.BoardRecommendVO">
     SELECT board_recommendno, boardno, memberno, rdate
     FROM board_recommend
     ORDER BY board_recommendno DESC
   </select>
 
   <!-- 게시글 추천 조회 -->
-  <select id="read" resultType="dev.mvc.board_recommend.Board_recommendVO" parameterType="int">
+  <select id="read" resultType="dev.mvc.board_recommend.BoardRecommendVO" parameterType="int">
     SELECT board_recommendno, boardno, memberno, rdate
     FROM board_recommend
     WHERE board_recommendno = #{board_recommendno}
@@ -37,7 +37,7 @@
   </select>
   
   <!-- boardno, memberno로 조회 -->
-  <select id="readByBoardnoMemberno" resultType="dev.mvc.board_recommend.Board_recommendVO" parameterType="HashMap">
+  <select id="readByBoardnoMemberno" resultType="dev.mvc.board_recommend.BoardRecommendVO" parameterType="HashMap">
     SELECT board_recommendno, boardno, memberno, rdate
     FROM board_recommend
     WHERE boardno=#{boardno} AND memberno=#{memberno}
