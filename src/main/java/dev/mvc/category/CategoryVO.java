@@ -8,7 +8,7 @@ import lombok.ToString;
 public class CategoryVO {
   
   /** 카테고리 번호 */
-  private int categoryno;
+  private Integer categoryno;
 
   /** 카테고리 이름 */
   private String name;
