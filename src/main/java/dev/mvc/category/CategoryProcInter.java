@@ -11,7 +11,7 @@ public interface CategoryProcInter {
   List<CategoryVO> list_all();
   
   /** 특정 카테고리 조회 */
-  CategoryVO read(int categoryno);
+  CategoryVO read(Integer categoryno);
   
   /** 카테고리 수정 */
   int update(CategoryVO categoryVO);

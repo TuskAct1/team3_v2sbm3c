@@ -12,7 +12,7 @@ import lombok.ToString;
 */
 
 @Getter @Setter @ToString
-public class Board_recommendVO {
+public class BoardRecommendVO {
   /** 게시글 추천 번호 */
   private int board_recommendno;
   
