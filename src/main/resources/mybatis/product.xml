@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.product.ProductDAOInter">
+
+    <!-- 상품 등록 -->
+    <insert id="create" parameterType="dev.mvc.product.ProductVO" keyProperty="productno" useGeneratedKeys="true">
+        <selectKey keyProperty="productno" resultType="int" order="BEFORE">
+            SELECT product_seq.NEXTVAL FROM dual
+        </selectKey>
+
+        INSERT INTO Product (productno, memberno, adminno, product_name, product_description, product_point, cnt, image_url)
+        VALUES (#{productno}, #{memberno}, #{adminno}, #{product_name}, #{product_description}, #{product_point}, #{cnt}, #{image_url})
+    </insert>
+
+
+    <!-- 상품 조회 -->
+    <select id="read" resultType="dev.mvc.product.ProductVO" parameterType="int">
+        SELECT * FROM Product
+        WHERE productno = #{productno}
+    </select>
+
+    <!-- 상품 수정 -->
+    <update id="update" parameterType="dev.mvc.product.ProductVO">
+        UPDATE Product
+        SET product_name = #{product_name}, product_description = #{product_description}, product_point = #{product_point}, image_url = #{image_url}
+        WHERE productno = #{productno} AND adminno = #{adminno}
+    </update>
+
+    <!-- 상품 삭제 -->
+    <delete id="delete" parameterType="map">
+        DELETE FROM Product
+        WHERE productno = #{productno} AND adminno = #{adminno}
+    </delete>
+
+    <!-- 상품 전체 조회 -->
+    <select id="list_all" resultType="dev.mvc.product.ProductVO">
+        SELECT * FROM Product
+        ORDER BY productno DESC
+    </select>
+
+    <!-- 회원 포인트 차감 -->
+    <update id="purchaseProduct" parameterType="map">
+        UPDATE Member
+        SET point = point - (
+                                SELECT product_point * #{cnt}
+                                FROM Product
+                                WHERE productno = #{productno}
+                            )
+        WHERE memberno = #{memberno}
+            AND point >= (
+                SELECT product_point * #{cnt}
+                FROM Product
+                WHERE productno = #{productno}
+            )
+    </update>
+
+    <!-- 직접 입력 -->
+    <update id="updateCnt" parameterType="map">
+        UPDATE Product
+        SET cnt = #{cnt}
+        WHERE productno = #{productno}
+    </update>
+
+    <!-- 1씩 증가 -->
+    <update id="increaseCnt" parameterType="int">
+        UPDATE Product
+        SET cnt = cnt + 1
+        WHERE productno = #{productno}
+    </update>
+
+    <!-- 1씩 감소 -->
+    <update id="decreaseCnt" parameterType="int">
+        UPDATE Product
+        SET cnt = cnt - 1
+        WHERE productno = #{productno}
+        AND cnt > 0
+    </update>
+
+    <update id="increaseCnt10" parameterType="int">
+        UPDATE Product
+        SET cnt = cnt + 10
+        WHERE productno = #{productno}
+    </update>
+
+    <update id="decreaseCnt10" parameterType="int">
+        UPDATE Product
+        SET cnt = GREATEST(cnt - 10, 1)
+        WHERE productno = #{productno}
+    </update>
+
+
+</mapper>
