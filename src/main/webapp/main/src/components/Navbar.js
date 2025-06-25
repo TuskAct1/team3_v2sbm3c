@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/navbar.css';
@@ -32,25 +31,7 @@ function Navbar() {
       <ul>
         {/* 공통 메뉴 */}
         <li><Link to="/">Home</Link></li>
-=======
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/navbar.css';
-
-function Navbar() {
-  return (
-    <nav className="navbar">
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/todaki">토닥이</Link></li>
-        <li><Link to="/self-check">자가진단</Link></li>
-        <li><Link to="/plant">반려식물</Link></li>
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
         <li><Link to="/calendar">캘린더</Link></li>
-        <li><Link to="/board/list_all">게시판</Link></li>
-        <li><Link to="/signup">회원가입</Link></li>
-        <li><Link to="/login">로그인</Link></li>
-<<<<<<< HEAD
 
 
         {user ? (
@@ -92,15 +73,9 @@ function Navbar() {
             <li><Link to="/login">로그인</Link></li>
           </>
         )}
-=======
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
       </ul>
     </nav>
   );
 }
 
-<<<<<<< HEAD
 export default Navbar;
-=======
-export default Navbar;
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

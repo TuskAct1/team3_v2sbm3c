@@ -1,6 +1,5 @@
 package dev.mvc.member;
 
-<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,24 +125,24 @@ public class MemberController {
     }
     
 }
-=======
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+//=======
+//import org.springframework.stereotype.Controller;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/member")
-@Controller
-public class MemberController {
-  
-  @GetMapping("/create")
-  public String create() {
-    return "member/create";
-  }
-  
-  @GetMapping("/login")
-  public String login() {
-    return "member/login";
-  }
-  
-}
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
+//@RequestMapping("/member")
+//@Controller
+//public class MemberController {
+//  
+//  @GetMapping("/create")
+//  public String create() {
+//    return "member/create";
+//  }
+//  
+//  @GetMapping("/login")
+//  public String login() {
+//    return "member/login";
+//  }
+//  
+//}
+//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

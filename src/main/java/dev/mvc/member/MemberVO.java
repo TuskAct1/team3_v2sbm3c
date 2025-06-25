@@ -1,10 +1,6 @@
 package dev.mvc.member;
 
-<<<<<<< HEAD
 import java.sql.Date;
-
-=======
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 //CREATE TABLE member (
 //    memberno                  NUMBER(10)      NOT NULL PRIMARY KEY,
 //    mname                     VARCHAR2(100) NOT NULL,
@@ -36,7 +32,6 @@ import java.sql.Date;
 //    point                     NUMBER  DEFAULT 0  NULL
 //  );
    
- 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -96,14 +91,10 @@ public class MemberVO {
     private String logout_time = "";
     /** 포인트 */
     private int point;
-<<<<<<< HEAD
     
     private int grade;
     private Date mdate;
 
 
 }
-=======
 
-}
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
