@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- SB가 자동으로 구현하여 연동하는 interface -->
+
+<mapper namespace="dev.mvc.reply.ReplyDAOInter"> <!-- SB가 자동으로 구현하여 연동하는 interface -->
+  <insert id="create">
+    INSERT INTO reply(replyno, boardno, memberno, content, rdate)
+    VALUES(reply_seq.nextval, #{boardno}, #{memberno}, #{content}, sysdate)
+  </insert>
+  
+  <select id="read" resultType="dev.mvc.reply.ReplyVO" parameterType="int">
+    SELECT replyno, boardno, memberno, content, rdate
+    FROM reply
+    WHERE replyno = #{replyno}
+  </select>
+
+  <update id="update" parameterType="dev.mvc.reply.ReplyVO">
+    UPDATE reply SET content=#{content}
+    WHERE replyno = #{replyno}
+  </update>
+    
+  <delete id="delete" parameterType="int">
+    DELETE FROM reply
+    WHERE replyno=#{replyno}
+  </delete>
+  
+  
+  
+  
+    <!-- 추가 기능 -->
+<!--  
+  
+  <select id="list" resultType="dev.mvc.reply.ReplyVO">
+    SELECT replyno, boardno, memberno, content, rdate
+    FROM reply
+    ORDER BY replyno DESC
+  </select>
+  
+  <select id="list_by_contentsno" resultType="dev.mvc.reply.ReplyVO" parameterType="int">
+    SELECT replyno, boardno, memberno, content, rdate
+    FROM reply
+    WHERE boardno=#{boardno}
+    ORDER BY replyno DESC
+  </select>
+  
+ -->
+ 
+ 
+ </mapper>

@@ -1,0 +1,49 @@
+<!--/*
+<div th:replace="~{cate/list_all_com::list_all_fragment}"></div>
+'/cate/list_all_com.html' 파일의 list_all_fragment를 가져다 사용
+*/-->
+<div th:fragment="list_all_fragment" xmlns:th="http://www.w3.org/1999/xhtml">
+  <table class="table table-hover" style="width: 100%;">
+    <colgroup>
+      <col style='width: 35%;'/>
+      <col style='width: 10%;'/>
+      <col style='width: 25%;'/>
+      <col style='width: 30%;'/>
+    </colgroup>
+    <thead>
+    <tr>
+      <th class="th_bs">카테고리</th>
+      <th class="th_bs">자료수</th>
+      <th class="th_bs">등록일</th>
+      <th class="th_bs">기타</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="categoryVO, status:${list}">
+      <td class="td_bs">
+        <a th:href="@{|/category/read/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}" style="display:block;" th:text="${categoryVO.name}"></a>
+      </td>
+      <td class="td_bs" th:text="${categoryVO.cnt}"></td>
+      <td class="td_bs" th:text="${categoryVO.rdate.substring(0, 10)}"></td>
+      <td class="td_bs">
+<!--        <a th:href="@{|/contents/list_by_cateno?cateno=${cateVO.cateno}|}"><img src="/cate/images/contents.png" class="icon" title="글 목록"></a>-->
+<!--        <a th:href="@{|/contents/create?cateno=${cateVO.cateno}|}"><img src="/cate/images/append.png" class="icon" title="글 추가"></a>-->
+<!--        <span th:if="${categoryVO.visible == 'Y'}">-->
+<!--            <a th:href="@{|/category/update_visible_n/${cateVO.cateno}?word=${word}&now_page=${now_page}|}"><img src="/cate/images/show.png" class="icon" title="출력"></a>-->
+<!--          </span>-->
+<!--        <span th:if="${cateVO.visible == 'N'}">-->
+<!--            <a th:href="@{|/cate/update_visible_y/${cateVO.cateno}?word=${word}&now_page=${now_page}|}"><img src="/cate/images/hide.png" class="icon" title="숨김"></a>-->
+<!--          </span>-->
+<!--        <span th:text="${cateVO.seqno}"></span>-->
+<!--        <a th:href="@{|/cate/update_seqno_forward/${cateVO.cateno}?word=${word}&now_page=${now_page}|}"><img src="/cate/images/decrease.png" class="icon" title="우선순위 높임"></a>-->
+<!--        <a th:href="@{|/cate/update_seqno_backward/${cateVO.cateno}?word=${word}&now_page=${now_page}|}"><img src="/cate/images/increase.png" class="icon" title="우선순위 낮춤"></a>-->
+        <a th:href="@{|/category/update/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}">수정</a> <!-- /static 기준 -->
+        <span class="menu_divide">|</span>
+        <a th:href="@{|/category/delete/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}">삭제</a> <!--/* /static 기준 */-->
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="Bottom_menu" th:utext="${paging}"></div>
+</div>
+

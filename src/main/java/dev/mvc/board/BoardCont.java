@@ -1,0 +1,236 @@
+package dev.mvc.board;
+
+import dev.mvc.board_recommend.BoardRecommendProc;
+import dev.mvc.board_recommend.BoardRecommendVO;
+import dev.mvc.category.CategoryProc;
+import dev.mvc.category.CategoryVO;
+import dev.mvc.tool.Tool;
+import dev.mvc.tool.Upload;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/board")
+public class BoardCont {
+
+    @Autowired
+    private BoardProc boardProc;
+
+    @Autowired
+    private CategoryProc categoryProc;
+
+    @Autowired
+    private BoardRecommendProc boardRecommendProc;
+
+    /**
+     * 전체 게시글 목록
+     * http://localhost:9093/board/list_all
+     */
+    @GetMapping("/list_all")
+    public ResponseEntity<Map<String, Object>> list_all() {
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+        ArrayList<BoardVO> BoardList = boardProc.list_all();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categoryGroup", categoryGroup);
+        response.put("boardList", BoardList);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 카테고리 선택시 관련 글 목록
+     * http://localhost:9093/board/list_category/{categoryno}
+     */
+    @GetMapping("/list_category/{categoryno}")
+    public ResponseEntity<Map<String, Object>> getByCategory(@PathVariable("categoryno") Integer categoryno) {
+        // 카테고리 전체 목록
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+
+        // 특정 카테고리 조회
+        CategoryVO categoryVO = categoryProc.read(categoryno);
+
+        // 특정 카테고리 게시글 목록
+        List<BoardVO> listByCategoryBoard = boardProc.listByCategory(categoryno);
+
+        ArrayList<BoardVO> boardList = boardProc.list_all();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categoryGroup", categoryGroup);
+        response.put("categoryVO", categoryVO);
+        response.put("listByCategoryBoard", listByCategoryBoard);
+        response.put("boardList", boardList);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 게시글 등록
+     * http://localhost:9093/board/create?categoryno=4
+     */
+    @GetMapping("/create/{categoryno}")
+    public ResponseEntity<Map<String, Object>> boardCreate(@ModelAttribute("boardVO") BoardVO boardVO,
+                              @PathVariable(name = "categoryno") Integer categoryno) {
+
+        // 카테고리 전체 목록
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+
+        CategoryVO categoryVO = categoryProc.read(categoryno);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categoryGroup", categoryGroup);
+        response.put("categoryno", categoryno);
+        response.put("categoryVO", categoryVO);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 게시글 등록 처리
+     */
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> boardCreateProcess(@ModelAttribute BoardVO boardVO) {
+//        int memberno = (int) session.getAttribute("memberno"); // memberno FK
+        boardVO.setMemberno(1);
+
+        // ------------------------------------------------------------------------------
+        // 파일 전송 코드 시작
+        // ------------------------------------------------------------------------------
+        String file1 = ""; // 원본 파일명 image
+        String file1saved = ""; // 저장된 파일명, image
+        String thumb1 = ""; // preview image
+
+        String upDir = Contents.getUploadDir(); // 파일을 업로드할 폴더 준비
+        // upDir = upDir + "/" + 한글을 제외한 카테고리 이름
+        System.out.println("-> upDir: " + upDir);
+
+        // 전송 파일이 없어도 file1MF 객체가 생성됨.
+        // <input type='file' class="form-control" name='file1MF' id='file1MF'
+        // value='' placeholder="파일 선택">
+        MultipartFile mf = boardVO.getFile1MF();
+
+        file1 = mf.getOriginalFilename(); // 원본 파일명 산출, 01.jpg
+        System.out.println("-> 원본 파일명 산출 file1: " + file1);
+
+        long size1 = mf.getSize(); // 파일 크기
+        if (size1 > 0) { // 파일 크기 체크, 파일을 올리는 경우
+            if (Tool.checkUploadFile(file1) == true) { // 업로드 가능한 파일인지 검사
+                // 파일 저장 후 업로드된 파일명이 리턴됨, spring.jsp, spring_1.jpg, spring_2.jpg...
+                file1saved = Upload.saveFileSpring(mf, upDir);
+
+                if (Tool.isImage(file1saved)) { // 이미지인지 검사
+                    // thumb 이미지 생성후 파일명 리턴됨, width: 200, height: 150
+                    thumb1 = Tool.preview(upDir, file1saved, 200, 150);
+                }
+
+                boardVO.setFile1(file1); // 순수 원본 파일명
+                boardVO.setFile1saved(file1saved); // 저장된 파일명(파일명 중복 처리)
+                boardVO.setThumb1(thumb1); // 원본이미지 축소판
+                boardVO.setSize1(size1); // 파일 크기
+
+            } else { // 전송 못하는 파일 형식
+                System.out.println("전송 못하는 형식");
+            }
+        } else { // 글만 등록하는 경우
+            System.out.println("-> 글만 등록");
+        }
+
+        boardProc.create(boardVO);
+
+        return ResponseEntity.ok("등록 성공");
+    }
+
+    /**
+     * 게시글 조회
+     * http://localhost:9093/board/read?boardno=1
+     */
+    @GetMapping("/read/{boardno}")
+    public ResponseEntity<Map<String, Object>> readForm(@PathVariable("boardno") Integer boardno) {
+
+        // 카테고리 전체 목록
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+
+        // 조회수 증가
+        boardProc.increaseCnt(boardno);
+
+        // 게시글 조회
+        BoardVO boardVO = boardProc.read(boardno);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categoryGroup", categoryGroup);
+        response.put("boardVO", boardVO);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 게시글 삭제 처리
+     */
+    @DeleteMapping("/delete/{boardno}")
+    public ResponseEntity<String> deleteProcess(@PathVariable("boardno") int boardno) {
+        // 게시글 삭제
+        boardProc.delete(boardno);
+
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+    /**
+     * 게시글 수정
+     */
+    @GetMapping("/update/{boardno}")
+    public ResponseEntity<Map<String, Object>> updateForm(@PathVariable("boardno") int boardno) {
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+        BoardVO boardVO = boardProc.read(boardno);
+        CategoryVO categoryVO = categoryProc.read(boardVO.getCategoryno());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categoryGroup", categoryGroup);
+        response.put("boardVO", boardVO);
+        response.put("categoryVO", categoryVO);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 게시글 수정 처리
+     */
+    @PutMapping("/update")
+    public ResponseEntity<String> updateProcess(@ModelAttribute("boardVO") BoardVO boardVO) {
+        // 게시글 수정
+        boardProc.update(boardVO);
+
+        return ResponseEntity.ok("수정 완료");
+    }
+
+    /**
+     * 게시글 추천
+     */
+    @PostMapping("/recommend/{boardno}")
+    public ResponseEntity<String> recommendProcess(@PathVariable("boardno") Integer boardno) {
+
+//        int memberno = (int) session.getAttribute("memberno");
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("boardno", boardno);
+        map.put("memberno", 1);
+
+        int recommend_cnt = boardRecommendProc.hartCnt(map);
+
+        // 이미 추천이 되어 있으면 추천 해제
+        if (recommend_cnt == 1) {
+            BoardRecommendVO boardRecommendVO = boardRecommendProc.readByBoardnoMemberno(map);
+
+
+
+        }
+
+        return ResponseEntity.ok("추천 완료");
+    }
+}

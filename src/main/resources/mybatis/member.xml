@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.member.MemberDAOInter">
+
+  <insert id="create" parameterType="dev.mvc.member.MemberVO">
+    INSERT INTO member(memberno, name, email, password, nickname, profile, birthdate, gender, address, phone, guardian_name, guardian_relationship, guardian_email, guardian_phone,
+      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,point)
+    VALUES (member_seq.nextval, #{name}, #{email}, #{password}, #{nickname}, #{profile}, #{birthdate}, #{gender}, #{address}, #{phone}, #{guardian_name}, #{guardian_relationship}, #{guardian_email}, #{guardian_phone},
+      #{guardian2_name}, #{guardian2_relationship}, #{guardian2_email}, #{guardian2_phone},#{point})
+  </insert>
+
+  <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
+    SELECT memberno, name, email, password, nickname, profile, birthdate, gender, address, phone, guardian_name, guardian_relationship, guardian_email, guardian_phone,
+      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, login_time, logout_time, point
+    FROM member
+    WHERE memberno = #{memberno}
+  </select>
+
+  <!-- 회원 정보 수정 -->
+  <update id="update" parameterType="dev.mvc.member.MemberVO">
+    UPDATE member
+    SET name = #{name}, email = #{email}, password = #{password}, nickname = #{nickname}, profile = #{profile}, birthdate = #{birthdate}, gender = #{gender}, address = #{address}, phone = #{phone},
+      guardian_name = #{guardian_name}, guardian_relationship = #{guardian_relationship}, guardian_email = #{guardian_email}, guardian_phone = #{guardian_phone}, guardian2_name = #{guardian2_name}, guardian2_relationship = #{guardian2_relationship}, guardian2_email = #{guardian2_email}, guardian2_phone = #{guardian2_phone}, point = #{point}
+    WHERE memberno = #{memberno}
+  </update>
+
+  <!-- 회원 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM member
+    WHERE memberno = #{memberno}
+  </delete>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.category.CategoryDAOInter">
+
+  <!-- 카테고리 등록 -->
+  <insert id="create" parameterType="dev.mvc.category.CategoryVO">
+    INSERT INTO category(categoryno, name, cnt, seqno, visible, rdate)
+    VALUES(category_seq.nextval, #{name}, #{cnt}, #{seqno}, #{visible}, sysdate)
+  </insert>
+
+  <!-- 카테고리 전체 목록 -->
+  <select id="list_all" resultType="dev.mvc.category.CategoryVO">
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM category
+    ORDER BY seqno ASC
+  </select>
+
+  <!-- 특정 카테고리 조회 -->
+  <select id="read" resultType="dev.mvc.category.CategoryVO" parameterType="Integer">
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM category
+    WHERE categoryno = #{categoryno}
+  </select>
+
+  <!-- 카테고리 수정 -->
+  <update id="update" parameterType="dev.mvc.category.CategoryVO">
+    UPDATE category
+    SET name = #{name}, cnt = #{cnt}, seqno = #{seqno}, visible = #{visible}, rdate=sysdate
+    WHERE categoryno = #{categoryno}
+  </update>
+
+  <!-- 카테고리 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM category
+    WHERE categoryno = #{categoryno}
+  </delete>
+
+  <select id="list_search" resultType="dev.mvc.category.CategoryVO" parameterType="String">
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY seqno ASC
+  </select>
+
+  <select id="list_search_count" resultType="Integer" parameterType="String">
+    SELECT COUNT(*)
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+  </select>
+
+  <select id="list_search_paging" resultType="dev.mvc.category.CategoryVO" parameterType="Map">
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM (
+    SELECT categoryno, name, cnt, seqno, visible, rdate, ROWNUM as r
+    FROM (
+    SELECT categoryno, name, cnt, seqno, visible, rdate
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY seqno ASC
+    )
+    WHERE ROWNUM &lt;= #{end_num}
+    )
+    WHERE r &gt;= #{start_num}
+  </select>
+
+
+</mapper>

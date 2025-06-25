@@ -1,10 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml"> <!-- layout.html 상속 -->
 <head>
     <meta charset="UTF-8">
-    <title>3조 대상 축하해!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Law & Good 스타일</title>
+    <style>
+        body {
+          margin: 0;
+          font-family: 'Noto Sans KR', sans-serif;
+          background-color: #f9f9f9;
+          color: #222;
+        }
+        header {
+          background-color: white;
+          padding: 2rem;
+          border-bottom: 1px solid #e5e5e5;
+          text-align: center;
+        }
+        header h1 {
+          font-size: 2rem;
+          margin: 0;
+        }
+        .hero {
+          padding: 5rem 2rem;
+          text-align: center;
+          background-color: #fff;
+        }
+        .hero h2 {
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
+          font-weight: 600;
+        }
+        .hero p {
+          font-size: 1.2rem;
+          color: #555;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 2rem;
+          padding: 1rem 2rem;
+          background-color: #111;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          text-decoration: none;
+          font-weight: 500;
+          transition: background 0.3s ease;
+        }
+        .cta-button:hover {
+          background-color: #333;
+        }
+        footer {
+          padding: 2rem;
+          text-align: center;
+          font-size: 0.9rem;
+          color: #aaa;
+          border-top: 1px solid #eee;
+          background-color: #fdfdfd;
+        }
+    </style>
 </head>
-<body>
-    <img src="/images/home.jpeg" style="width: 70%;"> <!-- /static/images/main.jpg -->
-</body>
+<div layout:fragment="content">
+<header>
+    <h1>Law & Good</h1>
+</header>
+
+<section class="hero">
+    <h2>법률, 더 쉽고 더 가까이</h2>
+    <p>누구나 이해할 수 있는 언어로<br>전문가의 도움을 빠르게 받아보세요.</p>
+    
+    <a th:href="@{|/self_diagnosis/list_all|}" class="cta-button">상담 시작하기</a>
+</section>
+</div>
 </html>
