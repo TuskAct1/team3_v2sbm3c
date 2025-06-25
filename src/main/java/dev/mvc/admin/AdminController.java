@@ -1,6 +1,5 @@
 package dev.mvc.admin;
 
-<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +72,7 @@ public class AdminController {
         return adminProc.list();
     }
     
+    
     /** 관리자용 회원 삭제 */
 //    @DeleteMapping("/members/delete")
 //    public ResponseEntity<?> deleteMemberByAdmin(@RequestParam("memberno") int memberno) {
@@ -100,24 +100,25 @@ public class AdminController {
             ? ResponseEntity.ok("삭제 성공")
             : ResponseEntity.status(500).body("삭제 실패");
     }
-=======
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@RequestMapping("/admin")
-@Controller
-public class AdminController {
-  
-  @GetMapping("/create")
-  public String create() {
-    return "admin/create";
-  }
-  
-  @GetMapping("/list")
-  public String list() {
-    return "admin/list";
-  }
-  
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 }
+//=======
+//import org.springframework.stereotype.Controller;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//
+//@RequestMapping("/admin")
+//@Controller
+//public class AdminController {
+//  
+//  @GetMapping("/create")
+//  public String create() {
+//    return "admin/create";
+//  }
+//  
+//  @GetMapping("/list")
+//  public String list() {
+//    return "admin/list";
+//  }
+//  
+//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
+//}

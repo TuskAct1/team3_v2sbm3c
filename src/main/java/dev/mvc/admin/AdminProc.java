@@ -1,7 +1,6 @@
 package dev.mvc.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -56,34 +55,32 @@ public class AdminProc implements AdminProcInter {
         return adminDAO.checkEmail(email);
     }
 }
-=======
-import org.springframework.stereotype.Component;
-
-@Component("dev.mvc.admin.AdminProc")
-public class AdminProc implements AdminProcInter {
+//=======
+//import org.springframework.stereotype.Component;
+//
+//@Component("dev.mvc.admin.AdminProc")
+//public class AdminProc implements AdminProcInter {
+//  
+//  @Autowired
+//  private AdminDAOInter adminDAO;
+//
+//  @Override
+//  public int create(AdminVO adminVO) {
+//    return adminDAO.create(adminVO);
+//  }
+//
+//  @Override
+//  public AdminVO read(int adminno) {
+//    return adminDAO.read(adminno);
+//  }
+//
+//  @Override
+//  public int update(AdminVO adminVO) {
+//    return adminDAO.update(adminVO);
+//  }
+//  
+//  @Override
+//  public int delete(int adminno) { 
+//    return adminDAO.delete(adminno);
+//  }
   
-  @Autowired
-  private AdminDAOInter adminDAO;
-
-  @Override
-  public int create(AdminVO adminVO) {
-    return adminDAO.create(adminVO);
-  }
-
-  @Override
-  public AdminVO read(int adminno) {
-    return adminDAO.read(adminno);
-  }
-
-  @Override
-  public int update(AdminVO adminVO) {
-    return adminDAO.update(adminVO);
-  }
-  
-  @Override
-  public int delete(int adminno) { 
-    return adminDAO.delete(adminno);
-  }
-  
-}
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

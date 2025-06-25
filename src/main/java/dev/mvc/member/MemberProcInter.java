@@ -1,6 +1,4 @@
 package dev.mvc.member;
-
-<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,37 +54,37 @@ public interface MemberProcInter {
     
     public MemberVO readById(String id);
 }
-=======
-public interface MemberProcInter {
-
-  /**
-   * 회원 가입
-   * @param memberVO
-   * @return
-   */
-  public int create(MemberVO memberVO);
-  
-  /**
-   * memberno로 회원 정보 조회
-   * @param memberno
-   * @return
-   */
-  public MemberVO read(int memberno);
-
-  /**
-   * 수정 처리
-   * @param memberVO
-   * @return
-   */
-  public int update(MemberVO memberVO);
- 
-  /**
-   * 회원 삭제 처리
-   * @param memberno
-   * @return
-   */
-  public int delete(int memberno);
-  
-
-}
->>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
+//=======
+//public interface MemberProcInter {
+//
+//  /**
+//   * 회원 가입
+//   * @param memberVO
+//   * @return
+//   */
+//  public int create(MemberVO memberVO);
+//  
+//  /**
+//   * memberno로 회원 정보 조회
+//   * @param memberno
+//   * @return
+//   */
+//  public MemberVO read(int memberno);
+//
+//  /**
+//   * 수정 처리
+//   * @param memberVO
+//   * @return
+//   */
+//  public int update(MemberVO memberVO);
+// 
+//  /**
+//   * 회원 삭제 처리
+//   * @param memberno
+//   * @return
+//   */
+//  public int delete(int memberno);
+//  
+//
+//}
+//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
