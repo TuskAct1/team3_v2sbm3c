@@ -8,19 +8,19 @@
 
     <!-- 일기 등록 -->
     <insert id="create" parameterType="dev.mvc.diary.DiaryVO">
-        INSERT INTO diary(diaryno, memberno, title, content, password, created_at, risk_flag)
+        INSERT INTO diary(diaryno, memberno, title, content, password, rdate, risk_flag)
         VALUES(diary_seq.nextval, #{memberno}, #{title}, #{content}, #{password}, SYSDATE, #{risk_flag})
     </insert>
 
     <!-- 일기 전체 목록 -->
     <select id="list_all" resultType="dev.mvc.diary.DiaryVO">
-        SELECT diaryno, memberno, title, content, password, created_at, risk_flag
+        SELECT diaryno, memberno, title, content, password, rdate, risk_flag
         FROM diary
     </select>
 
     <!-- 일기 단일 조회 -->
     <select id="read" resultType="dev.mvc.diary.DiaryVO" parameterType="int">
-        SELECT diaryno, memberno, title, content, password, created_at, risk_flag
+        SELECT diaryno, memberno, title, content, password, rdate, risk_flag
         FROM diary
         WHERE diaryno = #{diaryno}
     </select>
@@ -28,7 +28,7 @@
     <!-- 일기 수정 -->
     <update id="update" parameterType="dev.mvc.diary.DiaryVO">
         UPDATE diary
-        SET title = #{title}, content = #{content}
+        SET title = #{title}, content = #{content}, rdate = sysdate, risk_flag = #{risk_flag}
         WHERE diaryno = #{diaryno}
     </update>
 
