@@ -1,5 +1,30 @@
 package dev.mvc.admin;
 
+<<<<<<< HEAD
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public interface AdminDAOInter {
+    public int create(AdminVO adminVO);
+
+//    public int login(HashMap<String, Object> map);
+    public int login(Map<String, Object> map);
+    
+
+    public AdminVO read(int adminno);
+
+    public AdminVO readByEmail(String email);
+
+    public List<AdminVO> list();
+
+    public int update(AdminVO adminVO);
+
+    public int delete(int adminno);
+
+    public int checkEmail(String email);
+}
+=======
 public interface AdminDAOInter {
 
   /**
@@ -31,3 +56,4 @@ public interface AdminDAOInter {
   
 
 }
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

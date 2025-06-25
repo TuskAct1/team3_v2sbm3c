@@ -55,7 +55,13 @@ dependencies {
   implementation 'com.sun.mail:javax.mail:1.6.2'
   // https://mvnrepository.com/artifact/javax.activation/activation
   implementation 'javax.activation:activation:1.1.1'  
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  
+  // testImplementation 'org.springframework.security:spring-security-test'
+  // implementation 'org.springframework.boot:spring-boot-starter-security'
+  // implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.2'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()

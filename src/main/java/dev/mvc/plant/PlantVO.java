@@ -1,11 +1,28 @@
 package dev.mvc.plant;
 
+<<<<<<< HEAD
+import java.sql.Date;
+
+=======
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
 public class PlantVO {
+<<<<<<< HEAD
+  private int plantno;
+  private int memberno;
+  private String plant_type;
+  private String plant_name;
+  private int point;
+  private int freshness;
+  private Date last_access;
+  private Date regdate;
+
+  // Getters and Setters 생략 가능 (Lombok 써도 좋음)
+=======
 
     /** 식물 번호 */
     private int plantno;
@@ -25,4 +42,5 @@ public class PlantVO {
     /** 포인트 */
     private int points;
 
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 }

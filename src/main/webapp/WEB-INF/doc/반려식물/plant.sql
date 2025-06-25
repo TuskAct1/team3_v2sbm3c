@@ -1,6 +1,17 @@
 DROP TABLE plant;
 
 CREATE TABLE plant (
+<<<<<<< HEAD
+  plantno      INT PRIMARY KEY AUTO_INCREMENT,
+  memberno     INT NOT NULL, -- 회원번호
+  plant_type   VARCHAR(50),  -- sweet_potato or potato
+  plant_name   VARCHAR(100),
+  point        INT DEFAULT 0,
+  freshness    INT DEFAULT 100,
+  last_access  DATE,
+  regdate      DATE DEFAULT CURRENT_DATE,
+  FOREIGN KEY (memberno) REFERENCES member(memberno)
+=======
 	plantno	        NUMBER(10)		            NOT NULL    PRIMARY KEY,    -- 식물 번호
 	memberno	    NUMBER(10)		            NOT NULL,   -- 유저 번호
 	growth_level	NUMBER(4)	    DEFAULT 0	NOT NULL,   -- 성장도
@@ -8,6 +19,7 @@ CREATE TABLE plant (
 	last_used_time	TIMESTAMP		            NULL,       -- 마지막으로 물 준 시간
 	points	        NUMBER(5)	    DEFAULT 0	NOT NULL,   -- 포인트
     FOREIGN KEY (memberno) REFERENCES member (memberno)
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 );
 
 DROP SEQUENCE plant_seq;
