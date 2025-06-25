@@ -62,3 +62,36 @@ public class MemberProc implements MemberProcInter {
         return memberDAO.readById(id);
     }
 }
+//=======
+// 
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Component;
+//
+//@Component("dev.mvc.member.MemberProc")
+//public class MemberProc implements MemberProcInter {
+//  
+//  @Autowired
+//  private MemberDAOInter memberDAO;
+//
+//  @Override
+//  public int create(MemberVO memberVO) {
+//    return memberDAO.create(memberVO);
+//  }
+//
+//  @Override
+//  public MemberVO read(int memberno) {
+//    return memberDAO.read(memberno);
+//  }
+//
+//  @Override
+//  public int update(MemberVO memberVO) {
+//    return memberDAO.update(memberVO);
+//  }
+//  
+//  @Override
+//  public int delete(int memberno) { 
+//    return memberDAO.delete(memberno);
+//  }
+//  
+//}
+//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

@@ -1,7 +1,6 @@
 package dev.mvc.member;
 
 import java.sql.Date;
-
 //CREATE TABLE member (
 //    memberno                  NUMBER(10)      NOT NULL PRIMARY KEY,
 //    mname                     VARCHAR2(100) NOT NULL,
@@ -33,7 +32,6 @@ import java.sql.Date;
 //    point                     NUMBER  DEFAULT 0  NULL
 //  );
    
- 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -99,3 +97,4 @@ public class MemberVO {
 
 
 }
+

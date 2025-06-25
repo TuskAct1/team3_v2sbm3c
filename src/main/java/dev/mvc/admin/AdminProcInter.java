@@ -6,8 +6,6 @@ import java.util.Map;
 
 public interface AdminProcInter {
     public int create(AdminVO adminVO);
-
-//    public int login(Map<String, Object> loginMap);
     public int login(Map<String, Object> map);
     public AdminVO read(int adminno);
 

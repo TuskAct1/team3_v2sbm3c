@@ -32,7 +32,6 @@ function Navbar() {
         {/* 공통 메뉴 */}
         <li><Link to="/">Home</Link></li>
         <li><Link to="/calendar">캘린더</Link></li>
-        <li><Link to="/board/list_all">게시판</Link></li>
 
 
         {user ? (

@@ -6,7 +6,11 @@ import Navbar from './components/Navbar';
 import MainPage from './pages/MainPage';
 import TodakiPage from './pages/TodakiPage';
 import SelfCheckPage from './pages/SelfCheckPage';
+
 // import PlantPage from './pages/PlantPage';
+
+// import PlantPage from './pages/PlantPage';
+
 import CalendarPage from './pages/CalendarPage';
 
 import BoardPage from './pages/board/BoardPage';
@@ -25,22 +29,31 @@ import MyPage from './pages/member/MyPage';
 import { PlantProvider } from './pages/plant/PlantContext';
 import PlantPage from './pages/plant/PlantPage';
 
-// 📦 그 외 페이지
 // import HomePage from './pages/HomePage';
 // import LoginPage from './pages/LoginPage';
 // import NotFoundPage from './pages/NotFoundPage';
 
 
+// import SignUpPage from './pages/SignUpPage';
+// import LoginPage from './pages/LoginPage';
+
 
 function App() {
   return (
     <Router>
+
+      <h1>토닥</h1>
+
       <Navbar />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/todaki" element={<TodakiPage />} />
         <Route path="/self-check" element={<SelfCheckPage />} />
+
         {/* <Route path="/plant" element={<PlantPage />} /> */}
+
+        {/* <Route path="/plant" element={<PlantPage />} /> */}
+
         <Route path="/calendar" element={<CalendarPage />} />
 
         <Route path="/board/list_all" element={<BoardPage />} />
@@ -61,8 +74,6 @@ function App() {
         {/* ✅ 반려식물 기능은 PlantProvider로 감싸줌 */}
         <Route path="/plant" element={<PlantProvider><PlantPage /></PlantProvider>}/>
         {/* <Route path="*" element={<NotFoundPage />} /> */}
-
-
       </Routes>
     </Router>
   );
