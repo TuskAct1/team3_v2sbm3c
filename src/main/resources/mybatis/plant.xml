@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -29,9 +30,45 @@
     </update>
 
     <!-- 식물 삭제 -->
+=======
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.plant.PlantDAOInter">
+
+    <!-- 기본 CRUD -->
+
+    <!-- 식물 등록 -->
+    <insert id="create" parameterType="dev.mvc.plant.PlantVO">
+        INSERT INTO plant(plantno, memberno, growth_level, is_active, last_used_time, points)
+        VALUES(plant_seq.nextval, #{memberno}, #{growth_level}, #{is_active}, SYSTIMESTAMP, #{points})
+    </insert>
+
+    <!-- 회원 식물 조회 -->
+    <select id="read" resultType="dev.mvc.plant.PlantVO" parameterType="int">
+        SELECT plantno, memberno, growth_level, is_active, last_used_time, points
+        FROM plant
+        WHERE memberno = #{memberno};
+    </select>
+
+    <!-- 식물 성장도 증가 -->
+    <update id="update" parameterType="dev.mvc.plant.PlantVO">
+        UPDATE plant
+        SET growth_level = #{growth_level} + 5
+        WHERE plantno = #{plantno}
+    </update>
+
+    <!-- 일기 삭제 -->
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
     <delete id="delete" parameterType="int">
         DELETE FROM plant
         WHERE plantno = #{plantno}
     </delete>
 
+<<<<<<< HEAD
 </mapper>
+=======
+    <!-- 추가 기능 -->
+
+</mapper>
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

@@ -20,6 +20,7 @@
 
 .navbar a:hover {
   color: #0077cc;
+<<<<<<< HEAD
 }
 
 
@@ -67,4 +68,6 @@
 .nav-user-email.admin {
   color: #047347;
   font-weight: bold;
+=======
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 }

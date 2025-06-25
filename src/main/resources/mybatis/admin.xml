@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+=======
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 <mapper namespace="dev.mvc.admin.AdminDAOInter">
 
   <insert id="create" parameterType="dev.mvc.admin.AdminVO">
@@ -9,6 +13,7 @@
     VALUES (admin_seq.nextval, #{name}, #{email}, #{password})
   </insert>
 
+<<<<<<< HEAD
   <select id="login" parameterType="HashMap" resultType="int">
     SELECT COUNT(*) FROM admin 
     WHERE email = #{id} AND password = #{passwd}
@@ -24,6 +29,12 @@
 
   <select id="list" resultType="dev.mvc.admin.AdminVO">
     SELECT * FROM admin ORDER BY adminno ASC
+=======
+  <select id="read" resultType="dev.mvc.admin.AdminVO" parameterType="int">
+    SELECT adminno, name, email, password
+    FROM admin
+    WHERE adminno = #{adminno}
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
   </select>
 
   <update id="update" parameterType="dev.mvc.admin.AdminVO">
@@ -33,6 +44,7 @@
   </update>
 
   <delete id="delete" parameterType="int">
+<<<<<<< HEAD
     DELETE FROM member
     WHERE memberno = #{memberno}
   </delete>
@@ -41,4 +53,10 @@
     SELECT COUNT(*) FROM admin WHERE email = #{email}
   </select>
 
+=======
+    DELETE FROM admin
+    WHERE adminno = #{adminno}
+  </delete>
+
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 </mapper>
