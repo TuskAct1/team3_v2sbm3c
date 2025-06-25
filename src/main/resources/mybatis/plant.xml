@@ -33,5 +33,12 @@
         DELETE FROM plant
         WHERE plantno = #{plantno}
     </delete>
+    
+    <!-- 회원 번호로 식물 조회 -->
+    <select id="readByMemberno" resultType="dev.mvc.plant.PlantVO" parameterType="int">
+        SELECT plantno, memberno, growth_level, is_active, last_used_time, points
+        FROM plant
+        WHERE memberno = #{memberno}
+    </select>
 
 </mapper>

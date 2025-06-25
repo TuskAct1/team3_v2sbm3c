@@ -33,8 +33,6 @@ function Navbar() {
         <li><Link to="/">Home</Link></li>
         <li><Link to="/calendar">캘린더</Link></li>
         <li><Link to="/board/list_all">게시판</Link></li>
-        <li><Link to="/signup">회원가입</Link></li>
-        <li><Link to="/login">로그인</Link></li>
 
 
         {user ? (

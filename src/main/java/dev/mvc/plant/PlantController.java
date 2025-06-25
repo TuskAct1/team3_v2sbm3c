@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/plant")
-public class PlantRestController {
+public class PlantController {
 
   @Autowired
   private PlantProcInter plantProc;

@@ -7,7 +7,6 @@ import java.util.Map;
 public interface AdminDAOInter {
     public int create(AdminVO adminVO);
 
-//    public int login(HashMap<String, Object> map);
     public int login(Map<String, Object> map);
     
 

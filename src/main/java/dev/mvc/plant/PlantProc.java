@@ -28,4 +28,9 @@ public class PlantProc implements PlantProcInter {
     public int delete(int plantno) {
         return plantDAO.delete(plantno);
     }
+    
+    @Override
+    public PlantVO readByMemberno(int memberno) {
+        return plantDAO.readByMemberno(memberno);
+    }
 }
