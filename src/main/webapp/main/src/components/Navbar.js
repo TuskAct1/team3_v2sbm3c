@@ -32,20 +32,24 @@ function Navbar() {
         {/* 공통 메뉴 */}
         <li><Link to="/">Home</Link></li>
         <li><Link to="/calendar">캘린더</Link></li>
-
+        <li><Link to="/board/list_all">게시판</Link></li>
 
         {user ? (
           <>
             <li><Link to="/todaki">토닥이</Link></li>
             <li><Link to="/self-check">자가진단</Link></li>
             <li><Link to="/plant">반려식물</Link></li>
-            <li><Link to="/board">게시판</Link></li>
+
+            <li><Link to="/diary">일기</Link></li>
+            <li><Link to="/product">포인트 상점</Link></li>
+
 
             {/* 관리자 전용 메뉴 */}
             {isAdmin && (
               <>
                 <li><Link to="/admin/member-list">회원 리스트</Link></li>
                 <li><Link to="/admin/settings">관리 설정</Link></li>
+                <li><Link to="/product">포인트 상점</Link></li>
               </>
             )}
 

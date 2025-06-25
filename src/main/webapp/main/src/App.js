@@ -7,11 +7,8 @@ import MainPage from './pages/MainPage';
 import TodakiPage from './pages/TodakiPage';
 import SelfCheckPage from './pages/SelfCheckPage';
 
-// import PlantPage from './pages/PlantPage';
 
-// import PlantPage from './pages/PlantPage';
-
-import CalendarPage from './pages/CalendarPage';
+import CalendarPage from './pages/calendar/CalendarPage';
 
 import BoardPage from './pages/board/BoardPage';
 import BoardCreatePage from './pages/board/BoardCreatePage';
@@ -28,14 +25,9 @@ import MemberListPage from './pages/member/MemberListPage';
 import MyPage from './pages/member/MyPage';
 import { PlantProvider } from './pages/plant/PlantContext';
 import PlantPage from './pages/plant/PlantPage';
+import DiaryPage from './pages/diary/DiaryPage';
+import ProductPage from './pages/product/ProductPage';
 
-// import HomePage from './pages/HomePage';
-// import LoginPage from './pages/LoginPage';
-// import NotFoundPage from './pages/NotFoundPage';
-
-
-// import SignUpPage from './pages/SignUpPage';
-// import LoginPage from './pages/LoginPage';
 
 
 function App() {
@@ -49,20 +41,12 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/todaki" element={<TodakiPage />} />
         <Route path="/self-check" element={<SelfCheckPage />} />
-
-        {/* <Route path="/plant" element={<PlantPage />} /> */}
-
-        {/* <Route path="/plant" element={<PlantPage />} /> */}
-
         <Route path="/calendar" element={<CalendarPage />} />
-
         <Route path="/board/list_all" element={<BoardPage />} />
-        {/* <Route path="/board/create/:categoryno" element={<BoardCreatePage />} /> */}
         <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
         <Route path="/board/read/:boardno" element={<BoardReadPage />} />
         <Route path="/board/update/:boardno" element={<BoardUpdatePage />} />
         <Route path="/board/list_category/:categoryno" element={<BoardByCategoryPage />} />
-
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin_login" element={<LoginPageAdmin />} />
@@ -74,6 +58,10 @@ function App() {
         {/* ✅ 반려식물 기능은 PlantProvider로 감싸줌 */}
         <Route path="/plant" element={<PlantProvider><PlantPage /></PlantProvider>}/>
         {/* <Route path="*" element={<NotFoundPage />} /> */}
+
+        <Route path="/diary" element={<DiaryPage/>} />
+        <Route path="/product" element={<ProductPage/>} />
+
       </Routes>
     </Router>
   );
