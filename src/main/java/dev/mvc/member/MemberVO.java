@@ -1,5 +1,7 @@
 package dev.mvc.member;
 
+import java.sql.Date;
+
 //CREATE TABLE member (
 //    memberno                  NUMBER(10)      NOT NULL PRIMARY KEY,
 //    mname                     VARCHAR2(100) NOT NULL,
@@ -91,5 +93,9 @@ public class MemberVO {
     private String logout_time = "";
     /** 포인트 */
     private int point;
+    
+    private int grade;
+    private Date mdate;
+
 
 }

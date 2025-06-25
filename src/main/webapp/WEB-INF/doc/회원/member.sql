@@ -30,7 +30,10 @@ CREATE TABLE member (
     
 	login_time	                DATE	        NULL,
 	logout_time	                DATE	        NULL,
-	point	                    NUMBER	DEFAULT 0  NULL
+	point	                    NUMBER	DEFAULT 0  NULL,
+    
+    grade                       NUMBER(2) DEFAULT 20,  -- 회원 등급 (1~10: 관리자, 11~20: 일반, ...)
+	mdate                       DATE DEFAULT SYSDATE   -- 등록일
 );
  
 
@@ -66,6 +69,9 @@ COMMENT ON COLUMN MEMBER.LOGIN_TIME IS '최근 로그인 시간';
 COMMENT ON COLUMN MEMBER.LOGOUT_TIME IS '로그아웃 시간';
 COMMENT ON COLUMN MEMBER.POINT IS '포인트';
 
+COMMENT ON COLUMN member.grade IS '회원 등급 (1~10: 관리자, 11~20: 일반, 30~39: 정지, 40~49: 탈퇴)';
+COMMENT ON COLUMN member.mdate IS '회원 등록일';
+
 DROP SEQUENCE member_seq;
 
 CREATE SEQUENCE member_seq
@@ -81,3 +87,4 @@ select * from member;
 
 INSERT INTO member(memberno, mname, id, passwd, passwd2, nickname, birthdate, gender, zipcode, address1, address2, tel)
 VALUES(member_seq.nextval, '임광환', 'ghlim100@naver.com', '1234', '1234', '임광환', '970801', '남', 'zip', 'add1', 'add2', '0000000');
+
