@@ -75,22 +75,50 @@ function PlaylistSongList() {
     return match ? match[1] : '';
   };
 
-  // ✅ 설명란에서 1줄, 2줄, 3줄, 간단 제목 모두 자동 파싱
+  // ✅ 설명란(playlist.description)에서 다양한 타임라인 형식을 자동 파싱하는 함수
   const parseDescriptionToTracks = (text) => {
-    const lines = text.trim().split('\n');
+    const lines = text.trim().split('\n'); // 한 줄씩 자르기
     const tracks = [];
     const seenStartTimes = new Set();
+
+    // ⏱️ 시:분:초 or 분:초 형식을 정확히 00:00:00 형식으로 변환
+    const parseTimeParts = (arr) => {
+      if (arr.length === 3) {
+        // 시:분:초
+        const [h, m, s] = arr.map(Number);
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      } else if (arr.length === 2) {
+        // 분:초
+        const [m, s] = arr.map(Number);
+        return `00:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      } else {
+        return '00:00:00'; // 잘못된 경우 기본값
+      }
+    };
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]?.trim();
 
-      // 🔹 1줄 형식: (00:00) 아티스트 - 제목
-      const oneLineMatch = line.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?\s+(.+?)\s*-\s*(.+)$/);
-      if (oneLineMatch) {
-        let [, h = '00', m, s = '00', artist, title] = oneLineMatch;
-        if (!oneLineMatch[3]) { s = m; m = h; h = '00'; }
+      // 🔸 (00:00 – 03:43) 제목 형태
+      const rangePattern = /^(\d{1,2}:\d{2}(?::\d{2})?)\s+[-–]\s+(\d{1,2}:\d{2}(?::\d{2})?)\s+(.+)$/;
+      const rangeMatch = line.match(rangePattern);
+      if (rangeMatch) {
+        const [_, start, , title] = rangeMatch;
+        const starttime = parseTimeParts(start.split(':'));
+        if (!seenStartTimes.has(starttime)) {
+          seenStartTimes.add(starttime);
+          tracks.push({ starttime, title: title.trim() });
+        }
+        continue;
+      }
 
-        const starttime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+      // 🔸 1줄 형식: (00:00) 아티스트 - 제목
+      const oneLinePattern = /^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?\s+(.+?)\s*-\s*(.+)$/;
+      const oneLineMatch = line.match(oneLinePattern);
+      if (oneLineMatch) {
+        let [, h, m, s, artist, title] = oneLineMatch;
+        const timeArr = s ? [h, m, s] : [h, m]; // 시:분:초 or 분:초
+        const starttime = parseTimeParts(timeArr);
         if (!seenStartTimes.has(starttime)) {
           seenStartTimes.add(starttime);
           tracks.push({ starttime, title: `${artist.trim()} - ${title.trim()}` });
@@ -98,35 +126,64 @@ function PlaylistSongList() {
         continue;
       }
 
-      // 🔹 2줄 형식: (00:00) / 아티스트 - 제목
-      const t1 = lines[i]?.trim();
-      const t2 = lines[i + 1]?.trim();
-      const timeMatch2 = t1?.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?$/);
-      const contentMatch2 = t2?.match(/^(.+?)\s*-\s*(.+)$/);
-
-      if (timeMatch2 && contentMatch2) {
-        let [, h = '00', m, s = '00'] = timeMatch2;
-        if (!timeMatch2[3]) { s = m; m = h; h = '00'; }
-
-        const starttime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+      // 🔸 2줄 형식: (00:00) + 아티스트 - 제목
+      const nextLine = lines[i + 1]?.trim();
+      const timeLine2Match = line.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?$/);
+      const contentLine2Match = nextLine?.match(/^(.+?)\s*-\s*(.+)$/);
+      if (timeLine2Match && contentLine2Match) {
+        const [, h, m, s] = timeLine2Match;
+        const timeArr = s ? [h, m, s] : [h, m];
+        const starttime = parseTimeParts(timeArr);
         if (!seenStartTimes.has(starttime)) {
           seenStartTimes.add(starttime);
-          const artist = contentMatch2[1];
-          const title = contentMatch2[2];
+          const artist = contentLine2Match[1];
+          const title = contentLine2Match[2];
           tracks.push({ starttime, title: `${artist.trim()} - ${title.trim()}` });
+        }
+        i += 1; // 2줄 사용했으므로 건너뛰기
+        continue;
+      }
+
+      // 🔸 2줄 형식 (새 유형): 시간 → 제목
+      const timeLineNew = line.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?$/);
+      if (timeLineNew && nextLine) {
+        const [, h, m, s] = timeLineNew;
+        const timeArr = s ? [h, m, s] : [h, m];
+        const starttime = parseTimeParts(timeArr);
+        if (!seenStartTimes.has(starttime)) {
+          seenStartTimes.add(starttime);
+          tracks.push({ starttime, title: nextLine.trim() });
+        }
+        i += 1; // 2줄 소모
+        continue;
+      }
+
+      // 🔸 2줄 형식: 제목 → 시간
+      const titleFirst = line;
+      const timeSecond = lines[i + 1]?.trim();
+      const timeMatchTitleFirst = timeSecond?.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?$/);
+      if (titleFirst && timeMatchTitleFirst) {
+        const [, h, m, s] = timeMatchTitleFirst;
+        const timeArr = s ? [h, m, s] : [h, m];
+        const starttime = parseTimeParts(timeArr);
+        if (!seenStartTimes.has(starttime)) {
+          seenStartTimes.add(starttime);
+          const cleanedTitle = titleFirst.replace(/^\d+\.\s*/, ''); // "1. 제목" -> "제목"
+          tracks.push({ starttime, title: cleanedTitle.trim() });
         }
         i += 1;
         continue;
       }
 
-      // 🔹 3줄 형식: (00:00) / 제목 / 아티스트
+      // 🔸 3줄 형식: (00:00) / 제목 / 아티스트
+      const t1 = line;
+      const t2 = lines[i + 1]?.trim();
       const t3 = lines[i + 2]?.trim();
       const timeMatch3 = t1?.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?$/);
       if (timeMatch3 && t2 && t3) {
-        let [, h = '00', m, s = '00'] = timeMatch3;
-        if (!timeMatch3[3]) { s = m; m = h; h = '00'; }
-
-        const starttime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+        const [, h, m, s] = timeMatch3;
+        const timeArr = s ? [h, m, s] : [h, m];
+        const starttime = parseTimeParts(timeArr);
         if (!seenStartTimes.has(starttime)) {
           seenStartTimes.add(starttime);
           tracks.push({ starttime, title: `${t3.trim()} - ${t2.trim()}` });
@@ -135,13 +192,12 @@ function PlaylistSongList() {
         continue;
       }
 
-      // 🔹 간단 형식: (00:00) 제목
+      // 🔸 간단 형식: (00:00) 제목
       const simpleLineMatch = line.match(/^\(?(\d{1,2}):(\d{2})(?::(\d{2}))?\)?\s+(.+)$/);
       if (simpleLineMatch) {
-        let [, h = '00', m, s = '00', title] = simpleLineMatch;
-        if (!simpleLineMatch[3]) { s = m; m = h; h = '00'; }
-
-        const starttime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+        const [, h, m, s, title] = simpleLineMatch;
+        const timeArr = s ? [h, m, s] : [h, m];
+        const starttime = parseTimeParts(timeArr);
         if (!seenStartTimes.has(starttime)) {
           seenStartTimes.add(starttime);
           tracks.push({ starttime, title: title.trim() });
@@ -151,6 +207,7 @@ function PlaylistSongList() {
 
     return tracks;
   };
+
 
   // ✅ 특정 타임라인 클릭 시 유튜브 영상 이동
   const handleClick = (starttime, index) => {

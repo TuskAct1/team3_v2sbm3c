@@ -56,9 +56,9 @@ public class LifestyleResultController {
    */
   @PostMapping("/submit")
   public Map<String, String> generateRoutine(@RequestBody Map<String, String> answers) {
-    String prompt = buildPrompt(answers);      // 프롬프트 생성
-    String result = gptService.ask(prompt);    // GPT에게 요청
-    return Map.of("result", result);           // 결과 전달
+    String prompt = buildPrompt(answers);   // 사용자 응답으로 프롬프트 만들기
+    String result = gptService.ask(prompt);    // GPT에게 프롬프트 전송
+    return Map.of("result", result);                // 결과를 JSON 형태로 반환
   }
 
   /**

@@ -1,167 +1,220 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './PlaylistForm.css';
 
 function PlaylistForm({ mode, playlist, onClose }) {
   const [emotionList, setEmotionList] = useState([]);
   const [selectedEmotion, setSelectedEmotion] = useState(playlist?.playlistemotionno || '');
-  const [newEmotion, setNewEmotion] = useState(''); // 🔹 새 감정 입력 상태
   const [title, setTitle] = useState(playlist?.title || '');
   const [description, setDescription] = useState(playlist?.description || '');
   const [youtubeurl, setYoutubeurl] = useState(playlist?.youtubeurl || '');
   const [thumbnail, setThumbnail] = useState(playlist?.thumbnail || '');
+  const [thumbnailInputType, setThumbnailInputType] = useState('upload');
 
-  // ✅ 감정 카테고리 목록 불러오기
+  // 감정 카테고리 목록 불러오기
   useEffect(() => {
-    fetchEmotions();
-  }, []);
-
-  const fetchEmotions = () => {
     axios.get('http://localhost:9093/playlist_emotion/list')
       .then(res => setEmotionList(res.data))
-      .catch(err => console.error('❌ 감정 목록 불러오기 실패:', err));
-  };
+      .catch(err => console.error('❌ 감정 목록 실패:', err));
+  }, []);
 
-  // ✅ 새 감정 추가
-  const handleAddEmotion = async () => {
-    if (!newEmotion.trim()) {
-      alert('감정 이름을 입력해주세요!');
-      return;
+  // 수정 모드일 때 썸네일 타입 자동 결정
+  useEffect(() => {
+    if (playlist?.thumbnail) {
+      if (playlist.thumbnail.startsWith('/playlist/storage/')) {
+        setThumbnailInputType('upload');
+      } else {
+        setThumbnailInputType('url');
+      }
     }
+  }, [playlist]);
+
+  // 썸네일 파일 업로드 후 콜백 전달
+  const handleThumbnailUpload = async (file, callback) => {
+    const formData = new FormData();
+    formData.append('file', file);
 
     try {
-      await axios.post('http://localhost:9093/playlist_emotion/create', {
-        emotion: newEmotion.trim()
+      const res = await axios.post('http://localhost:9093/playlist/upload-thumbnail', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      alert(`감정 "${newEmotion}"이 추가되었어요!`);
-      setNewEmotion('');
-      fetchEmotions(); // 목록 갱신
+      callback(res.data); // 업로드된 서버 경로 콜백으로 전달
     } catch (err) {
-      console.error('❌ 감정 추가 실패:', err);
-      alert('감정 추가에 실패했어요.');
+      console.error('❌ 썸네일 업로드 실패:', err);
+      alert('❌ 썸네일 업로드에 실패했어요.');
     }
   };
 
-  // ✅ 등록 또는 수정 처리
+  // 등록/수정/삭제 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      playlistemotionno: selectedEmotion,
-      title,
-      description,
-      youtubeurl,
-      thumbnail,
-      adminno: 1, // 실제 로그인 정보와 연동 필요
-      ...(playlist?.playlistno && { playlistno: playlist.playlistno }) // 수정일 때만 추가
+    const doRegister = async (finalThumbnail) => {
+      const payload = {
+        playlistemotionno: selectedEmotion,
+        title,
+        description,
+        youtubeurl,
+        thumbnail: finalThumbnail,
+        adminno: 1,
+      };
+
+      try {
+        if (mode === 'create') {
+          await axios.post('http://localhost:9093/playlist/create', payload);
+          alert('✅ 플레이리스트가 등록되었습니다!');
+        } else if (mode === 'update') {
+          payload.playlistno = playlist.playlistno;
+          await axios.put('http://localhost:9093/playlist/update', payload);
+          alert('✏️ 플레이리스트가 수정되었습니다!');
+        } else if (mode === 'delete') {
+          await axios.delete(`http://localhost:9093/playlist/delete/${playlist.playlistno}`);
+          alert('🗑️ 플레이리스트가 삭제되었습니다!');
+        }
+
+        // 초기화 후 닫기
+        setSelectedEmotion('');
+        setTitle('');
+        setDescription('');
+        setYoutubeurl('');
+        setThumbnail('');
+        onClose();
+      } catch (err) {
+        console.error(`❌ ${mode} 실패:`, err);
+        alert('❌ 작업 중 오류가 발생했어요.');
+      }
     };
 
-    try {
-      if (mode === 'create') {
-        await axios.post('http://localhost:9093/playlist/create', payload);
-        alert('✅ 플레이리스트가 등록되었어요!');
-      } else if (mode === 'update') {
-        await axios.put('http://localhost:9093/playlist/update', payload);
-        alert('✅ 플레이리스트가 수정되었어요!');
+    // 업로드 방식일 경우, 업로드 후 등록 처리
+    if (thumbnailInputType === 'upload' && thumbnail.startsWith('blob:')) {
+      const fileInput = document.querySelector('input[type="file"]');
+      const file = fileInput?.files?.[0];
+
+      if (file) {
+        await handleThumbnailUpload(file, (uploadedPath) => {
+          doRegister(uploadedPath);
+        });
+      } else {
+        alert('❗ 썸네일 파일을 선택해주세요.');
       }
-      onClose(); // 닫기 + 새로고침
-    } catch (err) {
-      console.error('❌ 저장 실패:', err);
-      alert('오류가 발생했어요.');
+    } else {
+      // URL 방식 또는 이미 업로드된 경로
+      doRegister(thumbnail);
     }
   };
 
-  // ✅ 삭제 처리
-  const handleDelete = async () => {
-    if (!window.confirm('정말 삭제할까요?')) return;
-
-    try {
-      await axios.delete(`http://localhost:9093/playlist/delete/${playlist.playlistno}`);
-      alert('🗑️ 삭제 완료!');
-      onClose();
-    } catch (err) {
-      console.error('❌ 삭제 실패:', err);
-      alert('삭제에 실패했어요.');
+  // 파일 선택 시 미리보기 처리
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setThumbnail(previewUrl);
     }
   };
 
   return (
-    <div className="playlist-form">
+    <form onSubmit={handleSubmit} className="playlist-form">
       <h3>
-        {mode === 'create' && '➕ 플레이리스트 등록'}
-        {mode === 'update' && '✏️ 플레이리스트 수정'}
-        {mode === 'delete' && '🗑️ 플레이리스트 삭제'}
+        {mode === 'create' ? '🎵 플레이리스트 등록' :
+         mode === 'update' ? '✏️ 플레이리스트 수정' :
+         '🗑️ 플레이리스트 삭제'}
       </h3>
 
-      {(mode === 'create' || mode === 'update') && (
-        <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
-          <div>
-            <label>감정 카테고리:</label><br />
-            <select
-              value={selectedEmotion}
-              onChange={(e) => setSelectedEmotion(Number(e.target.value))}
-              required
-            >
-              <option value="">감정을 선택하세요</option>
-              {emotionList.map((emotion) => (
-                <option key={emotion.playlistemotionno} value={emotion.playlistemotionno}>
-                  {emotion.emotion}
-                </option>
-              ))}
-            </select>
+      <label>감정 카테고리</label>
+      <select
+        value={selectedEmotion}
+        onChange={(e) => setSelectedEmotion(e.target.value)}
+        required
+      >
+        <option value="">-- 감정을 선택하세요 --</option>
+        {emotionList.map((e) => (
+          <option key={e.playlistemotionno} value={e.playlistemotionno}>
+            {e.emotion}
+          </option>
+        ))}
+      </select>
 
-            {/* 🔹 감정 추가 입력창 */}
-            <div style={{ marginTop: '0.5rem' }}>
-              <input
-                type="text"
-                placeholder="새 감정 추가하기"
-                value={newEmotion}
-                onChange={(e) => setNewEmotion(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={handleAddEmotion}
-                style={{ marginLeft: '0.5rem' }}
-              >
-                ➕ 추가
-              </button>
-            </div>
-          </div>
+      <label>제목</label>
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
 
-          <div>
-            <label>제목:</label><br />
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          </div>
+      <label>노래 타임라인</label>
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        required
+      />
 
-          <div>
-            <label>설명:</label><br />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
-          </div>
+      <label>유튜브 플레이리스트 링크</label>
+      <input
+        type="text"
+        value={youtubeurl}
+        onChange={(e) => setYoutubeurl(e.target.value)}
+        required
+      />
 
-          <div>
-            <label>유튜브 링크:</label><br />
-            <input type="text" value={youtubeurl} onChange={(e) => setYoutubeurl(e.target.value)} required />
-          </div>
+      {/* 썸네일 입력 방식 선택 */}
+      <label>썸네일 입력 방식</label>
+      <div className="radio-group">
+        <label>
+          <input
+            type="radio"
+            name="thumbType"
+            value="upload"
+            checked={thumbnailInputType === 'upload'}
+            onChange={() => setThumbnailInputType('upload')}
+          />
+          이미지 파일 업로드
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="thumbType"
+            value="url"
+            checked={thumbnailInputType === 'url'}
+            onChange={() => setThumbnailInputType('url')}
+          />
+          직접 URL 입력
+        </label>
+      </div>
 
-          <div>
-            <label>썸네일 주소:</label><br />
-            <input type="text" value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} required />
-          </div>
-
-          <div style={{ marginTop: '1rem' }}>
-            <button type="submit">✅ 저장</button>
-            <button type="button" onClick={onClose} style={{ marginLeft: '1rem' }}>❌ 닫기</button>
-          </div>
-        </form>
+      {/* 썸네일 파일 업로드 */}
+      {thumbnailInputType === 'upload' && (
+        <>
+          <label>썸네일 파일 업로드</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+        </>
       )}
 
-      {mode === 'delete' && (
-        <div style={{ marginTop: '1rem' }}>
-          <p>정말로 <strong>{playlist?.title}</strong> 플레이리스트를 삭제하시겠어요?</p>
-          <button onClick={handleDelete}>🗑️ 삭제 확정</button>
-          <button onClick={onClose} style={{ marginLeft: '1rem' }}>❌ 취소</button>
+      {/* 썸네일 URL 입력 */}
+      {thumbnailInputType === 'url' && (
+        <>
+          <label>썸네일 URL</label>
+          <input
+            type="text"
+            value={thumbnail}
+            onChange={(e) => setThumbnail(e.target.value)}
+          />
+        </>
+      )}
+
+      {/* 썸네일 미리보기 (업로드 또는 서버 경로만) */}
+      {thumbnail && (thumbnailInputType === 'upload' || thumbnail.startsWith('/playlist/storage/')) && (
+        <div className="thumbnail-preview">
+          <p>🖼️ 썸네일 미리보기</p>
+          <img src={thumbnail.startsWith('blob:') ? thumbnail : `http://localhost:9093${thumbnail}`} alt="썸네일 미리보기" />
         </div>
       )}
-    </div>
+
+      <button type="submit" className="submit-btn">
+        {mode === 'create' ? '등록하기' :
+         mode === 'update' ? '수정하기' : '삭제하기'}
+      </button>
+    </form>
   );
 }
 
