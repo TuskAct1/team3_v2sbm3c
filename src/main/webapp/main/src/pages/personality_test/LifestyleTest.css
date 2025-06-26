@@ -1,0 +1,92 @@
+/* ✅ 전체 페이지 배경 및 정렬 */
+.lifestyle-container {
+  background: linear-gradient(to bottom, #f1f8e9, #e0f2f1);  /* 연초록~청록 그라데이션 */
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+}
+
+/* ✅ 상단 타이틀 */
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2e7d32;         /* 짙은 초록 */
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* ✅ 질문 카드 박스 */
+.question-card {
+  background-color: #ffffff;
+  padding: 2.5rem 2rem;
+  border-radius: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+}
+
+/* ✅ 질문 텍스트 */
+.question-text {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #33691e;         /* 초록빛 글자 */
+  margin-bottom: 1.5rem;
+}
+
+/* ✅ 옵션 버튼 리스트 (부모에 고정 폭 주기) */
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 500px;     /* 💡 모든 버튼 너비 고정 */
+  margin: 0 auto;        /* 가운데 정렬 */
+}
+
+/* ✅ 버튼 내부 글자도 줄바꿈 방지 */
+.option-button {
+  width: 100%;
+  height: 64px;                  /* 💡 min-height → 고정 height */
+  font-size: 1.2rem;
+  white-space: nowrap;          /* 💡 줄바꿈 방지 */
+  overflow: hidden;
+  text-overflow: ellipsis;      /* 💡 너무 긴 경우 ... 처리 */
+
+  background-color: #e8f5e9;
+  border: 2px solid #a5d6a7;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.option-button:hover {
+  background-color: #c8e6c9;           /* hover 시 밝은 초록 */
+}
+
+/* ✅ 하단 진행도 텍스트 */
+.progress {
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: #2e7d32;                     /* 진한 초록 */
+}
+
+/* ✅ 로딩 메시지 스타일 */
+.loading-box {
+  font-size: 1.3rem;
+  color: #2e7d32;
+  font-weight: bold;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  text-align: center;
+}

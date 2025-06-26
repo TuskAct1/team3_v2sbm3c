@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ReplySection from '../reply/ReplySection';
+
 
 function BoardReadPage() {
   const [categoryGroup, setCategoryGroup] = useState([]);
@@ -81,7 +83,7 @@ function BoardReadPage() {
             </div>
           </li>
         </ul>
-
+          <ReplySection boardno={boardno} />
         <div style={{ marginTop: '20px', clear: 'both' }}>
           <button onClick={handleDelete} className="btn btn-secondary btn-sm" style={{ marginRight: '10px' }}>
             삭제

@@ -21,3 +21,50 @@
 .navbar a:hover {
   color: #0077cc;
 }
+
+
+/* 기존 네비게이션 스타일 유지 */
+/* 기존 로그아웃 스타일 유지 */
+.navbar ul li span.nav-link-logout {
+  color: #047347;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+.navbar ul li span.nav-link-logout:hover {
+  text-decoration: underline;
+}
+
+/* 이메일 님 텍스트에도 같은 스타일 적용 */
+.navbar ul li.nav-user-info > .nav-user-email {
+  color: #047347;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+/* 두 텍스트 사이 간격 조정 */
+.navbar ul li.nav-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 적당한 간격 */
+}
+
+/* 기존 사용자 공통 스타일 */
+.nav-user-email {
+  font-weight: 600;
+  color: #333;
+}
+
+/* 관리자만 다르게 표시 (예: 초록색 강조) */
+.nav-user-email.admin {
+  color: #047347;
+  font-weight: bold;
+}

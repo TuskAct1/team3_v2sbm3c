@@ -1,0 +1,213 @@
+/* ✅ 전체 검사 컨테이너 */
+.twoweek-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f1f8e9; /* 연한 연두 배경 */
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+/* ✅ 검사 제목 */
+.twoweek-container h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #2e7d32; /* 진한 초록 */
+  margin-bottom: 1rem;
+}
+
+/* ✅ 부제 문구 */
+.twoweek-subtext {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+/* ✅ 각 질문 블록 (카드 박스) */
+.question-block {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #c5e1a5;
+  border-radius: 15px;
+  background-color: #ffffff;
+  transition: background-color 0.3s, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ✅ 미응답 문항일 경우 강조 스타일 */
+.question-block.missing {
+  background-color: #fff7f7; /* 연한 붉은 배경 */
+  border-color: #ef9a9a;     /* 붉은 경계선 */
+}
+
+/* ✅ 질문 텍스트 */
+.question-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #33691e;
+}
+
+/* ✅ 미응답 문항 강조 텍스트 */
+.highlight-missing {
+  color: rgb(196, 51, 51) !important;
+}
+
+/* ✅ 라디오 버튼 그룹 */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 1rem;
+}
+
+/* ✅ 라벨 클릭 영역 확장 */
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* ✅ 라디오 버튼 크기 확대 */
+.radio-group input[type="radio"] {
+  transform: scale(1.2);
+  margin-right: 0.5rem;
+}
+
+/* ✅ 결과 제출 버튼 */
+.submit-btn {
+  display: block;
+  margin: 2rem auto 0;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* ✅ 버튼 hover 효과 */
+.submit-btn:hover {
+  background-color: #388e3c;
+}
+
+/* ✅ 반응형 대응 */
+@media screen and (max-width: 600px) {
+  .twoweek-container {
+    padding: 1rem;
+  }
+
+  .question-text {
+    font-size: 1rem;
+  }
+
+  .radio-group label {
+    font-size: 0.95rem;
+  }
+
+  .submit-btn {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+}
+
+/* ✅ 결과 전체 컨테이너 */
+.twoweek-result-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f1f8e9;
+  min-height: 80vh;
+}
+
+/* ✅ 결과 카드 스타일 */
+.result-card {
+  background-color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  border-left: 10px solid #66bb6a;
+  transition: all 0.3s ease-in-out;
+}
+
+/* ✅ 위험 점수(15점 이상)일 경우 강조 */
+.result-card.danger {
+  border-left: 10px solid #e53935;
+  background-color: #fff3f3;
+  animation: shake 0.2s ease-in-out 2;
+}
+
+/* ✅ 위험 강조 애니메이션 */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+/* ✅ 결과 이모지 */
+.result-emoji {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+/* ✅ 결과 제목 */
+.result-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+/* ✅ 점수와 메시지 텍스트 */
+.result-score,
+.result-message {
+  font-size: 1.3rem;
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+/* ✅ 돌아가기 버튼 */
+.back-button {
+  margin-top: 2rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #388e3c;
+}
+
+/* ✅ 음성 버튼 스타일 */
+.speak-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #2e7d32;
+  transition: color 0.2s;
+}
+
+.speak-btn:hover {
+  color: #1b5e20;
+}

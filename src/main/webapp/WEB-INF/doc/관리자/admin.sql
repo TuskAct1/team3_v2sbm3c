@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+DROP TABLE admin;
+-- 제약 조건과 함께 삭제(제약 조건이 있어도 삭제됨, 권장하지 않음.)
+DROP TABLE admin CASCADE CONSTRAINTS; 
+
+=======
+>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
 CREATE TABLE admin (
 	adminno	    NUMBER	        NOT NULL PRIMARY KEY,
 	name	    VARCHAR2(100)	NOT NULL,

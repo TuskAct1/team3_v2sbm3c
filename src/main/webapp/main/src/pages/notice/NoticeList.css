@@ -1,0 +1,166 @@
+/* ✅ 공지사항 전용 배경 */
+.notice-page-bg {
+  background-color: #f1f8e9;   /* 연한 연두 배경 */
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* ✅ 상단 제목과 등록버튼 */
+.notice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.notice-header h2 {
+  font-size: 1.8rem;
+  color: #2e7d32;
+  margin: 0;
+}
+
+/* 등록하기 버튼 */
+.create-btn {
+  background-color: #66bb6a;
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-btn:hover {
+  background-color: #388e3c;
+}
+
+/* ✅ 공지사항 테이블 */
+.notice-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white; /* 표는 흰 배경 */
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 1.05rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.notice-table th,
+.notice-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #c8e6c9;
+  text-align: center;
+}
+
+.notice-table th {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.notice-table tbody tr:hover {
+  background-color: #f9fbe7;
+}
+
+/* 기존 제목 스타일 */
+.title-link {
+  color: #2e7d32;
+  cursor: pointer;
+  text-align: left;
+}
+
+.title-link:hover {
+  text-decoration: underline;
+}
+
+/* ✅ 클릭한 공지사항 제목 스타일 */
+.title-link.visited {
+  color: #8d6e63;  /* 예: 갈색 느낌으로 바뀜 */
+  font-weight: bold;
+}
+
+/* 수정/삭제 아이콘 영역 */
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.icon:hover {
+  transform: scale(1.2);
+}
+
+/* 공지 없음 메시지 */
+.empty-message {
+  text-align: center;
+  color: #555;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+/* 컬럼 너비 비율 조정 */
+.notice-table th:nth-child(1), /* 번호 */
+.notice-table td:nth-child(1) {
+  width: 8%;
+}
+
+/* 제목 칼럼: th는 가운데, td는 왼쪽 정렬 */
+.notice-table th:nth-child(2) {
+  width: 50%;
+  text-align: center; /* 헤더는 가운데 */
+}
+
+.notice-table td:nth-child(2) {
+  width: 50%;
+  text-align: left; /* 본문은 왼쪽 정렬 */
+  padding-left: 1.5rem;
+}
+
+.notice-table th:nth-child(3), /* 작성일 */
+.notice-table td:nth-child(3) {
+  width: 15%;
+}
+
+.notice-table th:nth-child(4), /* 조회수 */
+.notice-table td:nth-child(4) {
+  width: 12%;
+}
+
+.notice-table th:nth-child(5), /* 관리 */
+.notice-table td:nth-child(5) {
+  width: 15%;
+}
+
+/* 방문기록 초기화 */
+.visited-reset-hint {
+  margin-top: 0.5rem;
+  text-align: right;
+  font-size: 0.9rem;
+  color: #888;
+  cursor: pointer;
+}
+
+.visited-reset-hint span:hover {
+  text-decoration: underline;
+  color: #4caf50; /* 초록색으로 hover 효과 */
+}
+
+/* 검색창 */
+.search-bar {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+

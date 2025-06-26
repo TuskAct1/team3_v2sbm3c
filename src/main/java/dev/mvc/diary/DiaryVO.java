@@ -32,7 +32,7 @@ public class DiaryVO {
     private int memberno;
     
     /** 일기 등록일 */
-    private String date;
+    private String rdate;
 
     /** 일기 제목 */
     private String title;
@@ -43,26 +43,6 @@ public class DiaryVO {
     /** 일기 비밀번호 */
     private String password;
 
-    // 파일 업로드 관련
-    // -----------------------------------------------------------------------------------
-    /**
-    이미지 파일
-    <input type='file' class="form-control" name='file1MF' id='file1MF' 
-               value='' placeholder="파일 선택">
-    */
-    private MultipartFile file1MF = null;
-    /** 메인 이미지 크기 단위, 파일 크기 */
-    private String size1_label = "";
-    /** 메인 이미지 */
-    private String file1 = "";
-    /** 실제 저장된 메인 이미지 */
-    private String file1saved = "";
-    /** 메인 이미지 preview */
-    private String thumb1 = "";
-    /** 메인 이미지 크기 */
-    private long size1 = 0;
-
-    
     /** 우울증 위험도 */
     private int risk_flag = 0;
 

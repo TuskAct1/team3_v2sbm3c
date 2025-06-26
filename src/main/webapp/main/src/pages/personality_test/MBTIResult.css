@@ -1,0 +1,194 @@
+/* ✅ 전체 페이지 배경 및 가운데 정렬 */
+.result-container {
+  background-color: #f1f8e9;
+  min-height: 100vh;
+  padding: 3rem 2rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 100vw;                /* ✅ 전체 화면 가로 폭 사용 */
+  max-width: 100%;             /* ✅ 혹시 모를 제한 제거 */
+  box-sizing: border-box;
+
+  font-family: 'Arial', sans-serif;
+}
+
+/* ✅ 결과 타이틀 */
+.result-title {
+  font-size: 2.4rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+/* ✅ MBTI 요약 카드 */
+.result-card {
+  background-color: #ffffff;
+  border-radius: 25px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+
+  width: 100%;
+  max-width: 1200px;             /* ✅ 최대 너비 확장 */
+  margin: 0 auto 2.5rem auto;     /* ✅ 가운데 정렬 */
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* ✅ MBTI 유형 */
+.mbti-type {
+  font-size: 1.8rem;
+  color: #1b5e20;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+  border-left: 6px solid #66bb6a;
+  padding-left: 1rem;
+}
+
+/* ✅ 강조 텍스트 */
+.highlight {
+  color: #388e3c;
+  font-weight: bold;
+}
+
+/* ✅ 설명 문단 */
+.mbti-description {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 2.2rem;
+  line-height: 1.85;
+  white-space: pre-line;
+}
+
+/* ✅ 소제목 (추천 활동 & 유명인) */
+.section-title {
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  color: #2e7d32;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #c8e6c9;
+  padding-bottom: 0.3rem;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ✅ 포스트잇 카드 정렬 */
+.postit-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+/* ✅ 포스트잇 카드 스타일 */
+.postit-card {
+  background-color: #fffde7;
+  border: 2px solid #f0f4c3;
+  border-radius: 15px;
+  padding: 0.8rem 1.2rem;
+  width: 200px;
+  min-height: 200px;
+  box-shadow: 3px 4px 8px rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+}
+
+/* ✅ 카드 내부 제목 */
+.postit-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #558b2f;
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: flex-start;
+}
+
+/* ✅ 리스트 항목 */
+.postit-list {
+  list-style: disc;
+  padding-left: 1.2rem;
+  margin: 0;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+.postit-list li {
+  margin-bottom: 0.5rem;
+}
+
+/* ✅ 하단 안내 문구 */
+.result-note {
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #666;
+  text-align: center;
+}
+
+/* ✅ 다시 테스트 버튼 */
+.retry-button {
+  background-color: #4caf50;
+  color: white;
+  font-size: 1.3rem;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+}
+
+.retry-button:hover {
+  background-color: #2e7d32;
+  transform: scale(1.03);
+}
+
+/* ✅ 모바일 대응 */
+@media screen and (max-width: 650px) {
+  .result-card {
+    padding: 2rem;
+    width: 95vw;
+  }
+
+  .result-title {
+    font-size: 2rem;
+  }
+
+  .mbti-type {
+    font-size: 1.5rem;
+  }
+
+  .mbti-description {
+    font-size: 1.1rem;
+  }
+
+  .postit-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .postit-card {
+    width: 90%;
+    min-height: auto;
+  }
+
+  .retry-button {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+}

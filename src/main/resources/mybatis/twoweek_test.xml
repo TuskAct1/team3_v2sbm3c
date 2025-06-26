@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.twoweekTest.TwoweekTestDAOInter">
+
+  <!-- 심리테스트 결과 등록 -->
+  <insert id="create" parameterType="dev.mvc.twoweekTest.TwoweekTestVO">
+    INSERT INTO twoweek_test (
+      twoweektestno, memberno, score, result, rdate
+    ) VALUES (
+      twoweek_test_seq.nextval,  
+      #{memberno}, #{score}, #{result}, SYSDATE
+    )
+  </insert>
+
+  <!-- 심리테스트 결과 단건 조회 -->
+  <select id="read" resultType="dev.mvc.twoweekTest.TwoweekTestVO" parameterType="int">
+    SELECT twoweektestno, memberno, score, result, rdate
+    FROM twoweek_test
+    WHERE twoweektestno = #{twoweektestno}
+  </select>
+
+  <!-- 회원별 심리테스트 결과 전체 조회 -->
+  <select id="listByMember" resultType="dev.mvc.twoweekTest.TwoweekTestVO" parameterType="int">
+    SELECT twoweektestno, memberno, score, result, rdate
+    FROM twoweek_test
+    WHERE memberno = #{memberno}
+    ORDER BY rdate DESC
+  </select>
+
+  <!-- 심리테스트 결과 수정 -->
+  <update id="update" parameterType="dev.mvc.twoweekTest.TwoweekTestVO">
+    UPDATE twoweek_test
+    SET score = #{score},
+        result = #{result},
+        rdate = SYSDATE
+    WHERE twoweektestno = #{twoweektestno}
+  </update>
+
+  <!-- 심리테스트 결과 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM twoweek_test
+    WHERE twoweektestno = #{twoweektestno}
+  </delete>
+  
+  <!-- memberno 기준 가장 최근 검사 1건 조회 -->
+  <select id="latestByMember" parameterType="int" resultType="dev.mvc.twoweekTest.TwoweekTestVO">
+    SELECT *
+    FROM (
+      SELECT * FROM twoweek_test
+      WHERE memberno = #{memberno}
+      ORDER BY rdate DESC
+    )
+    WHERE ROWNUM = 1
+  </select>
+
+</mapper>

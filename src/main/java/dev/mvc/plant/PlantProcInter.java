@@ -13,4 +13,7 @@ public interface PlantProcInter {
 
     /** 식물 삭제 */
     public int delete(int plantno);
+    
+    /** 회원 번호로 식물 조회 */
+    public PlantVO readByMemberno(int memberno);
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.personalityTest.PersonalityTestDAOInter">
+
+  <!-- 심리테스트 결과 등록 -->
+  <insert id="create" parameterType="dev.mvc.personalityTest.PersonalityTestVO">
+    INSERT INTO personality_test (
+      personalitytestno, memberno, score, result, rdate
+    ) VALUES (
+      personality_test_seq.nextval,  
+      #{memberno}, #{score}, #{result}, SYSDATE
+    )
+  </insert>
+
+  <!-- 심리테스트 결과 단건 조회 -->
+  <select id="read" resultType="dev.mvc.personalityTest.PersonalityTestVO" parameterType="int">
+    SELECT personalitytestno, memberno, score, result, rdate
+    FROM personality_test
+    WHERE personalitytestno = #{personalitytestno}
+  </select>
+
+  <!-- 회원별 심리테스트 결과 전체 조회 -->
+  <select id="listByMember" resultType="dev.mvc.personalityTest.PersonalityTestVO" parameterType="int">
+    SELECT personalitytestno, memberno, score, result, rdate
+    FROM personality_test
+    WHERE memberno = #{memberno}
+    ORDER BY rdate DESC
+  </select>
+
+  <!-- 심리테스트 결과 수정 -->
+  <update id="update" parameterType="dev.mvc.personalityTest.PersonalityTestVO">
+    UPDATE personality_test
+    SET score = #{score},
+        result = #{result},
+        rdate = SYSDATE
+    WHERE personalitytestno = #{personalitytestno}
+  </update>
+
+  <!-- 심리테스트 결과 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM personality_test
+    WHERE personalitytestno = #{personalitytestno}
+  </delete>
+
+</mapper>

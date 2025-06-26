@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.playlistemotion.PlaylistEmotionDAOInter">
+
+  <!-- 감정 등록 -->
+  <insert id="create" parameterType="dev.mvc.playlistemotion.PlaylistEmotionVO">
+    INSERT INTO playlist_emotion (
+      playlistemotionno,
+      emotion
+    ) VALUES (
+      playlist_emotion_seq.NEXTVAL,
+      #{emotion}
+    )
+  </insert>
+
+  <!-- 전체 목록 -->
+  <select id="list" resultType="dev.mvc.playlistemotion.PlaylistEmotionVO">
+    SELECT playlistemotionno, emotion
+    FROM playlist_emotion
+    ORDER BY playlistemotionno ASC
+  </select>
+
+  <!-- 하나 조회 -->
+  <select id="read" parameterType="int" resultType="dev.mvc.playlistemotion.PlaylistEmotionVO">
+    SELECT playlistemotionno, emotion
+    FROM playlist_emotion
+    WHERE playlistemotionno = #{playlistemotionno}
+  </select>
+
+  <!-- 수정 -->
+  <update id="update" parameterType="dev.mvc.playlistemotion.PlaylistEmotionVO">
+    UPDATE playlist_emotion
+    SET emotion = #{emotion}
+    WHERE playlistemotionno = #{playlistemotionno}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM playlist_emotion
+    WHERE playlistemotionno = #{playlistemotionno}
+  </delete>
+
+</mapper>

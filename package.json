@@ -1,0 +1,12 @@
+{
+  "name": "team3_v2sbm3c",
+  "version": "1.0.0",
+  "description": "<H2>\r   은빛연구소 1.0 입니다.\r </H2>\r <br><br>\r <img src = \"https://github.com/user-attachments/assets/7d5cadb3-4dee-4c96-bb10-e5e1f530c513\">\r <img src = \"https://github.com/user-attachments/assets/f2a2e315-7892-4db2-a8d4-a58a4cbeca40\">",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

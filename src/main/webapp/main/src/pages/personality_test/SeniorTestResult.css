@@ -1,0 +1,71 @@
+/* ✅ 전체 컨테이너 중앙 정렬 */
+.result-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f1f8e9; /* 연한 연두 배경 */
+  padding: 2rem;
+}
+
+/* ✅ 결과 박스 공통 스타일 */
+.result-box {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* ✅ 안전한 결과 (10점 미만) */
+.result-box.safe {
+  border-left: 10px solid #66bb6a; /* 밝은 초록 */
+}
+
+/* ✅ 위험한 결과 (10점 이상) */
+.result-box.danger {
+  border-left: 10px solid #ef5350; /* 빨간 계열 */
+  background-color: #fff3f3;       /* 옅은 분홍 배경 */
+}
+
+/* ✅ 점수 표시 */
+.result-score {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #2e7d32; /* 진한 초록 */
+}
+
+/* ✅ 메시지 텍스트 */
+.result-message {
+  white-space: pre-wrap; /* \n 줄바꿈 적용 */
+  font-size: 1.05rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* ✅ 에러 상황 텍스트 */
+.result-error {
+  color: #d32f2f;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ✅ 홈으로 돌아가기 버튼 */
+.result-home-btn {
+  background-color: #388e3c;
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.result-home-btn:hover {
+  background-color: #2e7d32;
+}

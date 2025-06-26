@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@Component("dev.mvc.diary.DiaryProc")
 public class DiaryProc implements DiaryProcInter {
 
     @Autowired

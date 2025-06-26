@@ -1,0 +1,105 @@
+/* ✅ 전체 페이지 컨테이너 - 배경색과 가운데 정렬, 여백 */
+.home-container {
+  padding: 40px 20px; /* 🔹 위쪽 패딩만 줄임 */
+  text-align: center;
+  background-color: #f8fff4; /* 아주 연한 초록 배경 */
+}
+
+/* ✅ 페이지 제목 */
+.home-title {
+  font-size: 2.5rem;
+  color: #2e7d32; /* 진한 초록색 */
+  margin-bottom: 10px;
+}
+
+/* ✅ 설명 문장 */
+.home-description {
+  font-size: 1.2rem;
+  color: #4e4e4e; /* 회색 텍스트 */
+  margin-bottom: 30px;
+}
+
+/* ✅ 카드 리스트 - 가로 정렬 + 반응형 wrap */
+.test-card-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 30px;          /* 카드 간 간격 */
+  flex-wrap: wrap;    /* 줄 바꿈 허용 (작은 화면에서 대응) */
+}
+
+/* ✅ 각 카드와 기록링크를 하나로 묶는 블록 */
+.card-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ✅ 개별 카드 디자인 */
+.test-card {
+  background-color: #e8f5e9; /* 연한 초록 배경 */
+  border: 2px solid #a5d6a7; /* 초록 테두리 */
+  border-radius: 15px;
+  padding: 25px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 3px 3px 8px rgba(0,0,0,0.1); /* 약한 그림자 */
+  transition: transform 0.2s ease;         /* hover 시 부드럽게 */
+}
+
+/* ✅ 카드 hover 효과 (살짝 확대) */
+.test-card:hover {
+  transform: scale(1.02);
+}
+
+/* ✅ 카드 제목 */
+.test-card h2 {
+  color: #388e3c;       /* 초록 */
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+/* ✅ 카드 설명 텍스트 */
+.test-card p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* ✅ 버튼 스타일 */
+.test-card button {
+  background-color: #66bb6a; /* 밝은 초록 */
+  color: white;
+  border: none;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ✅ 버튼 hover 시 더 진한 초록으로 */
+.test-card button:hover {
+  background-color: #4caf50;
+}
+
+/* ✅ 카드 바깥쪽에 위치한 기록보기 링크를 감싸는 div */
+.record-link-outside {
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* ✅ 기록보기 링크 텍스트 */
+.record-link {
+  font-size: 0.9rem;
+  color: black;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+/* 최근 진단일 텍스트 */
+.recent-date {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 4px;
+}
