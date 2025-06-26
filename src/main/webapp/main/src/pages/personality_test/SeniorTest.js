@@ -21,18 +21,20 @@ const questionList = [
   { id: 15, text: '자신이 다른 사람들의 처지보다 더 못한다고 생각하십니까?', reverse: false },
 ];
 
-function Questionnaire() {
-  const [answers, setAnswers] = useState({});
-  const [unansweredIds, setUnansweredIds] = useState([]);
-  const questionRefs = useRef([]);
-  const synthRef = useRef(window.speechSynthesis);
-  const navigate = useNavigate();
+function SeniorTest() {
+  const [answers, setAnswers] = useState({});  // 사용자가 체크한 응답들
+  const [unansweredIds, setUnansweredIds] = useState([]);  // 미응답 문항 ID들
+  const questionRefs = useRef([]);  // 문항 줄에 스크롤할 수 있게 DOM 저장
+  const synthRef = useRef(window.speechSynthesis);  // 음성 재생 제어
+  const navigate = useNavigate();  // 페이지 이동
 
+  // 🔹 사용자가 선택한 답을 answers에 저장. 미응답 문항 목록에서 해당 문항 제거
   const handleChange = (id, value) => {
-    setAnswers(prev => ({ ...prev, [id]: value }));
+    setAnswers(prev => ({ ...prev, [id]: value }));  
     setUnansweredIds(prev => prev.filter(unId => unId !== id));
   };
 
+  // 🔹 음성 읽기 기능
   const handleSpeak = (text) => {
     if (!window.speechSynthesis) {
       alert("이 브라우저에서는 음성 지원을 사용할 수 없습니다.");
@@ -44,11 +46,13 @@ function Questionnaire() {
     synthRef.current.speak(utter);
   };
 
+  // 🔹 제출 처리
   const handleSubmit = async () => {
-    const newUnanswered = questionList
-      .filter(q => !answers[q.id])
-      .map(q => q.id);
+    const newUnanswered = questionList  // 미응답 문항 강조
+      .filter(q => !answers[q.id])  
+      .map(q => q.id);  
 
+    // ❗ 미응답 문항 있을 경우 강조 표시
     if (newUnanswered.length > 0) {
       setUnansweredIds(newUnanswered);
       const firstRef = questionRefs.current[newUnanswered[0]];
@@ -59,30 +63,40 @@ function Questionnaire() {
       return;
     }
 
+    // 🔸 점수 계산
     let score = 0;
     questionList.forEach(q => {
       const answer = answers[q.id];
       if (q.reverse) {
-        if (answer === 'no') score += 1;
+        if (answer === 'no') score += 1;  // reverse=true → '아니오'가 1점
       } else {
-        if (answer === 'yes') score += 1;
+        if (answer === 'yes') score += 1;  // reverse=false → '예'가 1점
       }
     });
 
+    // ✅ 요약 결과만 DB 저장용으로 사용
+    const summaryText =
+      score >= 10
+        ? '⚠️ 현재 우울감이 높게 나타났어요.'
+        : '😊 현재로서는 우울감이 낮은 편입니다.';
+
+    // ✅ 긴 메시지는 결과 페이지 출력용으로만 사용
     const message =
       score >= 10
         ? '⚠️ 현재 우울감이 높게 나타났어요.\n\nAI 친구 토닥이가 곁에서 먼저 이야기를 들어줄게요.\n필요하다면 정신건강 전문가의 상담도 함께 받아보는 걸 추천드려요.'
         : '😊 현재로서는 우울감이 낮은 편입니다.\n\n앞으로도 토닥이와 함께 건강한 마음을 지켜나가요!';
 
     try {
-      const response = await axios.post('http://localhost:9093/personality_test/create', {
+      const response = await axios.post('http://localhost:9093/personality_test/create', {  // ← 백엔드에서 ResponseEntity 응답 옴
+
         personalitytestno: 0,
         memberno: 1,
         score: score,
-        result: message
+        result: summaryText  // ✅ DB에는 요약 텍스트만 저장
       });
 
-      if (response.status === 200) {
+      if (response.status === 200) {  // 등록 성공한 상태
+        // 🔸 결과 페이지로 이동하면서 긴 메시지 함께 전달
         navigate('/senior_test/result', { state: { score, message } });
       }
     } catch (err) {
@@ -108,9 +122,7 @@ function Questionnaire() {
           {questionList.map((q, idx) => (
             <tr key={q.id} ref={el => (questionRefs.current[q.id] = el)}>
               <td className="center-td">{idx + 1}</td>
-              <td
-                className={`left-td ${unansweredIds.includes(q.id) ? 'unanswered-question' : ''}`}
-              >
+              <td className={`left-td ${unansweredIds.includes(q.id) ? 'unanswered-question' : ''}`}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <span>{q.text}</span>
                   <button
@@ -163,4 +175,4 @@ function Questionnaire() {
   );
 }
 
-export default Questionnaire;
+export default SeniorTest;

@@ -71,7 +71,7 @@ function LifestyleTest() {
   /**
    * ✅ 답변을 서버에 전송하고 결과 페이지로 이동
    */
-  const handleSubmit = async (finalAnswers) => {
+  const handleSubmit = async (finalAnswers) => {  // 여기서 finalAnswers = updatedAnswers
     setLoading(true); // 로딩 시작
     try {
       const res = await axios.post('http://localhost:9093/lifestyle_test/submit', finalAnswers);

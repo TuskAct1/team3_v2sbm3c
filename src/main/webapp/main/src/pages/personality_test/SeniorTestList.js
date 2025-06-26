@@ -1,11 +1,11 @@
 // 🔹 필요한 리액트 기능 불러오기
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // URL에서 값을 추출할 수 있게 해줌
-import axios from 'axios'; // 백엔드 API 요청을 쉽게 해주는 라이브러리
-import './SeniorTestList.css'; // 외부 CSS 파일 불러오기 (테이블 꾸미는 용도)
+import { useParams } from 'react-router-dom'; // URL에서 :memberno 꺼냄
+import axios from 'axios'; // 백엔드 API 요청을 쉽게 해주는 라이브러리. 서버랑 통신
+import './SeniorTestList.css'; 
 
 // 🔸 검사 결과 목록을 보여주는 컴포넌트
-function TestList() {
+function SeniorTestList() {
   // 🔹 검사 결과 리스트를 저장하는 state (초기값은 빈 배열)
   const [testList, setTestList] = useState([]);
 
@@ -55,7 +55,7 @@ function TestList() {
       <div className="testlist-container"> {/* ✅ 흰 박스 */}
         {/* ✅ 상단 헤더: 제목 + 돌아가기 버튼 */}
         <div className="testlist-header">
-          <h2>🧠 {memberno}번 회원님의 검사 결과 목록</h2>
+          <h2>🧠 {memberno}번 회원님의 검사 기록</h2>
           <button className="small-btn" onClick={() => window.location.href = '/personality_test'}>
             ← 이전
           </button>
@@ -106,4 +106,4 @@ function TestList() {
   );
 }
 
-export default TestList;
+export default SeniorTestList;

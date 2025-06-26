@@ -17,9 +17,9 @@ function LifestyleResult() {
 
   // ✅ 줄 단위로 나눈 결과 배열 (공백 제거)
   const resultLines = resultText
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line !== '');
+    .split('\n')  // 줄 단위로 나눔
+    .map(line => line.trim())  // 앞뒤 공백 제거
+    .filter(line => line !== '');  // 빈 줄 제거
 
   // ✅ 마지막 줄이 응원 메시지인지 판단 (시간 패턴이 아니면 응원 메시지로 간주)
   const lastLine = resultLines[resultLines.length - 1];
