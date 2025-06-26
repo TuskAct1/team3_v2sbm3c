@@ -1,0 +1,184 @@
+/* ✅ 전체 컨테이너 */
+.test-container {
+  background-color: #f1f8e9;
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+}
+
+/* ✅ 제목 */
+.test-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ✅ 진행률 */
+.progress-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #33691e;
+  margin-bottom: 2rem;
+}
+
+/* ✅ 질문 카드 */
+.question-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+  text-align: center;
+}
+
+/* ✅ 질문 강조 */
+.question-text {
+  font-size: 1.5rem;
+  color: #2e7d32;
+  font-weight: bold;
+  margin: 2rem 0 1.5rem 0;
+  border-bottom: 2px solid #c8e6c9;
+  padding-bottom: 1rem;
+}
+
+/* ✅ 설명 라벨 줄 */
+.option-label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #2e7d32;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ✅ 각 라벨 항목 */
+.option-label-item {
+  flex: 1;
+  text-align: center;
+}
+
+/* ✅ 선택 동그라미 줄 */
+.circle-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ✅ 라벨 */
+.circle-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ✅ 라디오 숨김 */
+.circle-option input {
+  display: none;
+}
+
+/* ✅ 기본 동그라미 스타일 */
+.circle {
+  width: 64px;
+  height: 64px;
+  background-color: #c8e6c9;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #1b5e20;
+  transition: all 0.3s ease;
+}
+
+/* ✅ 선택된 동그라미 강조 */
+.circle-option input:checked + .circle {
+  background-color: #2e7d32;
+  color: #ffffff;
+  border: 3px solid #1b5e20;
+  transform: scale(1.05);
+}
+
+/* ✅ 결과 박스 */
+.result-box {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  color: #2e7d32;
+}
+
+.result-box p {
+  font-size: 1.1rem;
+  color: #4e4e4e;
+  line-height: 1.6;
+}
+
+.result-box ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.result-box li {
+  font-size: 1.05rem;
+  margin-bottom: 0.6rem;
+}
+
+/* ✅ 다시 하기 버튼 */
+.result-reset {
+  margin-top: 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.8rem 2rem;
+  background-color: #66bb6a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.result-reset:hover {
+  background-color: #388e3c;
+}
+
+.result-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.back-button {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.8rem 2rem;
+  background-color: #a5d6a7;
+  color: #2e7d32;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #81c784;
+}

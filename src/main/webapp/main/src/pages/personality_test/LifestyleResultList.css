@@ -1,0 +1,175 @@
+/* ✅ 버튼 기본 스타일 초기화 */
+button {
+  font-family: 'Arial', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  box-shadow: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ✅ 전체 페이지 배경 및 여백 */
+.routine-list-container {
+  padding: 2rem;
+  background-color: #f1f8e9;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+/* ✅ 상단 제목 */
+.routine-title {
+  font-size: 2rem;
+  color: #2e7d32;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* ✅ 데이터 없을 때 안내문 */
+.no-data {
+  text-align: center;
+  color: #777;
+  font-size: 1.2rem;
+}
+
+/* ✅ 아코디언 전체 목록 wrapper */
+.accordion-list {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ✅ 아코디언 개별 카드 */
+.accordion-item {
+  background-color: white;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  position: relative;
+  /* 🔸 더 이상 높이 제한 없이 자연스럽게 열림 */
+}
+
+/* ✅ 고정되는 헤더 (날짜 + 버튼 줄) */
+.accordion-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #e8f5e9;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #33691e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #c8e6c9;
+}
+
+.accordion-header:hover {
+  background-color: #dcedc8;
+}
+
+/* ✅ 버튼 그룹 정렬 */
+.button-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ✅ 보기 버튼 */
+.view-btn {
+  background-color: #66bb6a;
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  min-width: 44px;
+  height: auto;
+}
+
+.view-btn:hover {
+  background-color: #4caf50;
+}
+
+/* ✅ 삭제 버튼 */
+.delete-btn {
+  background-color: #ef5350;
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  min-width: 44px;
+  height: auto;
+}
+
+.delete-btn:hover {
+  background-color: #c62828;
+}
+
+/* ✅ 펼쳐졌을 때 내용 구역 – 여기만 스크롤 */
+.accordion-content {
+  padding: 1rem 1.5rem;
+  background-color: #fafafa;
+  border-top: 1px solid #c8e6c9;
+
+  max-height: 300px;      /* 🔹 내용 많을 때만 스크롤 */
+  overflow-y: auto;
+}
+
+/* ✅ 시간별 루틴 리스트 */
+.routine-time-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* ✅ 일반 루틴 줄 */
+.routine-line {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #e0f2f1;
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* ✅ 시간 (왼쪽) */
+.routine-time {
+  flex-shrink: 0;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-right: 0.8rem;
+  min-width: 70px;
+}
+
+/* ✅ 설명 (오른쪽) */
+.routine-desc {
+  color: #444;
+  font-size: 1rem;
+  word-break: keep-all;
+}
+
+/* ✅ 응원의 문장 줄 */
+.routine-message {
+  background-color: #fff3e0;
+  border: 1px solid #ffe0b2;
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  margin-top: 1.2rem;
+  font-size: 1rem;
+  color: #5d4037;
+  font-style: italic;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ✅ 응원의 말 레이블 */
+.message-label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  color: #d84315;
+}
+
+/* ✅ 응원의 말 내용 */
+.message-content {
+  color: #4e342e;
+}

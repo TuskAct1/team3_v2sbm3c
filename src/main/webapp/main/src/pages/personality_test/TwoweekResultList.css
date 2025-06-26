@@ -1,0 +1,124 @@
+/* ✅ 전체 페이지 배경 - 연한 초록 */
+.twoweek-page-bg {
+  background-color: #f1f8e9;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* ✅ 흰색 카드 형태 컨테이너 */
+.twoweek-list-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ 상단 제목 + 버튼 묶음 */
+.twoweek-header {
+  display: flex;
+  justify-content: space-between;   /* 제목 왼쪽, 버튼 오른쪽 */
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ✅ 제목 텍스트 */
+.twoweek-header h2 {
+  font-size: 1.8rem;
+  color: #2e7d32;
+  margin: 0;
+}
+
+/* ✅ 표 전체 스타일 */
+.twoweek-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ✅ 표 헤더 */
+.twoweek-list-table thead {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+/* ✅ 셀 공통 스타일 */
+.twoweek-list-table th,
+.twoweek-list-table td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #c8e6c9;
+}
+
+/* ✅ 위험도에 따른 줄 배경색 구분 */
+.low-risk {
+  background-color: #e8f5e9;   /* 연한 초록 */
+  color: #2e7d32;
+}
+
+.mild-risk {
+  background-color: #fffde7;   /* 연한 노랑 */
+  color: #f9a825;
+}
+
+.moderate-risk {
+  background-color: #fff3e0;   /* 연한 주황 */
+  color: #fb8c00;
+  font-weight: 600;
+}
+
+.high-risk {
+  background-color: #ffebee;   /* 연한 빨강 */
+  color: #c62828;
+  font-weight: bold;
+}
+
+/* ✅ 표 안 삭제 버튼 */
+.twoweek-list-table button {
+  background-color: #ef5350;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.twoweek-list-table button:hover {
+  background-color: #c62828;
+}
+
+/* ✅ 검사 결과 없을 때 메시지 */
+.empty-row {
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 30px;
+  color: #757575;
+}
+
+/* ✅ 오른쪽 상단 '돌아가기' 버튼 wrapper */
+.go-back-wrapper {
+  text-align: right;
+}
+
+/* ✅ 작은 공용 버튼 스타일 (목록, 돌아가기 등) */
+.small-btn {
+  background-color: #aed581;
+  color: black;
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.small-btn:hover {
+  background-color: #9ccc65;
+}

@@ -1,0 +1,100 @@
+/* ✅ 전체 배경 */
+.testlist-page-bg {
+  background-color: #f1f8e9;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* ✅ 흰색 카드형 박스 */
+.testlist-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ 상단 제목 + 버튼 */
+.testlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.testlist-header h2 {
+  font-size: 1.8rem;
+  color: #2e7d32;
+  margin: 0;
+}
+
+/* ✅ 표 스타일 */
+.testlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.testlist-table th,
+.testlist-table td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #c8e6c9;
+}
+
+.testlist-table thead {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+/* ✅ 점수가 높은 경우 강조 */
+.high-risk-row {
+  background-color: #fff3e0;
+  color: #fb8c00;
+  font-weight: bold;
+}
+
+/* ✅ 삭제 버튼 스타일 */
+.testlist-table button {
+  background-color: #ef5350;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.testlist-table button:hover {
+  background-color: #c62828;
+}
+
+/* ✅ 결과 없음 메시지 */
+.empty-row {
+  text-align: center;
+  font-size: 1.1rem;
+  padding: 30px;
+  color: #757575;
+}
+
+/* ✅ 공통 작은 버튼 스타일 */
+.small-btn {
+  background-color: #aed581;
+  color: black;
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.small-btn:hover {
+  background-color: #9ccc65;
+}

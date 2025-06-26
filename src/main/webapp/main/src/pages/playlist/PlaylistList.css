@@ -1,0 +1,208 @@
+/* ✅ 전체 레이아웃 */
+.list-container {
+  width: 100%;                    /* ✅ 전체 너비 사용 */
+  min-height: 100vh;                    /* ✅ 여백 제거 */
+  padding: 2rem 3rem;             /* ✅ 위아래 여백 + 양옆 살짝만 여백 */
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f2fbe0;      /* ✅ 부드러운 연두 배경 전체 적용 */
+  color: #2e7d32;
+  box-sizing: border-box;
+}
+
+/* ✅ 상단 타이틀 */
+.list-container h2 {
+  font-size: 2rem;
+  color: #33691e;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* ✅ 감정 버튼 */
+.emotion-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 2.5rem;
+}
+
+.emotion-buttons button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  background-color: #dcedc8;
+  border: none;
+  border-radius: 20px;
+  color: #33691e;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.emotion-buttons button:hover {
+  background-color: #aed581;
+}
+
+.emotion-buttons button.active {
+  background-color: #7cb342;
+  color: white;
+}
+
+/* ✅ 플레이리스트 관리 */
+.manage-top-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.manage-text {
+  font-size: 1rem;
+  color: #558b2f;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.manage-options button {
+  margin-left: 10px;
+  padding: 8px 14px;
+  background-color: #a5d6a7;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.manage-options button:hover {
+  background-color: #81c784;
+}
+
+/* ✅ 카드 4개 고정 그리드 */
+.song-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.8rem;
+}
+
+/* ✅ 카드 박스 디자인 */
+.song-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 280px; /* 기본 높이 */
+  height: auto;      /* 관리모드 시 확장 가능하게 */
+  padding-bottom: 0; /* 관리모드 아닐 땐 아래 공간 없음 */
+}
+
+/* ✅ 관리 모드일 때 약간 여유 있는 높이 확보 */
+.song-card.manage-mode {
+  padding-bottom: 60px; /* 관리 모드일 때 버튼 들어갈 공간 확보 */
+}
+
+.song-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.song-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+/* ✅ 카드 내 정보 부분 (위쪽 텍스트) */
+.song-info {
+  position: relative;        /* 🎯 내부에서 절대 위치 요소 쓰기 위함 */
+  padding: 1rem;
+  flex-grow: 1;
+  min-height: 120px;         /* 필요시 높이 확보 */
+  display: flex;
+  flex-direction: column;
+}
+
+.song-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2e7d32;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ✅ 🎵 전체 곡 듣기 문구를 완전 카드 하단에 붙이기 */
+.play-text {
+  position: absolute;
+  bottom: 0.5rem;        /* ⬇️ 더 붙이려면 0.2rem ~ 0.5rem 추천 */
+  left: 1rem;
+  font-size: 0.9rem;
+  color: #66bb6a;
+  display: flex;
+  align-items: center;
+}
+
+/* ✅ 수정/삭제 버튼 기본은 감춤 */
+.action-buttons {
+  display: none;
+  justify-content: space-around;
+  gap: 10px;
+  padding: 0.6rem 1rem 0;
+}
+
+/* ✅ 관리 모드일 때만 버튼 보임 */
+.song-card.manage-mode .action-buttons {
+  display: flex;
+}
+
+/* ✅ 수정/삭제 버튼 스타일 */
+.action-buttons button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.action-buttons button:hover {
+  background-color: #c8e6c9;
+}
+
+
+/* ✅ 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 14px;
+  min-width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}

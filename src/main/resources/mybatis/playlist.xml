@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.playlist.PlaylistDAOInter">
+
+  <!-- 등록 -->
+  <insert id="create" parameterType="dev.mvc.playlist.PlaylistVO">
+    INSERT INTO playlist (
+      playlistno, playlistemotionno, title, description,
+      youtubeurl, thumbnail, adminno, rdate
+    ) VALUES (
+      playlist_seq.NEXTVAL, #{playlistemotionno}, #{title}, #{description},
+      #{youtubeurl}, #{thumbnail}, #{adminno}, SYSDATE
+    )
+  </insert>
+
+  <!-- 전체 목록 -->
+  <select id="list" resultType="dev.mvc.playlist.PlaylistVO">
+    SELECT *
+    FROM playlist
+    ORDER BY rdate DESC
+  </select>
+
+  <!-- 단일 조회 -->
+  <select id="read" parameterType="int" resultType="dev.mvc.playlist.PlaylistVO">
+    SELECT *
+    FROM playlist
+    WHERE playlistno = #{playlistno}
+  </select>
+
+  <!-- 수정 -->
+  <update id="update" parameterType="dev.mvc.playlist.PlaylistVO">
+    UPDATE playlist
+    SET
+      playlistemotionno = #{playlistemotionno},
+      title = #{title},
+      description = #{description},
+      youtubeurl = #{youtubeurl},
+      thumbnail = #{thumbnail},
+      adminno = #{adminno}
+    WHERE playlistno = #{playlistno}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM playlist
+    WHERE playlistno = #{playlistno}
+  </delete>
+
+  <!-- 감정별 목록 -->
+  <select id="listByEmotionno" parameterType="int" resultType="dev.mvc.playlist.PlaylistVO">
+    SELECT *
+    FROM playlist
+    WHERE playlistemotionno = #{emotionno}
+    ORDER BY rdate DESC
+  </select>
+  
+  <!-- 감정 번호로 전체 삭제 -->
+  <delete id="deleteByEmotionno" parameterType="int">
+    DELETE FROM playlist WHERE playlistemotionno = #{playlistemotionno}
+  </delete>
+
+</mapper>

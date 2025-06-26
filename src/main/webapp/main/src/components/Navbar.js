@@ -31,13 +31,16 @@ function Navbar() {
       <ul>
         {/* 공통 메뉴 */}
         <li><Link to="/">Home</Link></li>
+        <li><Link to="/playlist/list">🎵 플레이리스트</Link></li>
+
         <li><Link to="/calendar">캘린더</Link></li>
         <li><Link to="/board/list_all">게시판</Link></li>
+        <li><Link to="/notice/list">공지사항</Link></li>
 
         {user ? (
           <>
             <li><Link to="/todaki">토닥이</Link></li>
-            <li><Link to="/self-check">자가진단</Link></li>
+            <li><Link to="/personality_test">심리테스트</Link></li>
             <li><Link to="/plant">반려식물</Link></li>
 
             <li><Link to="/diary">일기</Link></li>
@@ -77,6 +80,7 @@ function Navbar() {
             <li><Link to="/login">로그인</Link></li>
           </>
         )}
+
       </ul>
     </nav>
   );

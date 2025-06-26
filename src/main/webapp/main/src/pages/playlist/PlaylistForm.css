@@ -1,0 +1,80 @@
+/* 📦 PlaylistForm.css */
+
+.playlist-form {
+  background-color: #f7fff7;
+  border: 2px solid #c8e6c9;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  font-size: 1.1rem;
+  box-shadow: 0 0 10px rgba(0, 128, 0, 0.1);
+}
+
+.playlist-form h3 {
+  text-align: center;
+  color: #2e7d32;
+  margin-bottom: 1.5rem;
+}
+
+.playlist-form label {
+  font-weight: bold;
+  color: #33691e;
+}
+
+.playlist-form input[type="text"],
+.playlist-form textarea,
+.playlist-form select {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #aed581;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #ffffff;
+}
+
+.playlist-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.playlist-form button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.playlist-form button[type="submit"],
+.playlist-form button.confirm {
+  background-color: #66bb6a;
+  color: white;
+}
+
+.playlist-form button[type="submit"]:hover,
+.playlist-form button.confirm:hover {
+  background-color: #558b2f;
+}
+
+.playlist-form button[type="button"],
+.playlist-form button.cancel {
+  background-color: #e0e0e0;
+  color: #333;
+  margin-left: 0.5rem;
+}
+
+.playlist-form button.cancel:hover {
+  background-color: #bdbdbd;
+}
+
+.playlist-form p {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.lifestyle.LifestyleResultDAOInter">
+
+  <!-- 결과 등록 -->
+  <insert id="create" parameterType="dev.mvc.lifestyle.LifestyleResultVO">
+    INSERT INTO lifestyle_result(lifestyleresultno, memberno, result, rdate)
+    VALUES (lifestyle_result_seq.nextval, #{memberno}, #{result}, sysdate)
+  </insert>
+
+  <!-- 전체 목록 -->
+  <select id="list" resultType="dev.mvc.lifestyle.LifestyleResultVO">
+    SELECT lifestyleresultno, memberno, result, rdate
+    FROM lifestyle_result
+    ORDER BY rdate DESC
+  </select>
+
+  <!-- 회원 번호로 목록 조회 -->
+  <select id="listByMemberno" resultType="dev.mvc.lifestyle.LifestyleResultVO" parameterType="int">
+    SELECT lifestyleresultno, memberno, result, rdate
+    FROM lifestyle_result
+    WHERE memberno = #{memberno}
+    ORDER BY rdate DESC
+  </select>
+
+  <!-- 상세 조회 -->
+  <select id="read" resultType="dev.mvc.lifestyle.LifestyleResultVO" parameterType="int">
+    SELECT lifestyleresultno, memberno, result, rdate
+    FROM lifestyle_result
+    WHERE lifestyleresultno = #{lifestyleresultno}
+  </select>
+
+  <!-- 수정 -->
+  <update id="update" parameterType="dev.mvc.lifestyle.LifestyleResultVO">
+    UPDATE lifestyle_result
+    SET result = #{result},
+        rdate = sysdate
+    WHERE lifestyleresultno = #{lifestyleresultno}
+  </update>
+
+  <!-- 삭제 -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM lifestyle_result
+    WHERE lifestyleresultno = #{lifestyleresultno}
+  </delete>
+
+  <!-- 총 개수 -->
+  <select id="count" resultType="int">
+    SELECT COUNT(*) FROM lifestyle_result
+  </select>
+
+</mapper>
