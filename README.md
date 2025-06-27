@@ -11,6 +11,8 @@
 3. https://www.mongodb.com/try/download/community <- MongoDB 다운
 4. 다운받은 파일 압축 해제하고 bin 폴더에서 터미널 실행
 5. 터미널에서 mkdir ~/mongodb-data 실행
-6. 터미널에서 ./mongod --dbpath ~/mongodb-data 실행 (DB 실행)
+6. 터미널에서 ./mongod --dbpath ~/mongodb-data 실행 (DB 서버 실행)
 7. main(react) 폴더에서 - src - pages - chatbot에서 터미널 실행
 8. 가상환경 ai 로 되어 있는지 확인하고 uvicorn Chat:app --reload 실행
+9. https://www.mongodb.com/try/download/compass <- MongoDB Compass 다운
+10. Compass 에서 Connect 해야함. -> mongodb://localhost:27017 여기로 연결 (MongoDB 서버 켜져있는 상태에서 해야함)
