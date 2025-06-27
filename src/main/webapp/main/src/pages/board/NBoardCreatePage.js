@@ -21,7 +21,7 @@ const BoardCreate = () => {
 
   useEffect(() => {
     axios
-        .get(`/board/list_all`)
+        .get(`/board/list_all/all/1`)
         .then((res) => {
           setCategoryGroup(res.data.categoryGroup);
         })
@@ -47,8 +47,8 @@ const BoardCreate = () => {
     e.preventDefault();
 
     if (!categoryno) {
-        alert('카테고리를 선택해주세요.');
-        return;
+      alert('카테고리를 선택해주세요.');
+      return;
     }
   
     if (!passwd) {
@@ -71,7 +71,7 @@ const BoardCreate = () => {
       });
       if (response.status >= 200 && response.status < 300) {
         alert('게시글이 등록되었습니다!');
-        window.location.href = '/board/list_all';
+        window.location.href = '/board/list_all/all/1';
       } else {
         alert('등록 실패!');
       }

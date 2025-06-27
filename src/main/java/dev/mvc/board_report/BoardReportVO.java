@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 
 @Getter @Setter @ToString
-public class Board_reportVO {
+public class BoardReportVO {
   /** 게시글 신고 번호 */
   private int board_reportno;
   
@@ -21,6 +21,9 @@ public class Board_reportVO {
   
   /** 회원 번호 */
   private int memberno;
+
+  /** 신고 사유 */
+  private String reason;
   
   /** 게시글 신고일 */
   private String rdate;

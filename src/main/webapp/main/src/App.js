@@ -63,12 +63,12 @@ function App() {
 
     <BrowserRouter>
 
-        <h1>토닥</h1>
+      <h1>토닥</h1>
 
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/todaki" element={<TodakiPage />} />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/todaki" element={<TodakiPage />} />
 
           <Route path="/personality_test" element={<PersonalityTest />} />
           <Route path="/senior_test" element={<SeniorTest />} /> 
@@ -87,14 +87,14 @@ function App() {
           <Route path="/lifestyle_test/list/:memberno" element={<LifestyleResultList />} />
           <Route path="/calendar" element={<CalendarPage />} />
 
-          <Route path="/self-check" element={<SelfCheckPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/self-check" element={<SelfCheckPage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
 
-          <Route path="/board/list_all" element={<BoardPage />} />
-          <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
-          <Route path="/board/read/:boardno" element={<BoardReadPage />} />
-          <Route path="/board/update/:boardno" element={<BoardUpdatePage />} />
-          <Route path="/board/list_category/:categoryno" element={<BoardByCategoryPage />} />
+        <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
+        <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
+        <Route path="/board/read/:boardno" element={<BoardReadPage />} />
+        <Route path="/board/update/:boardno" element={<BoardUpdatePage />} />
+        <Route path="/board/list_category/:categoryno/:word/:now_page" element={<BoardByCategoryPage />} />
 
           <Route path="/board" element={<BoardPage />} />
           <Route path="/notice/list" element={<NoticeList />} />
@@ -111,8 +111,8 @@ function App() {
           <Route path="/playlist/emotionform" element={<EmotionForm />} />
           <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
           
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
           <Route path="/admin_login" element={<LoginPageAdmin />} />
           <Route path="/admin_signup" element={<SignUpPageAdmin  />} />
           <Route path="/admin/member-list" element={<MemberListPage />} />
@@ -126,7 +126,7 @@ function App() {
           <Route path="/diary" element={<DiaryPage/>} />
           <Route path="/product" element={<ProductPage/>} />
 
-        </Routes>
+      </Routes>
     </BrowserRouter>
   );
 }

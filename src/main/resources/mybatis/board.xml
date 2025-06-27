@@ -69,5 +69,76 @@
     WHERE boardno = #{boardno}
   </update>
 
+  <!-- 카테고리별 검색 + 페이징 목록 -->
+  <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, r
+    FROM (
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
+    FROM (
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
+    FROM board
+    <choose>
+      <when test="word == null or word == '' or word == 'all'"> <!-- 검색하지 않는 경우 -->
+        WHERE categoryno=#{categoryno}
+      </when>
+      <otherwise>
+        WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+        OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+        OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+      </otherwise>
+    </choose>
+    ORDER BY boardno DESC
+    )
+    )
+    WHERE <![CDATA[ r >= #{start_num} AND r <= #{end_num} ]]>
+
+    <!-- 1 page: WHERE r >= 1 AND r <= 10;
+          2 page: WHERE r >= 11 AND r <= 20;
+          3 page: WHERE r >= 21 AND r <= 30; -->
+  </select>
+
+  <!-- 카테고리별 검색 레코드 갯수 -->
+  <select id="list_by_categoryno_search_count" resultType="int" parameterType="HashMap">
+    SELECT COUNT(*) as cnt
+    FROM board
+    <choose>
+      <when test="word == null or word == '' or word == 'all'"> <!-- 검색하지 않는 경우의 레코드 갯수 -->
+        WHERE categoryno=#{categoryno}
+      </when>
+      <otherwise> <!-- 검색하는 경우의 레코드 갯수 -->
+        WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+        OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+        OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+      </otherwise>
+    </choose>
+  </select>
+
+  <!-- 전체글 검색 + 페이징 -->
+  <select id="list_all_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="hashmap">
+    SELECT * FROM (
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
+    FROM (
+    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
+    FROM board
+    <if test="word != null and word != '' and word != 'all'">
+      WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+      OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+      OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY boardno DESC
+    )
+    )
+    WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+  </select>
+
+  <!-- 전체글 개수 (검색 포함) -->
+  <select id="list_all_search_count" resultType="int" parameterType="hashmap">
+    SELECT COUNT(*) FROM board
+    <if test="word != null and word != '' and word != 'all'">
+      WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+      OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+      OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+  </select>
 
 </mapper>

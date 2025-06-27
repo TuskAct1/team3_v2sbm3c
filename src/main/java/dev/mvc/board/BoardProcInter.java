@@ -51,6 +51,14 @@ public interface BoardProcInter {
   /** 게시글 추천수 감소 */
   public int decreaseRecommend(int boardno);
 
+  /** 검색 + 페이징 리스트 */
+  public ArrayList<BoardVO> list_by_categoryno_search_paging(HashMap<String, Object> map);
+
+  /** 카테고리별 검색 수 */
+  public int list_by_categoryno_search_count(HashMap<String, Object> map);
+
+  public ArrayList<BoardVO> list_all_search_paging(HashMap<String, Object> map);
+  public int list_all_search_count(HashMap<String, Object> map);
 
 }
 
