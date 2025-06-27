@@ -34,14 +34,33 @@ public class BoardCont {
      * 전체 게시글 목록
      * http://localhost:9093/board/list_all
      */
-    @GetMapping("/list_all")
-    public ResponseEntity<Map<String, Object>> list_all() {
+    @GetMapping("/list_all/{word}/{now_page}")
+    public ResponseEntity<Map<String, Object>> list_all(@PathVariable("word") String word,
+                                                        @PathVariable("now_page") Integer now_page) {
+        // 게시판 카테고리 그룹
         List<CategoryVO> categoryGroup = categoryProc.list_all();
-        ArrayList<BoardVO> BoardList = boardProc.list_all();
+
+        word = Tool.checkNull(word).trim();
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("word", word);
+        map.put("now_page", now_page);
+
+        ArrayList<BoardVO> boardList = boardProc.list_all_search_paging(map);
+
+        int totalCount = boardProc.list_all_search_count(map);
+
+        // 페이지네이션 정보 계산 (예: 전체 페이지, 현재 페이지 등)
+        int pageSize = 5; // 한 페이지당 글 수
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
 
         Map<String, Object> response = new HashMap<>();
         response.put("categoryGroup", categoryGroup);
-        response.put("boardList", BoardList);
+        response.put("boardList", boardList);
+        response.put("totalCount", totalCount);
+        response.put("totalPage", totalPage);
+        response.put("now_page", now_page);
+        response.put("word", word);
 
         return ResponseEntity.ok(response);
     }
@@ -50,24 +69,48 @@ public class BoardCont {
      * 카테고리 선택시 관련 글 목록
      * http://localhost:9093/board/list_category/{categoryno}
      */
-    @GetMapping("/list_category/{categoryno}")
-    public ResponseEntity<Map<String, Object>> getByCategory(@PathVariable("categoryno") Integer categoryno) {
+    @GetMapping("/list_category/{categoryno}/{word}/{now_page}")
+    public ResponseEntity<Map<String, Object>> getByCategory(@PathVariable("categoryno") Integer categoryno,
+                                                             @PathVariable("word") String word,
+                                                             @PathVariable("now_page") Integer now_page) {
         // 카테고리 전체 목록
         List<CategoryVO> categoryGroup = categoryProc.list_all();
 
         // 특정 카테고리 조회
         CategoryVO categoryVO = categoryProc.read(categoryno);
 
-        // 특정 카테고리 게시글 목록
-        List<BoardVO> listByCategoryBoard = boardProc.listByCategory(categoryno);
-
+        // 전체 리스트
         ArrayList<BoardVO> boardList = boardProc.list_all();
+
+        // 검색
+        word = Tool.checkNull(word).trim();
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("categoryno", categoryno);
+        map.put("word", word);
+        map.put("now_page", now_page);
+
+        // 특정 카테고리 게시글 목록
+        // 게시글 목록(검색 + 페이징)
+        ArrayList<BoardVO> listByCategoryBoard = boardProc.list_by_categoryno_search_paging(map);
+
+        // 전체 게시글 수(검색 포함)
+        int totalCount = boardProc.list_by_categoryno_search_count(map);
+
+        // 페이지네이션 정보 계산 (예: 전체 페이지, 현재 페이지 등)
+        int pageSize = 5; // 한 페이지당 글 수
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
 
         Map<String, Object> response = new HashMap<>();
         response.put("categoryGroup", categoryGroup);
         response.put("categoryVO", categoryVO);
         response.put("listByCategoryBoard", listByCategoryBoard);
         response.put("boardList", boardList);
+        response.put("totalCount", totalCount);
+        response.put("totalPage", totalPage);
+        response.put("now_page", now_page);
+        response.put("word", word);
+
 
         return ResponseEntity.ok(response);
     }
@@ -116,31 +159,32 @@ public class BoardCont {
         // <input type='file' class="form-control" name='file1MF' id='file1MF'
         // value='' placeholder="파일 선택">
         MultipartFile mf = boardVO.getFile1MF();
+        if (mf != null && !mf.isEmpty()) {
+            file1 = mf.getOriginalFilename(); // 원본 파일명 산출, 01.jpg
+            System.out.println("-> 원본 파일명 산출 file1: " + file1);
 
-        file1 = mf.getOriginalFilename(); // 원본 파일명 산출, 01.jpg
-        System.out.println("-> 원본 파일명 산출 file1: " + file1);
+            long size1 = mf.getSize(); // 파일 크기
+            if (size1 > 0) { // 파일 크기 체크, 파일을 올리는 경우
+                if (Tool.checkUploadFile(file1) == true) { // 업로드 가능한 파일인지 검사
+                    // 파일 저장 후 업로드된 파일명이 리턴됨, spring.jsp, spring_1.jpg, spring_2.jpg...
+                    file1saved = Upload.saveFileSpring(mf, upDir);
 
-        long size1 = mf.getSize(); // 파일 크기
-        if (size1 > 0) { // 파일 크기 체크, 파일을 올리는 경우
-            if (Tool.checkUploadFile(file1) == true) { // 업로드 가능한 파일인지 검사
-                // 파일 저장 후 업로드된 파일명이 리턴됨, spring.jsp, spring_1.jpg, spring_2.jpg...
-                file1saved = Upload.saveFileSpring(mf, upDir);
+                    if (Tool.isImage(file1saved)) { // 이미지인지 검사
+                        // thumb 이미지 생성후 파일명 리턴됨, width: 200, height: 150
+                        thumb1 = Tool.preview(upDir, file1saved, 200, 150);
+                    }
 
-                if (Tool.isImage(file1saved)) { // 이미지인지 검사
-                    // thumb 이미지 생성후 파일명 리턴됨, width: 200, height: 150
-                    thumb1 = Tool.preview(upDir, file1saved, 200, 150);
+                    boardVO.setFile1(file1); // 순수 원본 파일명
+                    boardVO.setFile1saved(file1saved); // 저장된 파일명(파일명 중복 처리)
+                    boardVO.setThumb1(thumb1); // 원본이미지 축소판
+                    boardVO.setSize1(size1); // 파일 크기
+
+                } else { // 전송 못하는 파일 형식
+                    System.out.println("전송 못하는 형식");
                 }
-
-                boardVO.setFile1(file1); // 순수 원본 파일명
-                boardVO.setFile1saved(file1saved); // 저장된 파일명(파일명 중복 처리)
-                boardVO.setThumb1(thumb1); // 원본이미지 축소판
-                boardVO.setSize1(size1); // 파일 크기
-
-            } else { // 전송 못하는 파일 형식
-                System.out.println("전송 못하는 형식");
+            } else { // 글만 등록하는 경우
+                System.out.println("-> 글만 등록");
             }
-        } else { // 글만 등록하는 경우
-            System.out.println("-> 글만 등록");
         }
 
         boardProc.create(boardVO);
@@ -210,27 +254,4 @@ public class BoardCont {
         return ResponseEntity.ok("수정 완료");
     }
 
-    /**
-     * 게시글 추천
-     */
-    @PostMapping("/recommend/{boardno}")
-    public ResponseEntity<String> recommendProcess(@PathVariable("boardno") Integer boardno) {
-
-//        int memberno = (int) session.getAttribute("memberno");
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("boardno", boardno);
-        map.put("memberno", 1);
-
-        int recommend_cnt = boardRecommendProc.hartCnt(map);
-
-        // 이미 추천이 되어 있으면 추천 해제
-        if (recommend_cnt == 1) {
-            BoardRecommendVO boardRecommendVO = boardRecommendProc.readByBoardnoMemberno(map);
-
-
-
-        }
-
-        return ResponseEntity.ok("추천 완료");
-    }
 }

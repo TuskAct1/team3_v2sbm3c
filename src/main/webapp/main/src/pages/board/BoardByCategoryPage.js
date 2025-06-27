@@ -1,74 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-// 카테고리 그룹 버튼 컴포넌트
-function CategoryGroupBar({ categoryGroup, selected, onChange }) {
-  return (
-    <div style={{
-      display: 'flex',
-      overflowX: 'auto',
-      gap: 12,
-      padding: "14px 12px 10px 12px",
-      background: "#f7f8fa",
-      borderBottom: "1px solid #e5e6eb"
-    }}>
-      {/* 전체 카테고리 */}
-      <button
-        key="all"
-        onClick={() => onChange('all')}
-        style={{
-          minWidth: 76,
-          height: 40,
-          background: "#fff",
-          border: selected === 'all'
-            ? "2px solid #4662e1"
-            : "1.5px solid #dbe1ea",
-          color: selected === 'all' ? "#4662e1" : "#36393f",
-          borderRadius: 20,
-          fontWeight: selected === 'all' ? 700 : 500,
-          fontSize: 16,
-          outline: "none",
-          cursor: "pointer",
-          boxShadow: selected === 'all'
-            ? "0 0 0 2px #dbe5f9"
-            : "0 1px 3px rgba(30,32,37,0.03)",
-          transition: "border 0.2s, color 0.2s"
-        }}
-      >
-        전체
-      </button>
-
-      {/* 게시판 카테고리 그룹 */}
-      {categoryGroup.map(categoryVO => (
-        <button
-          key={categoryVO.categoryno}
-          onClick={() => onChange(String(categoryVO.categoryno))}
-          style={{
-            minWidth: 76,
-            height: 40,
-            background: "#fff",
-            border: selected === String(categoryVO.categoryno)
-              ? "2px solid #4662e1"
-              : "1.5px solid #dbe1ea",
-            color: selected === String(categoryVO.categoryno) ? "#4662e1" : "#36393f",
-            borderRadius: 20,
-            fontWeight: selected === String(categoryVO.categoryno) ? 700 : 500,
-            fontSize: 16,
-            outline: "none",
-            cursor: "pointer",
-            boxShadow: selected === String(categoryVO.categoryno)
-              ? "0 0 0 2px #dbe5f9"
-              : "0 1px 3px rgba(30,32,37,0.03)",
-            transition: "border 0.2s, color 0.2s"
-          }}
-        >
-          {categoryVO.name}
-        </button>
-      ))}
-    </div>
-  );
-}
+import CategoryGroupBar from './CategoryGroupBar';
 
 function BoardByCategoryPage() {
   const [categoryGroup, setCategoryGroup] = useState([]);
@@ -76,25 +9,66 @@ function BoardByCategoryPage() {
   const [categoryVO, setCategoryVO] = useState({});
   const [boardList, setBoardList] = useState({});
 
+  const [word, setWord] = useState('');
+  const [nowPage, setNowPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
+
   const { categoryno } = useParams(); // categoryno는 문자열 (예: '3')
   const [selectedCategory, setSelectedCategory] = useState(categoryno || 'all');
 
   const navigate = useNavigate();
 
+  // 게시글 목록 불러오기
+  const fetchBoardList = async (page = 1, searchWord = '', catNo = categoryno) => {
+  const queryWord = searchWord && searchWord.trim() !== '' ? searchWord : 'all';
+  if (!catNo || catNo === 'all' || catNo === undefined) {
+    // 전체글 목록
+    try {
+      const res = await axios.get(`/board/list_all/all/1`);
+      setCategoryGroup(res.data.categoryGroup);
+      setListByCategoryBoard(res.data.boardList);
+      setTotalPage(res.data.totalPage || 1);
+      setNowPage(page);
+      setWord(queryWord === 'all' ? '' : queryWord);
+    } catch (err) {
+      alert('전체글을 불러오지 못했습니다.123');
+    }
+    return;
+  };
+
+  try {
+    const res = await axios.get(`/board/list_category/${catNo}/${queryWord}/${page}`);
+    setCategoryGroup(res.data.categoryGroup);
+    setCategoryVO(res.data.categoryVO);
+    setListByCategoryBoard(res.data.listByCategoryBoard);
+    setTotalPage(res.data.totalPage || 1);
+    setNowPage(res.data.now_page || page);
+    setWord(res.data.word === 'all' ? '' : res.data.word);
+  } catch (err) {
+    alert('게시글 목록을 불러오지 못했습니다.');
+  }
+};
+
+
   useEffect(() => {
-    axios
-      .get(`/board/list_category/${categoryno}`)
-      .then((res) => {
-        console.log(res);
-        setCategoryGroup(res.data.categoryGroup);
-        setListByCategoryBoard(res.data.listByCategoryBoard);
-        setCategoryVO(res.data.categoryVO);
-        setBoardList(res.data.boardList);
-      })
-      .catch((err) => {
-        console.error('게시판 데이터 불러오기 실패:', err);
-      });
-  }, []);
+    fetchBoardList();
+  }, [categoryno]);
+
+  // 검색 버튼 클릭
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchBoardList(1, word, selectedCategory); // 첫 페이지, 검색어, 선택된 카테고리
+    if(selectedCategory !== 'all')
+      navigate(`/board/list_category/${selectedCategory}/${word && word.trim() !== '' ? word : 'all'}/1`);
+  };
+
+  // 페이지 이동
+  const handlePageChange = (page) => {
+    fetchBoardList(page, word, selectedCategory);
+    if(selectedCategory !== 'all')
+      navigate(`/board/list_category/${selectedCategory}/${word && word.trim() !== '' ? word : 'all'}/${page}`);
+  };
+
 
   const isImage = (filename) => {
     if (!filename) return false;
@@ -122,25 +96,23 @@ function BoardByCategoryPage() {
   // 카테고리 선택 시 게시글 목록 불러오기
   const handleCategoryChange = async (categoryno) => {
     setSelectedCategory(categoryno);
+    setWord(''); // 검색어 리셋
 
-    try {
-      if (categoryno === 'all') {
-        const res = await axios.get('/board/list_all');
-        console.log('all : categoryno' + res.data.categoryno);
-        setSelectedCategory(res.data.categoryno);
-        setBoardList(res.data.boardList);
-        navigate(`/board/list_all`)
-      } else {
-        const res = await axios.get(`/board/list_category/${categoryno}`);
-        console.log('else : categoryno' + res.data.categoryno);
-        setCategoryVO(res.data.categoryVO);
-        setSelectedCategory(res.data.categoryno);
-        setListByCategoryBoard(res.data.listByCategoryBoard);
-        navigate(`/board/list_category/${categoryno}`);
+    if (categoryno === 'all' | categoryno === undefined) {
+      try {
+        const res = await axios.get('/board/list_all/all/1');
+        setListByCategoryBoard(res.data.boardList);
+        setNowPage(1);
+        setTotalPage(res.data.totalPage || 1);
+        navigate(`/board/list_all/all/1`);
+      } catch (err) {
+        alert('전체글을 불러오지 못했습니다.');
       }
-    } catch (err) {
-      alert('게시글 목록을 불러오지 못했습니다.');
+      return;
     }
+    // categoryno로 목록+검색+1페이지 조회
+    fetchBoardList(1, '', categoryno);
+    navigate(`/board/list_category/${categoryno}/all/1`);
   };
   
   return (
@@ -156,6 +128,18 @@ function BoardByCategoryPage() {
         onChange={handleCategoryChange}
       />
       <hr />
+      
+      {/* 검색 폼 */}
+      <form onSubmit={handleSearch} style={{ margin: '16px 0' }}>
+        <input
+          type="text"
+          placeholder="검색어 입력"
+          value={word}
+          onChange={e => setWord(e.target.value)}
+          style={{ padding: '8px', fontSize: '16px', width: 220, marginRight: 10 }}
+        />
+        <button type="submit" style={{ padding: '8px 16px' }}>검색</button>
+      </form>
 
       <table className="table table-striped" style={{ width: '100%' }}>
       <colgroup>
@@ -217,8 +201,30 @@ function BoardByCategoryPage() {
           </tr>
         ))}
       </tbody>
-      
     </table>
+        {/* 페이지네이션 */}
+      <div style={{ margin: '16px 0' }}>
+        {Array.from({ length: totalPage }, (_, i) => i + 1).map(pageNum => (
+          <button
+            key={pageNum}
+            onClick={() => handlePageChange(pageNum)}
+            disabled={nowPage === pageNum}
+            style={{
+              margin: '0 2px',
+              padding: '6px 12px',
+              borderRadius: 4,
+              background: nowPage === pageNum ? '#4662e1' : '#fff',
+              color: nowPage === pageNum ? '#fff' : '#4662e1',
+              border: '1px solid #4662e1',
+              fontWeight: nowPage === pageNum ? 700 : 500,
+              cursor: nowPage === pageNum ? 'default' : 'pointer',
+            }}
+          >
+            {pageNum}
+          </button>
+        ))}
+      </div>
+
     </div>
   );
 }

@@ -4,47 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface BoardRecommendDAOInter {
-  /**
-   * 게시글 추천 등록
-   * @param board_recommendVO
-   * @return
-   */
-  public int create(BoardRecommendVO board_recommendVO);
+
+  /** 게시글 추천 등록 */
+  public boolean create(int boardno, int memberno);
   
-  /**
-   * 게시글 추천 모든 목록
-   * @return
-   */
+  /** 게시글 추천 모든 목록 */
   public ArrayList<BoardRecommendVO> list_all();
   
-  /**
-   * 게시글 추천 삭제
-   * @param board_recommendno
-   * @return
-   */
-  public int delete(int board_recommendno);
-  
-  /**
-   * 특정 게시글의 특정 회원 추천 갯수 산출
-   * @param map
-   * @return
-   */
-  public int hartCnt(HashMap<String, Object> map);  
+  /** 게시글 추천 삭제 */
+  public boolean delete(int boardno, int memberno);
 
-  /**
-   * 게시글 추천 조회
-   * @param board_recommendno
-   * @return
-   */
-  public BoardRecommendVO read(int board_recommendno);
+  /** 특정 회원이 해당 글을 추천했는지 여부(존재하면 1 이상) */
+  public boolean exist(int boardno, int memberno);
 
-  /**
-   * 특정 게시글의 특정 회원번호로 조회
-   * @param map
-   * @return
-   */
-  public BoardRecommendVO readByBoardnoMemberno(HashMap<String, Object> map);
-  
+  /** 추천 개수 조회 */
+  public int RecommendCnt(int boardno);
+
 }
 
 
