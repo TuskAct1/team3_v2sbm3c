@@ -6,7 +6,7 @@ function PlaylistForm({ mode, playlist, onClose }) {
   const [emotionList, setEmotionList] = useState([]);
   const [selectedEmotion, setSelectedEmotion] = useState(playlist?.playlistemotionno || '');
   const [title, setTitle] = useState(playlist?.title || '');
-  const [description, setDescription] = useState(playlist?.description || '');
+  const [description, setDescription] = useState(playlist?.description || '');  // DB에 description(타임라인)을 저장해야 점프 기능을 구현할 수 있고, 유지도 가능
   const [youtubeurl, setYoutubeurl] = useState(playlist?.youtubeurl || '');
   const [thumbnail, setThumbnail] = useState(playlist?.thumbnail || '');
   const [thumbnailInputType, setThumbnailInputType] = useState('upload');

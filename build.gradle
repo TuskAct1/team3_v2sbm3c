@@ -56,6 +56,7 @@ dependencies {
   // https://mvnrepository.com/artifact/javax.activation/activation
   implementation 'javax.activation:activation:1.1.1'  
   implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // 카카오 로그인
   
   // testImplementation 'org.springframework.security:spring-security-test'
   // implementation 'org.springframework.boot:spring-boot-starter-security'
