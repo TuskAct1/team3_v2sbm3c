@@ -83,11 +83,28 @@ public class MemberController {
     /** 회원 정보 수정 */
     @PutMapping("")
     public ResponseEntity<?> update(@RequestBody MemberVO memberVO) {
+        // 👉 소셜 로그인 회원이면 비밀번호 무시하고 그대로 수정
+        if (!"kakao".equals(memberVO.getProvider()) && !"google".equals(memberVO.getProvider())) {
+            // 일반 회원: 비밀번호 일치 확인
+            if (!memberVO.getPasswd().equals(memberVO.getPasswd2())) {
+                return ResponseEntity.badRequest().body("❌ 비밀번호가 일치하지 않습니다");
+            }
+            // 비밀번호 암호화
+            String encrypted = bcryptUtil.encode(memberVO.getPasswd());
+            memberVO.setPasswd(encrypted);
+
+        } else {
+            // 소셜 로그인 회원: 비밀번호 필드 무시
+            memberVO.setPasswd("소셜로그인");
+            memberVO.setPasswd2("소셜로그인");
+        }
+
         int cnt = memberProc.update(memberVO);
         return (cnt == 1)
-            ? ResponseEntity.ok("수정 성공")
-            : ResponseEntity.status(500).body("수정 실패");
+            ? ResponseEntity.ok("✅ 수정 성공")
+            : ResponseEntity.status(500).body("❌ 수정 실패");
     }
+
 
     /** 회원 삭제 */
     @DeleteMapping("/{memberno}")

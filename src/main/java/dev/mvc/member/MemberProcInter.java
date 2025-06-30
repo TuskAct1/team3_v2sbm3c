@@ -53,6 +53,8 @@ public interface MemberProcInter {
     public int delete(int memberno);
     
     public MemberVO readById(String id);
+    
+    public int existsById(String id);  // 존재 여부 확인
 }
 //=======
 //public interface MemberProcInter {

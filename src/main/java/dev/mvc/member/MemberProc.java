@@ -61,6 +61,11 @@ public class MemberProc implements MemberProcInter {
     public MemberVO readById(String id) {
         return memberDAO.readById(id);
     }
+    
+    @Override
+    public int existsById(String id) {
+        return memberDAO.existsById(id);
+    }
 }
 //=======
 // 

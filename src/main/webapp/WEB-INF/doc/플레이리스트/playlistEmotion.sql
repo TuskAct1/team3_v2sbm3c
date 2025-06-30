@@ -1,5 +1,5 @@
 CREATE TABLE playlist_emotion (
-  playlistemotionno   NUMBER PRIMARY KEY,
+  playlistemotionno   NUMBER(10) PRIMARY KEY,
   emotion        VARCHAR2(100) NOT NULL  -- 예: 우울, 기쁨, 위로, 행복
 );
 

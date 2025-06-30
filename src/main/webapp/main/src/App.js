@@ -77,14 +77,14 @@ function App() {
           <Route path="/mbti-result" element={<MBTIResult />} />
           <Route path="/twoweek_test" element={<TwoweekQuestionnaire />} />
           <Route path="/twoweek_test/result" element={<TwoweekResult />} />
-          <Route path="/senior_test/testlist/:memberno" element={<SeniorTestList />} />
-          <Route path="/twoweek_test/testlist/:memberno" element={<TwoweekResultList />} />
+          <Route path="/senior_test/testlist" element={<SeniorTestList />} />
+          <Route path="/twoweek_test/testlist" element={<TwoweekResultList />} />
           <Route path="/hobby_test" element={<HobbyTest />} />
           <Route path="/memory_test" element={<MemoryTest />} />
           <Route path="/memory_test/result" element={<MemoryResult />} />
           <Route path="/lifestyle_test" element={<LifestyleTest />} />
           <Route path="/lifestyle_test/result" element={<LifestyleResult />} />
-          <Route path="/lifestyle_test/list/:memberno" element={<LifestyleResultList />} />
+          <Route path="/lifestyle_test/list" element={<LifestyleResultList />} />
           <Route path="/calendar" element={<CalendarPage />} />
 
           <Route path="/self-check" element={<SelfCheckPage />} />
@@ -118,7 +118,6 @@ function App() {
           <Route path="/admin/member-list" element={<MemberListPage />} />
           <Route path="/mypage" element={<MyPage />} />
           {/* <Route path="/" element={<HomePage />} /> */}
-          <Route path="/login" element={<LoginPage />} />
           {/* ✅ 반려식물 기능은 PlantProvider로 감싸줌 */}
           <Route path="/plant" element={<PlantProvider><PlantPage /></PlantProvider>}/>
           {/* <Route path="*" element={<NotFoundPage />} /> */}

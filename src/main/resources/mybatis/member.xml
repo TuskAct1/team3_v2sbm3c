@@ -2,47 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dev.mvc.member.MemberDAOInter">
 
-  <!-- 회원 가입 -->
+  <!-- ✅ 회원 가입 -->
   <insert id="create" parameterType="dev.mvc.member.MemberVO">
     INSERT INTO member(
       memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
       zipcode, address1, address2, tel,
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, point
+      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, 
+      point, provider
     )
     VALUES (
       member_seq.nextval, 
       #{mname}, #{id}, #{passwd}, #{passwd2}, #{nickname}, #{profile}, #{birthdate}, #{gender}, 
       #{zipcode}, #{address1}, #{address2}, #{tel},
       #{guardian_name}, #{guardian_relationship}, #{guardian_email}, #{guardian_phone},
-      #{guardian2_name}, #{guardian2_relationship}, #{guardian2_email}, #{guardian2_phone}, #{point}
+      #{guardian2_name}, #{guardian2_relationship}, #{guardian2_email}, #{guardian2_phone}, 
+      #{point}, #{provider}
     )
   </insert>
 
-  <!-- 회원 조회 -->
-  <!-- <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
+  <!-- ✅ 회원 상세 조회 (by memberno) -->
+  <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
     SELECT 
-      memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
+      memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender,
       zipcode, address1, address2, tel,
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
       guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
-      login_time, logout_time, point -->
-
-  <!-- <insert id="create" parameterType="dev.mvc.member.MemberVO">
-    INSERT INTO member(memberno, name, email, password, nickname, profile, birthdate, gender, address, phone, guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,point)
-    VALUES (member_seq.nextval, #{name}, #{email}, #{password}, #{nickname}, #{profile}, #{birthdate}, #{gender}, #{address}, #{phone}, #{guardian_name}, #{guardian_relationship}, #{guardian_email}, #{guardian_phone},
-      #{guardian2_name}, #{guardian2_relationship}, #{guardian2_email}, #{guardian2_phone},#{point})
-  </insert> -->
-
-  <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
-    SELECT memberno, name, email, password, nickname, profile, birthdate, gender, address, phone, guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, login_time, logout_time, point
+      login_time, logout_time, point, provider
     FROM member
     WHERE memberno = #{memberno}
   </select>
 
-  <!-- 회원 정보 수정 -->
+  <!-- ✅ 회원 정보 수정 -->
   <update id="update" parameterType="dev.mvc.member.MemberVO">
     UPDATE member
     SET 
@@ -66,40 +57,53 @@
       guardian2_relationship = #{guardian2_relationship},
       guardian2_email = #{guardian2_email},
       guardian2_phone = #{guardian2_phone},
-      point = #{point}
-
-    SET name = #{name}, email = #{email}, password = #{password}, nickname = #{nickname}, profile = #{profile}, birthdate = #{birthdate}, gender = #{gender}, address = #{address}, phone = #{phone},
-      guardian_name = #{guardian_name}, guardian_relationship = #{guardian_relationship}, guardian_email = #{guardian_email}, guardian_phone = #{guardian_phone}, guardian2_name = #{guardian2_name}, guardian2_relationship = #{guardian2_relationship}, guardian2_email = #{guardian2_email}, guardian2_phone = #{guardian2_phone}, point = #{point}
-
+      point = #{point},
+      provider = #{provider}
     WHERE memberno = #{memberno}
   </update>
 
-  <!-- 회원 삭제 -->
+  <!-- ✅ 회원 삭제 -->
   <delete id="delete" parameterType="int">
     DELETE FROM member
     WHERE memberno = #{memberno}
   </delete>
-  
-  <!-- 로그인 -->
+
+  <!-- ✅ 로그인 (id + passwd 일치 여부 확인) -->
   <select id="login" parameterType="HashMap" resultType="int">
     SELECT COUNT(*) FROM member 
     WHERE id = #{id} AND passwd = #{passwd}
   </select>
 
-  <!-- 아이디 중복 확인 쿼리 -->
+  <!-- ✅ 아이디 중복 확인 -->
   <select id="checkID" parameterType="String" resultType="int">
-    SELECT COUNT(*) FROM member WHERE id = #{id}
+    SELECT COUNT(*) FROM member 
+    WHERE id = #{id}
   </select>
 
+  <!-- ✅ 회원 조회 (by id - 소셜 로그인 등에서 사용) -->
   <select id="readById" resultType="dev.mvc.member.MemberVO" parameterType="String">
-    SELECT * FROM member WHERE id = #{id}
+    SELECT 
+      memberno, id, mname, passwd, passwd2, nickname, profile, birthdate, gender,
+      zipcode, address1, address2, tel,
+      guardian_name, guardian_relationship, guardian_email, guardian_phone,
+      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
+      login_time, logout_time, point, provider
+    FROM member 
+    WHERE id = #{id}
   </select>
-  
 
+  <!-- ✅ 전체 회원 목록 -->
   <select id="list" resultType="dev.mvc.member.MemberVO">
-    SELECT memberno, id, mname, tel, address1, mdate, grade
+    SELECT 
+      memberno, id, mname, tel, address1, mdate, grade
     FROM member
     ORDER BY memberno DESC
+  </select>
+
+  <!-- ✅ ID 존재 여부 확인 (소셜 자동가입 전 체크) -->
+  <select id="existsById" resultType="int">
+    SELECT COUNT(*) FROM member 
+    WHERE id = #{id}
   </select>
 
 </mapper>
