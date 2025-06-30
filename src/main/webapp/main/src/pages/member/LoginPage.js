@@ -172,13 +172,17 @@ const LoginPage = () => {
         </div>
         <div style={{ marginTop: '20px' }}>
           <h4>또는 소셜 계정으로 로그인</h4>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             <a href="http://localhost:9093/oauth2/authorization/kakao?prompt=login">
               <img src="/images/kakao_login_medium_narrow.png" alt="카카오 로그인" />
             </a>
-            <br />
             <a href="http://localhost:9093/oauth2/authorization/google?prompt=select_account">
-             구글 로그인
+              <img src="/images/google_login.png" alt="구글 로그인" />
             </a>
+            <a href="http://localhost:9093/oauth2/authorization/naver?prompt=login">
+              <img src="/images/naver_login.png" alt="네이버 로그인" />
+            </a>
+          </div>
         </div>
       </form>
     </div>

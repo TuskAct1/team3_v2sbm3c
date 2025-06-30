@@ -1,32 +1,30 @@
 // 📁 src/pages/MainPage.js
 import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 function MainPage() {
-  const [searchParams] = useSearchParams(); // 🔍 URL 쿼리스트링 파라미터 가져오기
+  const [searchParams] = useSearchParams();           // 🔍 URL 쿼리스트링에서 값 가져오기
+  const navigate = useNavigate();                     // 🔁 페이지 이동용
 
   useEffect(() => {
-    // ✅ 소셜 로그인 후 전달받은 쿼리스트링에서 정보 추출
     const email = searchParams.get("email");
     const name = searchParams.get("name");
     const provider = searchParams.get("provider");
     const memberno = searchParams.get("memberno");
 
-    // ✅ 필수 정보가 있을 경우에만 localStorage에 저장
     if (email && memberno) {
       const user = {
         email,
-        mname: name,  // ✅ 이름을 'mname'으로 저장! → Navbar에서 name 대신 mname으로 표시 가능
-        provider,
+        mname: name || "소셜사용자",
+        provider: provider || "social",
         memberno: parseInt(memberno, 10),
       };
 
-      // ✅ localStorage에 저장
       localStorage.setItem("user", JSON.stringify(user));
-      console.log("✅ 로그인 유저 저장:", user);
+      console.log("✅ 소셜 로그인 유저 저장:", user);
 
-      // ✅ URL에서 쿼리스트링 제거 (새로고침)
-      window.location.replace("/");
+      // ✅ URL에서 쿼리 제거 후 강제 새로고침
+      window.location.replace("/"); // 새로고침 → Navbar에서 user 인식됨
     }
   }, []);
 
