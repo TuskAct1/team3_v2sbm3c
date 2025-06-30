@@ -47,7 +47,7 @@ function Navbar() {
         <li><Link to="/playlist/list">🎵 플레이리스트</Link></li>
         <li><Link to="/personality_test">심리테스트</Link></li>
         <li><Link to="/calendar">캘린더</Link></li>
-        <li><Link to="/board/list_all">게시판</Link></li>
+        <li><Link to="/board/list_all/all/1">게시판</Link></li>
         <li><Link to="/notice/list">공지사항</Link></li>
 
         {user ? (

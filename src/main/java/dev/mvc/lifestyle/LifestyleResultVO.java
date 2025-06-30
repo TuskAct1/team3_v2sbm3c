@@ -14,8 +14,4 @@ public class LifestyleResultVO {
   private String result;              // GPT 생성 루틴 텍스트
   private Date rdate;                 // 저장일
 
-  @Override
-  public String toString() {
-    return "LifestyleResultVO [lifestyleresultno=" + lifestyleresultno + ", memberno=" + memberno + ", result=" + result + ", rdate=" + rdate + "]";
-  }
 } 
