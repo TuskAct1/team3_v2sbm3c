@@ -1,9 +1,8 @@
-// 📁 src/components/MemberEditForm.js
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
-  // 🔹 회원 기본 정보 상태
+  // 🔹 회원 정보 상태 정의
   const [form, setForm] = useState({
     id: "",
     passwd: "",
@@ -18,17 +17,17 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
     address2: "",
   });
 
-  // 🔹 보호자 정보 (2명까지)
+  // 🔹 보호자 정보 상태 (최대 2명)
   const [guardians, setGuardians] = useState([]);
-  const address2Ref = useRef();
+  const address2Ref = useRef(); // 상세주소 입력창 포커스를 위해 사용 가능
 
-  // 🔹 컴포넌트 처음 렌더링 시, 전달받은 initialData로 폼 세팅
+  // 🔹 처음 마운트될 때 초기 데이터 세팅
   useEffect(() => {
     if (initialData) {
       setForm({
         ...initialData,
-        passwd: "",   // 비밀번호는 보이지 않게
-        passwd2: "",  // 비밀번호 확인도 마찬가지
+        passwd: "",   // 비밀번호는 보안상 표시 안함
+        passwd2: "",
       });
 
       if (initialData.guardians) {
@@ -37,13 +36,13 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
     }
   }, [initialData]);
 
-  // 🔹 input 값 변경 시 state 업데이트
+  // 🔹 일반 입력 값 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔹 보호자 정보 입력 처리
+  // 🔹 보호자 입력 값 변경 핸들러
   const handleGuardianChange = (idx, e) => {
     const { name, value } = e.target;
     setGuardians((prev) => {
@@ -53,13 +52,14 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
     });
   };
 
-  // 🔹 저장(수정) 버튼 클릭 시
+  // 🔹 소셜 로그인 사용자 여부 (naver 포함!)
+  const isSocialUser = ["google", "kakao", "naver"].includes(initialData.provider);
+
+  // 🔹 수정 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 일반 회원일 경우에만 비밀번호 확인 체크
-    const isSocialUser = initialData.provider === "google" || initialData.provider === "kakao";
-
+    // ❗ 일반 회원은 비밀번호 확인 필수
     if (!isSocialUser && form.passwd !== form.passwd2) {
       alert("비밀번호가 일치하지 않습니다");
       return;
@@ -71,16 +71,19 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
         guardians,
       };
 
-      await axios.put("/api/members", updatedMember);  // 수정 요청
-      onUpdated(updatedMember); // 수정 완료 후 부모에 알림
+      await axios.put("/api/members", updatedMember); // 서버로 수정 요청
+
+      // ✅ 수정된 데이터 localStorage에 반영
+      localStorage.setItem("user", JSON.stringify(updatedMember));
+
+      // 🔄 전체 새로고침 (Navbar 등에 바로 반영되게)
+      window.location.reload();
+
     } catch (err) {
       console.error("회원정보 수정 실패", err);
-      alert("수정 실패");
+      alert("회원정보 수정 중 오류가 발생했습니다.");
     }
   };
-
-  // 🔹 소셜 로그인 사용자인지 판별 (provider가 google 또는 kakao)
-  const isSocialUser = initialData.provider === "google" || initialData.provider === "kakao";
 
   return (
     <form onSubmit={handleSubmit}>
@@ -91,7 +94,7 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
         <input type="text" value={form.id} name="id" readOnly />
       </div>
 
-      {/* ✅ 일반 사용자만 비밀번호 입력 가능 */}
+      {/* ✅ 소셜 로그인 사용자는 비밀번호 입력 폼 생략 */}
       {!isSocialUser && (
         <>
           <div>
@@ -152,7 +155,13 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
 
       <div>
         <label>상세 주소:</label>
-        <input type="text" name="address2" value={form.address2} onChange={handleChange} ref={address2Ref} />
+        <input
+          type="text"
+          name="address2"
+          value={form.address2}
+          onChange={handleChange}
+          ref={address2Ref}
+        />
       </div>
 
       <div>
@@ -160,15 +169,39 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
         <input type="text" name="zipcode" value={form.zipcode} onChange={handleChange} readOnly />
       </div>
 
-      {/* 🔸 보호자 정보 */}
+      {/* 🔸 보호자 정보 영역 (최대 2명) */}
       {guardians.length > 0 &&
         guardians.map((g, i) => (
           <div key={i} style={{ padding: "10px", border: "1px solid #ccc", margin: "10px 0" }}>
             <h4>보호자 {i + 1}</h4>
-            <input type="text" name="name" value={g.name} onChange={(e) => handleGuardianChange(i, e)} placeholder="이름" />
-            <input type="text" name="relationship" value={g.relationship} onChange={(e) => handleGuardianChange(i, e)} placeholder="관계" />
-            <input type="text" name="email" value={g.email} onChange={(e) => handleGuardianChange(i, e)} placeholder="이메일" />
-            <input type="text" name="phone" value={g.phone} onChange={(e) => handleGuardianChange(i, e)} placeholder="전화번호" />
+            <input
+              type="text"
+              name="name"
+              value={g.name}
+              onChange={(e) => handleGuardianChange(i, e)}
+              placeholder="이름"
+            />
+            <input
+              type="text"
+              name="relationship"
+              value={g.relationship}
+              onChange={(e) => handleGuardianChange(i, e)}
+              placeholder="관계"
+            />
+            <input
+              type="text"
+              name="email"
+              value={g.email}
+              onChange={(e) => handleGuardianChange(i, e)}
+              placeholder="이메일"
+            />
+            <input
+              type="text"
+              name="phone"
+              value={g.phone}
+              onChange={(e) => handleGuardianChange(i, e)}
+              placeholder="전화번호"
+            />
           </div>
         ))}
 
