@@ -87,22 +87,31 @@ function SeniorTest() {
         : '😊 현재로서는 우울감이 낮은 편입니다.\n\n앞으로도 토닥이와 함께 건강한 마음을 지켜나가요!';
 
     try {
-      const response = await axios.post('http://localhost:9093/personality_test/create', {  // ← 백엔드에서 ResponseEntity 응답 옴
+        // ✅ 로그인한 사용자 정보 불러오기
+        const user = JSON.parse(localStorage.getItem("user"));
+        const memberno = user?.memberno;
 
-        personalitytestno: 0,
-        memberno: 1,
-        score: score,
-        result: summaryText  // ✅ DB에는 요약 텍스트만 저장
-      });
+        if (!memberno) {
+          alert("로그인이 필요합니다.");
+          navigate('/login');
+          return;
+        }
 
-      if (response.status === 200) {  // 등록 성공한 상태
-        // 🔸 결과 페이지로 이동하면서 긴 메시지 함께 전달
-        navigate('/senior_test/result', { state: { score, message } });
+        // ✅ 서버로 검사 결과 저장
+        const response = await axios.post('http://localhost:9093/personality_test/create', {
+          personalitytestno: 0,
+          memberno: memberno, // ✅ 로그인한 사용자로 저장
+          score: score,
+          result: summaryText
+        });
+
+        if (response.status === 200) {
+          navigate('/senior_test/result', { state: { score, message } });
+        }
+      } catch (err) {
+        console.error('저장 실패', err);
+        alert('결과 저장 중 문제가 발생했습니다.');
       }
-    } catch (err) {
-      console.error('저장 실패', err);
-      alert('결과 저장 중 문제가 발생했습니다.');
-    }
   };
 
   return (

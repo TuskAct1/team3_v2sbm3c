@@ -55,7 +55,11 @@ const LoginPage = () => {
       // 로그인 성공 시 처리 (예: 토큰 저장, 메인 페이지 이동 등)
       localStorage.setItem("user", JSON.stringify(response.data.user)); // ← 이제 동작함
       alert("로그인 성공!");
-      window.location.href = "/"; // 메인 페이지로 이동
+
+      const redirectPath = localStorage.getItem("redirectAfterLogin");
+      localStorage.removeItem("redirectAfterLogin");
+      window.location.href = redirectPath || "/"; // 👈 로그인 후 다시 원래 페이지로 이동
+
     } catch (error) {
       console.error("로그인 실패:", error);
       alert("아이디 또는 비밀번호가 일치하지 않습니다.");
@@ -165,6 +169,20 @@ const LoginPage = () => {
           >
             회원 가입
           </button>
+        </div>
+        <div style={{ marginTop: '20px' }}>
+          <h4>또는 소셜 계정으로 로그인</h4>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <a href="http://localhost:9093/oauth2/authorization/kakao?prompt=login">
+              <img src="/images/kakao_login_medium_narrow.png" alt="카카오 로그인" />
+            </a>
+            <a href="http://localhost:9093/oauth2/authorization/google?prompt=select_account">
+              <img src="/images/google_login.png" alt="구글 로그인" />
+            </a>
+            <a href="http://localhost:9093/oauth2/authorization/naver?prompt=login">
+              <img src="/images/naver_login.png" alt="네이버 로그인" />
+            </a>
+          </div>
         </div>
       </form>
     </div>
