@@ -1,26 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import useRecommend from './useRecommend';
-// 댓글 신고 모달
-import ReplyReportModal from './ReplyReportModal';
 
 function ReplySection({ boardno }) {
   const [replies, setReplies] = useState([]);
   const [newReply, setNewReply] = useState('');
   const [editingReplyNo, setEditingReplyNo] = useState(null);
   const [editingContent, setEditingContent] = useState('');
-  // 댓글 신고 모달용 
-  const [reportModalOpen, setReportModalOpen] = useState(false);
-  const [reportTargetReplyNo, setReportTargetReplyNo] = useState(null);
 
-  const { handleRecommend } = useRecommend(replies, setReplies);
+  // 항상 memberno=1로 테스트
+  const testMemberNo = 1;
 
   const fetchReplies = () => {
     axios
       .get(`/reply/m_list?boardno=${boardno}`)
-      .then((res) => {
-        setReplies(res.data);
-      })
+      .then((res) => setReplies(res.data))
       .catch((err) => console.error('댓글 불러오기 실패:', err));
   };
 
@@ -30,8 +23,8 @@ function ReplySection({ boardno }) {
 
     axios
       .post('/reply/create', {
-        boardno,
-        content: newReply,
+        boardno: boardno,
+        content: newReply
       })
       .then(() => {
         setNewReply('');
@@ -49,7 +42,7 @@ function ReplySection({ boardno }) {
     axios
       .post('/reply/delete', {
         replyno: reply.replyno,
-        memberno: reply.memberno,
+        memberno: reply.memberno
       })
       .then((res) => {
         if (res.data.res === 1) {
@@ -76,7 +69,7 @@ function ReplySection({ boardno }) {
       .post('/reply/update', {
         replyno: reply.replyno,
         memberno: reply.memberno,
-        content: editingContent,
+        content: editingContent
       })
       .then((res) => {
         if (res.data.res === 1) {
@@ -90,34 +83,36 @@ function ReplySection({ boardno }) {
       .catch((err) => console.error('수정 실패:', err));
   };
 
-  // const handleReport = (reply) => {
-  //   axios.post('/replyReport/report', { replyno: reply.replyno }, { withCredentials: true })
-  //     .then((res) => {
-  //       const result = res.data;
-  //       if (result === -1) {
-  //         alert('로그인이 필요합니다.');
-  //       } else if (result === 0) {
-  //         alert('이미 신고한 댓글입니다.');
-  //       } else if (result === 1) {
-  //         alert('신고가 접수되었습니다.');
-  //       } else {
-  //         alert('알 수 없는 응답');
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error('신고 처리 실패:', err);
-  //       alert('신고 중 오류가 발생했습니다.');
-  //     });
-  //   };
-
-    const handleReport = (reply) => {
-    setReportTargetReplyNo(reply.replyno);
-    setReportModalOpen(true);
+  // 추천 처리: replyRecommend/create_session 호출
+  const handleRecommend = (reply) => {
+    // 먼저 중복 추천 체크
+    axios
+      .get(`/replyRecommend/hartCnt?replyno=${reply.replyno}&memberno=${testMemberNo}`)
+      .then((res) => {
+        if (res.data > 0) {
+          alert('이미 추천한 댓글입니다.');
+        } else {
+          // 추천 등록
+          axios
+            .post('/replyRecommend/create_session', { replyno: reply.replyno })
+            .then((res) => {
+              if (res.data === 1) {
+                alert('추천이 등록되었습니다.');
+                fetchReplies(); // 추천 수 갱신용
+              } else {
+                alert('추천 등록 실패');
+              }
+            })
+            .catch((err) => {
+              console.error('추천 등록 실패:', err);
+              alert('추천 등록 중 오류가 발생했습니다.');
+            });
+        }
+      })
+      .catch((err) => {
+        console.error('추천 상태 확인 실패:', err);
+      });
   };
-
-
-
-
 
   useEffect(() => {
     fetchReplies();
@@ -167,6 +162,7 @@ function ReplySection({ boardno }) {
                 {reply.nickname} ({reply.id})
               </div>
               <div style={{ fontSize: '0.9em', color: '#777' }}>{reply.rdate}</div>
+
               {editingReplyNo === reply.replyno ? (
                 <>
                   <textarea
@@ -189,18 +185,10 @@ function ReplySection({ boardno }) {
                   </div>
                 </>
               ) : (
-                
-                <div style={{ marginTop: '5px', whiteSpace: 'pre-wrap' }}>
-                  {reply.blind === 1 ? (
-                    <i style={{ color: '#999' }}>🚫 신고 누적으로 블라인드 처리된 댓글입니다.</i>
-                  ) : (
-                    reply.content
-                  )}
-                </div>
+                <div style={{ marginTop: '5px', whiteSpace: 'pre-wrap' }}>{reply.content}</div>
               )}
 
-
-              <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center' }}>
+              <div style={{ marginTop: '5px' }}>
                 <button
                   className="btn btn-outline-primary btn-sm"
                   onClick={() => handleEdit(reply)}
@@ -215,51 +203,19 @@ function ReplySection({ boardno }) {
                 >
                   삭제
                 </button>
-
-                {/* 추천 버튼 */}
+                {/* 추천 버튼 추가 */}
                 <button
                   className="btn btn-outline-success btn-sm"
                   onClick={() => handleRecommend(reply)}
-                  style={{ display: 'flex', alignItems: 'center' }}
                 >
-                  <span
-                    style={{
-                      color: reply.isRecommended ? 'red' : 'gray',
-                      marginRight: '5px',
-                      fontSize: '16px',
-                      userSelect: 'none',
-                    }}
-                  >
-                    ❤
-                  </span>
-                  {reply.recommendCount || 0}
-                </button>
-
-                <button
-                  className="btn btn-outline-warning btn-sm"
-                  onClick={() => handleReport(reply)}
-                  style={{ marginLeft: '5px' }}
-                >
-                  🚩 신고
+                  추천
                 </button>
               </div>
             </div>
           </li>
         ))}
       </ul>
-      
-      {/* 댓글 신고 모달 */}
-        <ReplyReportModal
-          show={reportModalOpen}
-          replyno={reportTargetReplyNo}
-          onClose={() => {
-            setReportModalOpen(false);
-            setReportTargetReplyNo(null);
-          }}
-          onReportSuccess={() => {
-            fetchReplies();          // 댓글 목록 새로고침
-          }}
-        />
+
 
     </div>
   );

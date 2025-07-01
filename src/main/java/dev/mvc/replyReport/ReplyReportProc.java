@@ -3,21 +3,47 @@ package dev.mvc.replyReport;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dev.mvc.reply.ReplyDAOInter;
+import dev.mvc.reply.ReplyProcInter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 
 
-@Component("dev.mvc.ReplyReport.ReplyReportProc")
+@Component("dev.mvc.replyReport.ReplyReportProc")
+@Primary
 public class ReplyReportProc implements ReplyReportProcInter{
+
+  @Autowired
+  private ReplyDAOInter replyDAO;
+
   @Autowired
   ReplyReportDAOInter replyReportDAO;
+
+  @Autowired
+  @Qualifier("dev.mvc.reply.ReplyProc")
+  private ReplyProcInter replyProc;
   
-  
+//  @Override
+//  public int create(ReplyReportVO replyReportVO) {
+//    return replyReportDAO.create(replyReportVO);
+//  }
+
   @Override
-  public int create(ReplyReportVO replyReportVO) {
-    return replyReportDAO.create(replyReportVO);
+  public int create(ReplyReportVO vo) {
+    int result = replyReportDAO.create(vo); // 1) 신고 등록
+
+    int count = replyReportDAO.countByReplyNo(vo.getReplyno()); // 2) 누적 신고 수 확인
+
+    if (count >= 3) {
+      replyDAO.setBlind(vo.getReplyno(), 1); // 3) 블라인드 처리
+    }
+
+    return result;
   }
+
 
   @Override
   public ArrayList<ReplyReportVO> list_all() {
@@ -39,5 +65,8 @@ public class ReplyReportProc implements ReplyReportProcInter{
   public int delete(int replyReportno) {
     return replyReportDAO.delete(replyReportno);
   }
+
+
+
 
 }

@@ -56,7 +56,7 @@ import PlaylistForm from './pages/playlist/PlaylistForm';
 import EmotionForm from './pages/playlist/EmotionForm';
 import PlaylistSongList from './pages/playlist/PlaylistSongList';
 
-
+import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 
 function App() {
   return (
@@ -87,8 +87,10 @@ function App() {
         <Route path="/lifestyle_test/list/:memberno" element={<LifestyleResultList />} />
         <Route path="/calendar" element={<CalendarPage />} />
 
+
         <Route path="/self-check" element={<SelfCheckPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
+
 
         <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
         <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
@@ -126,7 +128,11 @@ function App() {
         <Route path="/diary" element={<DiaryPage/>} />
         <Route path="/product" element={<ProductPage/>} />
 
+
+        <Route path='/admin/reply-list' element={<ReplyReportListPage />} />
+
       </Routes>
+
     </BrowserRouter>
   );
 }

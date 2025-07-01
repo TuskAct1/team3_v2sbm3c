@@ -19,7 +19,10 @@ public class ReplyVO {
   
   /** 내용 */
   private String content;
-  
+
+  /** 블리인드 */
+  private  int blind;
+
   /** 등록일 */
   private String rdate;
   

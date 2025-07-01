@@ -54,4 +54,9 @@ public class ReplyProc implements ReplyProcInter {
     return list;
   }
 
+  @Override
+  public int setBlind(int replyno, int blind) {
+    return this.replyDAO.setBlind(replyno, blind);
+  }
+
 }

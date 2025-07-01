@@ -48,4 +48,6 @@ public interface ReplyProcInter {
    */
   public ArrayList<ReplyMemberVO> list_by_boardno_join(int boardno);
 
+
+  int setBlind(int replyno, int blind);
 }

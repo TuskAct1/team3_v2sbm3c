@@ -1,0 +1,27 @@
+/* src/styles/ReplyReportListPage.css */
+
+table, th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+}
+
+
+button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+button.active-tab {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
