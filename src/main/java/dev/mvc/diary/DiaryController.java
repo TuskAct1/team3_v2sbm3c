@@ -22,7 +22,6 @@ public class DiaryController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody DiaryVO diaryVO) {
-        diaryVO.setMemberno(1); // 예시로 고정, 실제론 로그인 정보 기반
 
         int cnt = this.diaryProc.create(diaryVO);
         if (cnt == 1) {
@@ -33,8 +32,8 @@ public class DiaryController {
     }
 
     @GetMapping("/list_all")
-    public ResponseEntity<?> list_all() {
-        List<DiaryVO> list = this.diaryProc.list_all();
+    public ResponseEntity<?> list_all(@RequestParam int memberno) {
+        List<DiaryVO> list = diaryProc.list_all(memberno);
         return ResponseEntity.ok(list); // JSON 형식으로 반환
     }
 
@@ -63,5 +62,14 @@ public class DiaryController {
         int result = diaryProc.delete(diaryno);
         map.put("result", result);
         return map;
+    }
+
+    @GetMapping("/emotion-count")
+    public Map<String, Integer> getDiaryEmotionCount(
+            @RequestParam int memberno,
+            @RequestParam String reportType,
+            @RequestParam String reportPeriod
+    ) {
+        return diaryProc.getEmotionCountByPeriod(memberno, reportType, reportPeriod);
     }
 }

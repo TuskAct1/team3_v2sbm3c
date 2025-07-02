@@ -49,14 +49,17 @@ import MyPage from './pages/member/MyPage';
 import AdminMyPage from './pages/member/AdminMyPage';
 import { PlantProvider } from './pages/plant/PlantContext';
 import PlantPage from './pages/plant/PlantPage';
-import DiaryPage from './pages/diary/DiaryPage';
 import ProductPage from './pages/product/ProductPage';
 
 import PlaylistList from './pages/playlist/PlaylistList';
 import PlaylistForm from './pages/playlist/PlaylistForm';
 import EmotionForm from './pages/playlist/EmotionForm';
 import PlaylistSongList from './pages/playlist/PlaylistSongList';
-
+import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
+import DiaryPage from './pages/diary/DiaryPage';
+import DiaryCreate from './pages/diary/DiaryCreate';
+import DiaryUpdate from './pages/diary/DiaryUpdate';
+import DiaryRead from './pages/diary/DiaryRead';
 
 
 function App() {
@@ -152,8 +155,8 @@ function App() {
         <Route path="/lifestyle_test/list" element={<LifestyleResultList />} />
         <Route path="/calendar" element={<CalendarPage />} />
 
+        <Route path="/emotion_report" element={<EmotionReportPage />} />
         <Route path="/self-check" element={<SelfCheckPage />} />
-        <Route path="/calendar" element={<CalendarPage />} />
 
         <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
         <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
@@ -190,6 +193,10 @@ function App() {
         {/* <Route path="*" element={<NotFoundPage />} /> */}
 
         <Route path="/diary" element={<DiaryPage/>} />
+        <Route path="/diary/create" element={<DiaryCreate/>} />
+        <Route path="/diary/update/:id" element={<DiaryUpdate/>} />
+        <Route path="/diary/read/:id" element={<DiaryRead/>} />
+
         <Route path="/product" element={<ProductPage/>} />
 
       </Routes> 
