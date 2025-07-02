@@ -21,4 +21,7 @@ public interface AdminDAOInter {
     public int delete(int adminno);
 
     public int checkEmail(String email);
+    
+    public int updatePassword(AdminVO adminVO);
+
 }

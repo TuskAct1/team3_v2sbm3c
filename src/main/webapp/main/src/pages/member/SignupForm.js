@@ -1,8 +1,8 @@
 // SignupForm.js
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
+import './SignupForm.css';
 
-// props: mode ('signup' | 'edit'), initialData, onCancel, onUpdated
 const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }) => {
   const [form, setForm] = useState({
     id: "",
@@ -17,6 +17,9 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
     address1: "",
     address2: "",
   });
+
+  const [avatarPreview, setAvatarPreview] = useState("/images/signup_image.png");
+  const [avatarFile, setAvatarFile] = useState(null);
 
   const [guardians, setGuardians] = useState([]);
   const [guardianFormOpen, setGuardianFormOpen] = useState(false);
@@ -36,7 +39,6 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
   const btnSendRef = useRef();
 
   useEffect(() => {
-    // 회원정보 수정 시 초기값 세팅
     if (initialData) {
       setForm({
         id: initialData.id || "",
@@ -51,7 +53,6 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
         address1: initialData.address1 || "",
         address2: initialData.address2 || "",
       });
-
       if (initialData.guardians) {
         setGuardians(initialData.guardians);
         setGuardianFormOpen(true);
@@ -60,7 +61,6 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
   }, [initialData]);
 
   useEffect(() => {
-    // Daum 주소 API 스크립트 로드
     if (!window.daum) {
       const script = document.createElement("script");
       script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
@@ -72,15 +72,6 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleGuardianChange = (idx, e) => {
-    const { name, value } = e.target;
-    setGuardians((prev) => {
-      const next = [...prev];
-      next[idx][name] = value;
-      return next;
-    });
   };
 
   const handleKeyPress = (e, nextRef) => {
@@ -136,61 +127,13 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
     }).open();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (mode === "edit") {
-      try {
-        const updatedData = {
-          ...form,
-          guardians: guardians.length > 0 ? guardians : null,
-        };
-        const res = await axios.put("/api/members/update", updatedData);
-        if (res.data.success) {
-          alert("회원 정보가 수정되었습니다.");
-          if (onUpdated) onUpdated(updatedData);
-        } else {
-          alert("수정 실패: " + (res.data.message || ""));
-        }
-      } catch (err) {
-        console.error("회원 정보 수정 오류", err);
-        alert("서버 오류");
-      }
-      return;
-    }
-
-    // 회원가입 시 로직
-    if (!idAvailable) {
-      alert("아이디 중복 확인을 완료해주세요");
-      return;
-    }
-    if (form.passwd !== form.passwd2) {
-      setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
-      passwdRef.current?.focus();
-      return;
-    }
-    if (form.mname.trim().length === 0) {
-      alert("이름 입력은 필수입니다.");
-      mnameRef.current?.focus();
-      return;
-    }
-
-    try {
-      const memberData = {
-        ...form,
-        guardians: guardians.length > 0 ? guardians : null,
-      };
-      const res = await axios.post("/api/members/signup", memberData);
-      if (res.data.success) {
-        alert("회원가입이 완료되었습니다!");
-        window.location.href = "/login";
-      } else {
-        alert("회원가입 실패: " + (res.data.message || ""));
-      }
-    } catch (err) {
-      console.error("회원가입 오류", err);
-      alert("서버 오류");
-    }
+  const handleGuardianChange = (idx, e) => {
+    const { name, value } = e.target;
+    setGuardians((prev) => {
+      const next = [...prev];
+      next[idx][name] = value;
+      return next;
+    });
   };
 
   const openGuardianForm = () => {
@@ -217,7 +160,6 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
     if (onCancel) onCancel();
   };
 
-  // 회원가입 상단 헤더 컴포넌트
   const SignupPageHeader = () => (
     <div style={{ width: "100%", margin: "0 auto" }}>
       <div style={{ fontSize: "1.6em", fontWeight: "bold", margin: "32px 0 8px 0" }}>
@@ -236,35 +178,79 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
       <div style={{ borderBottom: "1px solid #222", margin: "1px 0 16px 0", width: "100%" }} />
     </div>
   );
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!idAvailable) {
+      alert("아이디 중복 확인을 완료해주세요");
+      return;
+    }
+    if (form.passwd !== form.passwd2) {
+      setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
+      passwdRef.current?.focus();
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      for (const key in form) {
+        formData.append(key, form[key]);
+      }
+      if (avatarFile) formData.append("profileFile", avatarFile);
+
+      guardians.forEach((g, i) => {
+        formData.append(`guardian${i+1}_name`, g.name);
+        formData.append(`guardian${i+1}_relationship`, g.relationship);
+        formData.append(`guardian${i+1}_email`, g.email);
+        formData.append(`guardian${i+1}_phone`, g.phone);
+      });
+
+      formData.append("point", 0);
+      formData.append("provider", "local");
+
+      const res = await axios.post("/api/members/signup", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (res.data.success) {
+        alert("회원가입이 완료되었습니다!");
+        window.location.href = "/login";
+      } else {
+        alert("회원가입 실패: " + (res.data.message || ""));
+      }
+    } catch (err) {
+      console.error("회원가입 오류", err);
+      alert("서버 오류");
+    }
+  };
   
   return (
     <div style={{ width: "80%", margin: "0 auto" }}>
-      <SignupPageHeader />
       <form onSubmit={handleSubmit}>
-        {/* 프로필 이미지 */}
-        <div className="form-group">
-          <label htmlFor="avatar_url" className="form-label"></label>
-          <div className="avatar-container">
-            <img
-              id="avatar_preview"
-              src="/images/default-image.jpg"
-              className="avatar-image"
-              alt="프로필 이미지"
-            />
-            <input
-              type="file"
-              name="avatar_url"
-              id="avatar_url"
-              className="avatar-input"
-              accept="image/*"
-              // TODO: 이미지 업로드 처리
-            />
-            <label htmlFor="avatar_url" className="avatar-edit">
-              <img src="/images/plus.png" alt="편집" />
-            </label>
-          </div>
-          <span id="avatar_url_msg"></span>
+        <SignupPageHeader />
+        <div className="avatar-wrapper">
+          <img src={avatarPreview} alt="미리보기" className="avatar-overlay" />
+          <input
+            type="file"
+            id="avatar_url"
+            className="avatar-input"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setAvatarFile(file);
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  setAvatarPreview(event.target.result);
+                };
+                reader.readAsDataURL(file);
+              }
+            }}
+          />
+          <label htmlFor="avatar_url" className="choose-image-btn">프로필 이미지 선택</label>
         </div>
+
         <br/>
         {/* 아이디 입력 필드 */}
         <div className="form-group">
