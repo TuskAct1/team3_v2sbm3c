@@ -1,43 +1,63 @@
-import React, { useEffect } from 'react';
-import { usePlantContext } from './PlantContext';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import PlantCreatePage from "./PlantCreatePage";
+import PlantMain from "./PlantMain";
+import PlantIntro from "./PlantIntro";
+import { useNavigate } from "react-router-dom";
 
-import IntroFade from './IntroFade';
-import SeedSelect from './SeedSelect';
-import NameForm from './NameForm';
-import PlantGuide from './PlantGuide';
-import PlantDisplay from './PlantDisplay';
-import WeatherBackground from './WeatherBackground';
-import { fetchWeather } from './WeatherFetcher';  // 함수 import
-import DailyChecker from './DailyChecker';
+
 
 const PlantPage = () => {
-  const {
-    hasPlant,
-    plantType,
-    plantName,
-    guideViewed,
-  } = usePlantContext();
+  const [plants, setPlants] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getWeather = async () => {
-      const data = await fetchWeather();
-      console.log('🌤 날씨 정보:', data);
-    };
-    getWeather();
-  }, []);
+    // ❗️처음 접속한 사용자라면 Intro 보여주기
+    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+    if (!hasSeenIntro) {
+      setShowIntro(true);
+      return; // 여기서 중단. 이후 요청은 Intro에서 navigate로 이동.
+    }
 
-  if (!hasPlant) return <IntroFade />;
-  if (!plantType) return <SeedSelect />;
-  if (!plantName) return <NameForm />;
-  if (!guideViewed) return <PlantGuide />;
+    if (user?.memberno) {
+      axios
+        .get(`/api/plants/list?memberno=${user.memberno}`)
+        .then((res) => {
+          setPlants(res.data);
+        })
+        .catch((err) => {
+          console.error("🌱 식물 목록 조회 실패:", err);
+          setPlants([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [user?.memberno]);
 
-  return (
-    <div>
-      <WeatherBackground />
-      <PlantDisplay />
-      <DailyChecker />
-    </div>
-  );
+  if (!user) {
+    return <p>로그인이 필요합니다.</p>;
+  }
+
+  if (showIntro) {
+    return <PlantIntro />;
+  }
+
+  if (loading || plants === null) {
+    return <p>로딩 중입니다...</p>;
+  }
+
+  if (plants.length === 0) {
+    return <PlantCreatePage />;
+  }
+
+  return <PlantMain plant={plants[0]} />;
 };
 
 export default PlantPage;

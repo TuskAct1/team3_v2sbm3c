@@ -1,23 +1,32 @@
 .intro-fade {
-  position: fixed;
-  top: 0;
+  position: absolute;
+  top: 145px; /* 네비게이션 바 높이에 맞춰 조정 (ex: 60px) */
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 60px); /* 네비게이션 바 제외한 높이 */
   background-color: black;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 2s ease-in forwards;
-  z-index: 9999;
+  animation: fadeOut 2s forwards;
+  z-index: 999;
 }
 
-@keyframes fadeIn {
+.intro-fade h1 {
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+}
+
+@keyframes fadeOut {
   0% {
+    opacity: 1;
+  }
+  90% {
     opacity: 1;
   }
   100% {
     opacity: 0;
+    visibility: hidden;
   }
 }

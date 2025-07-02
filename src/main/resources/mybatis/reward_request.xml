@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.reward_request.RewardRequestDAOInter">
+
+  <insert id="create" parameterType="dev.mvc.reward_request.RewardRequestVO">
+    INSERT INTO reward_request (
+      requestno, memberno, fruit_type, receiver_name, receiver_phone,
+      zipcode, address1, address2, status
+    ) VALUES (
+      reward_request_seq.nextval,
+      #{memberno}, #{fruit_type}, #{receiver_name}, #{receiver_phone},
+      #{zipcode}, #{address1}, #{address2}, '신청 완료'
+    )
+  </insert>
+
+  <select id="listByMemberno" resultType="dev.mvc.reward_request.RewardRequestVO" parameterType="int">
+    SELECT * FROM reward_request WHERE memberno = #{memberno} ORDER BY reqdate DESC
+  </select>
+
+  <select id="listAll" resultType="dev.mvc.reward_request.RewardRequestVO">
+    SELECT * FROM reward_request ORDER BY reqdate DESC
+  </select>
+
+  <update id="updateStatus" parameterType="map">
+    UPDATE reward_request
+    SET status = #{status}
+    WHERE requestno = #{requestno}
+  </update>
+
+</mapper>

@@ -2,6 +2,7 @@ package dev.mvc.member;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -13,6 +14,12 @@ public class MemberProc implements MemberProcInter {
 
     @Autowired
     private MemberDAOInter memberDAO;
+    
+    /** 회원 정보 조회 (by id) */
+    @Override
+    public MemberVO readById(String id) {
+        return memberDAO.readById(id);
+    }
 
     /** 회원 생성 */
     @Override
@@ -56,47 +63,55 @@ public class MemberProc implements MemberProcInter {
         return memberDAO.delete(memberno);
     }
 
-    /** 회원 정보 조회 (by id) */
+
     @Override
-    public MemberVO readById(String id) {
-        return memberDAO.readById(id);
+    public int updatePoint(int memberno, int amount) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberno", memberno);
+        map.put("amount", amount);
+        return memberDAO.updatePoint(map);
     }
     
+    @Override
+    public int addPoint(int memberno, int point) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberno", memberno);
+        map.put("point", point);
+        return memberDAO.addPoint(map); // ✅ 반환값 중요
+    }
+    
+    @Override
+    public int getPoint(int memberno) {
+        return memberDAO.getPoint(memberno);
+    }
+    
+    @Override
+    public int setPoint(int memberno, int point) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("memberno", memberno);
+        map.put("point", point);
+        return memberDAO.setPoint(map);  // mapper에 정의된 update 실행
+    }
+    
+    @Override
+    public int updateSticker(int memberno, int amount) {
+      // TODO Auto-generated method stub
+      return memberDAO.updateSticker(memberno,amount);
+    }
+//    
+//    @Override
+//    public int addSticker(int memberno) {
+//        return memberDAO.updateSticker(memberno); // 기존의 XML SQL 호출
+//    }
+
+    @Override
+    public int addSticker(int memberno) {
+      // TODO Auto-generated method stub
+      return memberDAO.addSticker(memberno);
+    }
+
     @Override
     public int existsById(String id) {
         return memberDAO.existsById(id);
     }
 }
-//=======
-// 
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Component;
-//
-//@Component("dev.mvc.member.MemberProc")
-//public class MemberProc implements MemberProcInter {
-//  
-//  @Autowired
-//  private MemberDAOInter memberDAO;
-//
-//  @Override
-//  public int create(MemberVO memberVO) {
-//    return memberDAO.create(memberVO);
-//  }
-//
-//  @Override
-//  public MemberVO read(int memberno) {
-//    return memberDAO.read(memberno);
-//  }
-//
-//  @Override
-//  public int update(MemberVO memberVO) {
-//    return memberDAO.update(memberVO);
-//  }
-//  
-//  @Override
-//  public int delete(int memberno) { 
-//    return memberDAO.delete(memberno);
-//  }
-//  
-//}
-//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

@@ -52,8 +52,11 @@ const SignupPageAdmin = () => {
     setIdMsgClass("");
 
     try {
-      const res = await fetch(`/api/admins/check-email?email=${encodeURIComponent(form.id)}`);
+      const res = await fetch(`/api/admin/check-email?email=${encodeURIComponent(form.id)}`);
       const data = await res.json();
+
+      console.log("✅ check-email 응답:", data); // 여기를 확인하세요
+
       if (data.available) {
         setIdMsg("사용 가능한 아이디(이메일)입니다.");
         setIdMsgClass("span_info");
@@ -88,7 +91,7 @@ const SignupPageAdmin = () => {
 
     // API 호출
     try {
-      const response = await fetch("http://localhost:3000/api/admin/signup", {
+      const response = await fetch("/api/admin/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

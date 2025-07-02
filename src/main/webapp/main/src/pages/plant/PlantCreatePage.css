@@ -1,0 +1,29 @@
+.plant-create-container {
+  padding: 30px;
+  text-align: center;
+}
+
+.plant-create-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.plant-preview {
+  margin: 20px 0;
+}
+
+.plant-image {
+  width: 120px;
+  height: auto;
+}
+
+.plant-create-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  background-color: #87d068;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+}

@@ -4,11 +4,13 @@ import '../styles/navbar.css';
 
 function Navbar() {
   const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const navigate = useNavigate();
 
   // ✅ 컴포넌트 마운트 시 localStorage에서 로그인 정보 불러오기
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
+    const savedAdmin = localStorage.getItem("admin");
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
@@ -25,6 +27,7 @@ function Navbar() {
 
     // 1️⃣ localStorage 및 상태 초기화
     localStorage.removeItem("user");
+    localStorage.removeItem("admin");
     setUser(null);
 
     // 2️⃣ provider별 로그아웃 처리
@@ -75,6 +78,7 @@ function Navbar() {
             <li><Link to="/diary">일기</Link></li>
             <li><Link to="/emotion_report">감정분석</Link></li>
             <li><Link to="/product">포인트 상점</Link></li>
+            
 
             {/* 🔐 관리자 전용 메뉴 */}
             {isAdmin && (

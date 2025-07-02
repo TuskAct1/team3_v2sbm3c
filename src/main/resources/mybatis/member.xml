@@ -4,6 +4,11 @@
 
   <!-- ✅ 회원 가입 -->
   <insert id="create" parameterType="dev.mvc.member.MemberVO">
+    <!-- 🔑 시퀀스 값을 먼저 조회하고 memberVO.memberno에 할당 -->
+    <selectKey keyProperty="memberno" resultType="int" order="BEFORE">
+      SELECT member_seq.nextval FROM dual
+    </selectKey>
+  
     INSERT INTO member(
       memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
       zipcode, address1, address2, tel,
@@ -12,6 +17,7 @@
       point, provider
     )
     VALUES (
+      #{memberno}, #{mname}, #{id}, #{passwd}, #{passwd2}, #{nickname}, #{profile}, #{birthdate}, #{gender}, 
       member_seq.nextval, 
       #{mname}, #{id}, #{passwd}, #{passwd2},
       #{nickname, jdbcType=VARCHAR},
@@ -32,6 +38,13 @@
     )
   </insert>
 
+  <!-- <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
+    SELECT 
+      memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
+      zipcode, address1, address2, tel, 
+      guardian_name, guardian_relationship, guardian_email, guardian_phone,
+      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
+      login_time, logout_time, point, grade, mdate, sticker -->
 
   <!-- ✅ 회원 상세 조회 (by memberno) -->
   <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
@@ -70,6 +83,11 @@
       guardian2_email = #{guardian2_email},
       guardian2_phone = #{guardian2_phone},
       point = #{point},
+      grade = #{grade},
+      mdate = #{mdate},
+      sticker = #{sticker},
+      login_time = #{login_time},
+      logout_time = #{logout_time}
       provider = #{provider}
     WHERE memberno = #{memberno}
   </update>
@@ -92,6 +110,9 @@
     WHERE id = #{id}
   </select>
 
+  <!-- <select id="readById" parameterType="String" resultType="dev.mvc.member.MemberVO">
+    SELECT * FROM member WHERE id = #{id }-->
+
   <!-- ✅ 회원 조회 (by id - 소셜 로그인 등에서 사용) -->
   <select id="readById" resultType="dev.mvc.member.MemberVO" parameterType="String">
     SELECT 
@@ -111,6 +132,38 @@
     FROM member
     ORDER BY memberno DESC
   </select>
+  
+  <update id="updateSticker">
+    UPDATE member
+    SET sticker = sticker + #{amount}
+    WHERE memberno = #{memberno}
+  </update>
+  
+  <update id="updatePoint" parameterType="map">
+    UPDATE member SET point = point + #{amount} WHERE memberno = #{memberno}
+  </update>
+  
+  <select id="getLastMemberno" resultType="int">
+    SELECT member_seq.currval FROM dual
+  </select>
+  
+  <update id="addPoint" parameterType="map">
+    UPDATE member
+    SET point = point + #{point}
+    WHERE memberno = #{memberno}
+  </update>
+
+  <select id="getPoint" parameterType="int" resultType="int">
+    SELECT point FROM member WHERE memberno = #{memberno}
+  </select>
+  
+  <update id="setPoint" parameterType="map">
+    UPDATE member
+    SET point = #{point}
+    WHERE memberno = #{memberno}
+  </update>
+
+
 
   <!-- ✅ ID 존재 여부 확인 (소셜 자동가입 전 체크) -->
   <select id="existsById" resultType="int">

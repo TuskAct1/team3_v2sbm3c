@@ -1,23 +1,30 @@
 package dev.mvc.plant;
 
-import dev.mvc.diary.DiaryVO;
-
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface PlantDAOInter {
+    public int create(PlantVO plantVO); // 식물 생성
 
-    /** 반려 식물 등록 */
-    public int create(PlantVO plantVO);
+    public List<PlantVO> list(int memberno); // 특정 회원의 식물 목록
 
-    /** 회원 식물 조회 */
-    public PlantVO read(int plantno);
+    public PlantVO read(int plantno); // 식물 1개 조회
 
-    /** 식물 성장도 증가 */
-    public int update(PlantVO plantVO);
-
-    /** 식물 삭제 */
-    public int delete(int plantno);
+    public int updateGrowth(PlantVO plantVO); // 성장률 갱신
     
-    /** 회원 번호로 식물 조회 */
-    public PlantVO readByMemberno(int memberno);
+    /** 수확 처리 */
+    public int harvest(int plantno);
+    
+    public int countByMember(int memberno);
+    
+    public boolean hasPlant(int memberno);
+    
+    public int updatePoint(Map<String, Object> map);
+    
+    public int increaseGrowth(Map<String, Object> map);
+    
+//    public int getPoint(int memberno);
+
 }

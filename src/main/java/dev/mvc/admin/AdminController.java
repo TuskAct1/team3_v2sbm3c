@@ -11,7 +11,7 @@ import dev.mvc.tool.BCryptUtil;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin")//공통경로
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminController {
 
@@ -20,7 +20,6 @@ public class AdminController {
     private AdminProcInter adminProc;
     
     @Autowired
-//    @Qualifier("dev.mvc.member.MemberProc")
     private MemberProcInter memberProc;
     
     @Autowired
@@ -82,32 +81,6 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    /** 관리자 목록 */
-    @GetMapping("")
-    public List<AdminVO> list() {
-        return adminProc.list();
-    }
-    
-    
-    /** 관리자용 회원 삭제 */
-//    @DeleteMapping("/members/delete")
-//    public ResponseEntity<?> deleteMemberByAdmin(@RequestParam("memberno") int memberno) {
-//        int cnt = memberProc.delete(memberno);
-//        return (cnt == 1)
-//            ? ResponseEntity.ok("삭제 성공")
-//            : ResponseEntity.status(500).body("삭제 실패");
-//    }
-    
-//    @DeleteMapping("/members/{memberno}")
-//    public ResponseEntity<?> deleteMemberByAdmin(@PathVariable("memberno") int memberno) {
-//        System.out.println("삭제 요청 받은 memberno: " + memberno);
-//        int cnt = memberProc.delete(memberno);
-//        System.out.println("삭제된 행 수: " + cnt);
-//        return (cnt == 1)
-//            ? ResponseEntity.ok("삭제 성공")
-//            : ResponseEntity.status(500).body("삭제 실패");
-//    }
-    
     @DeleteMapping("/members/delete")
     public ResponseEntity<?> deleteMemberByAdmin(@RequestParam("memberno") int memberno) {
         System.out.println("삭제 요청 받은 memberno: " + memberno);
@@ -116,7 +89,32 @@ public class AdminController {
             ? ResponseEntity.ok("삭제 성공")
             : ResponseEntity.status(500).body("삭제 실패");
     }
+
+    /** 관리자 이메일로 정보 조회 */
+    @GetMapping("/info")
+    public ResponseEntity<AdminVO> readByEmail(@RequestParam("email") String email) {
+        AdminVO vo = adminProc.readByEmail(email);
+        return (vo != null) ? ResponseEntity.ok(vo) : ResponseEntity.notFound().build();
+    }
     
+    /** 관리자 정보 수정 */
+    @PutMapping("/update")
+    public ResponseEntity<?> update(@RequestBody AdminVO adminVO) {
+        int cnt = adminProc.update(adminVO);
+        return (cnt == 1)
+            ? ResponseEntity.ok("수정 성공")
+            : ResponseEntity.status(500).body("수정 실패");
+    }
+    
+    /** 관리자 탈퇴 */
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam("adminno") int adminno) {
+        int cnt = adminProc.delete(adminno);
+        return (cnt == 1)
+            ? ResponseEntity.ok("탈퇴 성공")
+            : ResponseEntity.status(500).body("탈퇴 실패");
+    }
+
     /** 비밀번호 변경 */
     @PostMapping("/update-passwd")
     public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> body) {
@@ -145,26 +143,4 @@ public class AdminController {
     }
 
 
-
 }
-//=======
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//
-//@RequestMapping("/admin")
-//@Controller
-//public class AdminController {
-//  
-//  @GetMapping("/create")
-//  public String create() {
-//    return "admin/create";
-//  }
-//  
-//  @GetMapping("/list")
-//  public String list() {
-//    return "admin/list";
-//  }
-//  
-//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6
-//}

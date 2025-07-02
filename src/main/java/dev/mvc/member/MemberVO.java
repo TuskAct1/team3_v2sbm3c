@@ -95,8 +95,10 @@ public class MemberVO {
     private int grade;
     private Date mdate;
     
+    private int sticker; // ✅ 스티커 수
     /** ✅ 소셜 로그인 제공자 (예: google, kakao). 일반 회원이면 빈 문자열 */
     private String provider = "";
+
 
 
 }

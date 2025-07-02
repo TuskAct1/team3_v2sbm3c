@@ -1,19 +1,22 @@
 package dev.mvc.plant;
 
-public interface PlantProcInter {
+import java.util.List;
 
-    /** 반려 식물 등록 */
+public interface PlantProcInter {
     public int create(PlantVO plantVO);
 
-    /** 회원 식물 조회 */
+    public List<PlantVO> list(int memberno);
+
     public PlantVO read(int plantno);
 
-    /** 식물 성장도 증가 */
-    public int update(PlantVO plantVO);
-
-    /** 식물 삭제 */
-    public int delete(int plantno);
+    public int updateGrowth(PlantVO plantVO);
     
-    /** 회원 번호로 식물 조회 */
-    public PlantVO readByMemberno(int memberno);
+    /** 수확 처리 */
+    public int harvest(int plantno);
+
+    public boolean hasPlant(int memberno);    
+    
+//    public int increaseGrowth(int plantno, int growthAmount);
+    public int increaseGrowth(int memberno, int amount);
+    
 }
