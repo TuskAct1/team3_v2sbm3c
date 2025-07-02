@@ -17,9 +17,9 @@ function LifestyleResult() {
 
   // ✅ 줄 단위로 나눈 결과 배열 (공백 제거)
   const resultLines = resultText
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line !== '');
+    .split('\n')  // 줄 단위로 나눔
+    .map(line => line.trim())  // 앞뒤 공백 제거
+    .filter(line => line !== '');  // 빈 줄 제거
 
   // ✅ 마지막 줄이 응원 메시지인지 판단 (시간 패턴이 아니면 응원 메시지로 간주)
   const lastLine = resultLines[resultLines.length - 1];
@@ -33,16 +33,26 @@ function LifestyleResult() {
       return { time, activity: activity.join(' ') };
     });
 
-  // 🧾 결과 저장 함수
+  // 🧾 결과 저장 함수 (로그인 연동)
   const handleSave = async () => {
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const memberno = user?.memberno;
+
+      if (!memberno) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
+
       await axios.post('http://localhost:9093/lifestyle_test/save', {
-        memberno: 1, // TODO: 로그인 연동 시 변경
+        memberno: memberno,
         result: resultText
       });
       alert('📝 루틴이 저장되었어요!');
     } catch (err) {
       console.error('❌ 저장 실패:', err);
+      alert('저장에 실패했어요. 다시 시도해주세요.');
     }
   };
 

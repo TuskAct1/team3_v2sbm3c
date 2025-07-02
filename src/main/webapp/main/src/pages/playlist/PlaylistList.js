@@ -1,19 +1,24 @@
-// 📁 PlaylistList.js
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import PlaylistForm from './PlaylistForm';     // 🎵 플레이리스트 등록/수정 폼
 import EmotionForm from './EmotionForm';       // 😊 감정 카테고리 관리 폼
-import './PlaylistList.css';                   // 🎨 외부 스타일 파일
+import './PlaylistList.css';                   // 🎨 외부 스타일
 
 function PlaylistList() {
   // ✅ 상태 정의
-  const [songs, setSongs] = useState([]);                    // 전체 플레이리스트 목록
-  const [emotions, setEmotions] = useState([]);              // 감정 카테고리 목록
-  const [selectedEmotion, setSelectedEmotion] = useState(null); // 선택된 감정 필터
-  const [formMode, setFormMode] = useState(null);            // 등록/수정/삭제 모드
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null); // 현재 선택된 플레이리스트
-  const [showManageMode, setShowManageMode] = useState(false);    // 🎛️ 관리 모드 활성화 여부
-  const [showEmotionForm, setShowEmotionForm] = useState(false);  // 감정 관리 모달 열림 여부
+  const [songs, setSongs] = useState([]);                        // 전체 플레이리스트 목록
+  const [emotions, setEmotions] = useState([]);                  // 감정 카테고리 목록
+  const [selectedEmotion, setSelectedEmotion] = useState(null);  // 선택된 감정 필터
+  const [formMode, setFormMode] = useState(null);                // 등록/수정/삭제 모드
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);// 현재 선택된 플레이리스트
+  const [showManageMode, setShowManageMode] = useState(false);   // 관리 모드 토글 여부
+  const [showEmotionForm, setShowEmotionForm] = useState(false); // 감정 편집 모달 여부
+
+  // 🔐 관리자 여부 확인 함수
+  const isAdminUser = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user && user.adminno != null; // adminno가 있으면 관리자
+  };
 
   // ✅ 감정 목록 불러오기
   const fetchEmotions = useCallback(() => {
@@ -22,24 +27,24 @@ function PlaylistList() {
       .catch(err => console.error('❌ 감정 목록 실패:', err));
   }, []);
 
-  // ✅ 전체 플레이리스트 불러오기
+  // ✅ 전체 플레이리스트 목록 불러오기
   const fetchPlaylists = useCallback(() => {
     axios.get('http://localhost:9093/playlist/list')
       .then(res => setSongs(res.data))
       .catch(err => console.error('❌ 플레이리스트 실패:', err));
   }, []);
 
-  // ✅ 페이지 로드시 감정 목록 + 플레이리스트 불러오기
+  // ✅ 페이지 로딩 시 초기 실행
   useEffect(() => {
     fetchEmotions();
     fetchPlaylists();
   }, [fetchEmotions, fetchPlaylists]);
 
-  // ✅ 감정 선택 시 필터링된 플레이리스트 조회
+  // ✅ 감정 필터 버튼 클릭 시 실행
   const handleEmotionSelect = (emotionno) => {
     setSelectedEmotion(emotionno);
     if (emotionno === null) {
-      fetchPlaylists();
+      fetchPlaylists(); // 전체 조회
     } else {
       axios.get(`http://localhost:9093/playlist/list_by_emotionno/${emotionno}`)
         .then(res => setSongs(res.data))
@@ -47,36 +52,47 @@ function PlaylistList() {
     }
   };
 
-  // ✅ 유튜브 썸네일 주소 추출
-  const getYoutubeThumbnail = (youtubeurl) => {
-    if (!youtubeurl) return '';
-    const match = youtubeurl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    const videoId = match ? match[1] : null;
-    return videoId ? `https://img.youtube.com/vi/${videoId}/0.jpg` : '';
+  // ✅ 썸네일 추출 함수
+  const getThumbnail = (song) => {
+    if (song.thumbnail && song.thumbnail.startsWith('/playlist/storage/')) {
+      return song.thumbnail;
+    }
+    if (song.youtubeurl) {
+      const match = song.youtubeurl.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      const videoId = match ? match[1] : null;
+      return videoId ? `https://img.youtube.com/vi/${videoId}/0.jpg` : '/default-thumbnail.png';
+    }
+    return '/default-thumbnail.png';
   };
 
-  // ✅ 플레이리스트 클릭 시 새 창으로 곡 리스트 열기
+  // ✅ 플레이리스트 클릭 시 곡 리스트 새 창 열기
   const openSongList = (playlistno) => {
-    const width = 1000, height = 800;
+    const width = 1000;
+    const height = 650;
     const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
-    window.open(`/playlist_song/list/${playlistno}`, '_blank',
-      `width=${width},height=${height},left=${left},top=${top}`);
+    const top = window.screenY + 100;
+
+    window.open(
+      `/playlist_song/list/${playlistno}`,
+      '_blank',
+      `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=yes`
+    );
   };
 
-  // ✅ ESC 키 누르면 모달 닫기 - useCallback과 useEffect로 연결
+  // ✅ 등록/수정 모달 닫기
   const closeForm = useCallback(() => {
     setFormMode(null);
     setSelectedPlaylist(null);
-    fetchPlaylists(); // 목록 새로고침
+    fetchPlaylists();
   }, [fetchPlaylists]);
 
+  // ✅ 감정 편집 모달 닫기
   const closeEmotionForm = useCallback(() => {
     setShowEmotionForm(false);
-    fetchEmotions(); // 감정 목록 새로고침
+    fetchEmotions();
   }, [fetchEmotions]);
 
-  // ✅ ESC 키 이벤트 리스너 등록
+  // ✅ ESC 눌렀을 때 모달 닫기
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') {
@@ -88,17 +104,29 @@ function PlaylistList() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [closeForm, closeEmotionForm]);
 
-  // ✅ 컴포넌트 렌더링
   return (
     <div className="list-container">
       <h2>📋 감정 플레이리스트</h2>
 
-      {/* 🔧 상단 관리 버튼 */}
+      {/* 🎛️ 관리 버튼 */}
       <div className="manage-top-right">
-        <span className="manage-text" onClick={() => setShowManageMode(!showManageMode)}>
+        <span
+          className="manage-text"
+          onClick={() => {
+            if (!isAdminUser()) {
+              alert('🔐 관리자만 접근할 수 있습니다.');
+              // ✅ 현재 URL 저장
+              localStorage.setItem('redirectAfterLogin', window.location.pathname);
+              window.location.href = '/admin_login'; // 관리자 로그인 페이지로 이동
+              return;
+            }
+            setShowManageMode(!showManageMode);
+          }}
+        >
           🎛️ 플레이리스트 관리
         </span>
 
+        {/* 관리자 전용 버튼들 */}
         {showManageMode && (
           <div className="manage-options">
             <button onClick={() => {
@@ -113,7 +141,7 @@ function PlaylistList() {
         )}
       </div>
 
-      {/* 🎨 감정 필터 버튼 목록 */}
+      {/* 🎨 감정 필터 버튼들 */}
       <div className="emotion-buttons">
         <button
           className={!selectedEmotion ? 'active' : ''}
@@ -128,7 +156,7 @@ function PlaylistList() {
         ))}
       </div>
 
-      {/* 🎵 플레이리스트 카드들 */}
+      {/* 🎵 플레이리스트 카드 */}
       <div className="song-grid">
         {songs.map((song) => (
           <div
@@ -136,9 +164,9 @@ function PlaylistList() {
             className={`song-card ${showManageMode ? 'manage-mode' : ''}`}
             onClick={() => openSongList(song.playlistno)}
           >
-            {/* ▶ 썸네일 이미지 */}
+            {/* 썸네일 이미지 */}
             <img
-              src={getYoutubeThumbnail(song.youtubeurl)}
+              src={getThumbnail(song)}
               alt={song.title}
               onError={(e) => {
                 e.target.onerror = null;
@@ -146,25 +174,33 @@ function PlaylistList() {
               }}
             />
 
-            {/* ▶ 제목 + 안내 텍스트 */}
+            {/* 제목 및 설명 */}
             <div className="song-info">
               <h3>{song.title}</h3>
               <p className="play-text">🎵 클릭해서 전체 곡 듣기</p>
             </div>
 
-            {/* ✏️ 수정/삭제 버튼 (관리 모드일 때만 노출) */}
+            {/* ✏️ 관리자 모드에서만 보임 */}
             {showManageMode && (
               <div className="action-buttons">
                 <button onClick={(e) => {
-                  e.stopPropagation(); // 카드 클릭 막기
+                  e.stopPropagation();
                   setFormMode('update');
                   setSelectedPlaylist(song);
                 }}>✏️ 수정</button>
 
-                <button onClick={(e) => {
+                <button onClick={async (e) => {
                   e.stopPropagation();
-                  setFormMode('delete');
-                  setSelectedPlaylist(song);
+                  const confirmDelete = window.confirm('🗑️ 삭제할까요?');
+                  if (!confirmDelete) return;
+                  try {
+                    await axios.delete(`http://localhost:9093/playlist/delete/${song.playlistno}`);
+                    alert('✅ 삭제 완료!');
+                    fetchPlaylists();
+                  } catch (err) {
+                    console.error('❌ 삭제 실패:', err);
+                    alert('❌ 삭제 중 오류 발생!');
+                  }
                 }}>🗑️ 삭제</button>
               </div>
             )}
@@ -172,7 +208,7 @@ function PlaylistList() {
         ))}
       </div>
 
-      {/* 📝 등록/수정/삭제 모달 */}
+      {/* 📝 등록/수정 모달 */}
       {formMode && (
         <div className="modal-overlay" onClick={(e) => {
           if (e.target.classList.contains('modal-overlay')) {
@@ -190,7 +226,7 @@ function PlaylistList() {
         </div>
       )}
 
-      {/* 🎨 감정 관리 모달 */}
+      {/* 🎨 감정 편집 모달 */}
       {showEmotionForm && (
         <div className="modal-overlay" onClick={(e) => {
           if (e.target.classList.contains('modal-overlay')) {

@@ -1,45 +1,52 @@
 // 🔹 필요한 리액트 기능 불러오기
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // URL에서 값을 추출할 수 있게 해줌
-import axios from 'axios'; // 백엔드 API 요청을 쉽게 해주는 라이브러리
-import './SeniorTestList.css'; // 외부 CSS 파일 불러오기 (테이블 꾸미는 용도)
+import axios from 'axios';
+import './SeniorTestList.css'; // 스타일 파일
+import { useNavigate } from 'react-router-dom'; // 로그인 안 된 경우 이동용
 
 // 🔸 검사 결과 목록을 보여주는 컴포넌트
-function TestList() {
-  // 🔹 검사 결과 리스트를 저장하는 state (초기값은 빈 배열)
-  const [testList, setTestList] = useState([]);
+function SeniorTestList() {
+  const [testList, setTestList] = useState([]); // 🔹 검사 결과 리스트 상태
+  const [memberno, setMemberno] = useState(null); // 회원 번호
+  const [mname, setMname] = useState('');         // 회원 이름
+  const navigate = useNavigate(); // 페이지 이동용
 
-  // 🔹 URL 경로에 포함된 memberno 값을 가져옴 (예: /testlist/1 → memberno는 1)
-  const { memberno } = useParams();
-
-  // 🔹 컴포넌트가 처음 화면에 나타날 때 실행되는 부분 (또는 memberno가 바뀔 때마다)
+  // 🔸 컴포넌트 로딩 시 로그인 정보 확인 + 검사 결과 불러오기
   useEffect(() => {
-    // 🔸 검사 결과를 서버에서 가져오는 함수
     const fetchTests = async () => {
+      // ✅ 로그인 사용자 정보 꺼내기
+      const user = JSON.parse(localStorage.getItem("user"));
+      const loginMemberno = user?.memberno;
+      const loginMname = user?.mname;
+
+      if (!loginMemberno) {
+        alert("로그인이 필요합니다.");
+        navigate('/login');
+        return;
+      }
+
+      setMemberno(loginMemberno); // 상태 저장 (화면 표시용)
+      setMname(loginMname); // 이름 저장
+
       try {
-        // 백엔드 서버에 검사 결과 요청
-        const res = await axios.get(`http://localhost:9093/personality_test/testlist/${memberno}`);
+        // ✅ 백엔드에서 해당 회원의 검사 결과 가져오기
+        const res = await axios.get(`http://localhost:9093/personality_test/testlist/${loginMemberno}`);
         console.log("📦 받아온 데이터:", res.data);
-        // 받아온 검사 결과를 state에 저장
-        setTestList(res.data);
+        setTestList(res.data); // 받아온 결과 저장
       } catch (err) {
         console.error('❌ 데이터 불러오기 실패', err);
       }
     };
 
-    fetchTests(); // 검사 결과 불러오기 함수 실행
-  }, [memberno]); // memberno가 바뀔 때마다 다시 실행됨
+    fetchTests(); // 실행
+  }, [navigate]);
 
-  // 🔹 특정 검사 결과를 삭제하는 함수
+  // 🔹 검사 결과 삭제 함수
   const handleDelete = async (personalitytestno) => {
-    // 사용자에게 삭제 확인 받기
     if (!window.confirm('정말 삭제하시겠어요?')) return;
 
     try {
-      // 백엔드에 삭제 요청 보내기
       await axios.delete(`http://localhost:9093/personality_test/delete/${personalitytestno}`);
-
-      // 삭제 성공 시, 화면에서도 해당 항목 제거
       setTestList(prevList =>
         prevList.filter(test => test.personalitytestno !== personalitytestno)
       );
@@ -49,13 +56,12 @@ function TestList() {
     }
   };
 
-  // 🔸 실제로 화면에 보여지는 부분 (JSX)
+  // 🔸 실제 화면에 렌더링되는 부분
   return (
-    <div className="testlist-page-bg"> {/* ✅ 전체 초록 배경 */}
-      <div className="testlist-container"> {/* ✅ 흰 박스 */}
-        {/* ✅ 상단 헤더: 제목 + 돌아가기 버튼 */}
+    <div className="testlist-page-bg"> {/* ✅ 초록 배경 */}
+      <div className="testlist-container"> {/* ✅ 흰 배경 박스 */}
         <div className="testlist-header">
-          <h2>🧠 {memberno}번 회원님의 검사 결과 목록</h2>
+          <h2>🧠 {mname}님의 검사 기록</h2>
           <button className="small-btn" onClick={() => window.location.href = '/personality_test'}>
             ← 이전
           </button>
@@ -106,4 +112,4 @@ function TestList() {
   );
 }
 
-export default TestList;
+export default SeniorTestList;

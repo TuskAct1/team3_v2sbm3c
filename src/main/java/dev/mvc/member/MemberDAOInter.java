@@ -43,4 +43,6 @@ public interface MemberDAOInter {
     public int updateSticker(int memberno, int amount);
     
     public int addSticker(int memberno);
+
+    public int existsById(String id);
 }

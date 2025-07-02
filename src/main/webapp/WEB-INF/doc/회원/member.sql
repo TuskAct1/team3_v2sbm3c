@@ -83,6 +83,10 @@ CREATE SEQUENCE member_seq
   CACHE 2                   -- 2번은 메모리에서만 계산
   NOCYCLE;                  -- 다시 1부터 생성되는 것을 방지
   
+
+ALTER TABLE member
+ADD provider VARCHAR2(50) DEFAULT '';
+  
   
 
 select * from member;

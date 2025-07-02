@@ -1,80 +1,94 @@
-/* 📦 PlaylistForm.css */
-
+/* 전체 폼 박스 */
 .playlist-form {
-  background-color: #f7fff7;
-  border: 2px solid #c8e6c9;
-  border-radius: 20px;
-  padding: 2rem;
-  max-width: 600px;
-  margin: 2rem auto;
-  font-size: 1.1rem;
-  box-shadow: 0 0 10px rgba(0, 128, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 500px;
+  margin: 40px auto;
+  font-family: system-ui, sans-serif;
 }
 
-.playlist-form h3 {
-  text-align: center;
-  color: #2e7d32;
-  margin-bottom: 1.5rem;
-}
-
+/* 라벨 텍스트 */
 .playlist-form label {
-  font-weight: bold;
-  color: #33691e;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
 }
 
+/* 입력 필드 공통 스타일 */
 .playlist-form input[type="text"],
 .playlist-form textarea,
 .playlist-form select {
-  width: 100%;
-  padding: 0.8rem;
-  margin-top: 0.3rem;
-  margin-bottom: 1.2rem;
-  border: 1px solid #aed581;
-  border-radius: 10px;
-  font-size: 1rem;
-  background-color: #ffffff;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s;
 }
 
+.playlist-form input[type="text"]:focus,
+.playlist-form textarea:focus,
+.playlist-form select:focus {
+  border-color: #3f51b5;
+}
+
+/* 텍스트 영역 */
 .playlist-form textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 80px;
 }
 
-.playlist-form button {
-  padding: 0.7rem 1.5rem;
-  font-size: 1rem;
-  margin-top: 1rem;
+/* 파일 업로드 */
+.playlist-form input[type="file"] {
+  font-size: 14px;
   border: none;
-  border-radius: 10px;
+  padding: 0;
+}
+
+/* 썸네일 미리보기 */
+.thumbnail-preview {
+  text-align: center;
+}
+
+.thumbnail-preview img {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  margin-top: 10px;
+}
+
+/* 제출 버튼 */
+.submit-btn {
+  padding: 12px;
+  background-color: #3f51b5;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.playlist-form button[type="submit"],
-.playlist-form button.confirm {
-  background-color: #66bb6a;
-  color: white;
+.submit-btn:hover {
+  background-color: #2c3e90;
 }
 
-.playlist-form button[type="submit"]:hover,
-.playlist-form button.confirm:hover {
-  background-color: #558b2f;
+/* 반응형 대응 */
+@media (max-width: 600px) {
+  .playlist-form {
+    padding: 16px;
+  }
 }
 
-.playlist-form button[type="button"],
-.playlist-form button.cancel {
-  background-color: #e0e0e0;
-  color: #333;
-  margin-left: 0.5rem;
+.modal-content {
+  max-height: 90vh;        /* 전체 화면 높이 기준 제한 */
+  overflow-y: auto;        /* 스크롤 가능하게 */
+  padding-bottom: 60px;    /* 하단 버튼 여백 */
 }
-
-.playlist-form button.cancel:hover {
-  background-color: #bdbdbd;
-}
-
-.playlist-form p {
-  text-align: center;
-  font-size: 1.1rem;
-}
-
-

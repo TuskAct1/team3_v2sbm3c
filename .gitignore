@@ -12,6 +12,8 @@ build/
 .springBeans
 .gradle/
 .sts4-cache
+__pycache__/
+*.pyc
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
@@ -34,3 +36,4 @@ out/
 
 ### VS Code ###
 .vscode/
+.gradle/

@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface MemberProcInter {
   
-   public MemberVO readById(String id);
 
     /**
      * 회원 가입 처리
@@ -53,9 +52,7 @@ public interface MemberProcInter {
      * @return 삭제된 레코드 수 (1: 성공, 0: 실패)
      */
     public int delete(int memberno);
-    
 
-    
     public int updateSticker(int memberno, int amount);
     
 //    public boolean hasPlant(int memberno);
@@ -69,4 +66,10 @@ public interface MemberProcInter {
     public int setPoint(int memberno, int point);
     
     public int addSticker(int memberno);
+
+    public MemberVO readById(String id);
+
+    
+    public int existsById(String id);  // 존재 여부 확인
+
 }

@@ -110,5 +110,8 @@ public class MemberProc implements MemberProcInter {
       return memberDAO.addSticker(memberno);
     }
 
-
+    @Override
+    public int existsById(String id) {
+        return memberDAO.existsById(id);
+    }
 }

@@ -1,10 +1,14 @@
 import React from "react";
-import SignupForm from "./SignupForm"; // 🔸 기존 폼을 SignupForm으로 분리한 경우 그대로 유지
+import SignupForm from "./SignupForm"; // 🔸 일반 회원가입 폼
 
 function SignupPage() {
   return (
     <div style={{ width: "80%", margin: "0 auto" }}>
-      <SignupForm mode="signup" /> {/* 회원가입 전용 */}
+      <h2 style={{ marginTop: "30px" }}>회원가입</h2>
+
+      {/* 🔹 일반 회원가입 폼 */}
+      <SignupForm mode="signup" />
+
     </div>
   );
 }

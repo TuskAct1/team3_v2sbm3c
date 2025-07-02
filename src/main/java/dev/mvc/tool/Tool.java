@@ -11,28 +11,6 @@ import java.util.Date;
 import java.util.Random;
 
 public class Tool {
-    // 상수 선언
-    /** 등록 성공 */
-    public static final String CREATE_SUCCESS = "create_success";
-
-    /** 등록 실패 */
-    public static final String CREATE_FAIL = "create_fail";
-
-    /** 수정 성공 */
-    public static final String UPDATE_SUCCESS = "update_success";
-
-    /** 수정 실패 */
-    public static final String UPDATE_FAIL = "update_fail";
-
-    /** 삭제 성공 */
-    public static final String DELETE_SUCCESS = "delete_success";
-
-    /** 삭제 실패 */
-    public static final String DELETE_FAIL = "delete_fail";
-
-    /** 업로드 파일 체크 실패 */
-    public static final String UPLOAD_FILE_CHECK_FAIL = "upload_file_check_fail";
-
 
     /**
      * FileUpload 1.2, 1.3 한글 변환
