@@ -1,0 +1,16 @@
+/* 📁 public/styles/SocialLoginButtons.css 또는 src/styles/SocialLoginButtons.css */
+
+/* 소셜 로그인 이미지 전용 CSS */
+.social-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.social-login-image {
+  height: 45px; /* 버튼처럼 보이지 않게 이미지 높이만 고정 */
+  object-fit: contain;
+}

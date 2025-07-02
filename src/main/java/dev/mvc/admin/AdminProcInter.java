@@ -18,4 +18,6 @@ public interface AdminProcInter {
     public int delete(int adminno);
 
     public int checkEmail(String email);
+    
+    public int updatePassword(AdminVO adminVO);
 }

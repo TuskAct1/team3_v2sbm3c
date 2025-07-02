@@ -58,6 +58,12 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // 카카오 로그인
   
+  // 가비아 sms 호스팅
+  // https://mvnrepository.com/artifact/com.squareup.okhttp/okhttp
+  implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+  // https://github.com/google/gson
+  implementation 'com.google.code.gson:gson:2.9.0' 
+  
   // testImplementation 'org.springframework.security:spring-security-test'
   // implementation 'org.springframework.boot:spring-boot-starter-security'
   // implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.2'
