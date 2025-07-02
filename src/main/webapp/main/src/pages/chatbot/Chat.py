@@ -1,14 +1,31 @@
+import os
+import datetime
+import DecoTool
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import os
-import datetime
+
+from langchain.agents import initialize_agent, AgentType
+from langchain_openai import ChatOpenAI
+
 from pymongo import MongoClient
-from openai import OpenAI
+
 
 app = FastAPI()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# 에이전트 전역 
+llm = ChatOpenAI(model="gpt-4o")
+agent = initialize_agent(
+    tools=[DecoTool.get_current_time],
+    llm=llm,
+    agent=AgentType.OPENAI_FUNCTIONS,
+    verbose=True
+)
+
+
 mongo_client = MongoClient("mongodb://localhost:27017/")
 db = mongo_client["mentalcare"]   # DB 이름
 chat_collection = db["chats"]     # 저장되는 폴더 이름
@@ -38,40 +55,60 @@ class ChatHistoryRequest(BaseModel):
     memberno: str
     room_id: str
 
+class UpdateRoomTitleRequest(BaseModel):
+    room_id: str
+    room_title: str
+
+class DeleteRoomRequest(BaseModel):
+    memberno: str
+    room_id: str
+
 class WeeklyReportRequest(BaseModel):
     memberno: str
     room_id: str
 
+def analyze_emotion(text):
+    prompt = (
+        f"다음 문장의 감정을 '긍정', '부정', '중립', '불안', '우울' 중 하나로 답만 해줘: {text}"
+    )
+    response = llm.invoke(prompt)
+
+    # 감정 태그만 추출
+    emotion = response.content.strip()
+
+    # 예외처리(모델이 엉뚱한 답 줄 때 기본 중립)
+    if emotion not in ["긍정", "부정", "중립", "불안", "우울"]:
+        emotion = "중립"
+    return emotion
 
 @app.post("/chat")
 async def chat_endpoint(req: ChatRequest):
     # 1. 대화 이력 불러오기
     history = list(chat_collection.find({"memberno": req.memberno, "room_id": req.room_id}).sort("timestamp", 1))
 
-    messages = [{"role": "system", "content": "당신은 친절한 시니어 멘탈케어 챗봇입니다."}]
+    messages = [{"role": "system", "content": "당신은 친절한 시니어 멘탈케어 챗봇입니다. 필요시 tool을 사용하세요."}]
 
     for h in history:
         messages.append({"role": "user", "content": h['message']})
         messages.append({"role": "assistant", "content": h['response']})
     messages.append({"role": "user", "content": req.message})
 
-    # 2. GPT 호출 
-    chat_response = client.chat.completions.create(
-        model="gpt-4.1-nano",
-        messages=messages[-10:]  # 최근 10개만 사용
-    )
-    reply = chat_response.choices[0].message.content
+    # 3. agent.invoke로 도구 자동 사용 + 대화
+    result = agent.invoke({"input": req.message, "chat_history": messages})
+    reply = result["output"]
 
-    # 3. 저장
+    emotion = analyze_emotion(req.message)
+    # 4. 저장시 emotion 필드 함께 저장
     chat_collection.insert_one({
         "memberno": req.memberno,
         "room_id": req.room_id,
         "message": req.message,
         "response": reply,
-        "timestamp": datetime.datetime.utcnow()
+        "timestamp": datetime.datetime.utcnow(),
+        "emotion": emotion
     })
 
-    return {"response": reply}
+    return {"response": reply, "emotion": emotion}
 
 # 채팅방 추가
 @app.post("/chat/create-room")
@@ -111,6 +148,32 @@ async def chat_history(req: ChatHistoryRequest):
     return {"history": messages}
 
 
+# 대화방 title update
+@app.post("/chat/update-room-title")
+async def update_room_title(req: UpdateRoomTitleRequest):
+    chat_rooms_collection.update_one(
+        {"room_id": req.room_id},
+        {"$set": {"room_title": req.room_title}}
+    )
+    return {"status": "ok"}
+
+
+# 대화방 삭제
+@app.post("/chat/delete-room")
+async def delete_room(req: DeleteRoomRequest):
+    # 방 정보 삭제 (예시: chat_rooms 컬렉션)
+    chat_rooms_collection.delete_one({
+        "memberno": req.memberno,
+        "room_id": req.room_id
+    })
+    # 대화 기록까지 삭제 (옵션)
+    chat_collection.delete_many({
+        "memberno": req.memberno,
+        "room_id": req.room_id
+    })
+    return {"result": "success"}
+
+
 # 채팅 감정 분석
 @app.post("/chat/weekly-report")
 async def weekly_report(req: WeeklyReportRequest):
@@ -122,7 +185,7 @@ async def weekly_report(req: WeeklyReportRequest):
         "timestamp": {"$gte": one_week_ago}
     }))
     # 감정별 카운트
-    emotion_counter = {}
+    emotion_counter = {"긍정":0,"부정":0,"중립":0,"불안":0,"우울":0}
     for chat in chats:
         emo = chat.get("emotion") or analyze_emotion(chat["message"])  # 없으면 즉시 분석
         emotion_counter[emo] = emotion_counter.get(emo, 0) + 1
@@ -136,7 +199,7 @@ async def weekly_report(req: WeeklyReportRequest):
                     - 우울: {emotion_counter.get('우울', 0)}회
                     """
 
-    # 필요시 OpenAI로 summary 생성도 가능!
+    # 실제 Count된 값은 raw: emotion_counter -> data 받을 때 res.data.raw
     return {"report": report_text, "raw": emotion_counter}
 
 
