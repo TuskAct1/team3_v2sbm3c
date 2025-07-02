@@ -173,7 +173,7 @@ function DiaryPage() {
       try {
         const res = await axios.get('/diary/list_all');
         const list = Array.isArray(res.data) ? res.data : res.data.list || [];
-
+        console.log(res,data);
         const mapped = list.map((item) => ({
           id: item.diaryno,
           emotion: item.risk_flag,

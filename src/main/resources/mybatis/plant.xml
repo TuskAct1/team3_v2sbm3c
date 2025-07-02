@@ -1,48 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="dev.mvc.plant.PlantDAOInter">
 
-    <!-- 식물 등록 -->
-    <insert id="create" parameterType="dev.mvc.plant.PlantVO">
-        INSERT INTO plant (
-            plantno, memberno, growth_level, is_active, last_used_time, points
-        ) VALUES (
-            plant_seq.nextval, #{memberno}, #{growth_level}, #{is_active}, SYSTIMESTAMP, #{points}
-        )
-    </insert>
+  <!-- 식물 생성 -->
+<insert id="create" parameterType="dev.mvc.plant.PlantVO">
+    INSERT INTO plant (
+      plantno, memberno, plant_name, plant_type, growth, last_access, plant_status
+    ) VALUES (
+      plant_seq.nextval, #{memberno}, #{plant_name}, #{plant_type}, 0, SYSDATE, '정상'
+    )
+  </insert>
+    <!-- 회원별 식물 목록 조회 -->
+  <select id="list" resultType="dev.mvc.plant.PlantVO" parameterType="int">
+    SELECT * FROM plant
+    WHERE memberno = #{memberno}
+    ORDER BY plantno DESC
+  </select>
 
-    <!-- 회원 번호로 식물 조회 -->
-    <select id="read" resultType="dev.mvc.plant.PlantVO" parameterType="int">
-        SELECT plantno, memberno, growth_level, is_active, last_used_time, points
-        FROM plant
-        WHERE memberno = #{memberno}
-    </select>
+  <!-- 식물 1개 조회 -->
+  <select id="read" resultType="dev.mvc.plant.PlantVO" parameterType="int">
+    SELECT * FROM plant
+    WHERE plantno = #{plantno}
+  </select>
 
-    <!-- 식물 성장도 +5 증가 -->
-    <update id="update" parameterType="dev.mvc.plant.PlantVO">
-        UPDATE plant
-        SET growth_level = growth_level + 5
-        WHERE plantno = #{plantno}
-    </update>
-
-
-    <!-- 식물 등록 -->
-    <!-- <insert id="create" parameterType="dev.mvc.plant.PlantVO">
-        INSERT INTO plant(plantno, memberno, growth_level, is_active, last_used_time, points)
-        VALUES(plant_seq.nextval, #{memberno}, #{growth_level}, #{is_active}, SYSTIMESTAMP, #{points})
-    </insert> -->
-
-    <delete id="delete" parameterType="int">
-        DELETE FROM plant
-        WHERE plantno = #{plantno}
-    </delete>
+  <!-- 성장률 업데이트 -->
+  <update id="updateGrowth" parameterType="dev.mvc.plant.PlantVO">
+    UPDATE plant
+    SET growth = #{growth}, last_access = SYSDATE
+    WHERE plantno = #{plantno}
+  </update>
+  
+  <!-- 수확 처리: 성장률 초기화 -->
+  <update id="harvest" parameterType="int">
+    UPDATE plant
+    SET growth_percent = 0,
+        last_access = SYSDATE
+    WHERE plantno = #{plantno}
+  </update>
+  
+  <select id="countByMember" parameterType="int" resultType="int">
+    SELECT COUNT(*) FROM plant WHERE memberno = #{memberno}
+  </select>
+  
+<!--  <update id="increaseGrowth" parameterType="map">
+    UPDATE plant
+    SET growth = LEAST(growth + #{growthAmount}, 100)
+    WHERE plantno = #{plantno}
+  </update>-->
+  <update id="increaseGrowth" parameterType="map">
+    UPDATE plant
+    SET growth = growth + #{amount}
+    WHERE memberno = #{memberno}
+  </update>
     
-    <!-- 회원 번호로 식물 조회 -->
-    <select id="readByMemberno" resultType="dev.mvc.plant.PlantVO" parameterType="int">
-        SELECT plantno, memberno, growth_level, is_active, last_used_time, points
-        FROM plant
-        WHERE memberno = #{memberno}
-    </select>
-
+  <update id="updateForToday" parameterType="int">
+    UPDATE attendance
+    SET total_days = total_days + 1,
+        last_check = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+    WHERE memberno = #{memberno}
+  </update>
+  
 
 </mapper>

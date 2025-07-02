@@ -4,6 +4,11 @@
 
   <!-- 회원 가입 -->
   <insert id="create" parameterType="dev.mvc.member.MemberVO">
+    <!-- 🔑 시퀀스 값을 먼저 조회하고 memberVO.memberno에 할당 -->
+    <selectKey keyProperty="memberno" resultType="int" order="BEFORE">
+      SELECT member_seq.nextval FROM dual
+    </selectKey>
+  
     INSERT INTO member(
       memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
       zipcode, address1, address2, tel,
@@ -11,33 +16,20 @@
       guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, point
     )
     VALUES (
-      member_seq.nextval, 
-      #{mname}, #{id}, #{passwd}, #{passwd2}, #{nickname}, #{profile}, #{birthdate}, #{gender}, 
+      #{memberno}, #{mname}, #{id}, #{passwd}, #{passwd2}, #{nickname}, #{profile}, #{birthdate}, #{gender}, 
       #{zipcode}, #{address1}, #{address2}, #{tel},
       #{guardian_name}, #{guardian_relationship}, #{guardian_email}, #{guardian_phone},
       #{guardian2_name}, #{guardian2_relationship}, #{guardian2_email}, #{guardian2_phone}, #{point}
     )
   </insert>
 
-  <!-- 회원 조회 -->
-  <!-- <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
+  <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
     SELECT 
       memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
-      zipcode, address1, address2, tel,
+      zipcode, address1, address2, tel, 
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
       guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
-      login_time, logout_time, point -->
-
-  <!-- <insert id="create" parameterType="dev.mvc.member.MemberVO">
-    INSERT INTO member(memberno, name, email, password, nickname, profile, birthdate, gender, address, phone, guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,point)
-    VALUES (member_seq.nextval, #{name}, #{email}, #{password}, #{nickname}, #{profile}, #{birthdate}, #{gender}, #{address}, #{phone}, #{guardian_name}, #{guardian_relationship}, #{guardian_email}, #{guardian_phone},
-      #{guardian2_name}, #{guardian2_relationship}, #{guardian2_email}, #{guardian2_phone},#{point})
-  </insert> -->
-
-  <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
-    SELECT memberno, name, email, password, nickname, profile, birthdate, gender, address, phone, guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, login_time, logout_time, point
+      login_time, logout_time, point, grade, mdate, sticker
     FROM member
     WHERE memberno = #{memberno}
   </select>
@@ -66,11 +58,12 @@
       guardian2_relationship = #{guardian2_relationship},
       guardian2_email = #{guardian2_email},
       guardian2_phone = #{guardian2_phone},
-      point = #{point}
-
-    SET name = #{name}, email = #{email}, password = #{password}, nickname = #{nickname}, profile = #{profile}, birthdate = #{birthdate}, gender = #{gender}, address = #{address}, phone = #{phone},
-      guardian_name = #{guardian_name}, guardian_relationship = #{guardian_relationship}, guardian_email = #{guardian_email}, guardian_phone = #{guardian_phone}, guardian2_name = #{guardian2_name}, guardian2_relationship = #{guardian2_relationship}, guardian2_email = #{guardian2_email}, guardian2_phone = #{guardian2_phone}, point = #{point}
-
+      point = #{point},
+      grade = #{grade},
+      mdate = #{mdate},
+      sticker = #{sticker},
+      login_time = #{login_time},
+      logout_time = #{logout_time}
     WHERE memberno = #{memberno}
   </update>
 
@@ -91,7 +84,7 @@
     SELECT COUNT(*) FROM member WHERE id = #{id}
   </select>
 
-  <select id="readById" resultType="dev.mvc.member.MemberVO" parameterType="String">
+  <select id="readById" parameterType="String" resultType="dev.mvc.member.MemberVO">
     SELECT * FROM member WHERE id = #{id}
   </select>
   
@@ -101,5 +94,37 @@
     FROM member
     ORDER BY memberno DESC
   </select>
+  
+  <update id="updateSticker">
+    UPDATE member
+    SET sticker = sticker + #{amount}
+    WHERE memberno = #{memberno}
+  </update>
+  
+  <update id="updatePoint" parameterType="map">
+    UPDATE member SET point = point + #{amount} WHERE memberno = #{memberno}
+  </update>
+  
+  <select id="getLastMemberno" resultType="int">
+    SELECT member_seq.currval FROM dual
+  </select>
+  
+  <update id="addPoint" parameterType="map">
+    UPDATE member
+    SET point = point + #{point}
+    WHERE memberno = #{memberno}
+  </update>
+
+  <select id="getPoint" parameterType="int" resultType="int">
+    SELECT point FROM member WHERE memberno = #{memberno}
+  </select>
+  
+  <update id="setPoint" parameterType="map">
+    UPDATE member
+    SET point = #{point}
+    WHERE memberno = #{memberno}
+  </update>
+
+
 
 </mapper>

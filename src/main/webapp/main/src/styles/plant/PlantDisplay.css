@@ -1,0 +1,28 @@
+.status-container {
+  text-align: center;
+}
+
+.status-box {
+  margin-bottom: 10px;
+}
+
+.status-bar-wrapper {
+  width: 100%;
+  height: 24px;
+  background-color: #eee;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.status-bar-inner {
+  height: 100%;
+  text-align: center;
+  line-height: 24px;
+  color: white;
+  font-weight: bold;
+  transition: width 0.5s ease;
+}
+
+.status-bar-inner.blue {
+  background-color: #57b6ac;
+}

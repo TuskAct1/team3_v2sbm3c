@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MemberEditForm from './MemberEditForm'; // ✅ MemberEditForm으로 수정
+import MyRewardList from '../reward/MyRewardList'; // 경로는 실제 위치에 따라 조정
+
 
 function MyPage() {
   const [userId, setUserId] = useState(null);
@@ -59,7 +61,7 @@ function MyPage() {
       <h2>사용자 정보</h2>
 
       {editing ? (
-        // ✅ 수정 모드일 경우 MemberEditForm 사용
+        //  수정 모드일 경우 MemberEditForm 사용
         <MemberEditForm
           initialData={user}
           onCancel={() => setEditing(false)}
@@ -97,7 +99,12 @@ function MyPage() {
           <button onClick={handleDelete} style={{ marginLeft: "10px" }}>탈퇴</button>
         </div>
       )}
-    </div>
+        {/* ✅ 보상 신청 내역 컴포넌트 추가 */}
+        <div style={{ marginTop: "40px" }}>
+          <h3>보상 신청 내역</h3>
+          <MyRewardList memberno={user.memberno} />
+        </div>
+      </div>
   );
 }
 

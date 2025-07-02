@@ -45,9 +45,9 @@ import LoginPage from './pages/member/LoginPage';
 import SignUpPageAdmin from './pages/member/SignUpPageAdmin';
 import LoginPageAdmin from './pages/member/LoginPageAdmin';
 import MemberListPage from './pages/member/MemberListPage';
+
+import AdminPage from './pages/member/AdminPage';
 import MyPage from './pages/member/MyPage';
-import { PlantProvider } from './pages/plant/PlantContext';
-import PlantPage from './pages/plant/PlantPage';
 import DiaryPage from './pages/diary/DiaryPage';
 import ProductPage from './pages/product/ProductPage';
 
@@ -56,14 +56,21 @@ import PlaylistForm from './pages/playlist/PlaylistForm';
 import EmotionForm from './pages/playlist/EmotionForm';
 import PlaylistSongList from './pages/playlist/PlaylistSongList';
 
-
+import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
+import MemoryGame from './pages/plant/games/MemoryGame';
+// import PlantIntro from './pages/plant/PlantIntro';
+import PlantMain from './pages/plant/PlantMain';
+import GameSelect from './pages/plant/games/GameSelect';
+import PlantCreatePage from './pages/plant/PlantCreatePage'; // 존재하는 경우
+import PlantPage from './pages/plant/PlantPage';
+import PlantIntro from './pages/plant/PlantIntro'; 
 
 function App() {
   return (
 
     <BrowserRouter>
 
-        <h1>토닥</h1>
+        {/* <h1>토닥</h1> */}
 
         <Navbar />
         <Routes>
@@ -117,14 +124,20 @@ function App() {
           <Route path="/admin_signup" element={<SignUpPageAdmin  />} />
           <Route path="/admin/member-list" element={<MemberListPage />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/adminpage" element={<AdminPage />} />
           {/* <Route path="/" element={<HomePage />} /> */}
           <Route path="/login" element={<LoginPage />} />
-          {/* ✅ 반려식물 기능은 PlantProvider로 감싸줌 */}
-          <Route path="/plant" element={<PlantProvider><PlantPage /></PlantProvider>}/>
           {/* <Route path="*" element={<NotFoundPage />} /> */}
 
           <Route path="/diary" element={<DiaryPage/>} />
           <Route path="/product" element={<ProductPage/>} />
+
+          {/* plant 관련 설정 */}
+          <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
+          <Route path="/plant/create" element={<PlantCreatePage />} />
+          <Route path="/plant" element={<PlantPage />} />
+          <Route path="/plant/game" element={<GameSelect />} />
+
 
         </Routes>
     </BrowserRouter>

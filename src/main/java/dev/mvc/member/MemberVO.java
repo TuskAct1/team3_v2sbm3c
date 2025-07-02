@@ -94,6 +94,8 @@ public class MemberVO {
     
     private int grade;
     private Date mdate;
+    
+    private int sticker; // ✅ 스티커 수
 
 
 }

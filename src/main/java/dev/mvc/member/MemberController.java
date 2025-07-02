@@ -1,16 +1,26 @@
 package dev.mvc.member;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;import dev.mvc.tool.BCryptUtil; // 유틸 import
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import dev.mvc.plant.PlantVO;
+import dev.mvc.tool.BCryptUtil; // 유틸 import
+import jakarta.servlet.http.HttpSession;
+import dev.mvc.plant.PlantProcInter;
+import dev.mvc.plant.PlantVO;
+
+import dev.mvc.attendance.AttendanceProcInter; // 출석 처리용 (출석 기능이 있다면)
 
 @RestController
 @RequestMapping("/api/members")
-@CrossOrigin(origins = "http://localhost:3000")
 public class MemberController {
 
     @Autowired
@@ -18,56 +28,112 @@ public class MemberController {
     
 
     @Autowired
+    private MemberProcInter memberProcInter;
+
+    @Autowired
     private BCryptUtil bcryptUtil; // 유틸 클래스 주입
     
+    @Autowired
+    private PlantProcInter plantProc;
 
+    @Autowired
+    private AttendanceProcInter attendanceProc; // 출석 처리용 (있다면)
+    
     /** 회원 가입 */
+    @Transactional
     @PostMapping("/signup")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> signup(@RequestBody MemberVO memberVO) {
         Map<String, Object> response = new HashMap<>();
         
-        // 중복 확인 생략 (프론트엔드에서 이미 확인 완료)
-//        int cnt = memberProc.create(memberVO);
-     // 사용자가 입력한 비밀번호 암호화
+        // 비밀번호 암호화
         String encrypted = bcryptUtil.encode(memberVO.getPasswd());
         memberVO.setPasswd(encrypted);
-
-        // 암호화된 비밀번호로 회원 생성
-        int cnt = memberProc.create(memberVO);
         
+        // ✅ 포인트 기본값 부여
+        memberVO.setPoint(50);
+
+        // 1단계: 회원 생성
+        int cnt = memberProc.create(memberVO);
+
         if (cnt == 1) {
+            int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
+            
+            // 2단계: 기본 식물 생성
+            PlantVO plant = new PlantVO();
+            plant.setMemberno(memberno);
+            plant.setPlant_name("나의 첫 식물");
+            plant.setPlant_type("딸기");
+            plant.setGrowth(0);
+            plant.setPlant_status("정상");
+            plant.setLast_access(""); // 또는 null
+            plantProc.create(plant);
+
+            // 3단계: 출석 초기화 (해당 기능 있다면)
+            attendanceProc.initAttendance(memberno);
+
             response.put("success", true);
-            response.put("message", "회원 가입 성공");
+            response.put("message", "회원가입 + 초기 설정 완료");
             return ResponseEntity.ok(response);
         } else {
             response.put("success", false);
-            response.put("message", "회원 가입 실패");
+            response.put("message", "회원가입 실패");
             return ResponseEntity.status(500).body(response);
         }
     }
 
+
     /** 로그인 */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap) {
-        String id = (String) loginMap.get("id");
-        String inputPasswd = (String) loginMap.get("passwd");
+    public ResponseEntity<?> login(HttpSession session, @RequestBody HashMap<String, Object> loginMap) {
+        try {
+            String id = (String) loginMap.get("id");
+            String inputPasswd = (String) loginMap.get("passwd");
 
-        MemberVO member = memberProc.readById(id);
+            MemberVO member = memberProc.readById(id);
 
-        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "로그인 성공");
-            response.put("user", member);
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(401).body("로그인 실패");
+            if (member == null) {
+                return ResponseEntity.status(401).body("존재하지 않는 사용자입니다.");
+            }
+
+            if (!bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+                return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
+            }
+
+            session.setAttribute("id", id);
+
+            // ✅ [1] 식물 존재 여부 확인
+            boolean hasPlant = plantProc.hasPlant(member.getMemberno());
+
+            if (!hasPlant) {
+                // ✅ [2] 기본 식물 생성
+                PlantVO plant = new PlantVO();
+                plant.setMemberno(member.getMemberno());
+                plant.setPlant_name("새싹이");        // 기본 이름
+                plant.setPlant_type("딸기");         // 기본 종류
+                plant.setGrowth(0);
+                plant.setPlant_status("정상");
+                plant.setLast_access(LocalDate.now().toString()); // java.time.LocalDate 사용
+                plantProc.create(plant);
+
+                // ✅ [3] 출석 초기화
+                attendanceProc.initAttendance(member.getMemberno());
+
+                // ✅ [4] 포인트 초기 지급 (예: 100p)
+                memberProc.updatePoint(member.getMemberno(), 100);
+            }
+
+            return ResponseEntity.ok(Map.of("message", "로그인 성공", "user", member));
+        } catch (Exception e) {
+            e.printStackTrace(); // 콘솔에 출력
+            return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
         }
+        
     }
     
     /** 회원 조회 */
     @GetMapping("/{memberno}")
-    public ResponseEntity<MemberVO> read(@PathVariable int memberno) {
+    public ResponseEntity<MemberVO> read(@PathVariable("memberno") int memberno) {
         MemberVO vo = memberProc.read(memberno);
         return (vo != null)
             ? ResponseEntity.ok(vo)
@@ -124,25 +190,13 @@ public class MemberController {
             : ResponseEntity.status(500).body("탈퇴 실패");
     }
     
+    @GetMapping("/point")
+    public ResponseEntity<Map<String, Object>> getPoint(@RequestParam("memberno") int memberno) {
+        Integer point = memberProc.getPoint(memberno);  // DB에서 조회
+//        int sti = memberProc.updateSticker(memberno);
+        return ResponseEntity.ok(Map.of("point", point));
+    }
+    
+    
+   
 }
-//=======
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-
-//@RequestMapping("/member")
-//@Controller
-//public class MemberController {
-//  
-//  @GetMapping("/create")
-//  public String create() {
-//    return "member/create";
-//  }
-//  
-//  @GetMapping("/login")
-//  public String login() {
-//    return "member/login";
-//  }
-//  
-//}
-//>>>>>>> 868494c87004448a8ee2d55d62be8d452cbcc8f6

@@ -4,10 +4,12 @@ import '../styles/navbar.css';
 
 function Navbar() {
   const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
+    const savedAdmin = localStorage.getItem("admin");
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
@@ -20,6 +22,7 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("admin");
     setUser(null);
     navigate("/login");
   };
@@ -42,9 +45,9 @@ function Navbar() {
             <li><Link to="/todaki">토닥이</Link></li>
             <li><Link to="/personality_test">심리테스트</Link></li>
             <li><Link to="/plant">반려식물</Link></li>
-
-            <li><Link to="/diary">일기</Link></li>
             <li><Link to="/product">포인트 상점</Link></li>
+            <li><Link to="/diary">일기</Link></li>
+            
 
 
             {/* 관리자 전용 메뉴 */}
@@ -52,7 +55,7 @@ function Navbar() {
               <>
                 <li><Link to="/admin/member-list">회원 리스트</Link></li>
                 <li><Link to="/admin/settings">관리 설정</Link></li>
-                <li><Link to="/product">포인트 상점</Link></li>
+                
               </>
             )}
 
