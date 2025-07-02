@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.emotion_report.EmotionReportDAOInter">
+
+    <!-- reportno로 한 건 조회 -->
+    <select id="selectByReportno" parameterType="int" resultType="dev.mvc.emotion_report.EmotionReportVO">
+        SELECT * FROM emotion_report WHERE reportno = #{reportno}
+    </select>
+
+    <!-- update 예시 -->
+    <update id="update" parameterType="dev.mvc.emotion_report.EmotionReportVO">
+        UPDATE emotion_report
+        SET diary_happy = #{diary_happy}, diary_normal = #{diary_normal}, diary_sad = #{diary_sad},
+        chatbot_happy = #{chatbot_happy}, chatbot_normal = #{chatbot_normal}, chatbot_sad = #{chatbot_sad},
+        test_happy = #{test_happy}, test_normal = #{test_normal}, test_sad = #{test_sad},
+        total_happy = #{total_happy}, total_normal = #{total_normal}, total_sad = #{total_sad}, updated_at = SYSDATE
+        WHERE reportno = #{reportno}
+    </update>
+
+    <select id="selectByMemberAndPeriod" resultType="dev.mvc.emotion_report.EmotionReportVO">
+        SELECT * FROM emotion_report
+        WHERE memberno = #{memberno}
+            AND report_type = #{report_type}
+            AND report_period = #{report_period}
+    </select>
+
+    <select id="getTestResults" resultType="dev.mvc.emotion_report.TestResultDTO">
+        SELECT result, score, TO_CHAR(rdate, 'YYYY-MM-DD') AS rdate
+        FROM (
+        SELECT result, score, rdate
+        FROM Twoweek_test
+        WHERE memberno = #{memberno}
+        ORDER BY rdate DESC
+        ) t
+        WHERE ROWNUM &lt;= 5
+    </select>
+
+
+</mapper>

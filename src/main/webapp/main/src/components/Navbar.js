@@ -72,6 +72,7 @@ function Navbar() {
             <li><Link to="/todaki">토닥이</Link></li>
             <li><Link to="/plant">반려식물</Link></li>
             <li><Link to="/diary">일기</Link></li>
+            <li><Link to="/emotion_report">감정분석</Link></li>
             <li><Link to="/product">포인트 상점</Link></li>
 
             {/* 🔐 관리자 전용 메뉴 */}
@@ -84,9 +85,9 @@ function Navbar() {
 
             {/* 😊 로그인 유저 이름 + 로그아웃 버튼 */}
             <li className="nav-user-info">
-              <Link to="/mypage" className={isAdmin ? "nav-user-email admin" : "nav-user-email"}>
+              <Link to={isAdmin ? "/admin/mypage" : "/mypage"} className={isAdmin ? "nav-user-email admin" : "nav-user-email"}>
                 {user.mname || user.nickname || user.email || user.id} {isAdmin ? "관리자님" : "님"}
-              </Link>{' '}
+              </Link>
               <span onClick={handleLogout} style={{ cursor: 'pointer', marginLeft: '8px', color: '#007700' }}>
                 로그아웃
               </span>

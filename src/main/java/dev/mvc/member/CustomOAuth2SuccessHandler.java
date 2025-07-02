@@ -76,12 +76,12 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             vo.setPasswd("소셜로그인");
             vo.setPasswd2("소셜로그인");
             vo.setNickname(name);
-            vo.setBirthdate("1900-01-01");
+            vo.setBirthdate("0000-00-00");
             vo.setGender("기타");
             vo.setZipcode("00000");
             vo.setAddress1("--");
             vo.setAddress2("--");
-            vo.setTel("000-0000-0000");
+            vo.setTel("010-0000-0000");
             vo.setProvider(provider);
 
             memberProc.create(vo);

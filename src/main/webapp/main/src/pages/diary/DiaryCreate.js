@@ -55,6 +55,9 @@ const DiaryCreate = () => {
   const contentInput = useRef();
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const memberno = user?.memberno;
+
   const handleChangeState = (e) => {
     setState({
       ...state,
@@ -69,7 +72,7 @@ const DiaryCreate = () => {
   };
 
   const handleSubmit = async () => {
-    if (state.title.length < 1) {
+      if (state.title.length < 1) {
       alert("제목을 입력해주세요.");
       titleInput.current.focus();
       return;
@@ -80,8 +83,18 @@ const DiaryCreate = () => {
       return;
     }
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const memberno = user?.memberno;
+
+    if (!memberno) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
     try {
       await axios.post("/diary/create", {
+        memberno,
         title: state.title,
         content: state.content,
         risk_flag: state.risk_flag,

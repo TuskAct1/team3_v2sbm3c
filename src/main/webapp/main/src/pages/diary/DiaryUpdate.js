@@ -56,11 +56,21 @@ const DiaryUpdate = () => {
   const titleInput = useRef();
   const contentInput = useRef();
 
+  // ✅ 로그인 사용자 정보 가져오기
+  const user = JSON.parse(localStorage.getItem("user"));
+  const memberno = user?.memberno;
+
   useEffect(() => {
     const fetchDiary = async () => {
       try {
         const res = await axios.get(`/diary/read/${id}`);
         const data = res.data;
+        // OPTIONAL: 본인 글인지 체크
+        if (data.memberno !== memberno) {
+          alert("권한이 없습니다!");
+          navigate("/diary");
+          return;
+        }
         setState({
           title: data.title || "",
           content: data.content || "",
@@ -73,17 +83,18 @@ const DiaryUpdate = () => {
     };
 
     fetchDiary();
-  }, [id]);
+  }, [id, memberno, navigate]);
 
   const handleChangeState = (e) => {
-    setState({
-      ...state,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const { name, value } = e.target;
+  setState({
+    ...state,
+    [name]: name === "risk_flag" ? Number(value) : value,
+  });
+};
 
-  const handleEmotionChange = (score) => {
-    setState((prev) => ({ ...prev, risk_flag: score }));
+    const handleEmotionChange = (score) => {
+      setState((prev) => ({ ...prev, risk_flag: score }));
   };
 
   const handleSubmit = async () => {
@@ -100,6 +111,7 @@ const DiaryUpdate = () => {
 
     try {
       await axios.put(`/diary/update/${id}`, {
+        memberno,                       // ✅ 추가
         title: state.title,
         content: state.content,
         risk_flag: state.risk_flag,

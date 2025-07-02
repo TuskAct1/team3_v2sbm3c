@@ -14,8 +14,7 @@
 
     <!-- 일기 전체 목록 -->
     <select id="list_all" resultType="dev.mvc.diary.DiaryVO">
-        SELECT diaryno, memberno, title, content, password, rdate, risk_flag
-        FROM diary
+        SELECT * FROM diary WHERE memberno = #{memberno}
     </select>
 
     <!-- 일기 단일 조회 -->
@@ -37,6 +36,14 @@
         DELETE FROM diary
         WHERE diaryno = #{diaryno}
     </delete>
+
+    <select id="countEmotionsByMemberAndPeriod" resultType="dev.mvc.diary.DiaryEmotionCountDTO">
+        SELECT risk_flag AS riskFlag, COUNT(*) AS count
+        FROM diary
+        WHERE memberno = #{memberno}
+        AND rdate BETWEEN #{startDate} AND #{endDate}
+        GROUP BY risk_flag
+    </select>
 
     <!-- 추가 기능 -->
 <!--
