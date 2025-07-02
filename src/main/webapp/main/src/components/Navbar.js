@@ -65,6 +65,7 @@ function Navbar() {
         <li><Link to="/calendar">캘린더</Link></li>
         <li><Link to="/board/list_all/all/1">게시판</Link></li>
         <li><Link to="/notice/list">공지사항</Link></li>
+        <li><Link to="/admin/reply-list">신고 리스트</Link></li>
 
         {user ? (
           <>
@@ -79,6 +80,7 @@ function Navbar() {
             {isAdmin && (
               <>
                 <li><Link to="/admin/member-list">회원 리스트</Link></li>
+                <li><Link to="/admin/">관리 설정</Link></li>
                 <li><Link to="/admin/settings">관리 설정</Link></li>
               </>
             )}

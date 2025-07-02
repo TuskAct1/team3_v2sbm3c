@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;import dev.mvc.tool.BCryptUtil; // 유틸 import
@@ -47,15 +48,35 @@ public class MemberController {
         }
     }
 
-    /** 로그인 */
+//    /** 로그인 */
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap) {
+//        String id = (String) loginMap.get("id");
+//        String inputPasswd = (String) loginMap.get("passwd");
+//
+//        MemberVO member = memberProc.readById(id);
+//
+//        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "로그인 성공");
+//            response.put("user", member);
+//            return ResponseEntity.ok(response);
+//        } else {
+//            return ResponseEntity.status(401).body("로그인 실패");
+//        }
+//    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap) {
+    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap, HttpSession session) {
         String id = (String) loginMap.get("id");
         String inputPasswd = (String) loginMap.get("passwd");
 
         MemberVO member = memberProc.readById(id);
 
         if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+            // 로그인 성공 시 세션에 memberno 저장
+            session.setAttribute("memberno", member.getMemberno());  // 세션 저장 추가!
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "로그인 성공");
             response.put("user", member);

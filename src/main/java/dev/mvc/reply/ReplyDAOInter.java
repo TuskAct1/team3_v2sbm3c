@@ -1,5 +1,7 @@
 package dev.mvc.reply;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,5 +50,6 @@ public interface ReplyDAOInter {
    */
   public ArrayList<ReplyMemberVO> list_by_boardno_join(int boardno);
 
-
+  // 댓글 번호로 블라인드 상태 업데이트
+  int setBlind(@Param("replyno") int replyno, @Param("blind") int blind);
 }

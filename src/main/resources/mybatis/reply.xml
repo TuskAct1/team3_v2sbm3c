@@ -5,13 +5,13 @@
 
   <!-- 댓글 등록 -->
   <insert id="create" parameterType="dev.mvc.reply.ReplyVO">
-    INSERT INTO reply(replyno, boardno, memberno, content, rdate)
-    VALUES(reply_seq.nextval, #{boardno}, #{memberno}, #{content}, sysdate)
+    INSERT INTO reply(replyno, boardno, memberno, content, rdate, blind)
+    VALUES(reply_seq.nextval, #{boardno}, #{memberno}, #{content}, sysdate, #{blind})
   </insert>
 
   <!-- 댓글 1건 조회 -->
   <select id="read" resultType="dev.mvc.reply.ReplyVO" parameterType="int">
-    SELECT replyno, boardno, memberno, content, rdate
+    SELECT replyno, boardno, memberno, content, rdate, blind
     FROM reply
     WHERE replyno = #{replyno}
   </select>
@@ -31,7 +31,7 @@
 
   <!-- 게시글 기준 댓글 목록 조회 -->
   <select id="list_by_boardno" resultType="dev.mvc.reply.ReplyVO" parameterType="int">
-    SELECT replyno, boardno, memberno, content, rdate
+    SELECT replyno, boardno, memberno, content, rdate, blind
     FROM reply
     WHERE boardno = #{boardno}
     ORDER BY replyno DESC
@@ -44,7 +44,8 @@
     r.boardno,
     r.memberno,
     r.content,
-    TO_CHAR(r.rdate, 'YYYY-MM-DD HH24:MI:SS') AS rdate,  -- Oracle 기준
+    r.blind,  <!-- ✅ blind 추가 -->
+    TO_CHAR(r.rdate, 'YYYY-MM-DD HH24:MI:SS') AS rdate,
     m.id,
     m.nickname,
     m.profile
@@ -53,5 +54,12 @@
     WHERE r.boardno = #{boardno}
     ORDER BY r.replyno DESC
   </select>
+
+  <!-- 댓글 블라인드 상태 설정 -->
+  <update id="setBlind" parameterType="map">
+    UPDATE reply
+    SET blind = #{blind}
+    WHERE replyno = #{replyno}
+  </update>
 
 </mapper>

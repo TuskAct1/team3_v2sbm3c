@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 
@@ -35,6 +36,17 @@ public class ReplyRecommendProc implements ReplyRecommendProcInter {
   @Override
   public int delete(int replyRecommendno) {
     return replyRecommendDAO.delete(replyRecommendno);
+  }
+
+
+  @Override
+  public int count_by_replyno(int replyno) {
+    return this.replyRecommendDAO.count_by_replyno(replyno);
+  }
+
+  @Override
+  public int deleteByReplyMember(HashMap<String, Object> map) {
+    return replyRecommendDAO.deleteByReplyMember(map);
   }
 
 }

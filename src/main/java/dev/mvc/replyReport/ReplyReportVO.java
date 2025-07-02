@@ -17,8 +17,11 @@ package dev.mvc.replyReport;
     
     /** 회원 번호 */
     private int memberno;
-    
+
+    /** 신고 내용 */
+    private String reason;
+
     /** 등록일 */
-    private int rdate;
-        
+    private String rdate;
+
   }

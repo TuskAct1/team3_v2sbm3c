@@ -77,17 +77,17 @@ public class LifestyleResultController {
     int cnt = lifestyleResultProc.create(vo);
     return cnt == 1 ? "success" : "fail";
   }
-  
+
   // 루틴 목록
   @GetMapping("/list/{memberno}")
   public List<LifestyleResultVO> listByMember(@PathVariable("memberno") int memberno) {
     return lifestyleResultProc.listByMemberno(memberno);
   }
-  
+
   // 삭제
   @DeleteMapping("/delete/{lifestyleresultno}")
   public int delete(@PathVariable("lifestyleresultno") int lifestyleresultno) {
       return lifestyleResultProc.delete(lifestyleresultno);
   }
-  
+
 }

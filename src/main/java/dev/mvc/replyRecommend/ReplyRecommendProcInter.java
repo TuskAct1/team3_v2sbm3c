@@ -41,5 +41,9 @@ public interface ReplyRecommendProcInter {
    * @return
    */
   public int delete(int replyRecommendno);
-  
+
+
+  public int count_by_replyno(int replyno);
+
+  int deleteByReplyMember(HashMap<String, Object> map);
 }
