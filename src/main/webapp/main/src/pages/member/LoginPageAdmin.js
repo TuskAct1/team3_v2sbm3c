@@ -1,56 +1,63 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 // 구분선 컴포넌트
 const MenuLine = () => (
-  <div
-    style={{
-      borderBottom: "2px solid #222",
-      margin: "10px 0 16px 0",
-      width: "100%",
-    }}
-  />
+  <div style={{ borderBottom: "2px solid #222", margin: "10px 0 16px 0", width: "100%" }} />
 );
 const MenuLine2 = () => (
-  <div
-    style={{
-      borderBottom: "1px solid #222",
-      margin: "1px 0 16px 0",
-      width: "100%",
-    }}
-  />
+  <div style={{ borderBottom: "1px solid #222", margin: "1px 0 16px 0", width: "100%" }} />
 );
 
-  const LoginPageAdmin = () => {
-    const [form, setForm] = useState({
-      id: "",
-      passwd: "",
-      id_save: false,
-      passwd_save: false,
-    });
+const LoginPageAdmin = () => {
+  const [form, setForm] = useState({
+    id: "",
+    passwd: "",
+    id_save: false,
+    passwd_save: false,
+  });
 
-    const [idMsg, setIdMsg] = useState("");
-    const [idMsgClass, setIdMsgClass] = useState("");
-    const [passwdMsg, setPasswdMsg] = useState("");
+  const [idMsg, setIdMsg] = useState("");
+  const [idMsgClass, setIdMsgClass] = useState("");
+  const [passwdMsg, setPasswdMsg] = useState("");
 
-    const passwdRef = useRef();
-    const btnSendRef = useRef();
+  const passwdRef = useRef();
+  const btnSendRef = useRef();
 
-    const handleChange = (e) => {
-      const { name, value, type, checked } = e.target;
-      setForm((prev) => ({
-        ...prev,
-        [name]: type === "checkbox" ? checked : value,
-      }));
-    };
+  // ✅ 페이지 로드 시 저장된 값 불러오기
+  useEffect(() => {
+    const savedId = localStorage.getItem("admin_saved_id");
+    const savedPasswd = localStorage.getItem("admin_saved_passwd");
 
-    const handleKeyPress = (e, nextRef) => {
-      if (e.key === "Enter" && nextRef && nextRef.current) {
-        nextRef.current.focus();
-      }
-    };
+    setForm((prev) => ({
+      ...prev,
+      id: savedId || "",
+      passwd: savedPasswd || "",
+      id_save: !!savedId,
+      passwd_save: !!savedPasswd,
+    }));
+  }, []);
+
+  // ✅ 입력 변경 처리
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // ✅ 엔터 키 → 다음 입력 포커스
+  const handleKeyPress = (e, nextRef) => {
+    if (e.key === "Enter" && nextRef && nextRef.current) {
+      nextRef.current.focus();
+    }
+  };
+
+  // ✅ 로그인 처리
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // 필수 입력 확인
     if (form.id.trim().length === 0) {
       setIdMsg("아이디(이메일) 입력은 필수 입니다. 아이디(이메일)는 3자이상 권장합니다.");
       setIdMsgClass("span_warning");
@@ -67,6 +74,20 @@ const MenuLine2 = () => (
       setPasswdMsg("");
     }
 
+    // ✅ 저장 여부에 따라 localStorage 처리
+    if (form.id_save) {
+      localStorage.setItem("admin_saved_id", form.id);
+    } else {
+      localStorage.removeItem("admin_saved_id");
+    }
+
+    if (form.passwd_save) {
+      localStorage.setItem("admin_saved_passwd", form.passwd);
+    } else {
+      localStorage.removeItem("admin_saved_passwd");
+    }
+
+    // ✅ 로그인 요청
     try {
       const response = await fetch("http://localhost:3000/api/admin/login", {
         method: "POST",
@@ -80,7 +101,6 @@ const MenuLine2 = () => (
       if (response.ok) {
         const data = await response.json();
 
-        // ✅ 로그인 성공 시 관리자 정보 저장
         localStorage.setItem("user", JSON.stringify({
           adminno: data.user.adminno,
           email: data.user.email,
@@ -88,10 +108,9 @@ const MenuLine2 = () => (
           role: "admin"
         }));
 
-        // ✅ 저장된 리디렉션 주소가 있으면 복귀
         const redirectPath = localStorage.getItem("redirectAfterLogin");
         if (redirectPath) {
-          localStorage.removeItem("redirectAfterLogin"); // 사용 후 제거
+          localStorage.removeItem("redirectAfterLogin");
           window.location.href = redirectPath;
         } else {
           window.location.href = "/";
@@ -104,6 +123,7 @@ const MenuLine2 = () => (
       alert("서버 오류 발생: " + error.message);
     }
   };
+
   const handleCancel = () => {
     window.history.back();
   };
@@ -154,12 +174,9 @@ const MenuLine2 = () => (
               checked={form.id_save}
               onChange={handleChange}
               value="Y"
-            />{" "}
-            아이디 저장
+            /> 아이디 저장
           </label>
-          <span id="id_msg" className={idMsgClass}>
-            {idMsg}
-          </span>
+          <span id="id_msg" className={idMsgClass}>{idMsg}</span>
         </div>
 
         <div className="form-group">
@@ -185,12 +202,9 @@ const MenuLine2 = () => (
               checked={form.passwd_save}
               onChange={handleChange}
               value="Y"
-            />{" "}
-            비밀번호 저장
+            /> 비밀번호 저장
           </label>
-          <span id="passwd_msg" className="span_warning">
-            {passwdMsg}
-          </span>
+          <span id="passwd_msg" className="span_warning">{passwdMsg}</span>
         </div>
 
         <div className="content_body_bottom">

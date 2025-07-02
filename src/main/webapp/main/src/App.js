@@ -46,6 +46,7 @@ import SignUpPageAdmin from './pages/member/SignUpPageAdmin';
 import LoginPageAdmin from './pages/member/LoginPageAdmin';
 import MemberListPage from './pages/member/MemberListPage';
 import MyPage from './pages/member/MyPage';
+import AdminMyPage from './pages/member/AdminMyPage';
 import { PlantProvider } from './pages/plant/PlantContext';
 import PlantPage from './pages/plant/PlantPage';
 import DiaryPage from './pages/diary/DiaryPage';
@@ -181,6 +182,7 @@ function App() {
         <Route path="/admin_signup" element={<SignUpPageAdmin  />} />
         <Route path="/admin/member-list" element={<MemberListPage />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/admin/mypage" element={<AdminMyPage />} />
         {/* <Route path="/" element={<HomePage />} /> */}
         <Route path="/login" element={<LoginPage />} />
         {/* ✅ 반려식물 기능은 PlantProvider로 감싸줌 */}
