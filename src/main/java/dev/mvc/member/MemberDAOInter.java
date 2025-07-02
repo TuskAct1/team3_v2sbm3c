@@ -26,6 +26,8 @@ public interface MemberDAOInter {
     int delete(int memberno);
     
     public MemberVO readById(String id);
+    
+    public int existsById(String id);
 }
 //=======
 //public interface MemberDAOInter {

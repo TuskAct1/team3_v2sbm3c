@@ -79,17 +79,23 @@ const MenuLine2 = () => (
 
       if (response.ok) {
         const data = await response.json();
-        alert("로그인 성공: " + data.message);
-        console.log("로그인한 관리자 정보:", data.user);
 
-        // ✅ role: 'admin' 포함
+        // ✅ 로그인 성공 시 관리자 정보 저장
         localStorage.setItem("user", JSON.stringify({
+          adminno: data.user.adminno,
           email: data.user.email,
           id: data.user.id || data.user.email,
           role: "admin"
         }));
 
-        window.location.href = "/";
+        // ✅ 저장된 리디렉션 주소가 있으면 복귀
+        const redirectPath = localStorage.getItem("redirectAfterLogin");
+        if (redirectPath) {
+          localStorage.removeItem("redirectAfterLogin"); // 사용 후 제거
+          window.location.href = redirectPath;
+        } else {
+          window.location.href = "/";
+        }
       } else {
         const errorText = await response.text();
         alert("로그인 실패: " + errorText);

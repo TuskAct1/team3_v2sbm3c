@@ -17,7 +17,7 @@ public class BoardRecommendCont {
 
     // 1. 추천수 조회
     @GetMapping("/count/{boardno}")
-    public ResponseEntity<Map<String, Object>> recommendCnt(@PathVariable int boardno) {
+    public ResponseEntity<Map<String, Object>> recommendCnt(@PathVariable("boardno") int boardno) {
         int recommendCnt = boardRecommendProc.RecommendCnt(boardno);
 
         Map<String, Object> response = new HashMap<>();
@@ -28,7 +28,7 @@ public class BoardRecommendCont {
 
     // 2. 추천 여부(내가 이미 추천했는지) 조회
     @GetMapping("/check/{boardno}")
-    public ResponseEntity<Map<String, Object>> checkRecommend(@PathVariable int boardno) {
+    public ResponseEntity<Map<String, Object>> checkRecommend(@PathVariable("boardno") int boardno) {
         int memberno = 1;
         boolean recommended = boardRecommendProc.exist(boardno, memberno);
 
@@ -40,7 +40,7 @@ public class BoardRecommendCont {
 
     // 3. 추천 등록 (추천 버튼 클릭)
     @PostMapping("/{boardno}")
-    public ResponseEntity<?> addRecommend(@PathVariable int boardno) {
+    public ResponseEntity<?> addRecommend(@PathVariable("boardno") int boardno) {
         int memberno = 1;
         boolean success = boardRecommendProc.create(boardno, memberno);
         if (success) return ResponseEntity.ok().build();
@@ -49,7 +49,7 @@ public class BoardRecommendCont {
 
     // 4. 추천 취소 (추천 취소 버튼 클릭)
     @DeleteMapping("/{boardno}")
-    public ResponseEntity<?> removeRecommend(@PathVariable int boardno) {
+    public ResponseEntity<?> removeRecommend(@PathVariable("boardno") int boardno) {
         int memberno = 1;
         boolean success = boardRecommendProc.delete(boardno, memberno);
         if (success) return ResponseEntity.ok().build();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-function ChatBot({ memberno }) {
+function ChatBot({ memberno, room_id, room_title }) {
   const [messages, setMessages] = useState([
     { from: "bot", text: "안녕하세요! 토닥이 챗봇입니다. 무엇이든 말씀해 주세요." },
   ]);
@@ -14,13 +14,19 @@ function ChatBot({ memberno }) {
       const res = await fetch("http://localhost:8000/chat/history", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ memberno }),
+        body: JSON.stringify({ memberno, room_id }),
       });
       const data = await res.json();
-      if (data.history) setMessages(data.history);
+    if (data.history && data.history.length > 0) {
+      setMessages(data.history);
+    } else {
+      setMessages([
+        { from: "bot", text: "안녕하세요! 토닥이 챗봇입니다. 무엇이든 말씀해 주세요." }
+      ]);
+    }
     };
     fetchHistory();
-  }, [memberno]);
+  }, [memberno, room_id, room_title]);
 
   // 👇 새 메시지 올 때마다 스크롤 내리기
   useEffect(() => {
@@ -42,7 +48,8 @@ function ChatBot({ memberno }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          memberno: "testuser", // 실제 로그인 유저로 대체
+          memberno: memberno, // 실제 로그인 유저로 대체
+          room_id: room_id,
           message: input,
         }),
       });
@@ -91,6 +98,8 @@ function ChatBot({ memberno }) {
         {loading && (
         <div style={{ textAlign: "left", color: "#888" }}>토닥이 응답 중...</div>
         )}
+        {/* 👇 메시지 끝에 이 div를 렌더링해서 스크롤 */}
+        <div ref={messageEndRef} />
       </div>
       <div style={{ display: "flex" }}>
         <input

@@ -3,11 +3,11 @@ import ChatBot from "./ChatBot";
 import ChatBotContainer from "./ChatBotContainer";
 
 function TodakiPage() {
-  const memberno = "testuser";
+  const memberno = String(JSON.parse(localStorage.getItem('user') || '{}').memberno);
   return (
     <div>
       {/* <ChatBot /> */}
-      <ChatBotContainer memberno={"testuser"} />;
+      <ChatBotContainer memberno={memberno} />;
     </div>
   );
 }
