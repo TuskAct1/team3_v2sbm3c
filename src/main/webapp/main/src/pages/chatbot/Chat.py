@@ -5,6 +5,7 @@ import os
 import datetime
 from pymongo import MongoClient
 from openai import OpenAI
+from emotion_report.router import router as emotion_report_router
 
 app = FastAPI()
 
@@ -139,6 +140,7 @@ async def weekly_report(req: WeeklyReportRequest):
     # 필요시 OpenAI로 summary 생성도 가능!
     return {"report": report_text, "raw": emotion_counter}
 
+app.include_router(emotion_report_router, prefix="/emotion_report")
 
 if __name__ == "__main__":
     # uvicorn.run("resort_auth:app", host="121.78.128.17", port=8000, reload=True) # Gabia 할당 불가

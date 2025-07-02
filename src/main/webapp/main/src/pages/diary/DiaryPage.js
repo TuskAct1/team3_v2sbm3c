@@ -171,14 +171,24 @@ function DiaryPage() {
   useEffect(() => {
     const fetchDiaries = async () => {
       try {
-        const res = await axios.get('/diary/list_all');
+        const user = JSON.parse(localStorage.getItem("user"));
+        const memberno = user?.memberno;
+
+        if (!memberno) {
+          alert("로그인이 필요합니다.");
+          return;
+        }
+
+        const res = await axios.get('/diary/list_all', {
+          params: { memberno }
+        });
         const list = Array.isArray(res.data) ? res.data : res.data.list || [];
 
         const mapped = list.map((item) => ({
           id: item.diaryno,
           emotion: item.risk_flag,
           content: item.content,
-          rdate: item.rdate,  // 그냥 문자열 그대로 받음
+          rdate: item.rdate,
           title: item.title,
         }));
         dispatch({ type: 'SET', data: mapped });
@@ -189,6 +199,7 @@ function DiaryPage() {
     };
     fetchDiaries();
   }, []);
+
 
   const filteredByMonth = data.filter((item) => {
     const itemDate = new Date(item.rdate);
