@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,13 +83,36 @@ public class MemberController {
         }
     }
 
-
     /** 로그인 */
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpSession session, @RequestBody HashMap<String, Object> loginMap) {
         try {
             String id = (String) loginMap.get("id");
             String inputPasswd = (String) loginMap.get("passwd");
+
+//    /** 로그인 */
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap) {
+//        String id = (String) loginMap.get("id");
+//        String inputPasswd = (String) loginMap.get("passwd");
+//
+//        MemberVO member = memberProc.readById(id);
+//
+//        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "로그인 성공");
+//            response.put("user", member);
+//            return ResponseEntity.ok(response);
+//        } else {
+//            return ResponseEntity.status(401).body("로그인 실패");
+//        }
+//    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap, HttpSession session) {
+        String id = (String) loginMap.get("id");
+        String inputPasswd = (String) loginMap.get("passwd");
+
 
             MemberVO member = memberProc.readById(id);
 
@@ -127,6 +151,18 @@ public class MemberController {
         } catch (Exception e) {
             e.printStackTrace(); // 콘솔에 출력
             return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
+
+        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+            // 로그인 성공 시 세션에 memberno 저장
+            session.setAttribute("memberno", member.getMemberno());  // 세션 저장 추가!
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "로그인 성공");
+            response.put("user", member);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(401).body("로그인 실패");
+
         }
         
     }

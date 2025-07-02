@@ -102,6 +102,7 @@ function BoardReadPage() {
         ))}
       </div>
 
+
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32 }}>
         {/* 첨부 이미지 */}
         {isImage(boardVO.file1) && (
@@ -191,6 +192,32 @@ function BoardReadPage() {
           수정
         </button>
       </div>
+
+              {/* <span style={{ fontSize: '1.5em', fontWeight: 'bold' }}>{boardVO.title}</span>
+              <span style={{ fontSize: '1em', marginLeft: '10px' }}>{boardVO.rdate}</span>
+              <br />
+              <br />
+              <div style={{ whiteSpace: 'pre-wrap', clear: 'both' }}>
+                <span>{stripHtml(boardVO.content)}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+          
+        <div style={{ marginTop: '20px', clear: 'both' }}>
+          <button onClick={handleDelete} className="btn btn-secondary btn-sm" style={{ marginRight: '10px' }}>
+            삭제
+          </button>
+          <button onClick={() => navigate(`/board/list_category/${boardVO.categoryno}`)} className="btn btn-secondary btn-sm">
+            목록
+          </button>
+          <button onClick={() => navigate(`/board/update/${boardno}`)} className="btn btn-secondary btn-sm">
+            수정
+          </button>
+        </div>
+        <ReplySection boardno={boardno} />
+      </fieldset>
+>>>>>>> Stashed changes */}
     </div>
   );
 }

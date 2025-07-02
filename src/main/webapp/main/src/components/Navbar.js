@@ -68,6 +68,7 @@ function Navbar() {
         <li><Link to="/calendar">캘린더</Link></li>
         <li><Link to="/board/list_all/all/1">게시판</Link></li>
         <li><Link to="/notice/list">공지사항</Link></li>
+        <li><Link to="/admin/reply-list">신고 리스트</Link></li>
 
         {user ? (
           <>
@@ -75,6 +76,7 @@ function Navbar() {
             <li><Link to="/todaki">토닥이</Link></li>
             <li><Link to="/plant">반려식물</Link></li>
             <li><Link to="/diary">일기</Link></li>
+            <li><Link to="/emotion_report">감정분석</Link></li>
             <li><Link to="/product">포인트 상점</Link></li>
             
 
@@ -82,15 +84,16 @@ function Navbar() {
             {isAdmin && (
               <>
                 <li><Link to="/admin/member-list">회원 리스트</Link></li>
+                <li><Link to="/admin/">관리 설정</Link></li>
                 <li><Link to="/admin/settings">관리 설정</Link></li>
               </>
             )}
 
             {/* 😊 로그인 유저 이름 + 로그아웃 버튼 */}
             <li className="nav-user-info">
-              <Link to="/mypage" className={isAdmin ? "nav-user-email admin" : "nav-user-email"}>
+              <Link to={isAdmin ? "/admin/mypage" : "/mypage"} className={isAdmin ? "nav-user-email admin" : "nav-user-email"}>
                 {user.mname || user.nickname || user.email || user.id} {isAdmin ? "관리자님" : "님"}
-              </Link>{' '}
+              </Link>
               <span onClick={handleLogout} style={{ cursor: 'pointer', marginLeft: '8px', color: '#007700' }}>
                 로그아웃
               </span>

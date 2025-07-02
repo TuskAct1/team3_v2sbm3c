@@ -1,5 +1,6 @@
 package dev.mvc.reply;
 
+import dev.mvc.replyRecommend.ReplyRecommendProcInter;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +21,10 @@ public class ReplyController {
     @Qualifier("dev.mvc.reply.ReplyProc")
     private ReplyProcInter replyProc;
 
+    @Autowired
+    @Qualifier("dev.mvc.replyRecommend.ReplyRecommendProc")
+    private ReplyRecommendProcInter replyRecommendProc;
+
     public ReplyController(){
         System.out.println("-> ReplyCont created.");
     }
@@ -28,13 +33,18 @@ public class ReplyController {
     @ResponseBody
     public ResponseEntity<String> create(@RequestBody ReplyVO replyVO, HttpSession session) {
         Integer memberno = (Integer) session.getAttribute("memberno");
-//        replyVO.setMemberno(memberno);  // 사용자 ID 설정
-        replyVO.setMemberno(1);
+        if (memberno == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+        replyVO.setMemberno(memberno);
 
-        System.out.println("reply content: " + replyVO.getContent());  // 필요한 필드 출력
-        replyProc.create(replyVO);  // 댓글 저장 처리
+        System.out.println("reply content: " + replyVO.getContent());
+        replyProc.create(replyVO);
+
         return ResponseEntity.ok("댓글 등록 완료");
     }
+
+
 
     @GetMapping(value = "/read", produces = "application/json")
     @ResponseBody
@@ -42,9 +52,9 @@ public class ReplyController {
         ReplyVO replyVO = this.replyProc.read(replyno);
 
         if (replyVO == null) {
-            return ResponseEntity.notFound().build();  // 없을 경우 404 반환
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(replyVO);  // 자동으로 JSON 직렬화
+        return ResponseEntity.ok(replyVO);
     }
 
     @GetMapping(value = "/list", produces = "application/json")
@@ -55,41 +65,54 @@ public class ReplyController {
     }
 
     @GetMapping(value = "/m_list", produces = "application/json")
-    public ResponseEntity<ArrayList<ReplyMemberVO>> list_by_boardno_join(@RequestParam("boardno") int boardno) {
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> list_by_boardno_join(@RequestParam("boardno") int boardno,
+                                                                          HttpSession session) {
+        Integer memberno = (Integer) session.getAttribute("memberno");
+
         ArrayList<ReplyMemberVO> list = replyProc.list_by_boardno_join(boardno);
-        return ResponseEntity.ok(list);
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (ReplyMemberVO vo : list) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("replyno", vo.getReplyno());
+            map.put("content", vo.getContent());
+            map.put("nickname", vo.getNickname());
+            map.put("id", vo.getId());
+            map.put("rdate", vo.getRdate());
+            map.put("profile", vo.getProfile());
+            map.put("recommendCount", replyRecommendProc.count_by_replyno(vo.getReplyno()));
+            // 🔽 blind 추가
+            map.put("blind", vo.getBlind());
+
+            if (memberno != null) {
+                HashMap<String, Object> checkMap = new HashMap<>();
+                checkMap.put("replyno", vo.getReplyno());
+                checkMap.put("memberno", memberno);
+                int cnt = replyRecommendProc.hartCnt(checkMap);
+                map.put("isRecommended", cnt > 0);
+            } else {
+                map.put("isRecommended", false);
+            }
+
+            result.add(map);
+        }
+
+        return ResponseEntity.ok(result);
     }
-
-
-//    @PostMapping("/update")
-//    @ResponseBody
-//    public ResponseEntity<Map<String, Integer>> update(HttpSession session, @RequestBody ReplyVO replyVO) {
-//        System.out.println("-> 수정할 수신 데이터: " + replyVO);
-//
-//        int memberno = (int) session.getAttribute("memberno");
-//        int cnt = 0;
-//
-//        if (memberno == replyVO.getMemberno()) {
-//            cnt = this.replyProc.update(replyVO);  // 댓글 수정 시도
-//        }
-//
-//        Map<String, Integer> response = new HashMap<>();
-//        response.put("res", cnt);  // 1: 성공, 0: 실패
-//
-//        return ResponseEntity.ok(response);  // JSON으로 응답 {"res":1}
-//    }
 
     @PostMapping("/update")
     @ResponseBody
-    public ResponseEntity<Map<String, Integer>> update(@RequestBody ReplyVO replyVO) {
-        System.out.println("-> 테스트용 댓글 수정 요청: " + replyVO);
+    public ResponseEntity<Map<String, Integer>> update(HttpSession session, @RequestBody ReplyVO replyVO) {
+        System.out.println("-> 댓글 수정 요청: " + replyVO);
 
-        // 테스트용으로 강제로 memberno를 1로 간주
-        int testMemberNo = 1;
+        Integer memberno = (Integer) session.getAttribute("memberno");
         int cnt = 0;
 
-        if (replyVO.getMemberno() == testMemberNo) {
+        if (memberno != null && memberno.equals(replyVO.getMemberno())) {
             cnt = this.replyProc.update(replyVO);
+        } else {
+            System.out.println("수정 권한 없음 또는 로그인 필요");
         }
 
         Map<String, Integer> response = new HashMap<>();
@@ -98,34 +121,18 @@ public class ReplyController {
         return ResponseEntity.ok(response);
     }
 
-//    @PostMapping("/delete")
-//    @ResponseBody
-//    public ResponseEntity<Map<String, Integer>> delete(HttpSession session, @RequestBody ReplyVO replyVO) {
-//        int memberno = (int) session.getAttribute("memberno");
-//        int cnt = 0;
-//
-//        if (memberno == replyVO.getMemberno()) {
-//            cnt = this.replyProc.delete(replyVO.getReplyno());  // 댓글 삭제 시도
-//        }
-//
-//        Map<String, Integer> response = new HashMap<>();
-//        response.put("res", cnt);  // 1: 성공, 0: 실패
-//
-//        return ResponseEntity.ok(response);  // JSON으로 응답 {"res":1}
-//
-//
-//    }
-
     @PostMapping("/delete")
     @ResponseBody
-    public ResponseEntity<Map<String, Integer>> delete(@RequestBody ReplyVO replyVO) {
-        System.out.println("-> 테스트용 댓글 삭제 요청: " + replyVO);
+    public ResponseEntity<Map<String, Integer>> delete(HttpSession session, @RequestBody ReplyVO replyVO) {
+        System.out.println("-> 댓글 삭제 요청: " + replyVO);
 
-        int testMemberNo = 1;
+        Integer memberno = (Integer) session.getAttribute("memberno");
         int cnt = 0;
 
-        if (replyVO.getMemberno() == testMemberNo) {
+        if (memberno != null && memberno.equals(replyVO.getMemberno())) {
             cnt = this.replyProc.delete(replyVO.getReplyno());
+        } else {
+            System.out.println("삭제 권한 없음 또는 로그인 필요");
         }
 
         Map<String, Integer> response = new HashMap<>();

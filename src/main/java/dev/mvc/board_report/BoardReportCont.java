@@ -28,4 +28,9 @@ public class BoardReportCont {
         return ResponseEntity.ok().body("신고가 접수되었습니다.");
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> listAll() {
+        return ResponseEntity.ok(boardReportProc.list_all());
+    }
+
 }

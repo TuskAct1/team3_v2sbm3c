@@ -54,5 +54,11 @@ public class AdminProc implements AdminProcInter {
     public int checkEmail(String email) {
         return adminDAO.checkEmail(email);
     }
+    
+    @Override
+    public int updatePassword(AdminVO adminVO) {
+        return this.adminDAO.updatePassword(adminVO);
+    }
+
 }
 

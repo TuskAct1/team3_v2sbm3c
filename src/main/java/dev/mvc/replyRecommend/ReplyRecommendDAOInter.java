@@ -41,5 +41,15 @@ public interface ReplyRecommendDAOInter {
    * @return
    */
   public int delete(int replyRecommendno);
-  
+
+
+  /**
+   * 특정 댓글의 총 추천 수 조회
+   * @param replyno 댓글 번호
+   * @return 추천 수
+   */
+  public int count_by_replyno(int replyno);
+
+  int deleteByReplyMember(HashMap<String, Object> map);
+
 }

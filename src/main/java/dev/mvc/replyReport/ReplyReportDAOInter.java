@@ -33,9 +33,10 @@ public interface ReplyReportDAOInter {
    * @param map
    * @return
    */
-  public int reportCnt(HashMap<String, Object> map);  
+  public int reportCnt(HashMap<String, Object> map);
 
-  
+  public int countByReplyNo(int replyno);  // ✅ 신고 수 확인용
+
   /**
    * 삭제
    * @param replyReportVO

@@ -25,9 +25,10 @@ public class LifestyleResultController {
 
     // 🟩 GPT 역할 지정 + 요청 목적 설명
     sb.append("당신은 건강한 시니어 라이프스타일 전문가입니다.\n");
-    sb.append("아래의 사용자 응답을 바탕으로, 하루 전체(아침~밤) 루틴을 시간대별로 구체적으로 작성해주세요.\n");
+    sb.append("아래의 사용자 응답을 바탕으로, 하루 전체(아침~밤) 루틴을 시간대별로 세세하게 구체적으로 작성해주세요.\n");
     sb.append("각 시간대는 1~2줄 이내로 간결하고 따뜻하게 존댓말로 작성해주세요.\n");
-    sb.append("각 활동은 시니어가 따라하기 쉽고 실천 가능한 내용으로 루틴을 세세하게 구성해주세요.\n\n");
+    sb.append("각 활동은 시니어가 따라하기 쉽고 실천 가능한 내용으로 루틴을 자세하게 구성해주세요.\n\n");
+    sb.append("혼자서도 외로움을 달랠 수 있는 활동들을 가능한 많이 추천해주세요.n\n");
 
     // 🟩 사용자 응답 삽입
     sb.append("🔽 사용자 응답:\n");
@@ -76,17 +77,17 @@ public class LifestyleResultController {
     int cnt = lifestyleResultProc.create(vo);
     return cnt == 1 ? "success" : "fail";
   }
-  
+
   // 루틴 목록
   @GetMapping("/list/{memberno}")
   public List<LifestyleResultVO> listByMember(@PathVariable("memberno") int memberno) {
     return lifestyleResultProc.listByMemberno(memberno);
   }
-  
+
   // 삭제
   @DeleteMapping("/delete/{lifestyleresultno}")
   public int delete(@PathVariable("lifestyleresultno") int lifestyleresultno) {
       return lifestyleResultProc.delete(lifestyleresultno);
   }
-  
+
 }

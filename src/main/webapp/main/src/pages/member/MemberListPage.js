@@ -1,13 +1,12 @@
 // MemberListPage.js
 import React, { useEffect, useState } from 'react';
-// import '../styles/MemberListPage.css';
 import '../../styles/MemberListPage.css';
 
 function MemberListPage() {
   const [members, setMembers] = useState([]);
 
     useEffect(() => {
-      fetch("http://localhost:3000/api/members")
+      fetch("/api/members")
         .then(res => res.json())
         .then(data => {
           console.log("받은 회원 데이터:", data); // 여기서 mdate 값 확인
@@ -41,7 +40,7 @@ function MemberListPage() {
 
   const handleDelete = (memberno, id) => {
   if (window.confirm(`정말로 회원 ${id} 을(를) 삭제하시겠습니까?`)) {
-    fetch(`http://localhost:3000/api/admin/members/delete?memberno=${memberno}`, {
+    fetch(`/api/admin/members/delete?memberno=${memberno}`, {
       method: "DELETE",
     })
       .then(res => {
