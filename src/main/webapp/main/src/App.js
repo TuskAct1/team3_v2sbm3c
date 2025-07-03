@@ -50,7 +50,7 @@ import AdminPage from './pages/member/AdminPage';
 import MyPage from './pages/member/MyPage';
 import DiaryPage from './pages/diary/DiaryPage';
 import AdminMyPage from './pages/member/AdminMyPage';
-import { PlantProvider } from './pages/plant/PlantContext';
+// import { PlantProvider } from './pages/plant/PlantContext';
 import PlantPage from './pages/plant/PlantPage';
 import ProductPage from './pages/product/ProductPage';
 
@@ -65,11 +65,9 @@ import MemoryGame from './pages/plant/games/MemoryGame';
 import PlantMain from './pages/plant/PlantMain';
 import GameSelect from './pages/plant/games/GameSelect';
 import PlantCreatePage from './pages/plant/PlantCreatePage'; // 존재하는 경우
-import PlantPage from './pages/plant/PlantPage';
 import PlantIntro from './pages/plant/PlantIntro'; 
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
-import DiaryPage from './pages/diary/DiaryPage';
 import DiaryCreate from './pages/diary/DiaryCreate';
 import DiaryUpdate from './pages/diary/DiaryUpdate';
 import DiaryRead from './pages/diary/DiaryRead';
@@ -226,7 +224,7 @@ function App() {
 
       </Routes>
 
-        </Routes>
+
     </BrowserRouter>
   );
 }
