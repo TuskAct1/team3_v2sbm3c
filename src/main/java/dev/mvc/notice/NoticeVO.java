@@ -14,6 +14,9 @@ public class NoticeVO {
     
     // 작성자 (관리자 번호) (FK)
     private int adminno;
+    
+    // 카테고리
+    private String category;
 
     // 공지 제목
     private String title;

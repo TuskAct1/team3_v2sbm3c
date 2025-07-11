@@ -7,12 +7,20 @@ function NoticeCreate() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [status, setStatus] = useState('공개');
+  const [category, setCategory] = useState('공지'); // ✅ 카테고리 상태 추가
   const navigate = useNavigate();
-  const adminno = 1;
+  const adminno = 1; // 실제 로그인된 관리자 번호로 교체 필요
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { title, content, status, adminno };
+
+    const data = {
+      title,
+      content,
+      status,
+      category, // ✅ 카테고리 포함
+      adminno,
+    };
 
     try {
       await axios.post('http://localhost:9093/notice/create', data);
@@ -25,16 +33,30 @@ function NoticeCreate() {
 
   return (
     <div className="notice-page-bg">
-    <div className="read-header">
-      <h2>📝 공지사항 등록</h2>
+      <div className="read-header">
+        <h2>📝 공지사항 등록</h2>
 
-      <div className="notice-action-buttons">
-        <button className="small-btn" onClick={() => navigate(`/notice/create`)}>등록</button>
-        <button className="small-btn" onClick={() => navigate('/notice/list')}>목록</button>
+        <div className="notice-action-buttons">
+          <button className="small-btn" onClick={() => navigate(`/notice/create`)}>등록</button>
+          <button className="small-btn" onClick={() => navigate('/notice/list')}>목록</button>
+        </div>
       </div>
-    </div>
 
       <form onSubmit={handleSubmit} className="notice-form">
+
+        {/* ✅ 카테고리 선택 */}
+        <label htmlFor="category" className="notice-label">카테고리</label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
+        >
+          <option value="공지">공지</option>
+          <option value="이벤트">이벤트</option>
+          <option value="시스템 점검">시스템 점검</option>
+        </select>
+
         {/* 제목 입력 */}
         <label htmlFor="title" className="notice-label">제목</label>
         <input

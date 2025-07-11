@@ -200,7 +200,12 @@ function DiaryPage() {
         const res = await axios.get('/diary/list', {
           params: { memberno, page, size, year, month }
         });
+
         const list = res.data.content || [];
+
+
+        const list = Array.isArray(res.data) ? res.data : res.data.list || [];
+        console.log(res.data);
 
         const mapped = list.map((item) => ({
           id: item.diaryno,

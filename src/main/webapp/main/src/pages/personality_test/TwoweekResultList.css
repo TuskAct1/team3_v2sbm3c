@@ -1,22 +1,22 @@
-/* 🌿 전체 배경 */
+/* ✅ 전체 배경 */
 .twoweek-page-bg {
-  background-color: #f4fff8; /* 연한 초록 배경 */
+  background-color: #ffffff;
   min-height: 100vh;
   padding: 30px;
   font-family: 'Nanum Gothic', sans-serif;
 }
 
-/* 📋 리스트 영역 */
+/* ✅ 리스트 컨테이너 */
 .twoweek-list-container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 128, 0, 0.1);
+  background-color: transparent;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
 }
 
-/* 🧠 상단 제목 + 버튼 영역 */
+/* ✅ 상단 제목 + 버튼 */
 .twoweek-header {
   display: flex;
   justify-content: space-between;
@@ -26,12 +26,12 @@
 
 .twoweek-header h2 {
   font-size: 1.5rem;
-  color: #145a32;
+  color: #66bb6a;
 }
 
-/* 🔘 작은 버튼 스타일 */
+/* ✅ 공통 버튼 */
 .small-btn {
-  background-color: #27ae60;
+  background-color: #66bb6a;
   color: white;
   border: none;
   border-radius: 8px;
@@ -43,54 +43,59 @@
 }
 
 .small-btn:hover {
-  background-color: #1e8449;
+  background-color: #43a047;
 }
 
-/* 🧾 테이블 스타일 */
+/* ✅ 표 스타일 */
 .twoweek-list-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(102, 187, 106, 0.08);
 }
 
 .twoweek-list-table th,
 .twoweek-list-table td {
-  border: 1px solid #c8e6c9;
+  border: 1px solid #e0e0e0;
   padding: 12px;
   text-align: center;
   font-size: 1rem;
 }
 
 .twoweek-list-table th {
-  background-color: #d0f0e0;
-  color: #1b5e20;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
 }
 
-/* 😥 데이터 없음 행 */
+/* ✅ 데이터 없음 */
 .empty-row {
   padding: 20px;
   font-size: 1.1rem;
-  color: #888;
+  color: #aaa;
 }
 
-/* 🔸 위험도 색상 클래스 */
+/* ✅ 위험도 색상 강조 */
 .low-risk {
-  background-color: #e8f5e9; /* 매우 낮음 - 연녹 */
+  background-color: #e8f5e9;
 }
 
 .mild-risk {
-  background-color: #fffde7; /* 경미 - 연노랑 */
+  background-color: #fffde7;
 }
 
 .moderate-risk {
-  background-color: #fff3e0; /* 중간 - 연주황 */
+  background-color: #fff3e0;
 }
 
 .high-risk {
-  background-color: #ffebee; /* 고위험 - 연분홍 */
+  background-color: #ffebee;
 }
 
-/* 🗓️ 달력 뷰 */
+/* ✅ 달력 전체 */
 .calendar-container {
   margin-top: 20px;
   display: flex;
@@ -101,12 +106,12 @@
 .react-calendar {
   border: none;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 128, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
   font-size: 1.05rem;
   width: 100%;
   max-width: 600px;
   background-color: #ffffff;
-  color: #1b5e20;
+  color: #2e7d32;
 }
 
 .react-calendar__month-view__weekdays {
@@ -114,6 +119,7 @@
   color: #2e7d32;
 }
 
+/* ✅ 각 날짜 셀 */
 .react-calendar__tile {
   padding: 20px 10px;
   font-size: 1rem;
@@ -126,20 +132,21 @@
 }
 
 .react-calendar__tile--active {
-  background-color: #81c784 !important;
+  background-color: #66bb6a !important;
   color: white;
 }
 
-/* 🎨 점수 아이콘 + 텍스트 표시 */
+/* ✅ 점수 설명 */
 .calendar-result {
   margin-top: 6px;
   font-size: 0.85rem;
   font-weight: bold;
   color: #1b5e20;
   line-height: 1.2;
+  text-align: center;
 }
 
-/* ✅ 점수별 배경 강조 */
+/* ✅ 점수별 색상 */
 .react-calendar__tile.score-verylow {
   background-color: #e8f5e9;
 }
@@ -156,34 +163,21 @@
   background-color: #ffebee;
 }
 
-/* 🟢🟡🟠🔴 범례 */
+/* ✅ 범례 스타일 */
 .legend {
   margin-top: 15px;
   font-size: 0.95rem;
   color: #333;
 }
 
-.calendar-result {
-  text-align: center;
-  font-size: 0.75rem;
-  line-height: 1.2;
-}
-
-.calendar-next {
-  text-align: center;
-  font-size: 0.7rem;
-  color: #2b27ae;
-  font-weight: bold;
-}
-
-/* 다음 검사일 하이라이트 (연한 초록 배경) */
+/* ✅ 다음 검사일 */
 .next-test-date {
-  background-color: #e0edf8 !important;
+  background-color: #e3f2fd !important;
   border: 1px solid #2b27ae;
   border-radius: 50%;
 }
 
-/* 🔍 달력 상단 내비게이션 (이전/다음 버튼) */
+/* ✅ 달력 내비게이션 */
 .react-calendar__navigation {
   display: flex;
   justify-content: center;
@@ -192,21 +186,19 @@
   margin-bottom: 20px;
 }
 
-/* 🟢 라벨 스타일 (년/월) */
 .react-calendar__navigation__label {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #145a32;
+  color: #2e7d32;
   padding: 4px 12px;
   background: none;
   border: none;
 }
 
-/* 🧭 이전/다음 버튼 */
 .react-calendar__navigation button {
-  background: none;         /* 배경 제거 */
-  border: none;             /* 테두리 제거 */
-  color: #145a32;           /* 글자 초록색 */
+  background: none;
+  border: none;
+  color: #2e7d32;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -214,13 +206,11 @@
   transition: all 0.2s ease;
 }
 
-
 .react-calendar__navigation button:hover {
-  text-decoration: underline;     /* 호버 시 밑줄 */
-  color: #0e3e1e;                 /* 글자 더 진하게 */
+  text-decoration: underline;
+  color: #1b5e20;
 }
 
-/* 연도 단위 이동 버튼 제거 (≪ ≫) */
 .react-calendar__navigation__prev2-button,
 .react-calendar__navigation__next2-button {
   display: none !important;

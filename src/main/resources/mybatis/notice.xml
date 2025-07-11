@@ -8,25 +8,18 @@
   <!-- 공지사항 등록 -->
   <insert id="create" parameterType="dev.mvc.notice.NoticeVO">
     INSERT INTO notice (
-      noticeno,
-      adminno,
-      title,
-      content,
-      status
+      noticeno, adminno, category, title, content, rdate, views, status
     ) VALUES (
-      notice_seq.NEXTVAL,
-      #{adminno},
-      #{title},
-      #{content},
-      #{status}
+      NOTICE_SEQ.NEXTVAL, #{adminno}, #{category}, #{title}, #{content}, SYSDATE, 0, #{status}
     )
   </insert>
-
+  
   <!-- 전체 목록 -->
   <select id="list" resultType="dev.mvc.notice.NoticeVO">
     SELECT 
       noticeno,
       adminno,
+      category, 
       title,
       content,
       rdate,
@@ -41,6 +34,7 @@
     SELECT 
       noticeno,
       adminno,
+      category, 
       title,
       content,
       rdate,
@@ -54,6 +48,7 @@
   <update id="update" parameterType="dev.mvc.notice.NoticeVO">
     UPDATE notice
     SET 
+      category = #{category}, 
       title = #{title},
       content = #{content},
       status = #{status}
@@ -80,7 +75,7 @@
   
   <!-- 검색 -->
   <select id="searchByKeyword" resultType="dev.mvc.notice.NoticeVO">
-    SELECT noticeno, title, content, rdate, views
+    SELECT noticeno, category, title, content, rdate, views
     FROM notice
     WHERE LOWER(title) LIKE '%' || LOWER(#{keyword}) || '%'
        OR LOWER(content) LIKE '%' || LOWER(#{keyword}) || '%'

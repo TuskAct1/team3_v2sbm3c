@@ -114,4 +114,18 @@ public class MemberProc implements MemberProcInter {
     public int existsById(String id) {
         return memberDAO.existsById(id);
     }
+    
+    // ✅ 검색 + 페이징: 리스트
+    @Override
+    public List<MemberVO> searchWithPaging(Map<String, Object> map) {
+        return memberDAO.searchWithPaging(map);
+    }
+
+    // ✅ 검색 + 페이징: 전체 개수
+    @Override
+    public int searchCount(Map<String, Object> map) {
+        return memberDAO.searchCount(map);
+    }
+    
+    
 }

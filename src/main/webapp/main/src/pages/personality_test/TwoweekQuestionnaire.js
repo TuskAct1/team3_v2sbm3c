@@ -1,9 +1,9 @@
+// ✅ TwoweekQuestionnaire.js - PHQ-9 우울증 자가진단
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Twoweek.css'; // 스타일은 별도 작성
+import './Twoweek.css'; // ⬅️ 고유 CSS 클래스 사용
 
-// 🔹 PHQ-9 우울증 검사 문항
 const questionList = [
   "일을 하는 것에 대한 흥미나 재미가 거의 없다.",
   "기분이 가라앉는 느낌이 들고, 우울함 또는 절망감을 느낀다.",
@@ -17,51 +17,44 @@ const questionList = [
 ];
 
 const TwoweekQuestionnaire = () => {
-  const [answers, setAnswers] = useState(Array(9).fill(null)); // 🔸 9개 문항에 대한 응답값 저장
-  const [missingIndexes, setMissingIndexes] = useState([]);    // 🔸 미응답 문항 추적용
+  const [answers, setAnswers] = useState(Array(9).fill(null));
+  const [missingIndexes, setMissingIndexes] = useState([]);
   const navigate = useNavigate();
-  const questionRefs = useRef([]);                             // 🔸 문항 위치 스크롤용
-  const synthRef = useRef(window.speechSynthesis);             // 🔸 음성 읽기 지원 객체
+  const questionRefs = useRef([]);
+  const synthRef = useRef(window.speechSynthesis);
 
-  // ✅ 문항 읽어주는 기능 (시니어 접근성 지원)
+  // ✅ 음성 재생
   const handleSpeak = (text) => {
     if (!window.speechSynthesis) {
       alert("이 브라우저에서는 음성 지원을 사용할 수 없습니다.");
       return;
     }
-
-    synthRef.current.cancel(); // 기존 읽기 중지
-    const utter = new SpeechSynthesisUtterance(text); // 새로 읽기
+    synthRef.current.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'ko-KR';
     synthRef.current.speak(utter);
   };
 
-  // ✅ 선택지 클릭 시 응답 업데이트
+  // ✅ 문항 선택 처리
   const handleSelect = (index, value) => {
     const newAnswers = [...answers];
     newAnswers[index] = value;
     setAnswers(newAnswers);
-
-    // 선택한 문항은 missing에서 제거
     setMissingIndexes(prev => prev.filter(i => i !== index));
   };
 
-  // ✅ 제출 버튼 클릭 시 동작
+  // ✅ 제출 처리
   const handleSubmit = async () => {
-    // 🔸 응답 안 한 문항 찾아서 처리
     const missing = answers.map((a, i) => a === null ? i : null).filter(i => i !== null);
 
     if (missing.length > 0) {
-      setMissingIndexes(missing); // 강조 표시용
+      setMissingIndexes(missing);
       alert(`응답하지 않은 문항이 ${missing.length}개 있습니다.`);
       questionRefs.current[missing[0]]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    // 🔸 총점 계산
     const totalScore = answers.reduce((acc, val) => acc + val, 0);
-
-    // 🔸 결과 문구 판별
     let resultText = "";
     if (totalScore <= 4) resultText = "우울증 아님";
     else if (totalScore <= 9) resultText = "가벼운 우울증";
@@ -70,26 +63,22 @@ const TwoweekQuestionnaire = () => {
     else resultText = "심한 우울증 (즉각적인 치료 요함)";
 
     try {
-      // ✅ 로그인한 사용자 정보 가져오기
       const user = JSON.parse(localStorage.getItem("user"));
       const memberno = user?.memberno;
 
-      // 🔒 로그인 정보 없으면 저장 막기
       if (!memberno) {
         alert("로그인 정보가 없습니다. 다시 로그인해주세요.");
+        navigate('/login');
         return;
       }
 
-      // ✅ 서버에 검사 결과 저장
       await axios.post('http://localhost:9093/twoweek_test/create', {
-        memberno: memberno,     // 로그인한 사용자 번호
-        score: totalScore,      // 점수
-        result: resultText      // 결과 텍스트
+        memberno,
+        score: totalScore,
+        result: resultText
       });
 
-      // ✅ 결과 페이지로 이동 (점수 전달)
-      navigate('/twoweek_test/result', { state: { totalScore } });
-
+      navigate('/twoweek_test/result', { state: { totalScore, resultText } });
     } catch (err) {
       console.error("❌ 저장 실패:", err);
       alert("결과 저장 중 문제가 발생했습니다.");
@@ -97,38 +86,35 @@ const TwoweekQuestionnaire = () => {
   };
 
   return (
-    <div className="twoweek-container">
-      <h1>🧠 우울증 자가진단 (PHQ-9)</h1>
-      <p className="twoweek-subtext">최근 2주간의 상태를 문항별로 체크해 주세요.</p>
+    <div className="twq-container">
+      <h1 className="twq-title">2주 주기 우울증 자가진단 (PHQ-9)</h1>
+      <p className="twq-subtitle">최근 2주간의 상태를 문항별로 체크해 주세요.</p>
 
-      {/* 🔹 문항 출력 */}
-      <div className="question-area">
+      <div className="twq-question-list">
         {questionList.map((q, i) => {
-          const isMissing = missingIndexes.includes(i);
+          const isMissing = missingIndexes.includes(i); // ✅ 추가된 부분
           return (
             <div
               key={i}
-              className={`question-block ${isMissing ? 'missing' : ''}`}
+              className={`twq-question-block ${isMissing ? 'twq-missing' : ''}`}
               ref={el => questionRefs.current[i] = el}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <p className={`question-text ${isMissing ? 'highlight-missing' : ''}`}>
+              <div className="twq-question-header">
+                <p className={`twq-question-text ${isMissing ? 'twq-highlight' : ''}`}>
                   {i + 1}. {q}
                 </p>
-                {/* 🔊 음성 읽기 버튼 */}
                 <button
                   type="button"
-                  className="speak-btn"
+                  className="twq-speak-btn"
                   onClick={() => handleSpeak(`${q}`)}
                 >
-                  📢
+                  🔊
                 </button>
               </div>
 
-              {/* 🔸 선택지 0~3 */}
-              <div className="radio-group">
+              <div className="twq-radio-group">
                 {[0, 1, 2, 3].map(val => (
-                  <label key={val} className="radio-option">
+                  <label key={val} className="twq-radio-option">
                     <input
                       type="radio"
                       name={`q${i}`}
@@ -145,10 +131,11 @@ const TwoweekQuestionnaire = () => {
         })}
       </div>
 
-      {/* 🔘 결과 제출 버튼 */}
-      <button className="submit-btn" onClick={handleSubmit}>
-        결과 보기
-      </button>
+      <div className="twq-submit-wrap">
+        <button className="twq-submit-btn" onClick={handleSubmit}>
+          결과 보기
+        </button>
+      </div>
     </div>
   );
 };
