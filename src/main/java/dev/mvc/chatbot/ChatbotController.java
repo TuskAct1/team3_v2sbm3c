@@ -15,15 +15,10 @@ import dev.mvc.category.CategoryVO;
 
 @Controller
 @RequestMapping("/chatbot")
-
 public class ChatbotController {
+    @GetMapping(value="/chat")
+    public String list_all() {
 
-
-@GetMapping(value="/chat")
-public String list_all() {
-
-  return "chatbot/chat"; // /templates/cate/list_all.html
-}
-  
-
+      return "chatbot/chat"; // /templates/cate/list_all.html
+    }
 }

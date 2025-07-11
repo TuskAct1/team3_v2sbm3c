@@ -21,7 +21,7 @@ const BoardCreate = () => {
 
   useEffect(() => {
     axios
-        .get(`/board/list_all/all/1`)
+        .get(`/board/list_all?word=all&now_page=1`)
         .then((res) => {
           setCategoryGroup(res.data.categoryGroup);
         })

@@ -8,6 +8,7 @@ function BoardByCategoryPage() {
   const [listByCategoryBoard, setListByCategoryBoard] = useState([]);
   const [categoryVO, setCategoryVO] = useState({});
   const [boardList, setBoardList] = useState({});
+  const [searchType, setSearchType] = useState('all'); // all: 제목+내용, title: 제목, reply: 댓글
 
   const [word, setWord] = useState('');
   const [nowPage, setNowPage] = useState(1);
@@ -19,35 +20,35 @@ function BoardByCategoryPage() {
   const navigate = useNavigate();
 
   // 게시글 목록 불러오기
-  const fetchBoardList = async (page = 1, searchWord = '', catNo = categoryno) => {
-  const queryWord = searchWord && searchWord.trim() !== '' ? searchWord : 'all';
-  if (!catNo || catNo === 'all' || catNo === undefined) {
-    // 전체글 목록
-    try {
-      const res = await axios.get(`/board/list_all/all/1`);
-      setCategoryGroup(res.data.categoryGroup);
-      setListByCategoryBoard(res.data.boardList);
-      setTotalPage(res.data.totalPage || 1);
-      setNowPage(page);
-      setWord(queryWord === 'all' ? '' : queryWord);
-    } catch (err) {
-      alert('전체글을 불러오지 못했습니다.123');
-    }
-    return;
-  };
+  const fetchBoardList = async (page = 1, searchWord = '', catNo = categoryno, searchTypeParam = searchType) => {
+    const queryWord = searchWord && searchWord.trim() !== '' ? searchWord : 'all';
+    if (!catNo || catNo === 'all' || catNo === undefined) {
+      // 전체글 목록
+      try {
+        const res = await axios.get(`/board/list_all`);
+        setCategoryGroup(res.data.categoryGroup);
+        setListByCategoryBoard(res.data.boardList);
+        setTotalPage(res.data.totalPage || 1);
+        setNowPage(page);
+        setWord(queryWord === 'all' ? '' : queryWord);
+      } catch (err) {
+        alert('전체글을 불러오지 못했습니다.123');
+      }
+      return;
+    };
 
-  try {
-    const res = await axios.get(`/board/list_category/${catNo}/${queryWord}/${page}`);
-    setCategoryGroup(res.data.categoryGroup);
-    setCategoryVO(res.data.categoryVO);
-    setListByCategoryBoard(res.data.listByCategoryBoard);
-    setTotalPage(res.data.totalPage || 1);
-    setNowPage(res.data.now_page || page);
-    setWord(res.data.word === 'all' ? '' : res.data.word);
-  } catch (err) {
-    alert('게시글 목록을 불러오지 못했습니다.');
-  }
-};
+    try {
+      const res = await axios.get(`/board/list_category/${catNo}?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`);
+      setCategoryGroup(res.data.categoryGroup);
+      setCategoryVO(res.data.categoryVO);
+      setListByCategoryBoard(res.data.listByCategoryBoard);
+      setTotalPage(res.data.totalPage || 1);
+      setNowPage(res.data.now_page || page);
+      setWord(res.data.word === 'all' ? '' : res.data.word);
+    } catch (err) {
+      alert('게시글 목록을 불러오지 못했습니다.');
+    }
+  };
 
 
   useEffect(() => {
@@ -57,7 +58,7 @@ function BoardByCategoryPage() {
   // 검색 버튼 클릭
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchBoardList(1, word, selectedCategory); // 첫 페이지, 검색어, 선택된 카테고리
+    fetchBoardList(1, word, selectedCategory, searchType); // 첫 페이지, 검색어, 선택된 카테고리
     if(selectedCategory !== 'all')
       navigate(`/board/list_category/${selectedCategory}/${word && word.trim() !== '' ? word : 'all'}/1`);
   };
@@ -100,7 +101,7 @@ function BoardByCategoryPage() {
 
     if (categoryno === 'all' | categoryno === undefined) {
       try {
-        const res = await axios.get('/board/list_all/all/1');
+        const res = await axios.get('/board/list_all');
         setListByCategoryBoard(res.data.boardList);
         setNowPage(1);
         setTotalPage(res.data.totalPage || 1);
@@ -130,7 +131,16 @@ function BoardByCategoryPage() {
       <hr />
       
       {/* 검색 폼 */}
-      <form onSubmit={handleSearch} style={{ margin: '16px 0' }}>
+     <form onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+        <select
+          value={searchType}
+          onChange={e => setSearchType(e.target.value)}
+          style={{ marginRight: 8, padding: '8px', fontSize: '16px' }}
+        >
+          <option value="all">제목+내용</option>
+          <option value="title">제목</option>
+          <option value="reply">댓글</option>
+        </select>
         <input
           type="text"
           placeholder="검색어 입력"
@@ -138,9 +148,9 @@ function BoardByCategoryPage() {
           onChange={e => setWord(e.target.value)}
           style={{ padding: '8px', fontSize: '16px', width: 220, marginRight: 10 }}
         />
-        <button type="submit" style={{ padding: '8px 16px' }}>검색</button>
+        <button type="submit">검색</button>
       </form>
-
+      
       <table className="table table-striped" style={{ width: '100%' }}>
       <colgroup>
         <col style={{ width: '10%' }} />

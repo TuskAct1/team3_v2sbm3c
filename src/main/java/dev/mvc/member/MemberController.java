@@ -8,6 +8,7 @@ import java.util.Map;
 import dev.mvc.admin.AdminProcInter;
 import dev.mvc.admin.AdminVO;
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,9 @@ public class MemberController {
     @Autowired
     private AttendanceProcInter attendanceProc; // 출석 처리용 (있다면)
 
+    @Autowired
+    private MailService mailService;
+    
     /** 회원 가입 */
     @PostMapping("/signup")
     @Transactional
@@ -418,8 +422,40 @@ public class MemberController {
     }
 
 
+    /** 아이디 찾기 */
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findIdByEmail(@RequestBody Map<String, String> param) {
+        String email = param.get("email");
+        // 실제 서비스에선 이메일로 member를 조회
+        MemberVO member = memberProc.readById(email);
+        if (member != null) {
+            // 아이디 일부 마스킹해서 제공(예: abc***)
+            String idMasked = member.getId().substring(0, 3) + "***";
+            return ResponseEntity.ok(Map.of("id", idMasked));
+        }
+        return ResponseEntity.ok(Map.of("id", null));
+    }
 
+    /** 비밀번호 찾기 + 재설정 */
+    @PostMapping("/find-password")
+    public ResponseEntity<?> findPassword(@RequestBody Map<String, String> param) {
+        String id = param.get("id");    // email
+        MemberVO memberVO = memberProc.readById(id);
 
+        if (memberVO != null) {
+            // 임시비번 생성
+            String tempPw = RandomStringUtils.randomAlphanumeric(8);
+            // 암호화
+            String encrypted = bcryptUtil.encode(tempPw);
+            // 비밀번호 암호화 후 저장
+            memberProc.updatePassword(memberVO.getMemberno(), encrypted);
+            // 임시 비밀번호 이메일 전송(예시)
+            mailService.send("ghlim1000@gmail.com", id, "[서비스명] 임시 비밀번호 안내",
+                    "임시 비밀번호: " + tempPw + "\n로그인 후 꼭 변경해주세요.");
+            return ResponseEntity.ok(Map.of("msg", "임시 비밀번호가 이메일로 전송되었습니다."));
+        }
+        return ResponseEntity.ok(Map.of("msg", "일치하는 회원 정보가 없습니다."));
+    }
 
     
     @GetMapping("")

@@ -32,7 +32,6 @@ public class AdminController {
     private PlantProcInter plantProc;
 
     /** 관리자 회원가입 */
-
     @PostMapping("/signup")
     public ResponseEntity<Map<String, Object>> signup(@RequestBody AdminVO adminVO) {
         Map<String, Object> response = new HashMap<>();
@@ -54,27 +53,7 @@ public class AdminController {
             return ResponseEntity.status(500).body(response);
         }
     }
-//    /** 로그인 */
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody Map<String, Object> loginMap) {
-//        String id = (String) loginMap.get("id");
-//        String inputPasswd = (String) loginMap.get("passwd"); // ✅ key 변경!
-//
-//        if (inputPasswd == null) {
-//            return ResponseEntity.badRequest().body("비밀번호가 누락되었습니다.");
-//        }
-//
-//        AdminVO admin = adminProc.readByEmail(id);
-//
-//        if (admin != null && bcryptUtil.matches(inputPasswd, admin.getPassword())) {
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("message", "로그인 성공");
-//            response.put("user", admin);
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.status(401).body("로그인 실패");
-//        }
-//    }
+
 
     // 관리자 로그인
     @PostMapping("/login")

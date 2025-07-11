@@ -72,9 +72,11 @@ public interface MemberProcInter {
 
     public MemberVO readById(String id);
 
-    
     public int existsById(String id);  // 존재 여부 확인
+
+    public int updatePassword(int memberno, String newPasswd);
+
     public List<MemberVO> searchWithPaging(Map<String, Object> map);
+  
     public int searchCount(Map<String, Object> map);
-    
 }

@@ -115,6 +115,11 @@ public class BoardProc implements BoardProcInter {
     }
 
     @Override
+    public int RecommendCnt(int boardno) {
+        return boardDAO.RecommendCnt(boardno);
+    }
+
+    @Override
     public ArrayList<BoardVO> list_by_categoryno_search_paging(HashMap<String, Object> map) {
         /*
          * 예) 페이지당 10개의 레코드 출력 1 page: WHERE r >= 1 AND r <= 10 2 page: WHERE r >= 11
@@ -196,6 +201,47 @@ public class BoardProc implements BoardProcInter {
     @Override
     public int list_all_search_count(HashMap<String, Object> map) {
         return boardDAO.list_all_search_count(map);
+    }
+
+    @Override
+    public List<BoardVO> listAllWithSearch(HashMap<String, Object> map) {
+        /*
+         * 예) 페이지당 10개의 레코드 출력 1 page: WHERE r >= 1 AND r <= 10 2 page: WHERE r >= 11
+         * AND r <= 20 3 page: WHERE r >= 21 AND r <= 30
+         *
+         * 페이지에서 출력할 시작 레코드 번호 계산 기준값, nowPage는 1부터 시작 1 페이지 시작 rownum: now_page = 1, (1
+         * - 1) * 10 --> 0 2 페이지 시작 rownum: now_page = 2, (2 - 1) * 10 --> 10 3 페이지 시작
+         * rownum: now_page = 3, (3 - 1) * 10 --> 20
+         */
+        int begin_of_page = ((int)map.get("now_page") - 1) * Contents.RECORD_PER_PAGE;
+
+        // 시작 rownum 결정
+        // 1 페이지 = 0 + 1: 1
+        // 2 페이지 = 10 + 1: 11
+        // 3 페이지 = 20 + 1: 21
+        int start_num = begin_of_page + 1;
+
+        // 종료 rownum
+        // 1 페이지 = 0 + 10: 10
+        // 2 페이지 = 10 + 10: 20
+        // 3 페이지 = 20 + 10: 30
+        int end_num = begin_of_page + Contents.RECORD_PER_PAGE;
+        /*
+         * 1 페이지: WHERE r >= 1 AND r <= 10 2 페이지: WHERE r >= 11 AND r <= 20 3 페이지: WHERE
+         * r >= 21 AND r <= 30
+         */
+
+        // System.out.println("begin_of_page: " + begin_of_page);
+        // System.out.println("WHERE r >= "+start_num+" AND r <= " + end_num);
+
+        map.put("start_num", start_num);
+        map.put("end_num", end_num);
+        return boardDAO.listAllWithSearch(map);
+    }
+
+    @Override
+    public int countAllWithSearch(HashMap<String, Object> map) {
+        return boardDAO.countAllWithSearch(map);
     }
 }
 

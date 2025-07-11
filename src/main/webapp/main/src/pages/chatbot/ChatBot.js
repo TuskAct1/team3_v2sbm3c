@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
+import './Chatbot.css';
 
 function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
+  const mname = String(JSON.parse(localStorage.getItem('user') || '{}').mname); // Member 이름
   const [messages, setMessages] = useState([
-    { from: "bot", text: "안녕하세요! 토닥이 챗봇입니다. 무엇이든 말씀해 주세요." },
+    { from: "bot", text: '안녕하세요! ' + mname + '님. 토닥이 챗봇입니다. 무엇이든 말씀해 주세요.' },
   ]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messageEndRef = useRef(null);
@@ -38,7 +41,7 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
       setMessages(data.history);
     } else {
       setMessages([
-        { from: "bot", text: "안녕하세요! 토닥이 챗봇입니다. 무엇이든 말씀해 주세요." }
+        { from: "bot", text: '안녕하세요! ' + mname + '님. 토닥이 챗봇입니다. 무엇이든 말씀해 주세요.' }
       ]);
     }
   };
@@ -115,72 +118,78 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
   };
 
   return (
-    <div>
-      <div style={{
-        minHeight: 320, maxHeight: "70vh", overflowY: "auto", marginBottom: 16,
-        padding: 12, background: "#f7f7fb", borderRadius: 10
-      }}>
+    <div className="flex flex-col h-full">
+      {/* 채팅창 */}
+      <div className="flex-1 overflow-y-auto px-6 py-8 bg-gray-50">
         {messages.map((msg, i) => (
-          <div key={i} style={{
-            textAlign: msg.from === "bot" ? "left" : "right",
-            margin: "10px 0"
-          }}>
-            <span style={{
-              display: "inline-block",
-              background: msg.from === "bot" ? "#e6eefa" : "#d3f8d3",
-              padding: "9px 16px",
-              borderRadius: 16,
-              maxWidth: "72%",
-              wordBreak: "break-word"
-            }}>
-            {msg.text}
-            </span>
+          <div key={i} className={`flex ${msg.from === "bot" ? "justify-start" : "justify-end"} mb-4`}>
+            <div className={`
+              max-w-[75%] px-4 py-2 rounded-2xl shadow text-lg leading-relaxed whitespace-pre-line
+              ${msg.from === "user"
+                ? "bg-blue-500 text-white rounded-br-md"
+                : "bg-white text-gray-800 border rounded-bl-md"
+              }
+            `}>
+              {msg.text}
+            </div>
           </div>
         ))}
         {loading && (
-        <div style={{ textAlign: "left", color: "#888" }}>토닥이 응답 중...</div>
+          <div className="flex justify-start mb-3">
+            <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-2xl shadow">
+              토닥이 응답 중...
+            </div>
+          </div>
         )}
-        {/* 👇 메시지 끝에 이 div를 렌더링해서 스크롤 */}
         <div ref={messageEndRef} />
       </div>
 
-      <div style={{ display: "flex" }}>
+      {/* 입력창 */}
+      <div className="flex items-center border-t p-4 bg-white">
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleInputKeyDown}
-          style={{ flex: 1, padding: 10, borderRadius: 10, border: "1px solid #bbb" }}
+          className="flex-1 rounded-xl border px-4 py-2 text-lg outline-none focus:border-blue-400 transition"
           placeholder="메시지를 입력하세요"
           disabled={loading}
         />
         <button
           onClick={handleSend}
-          style={{ marginLeft: 8, padding: "8px 18px", borderRadius: 10, border: "none", background: "#6f98ff", color: "#fff" }}
+          className="ml-3 px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow transition"
           disabled={loading}
         >
           전송
         </button>
+        <button
+          onClick={handleShowStat}
+          className="ml-3 px-4 py-2 bg-gray-200 hover:bg-blue-100 text-gray-700 rounded-xl shadow text-base"
+        >
+          통계 보기
+        </button>
       </div>
-
-      <div style={{ margin: "18px 0" }}>
-        <button onClick={handleShowStat} style={{ /* ... */ }}>통계 보기</button>
-      </div>
+      {/* 통계 모달 */}
       {showStat && (
-        <div style={{ /* ... */ }}>
-          <div style={{ fontWeight: "bold", fontSize: 18, marginBottom: 10 }}>
-            최근 1주일 감정 통계
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-xs mx-3">
+            <div className="font-bold text-lg mb-3">최근 1주일 감정 통계</div>
+            {statLoading && <div>불러오는 중...</div>}
+            {stat && (
+              <ul className="space-y-1 text-base">
+                <li>😊 긍정: {stat["긍정"]}회</li>
+                <li>😥 부정: {stat["부정"]}회</li>
+                <li>😐 중립: {stat["중립"]}회</li>
+                <li>😨 불안: {stat["불안"]}회</li>
+                <li>😔 우울: {stat["우울"]}회</li>
+              </ul>
+            )}
+            <button
+              onClick={() => setShowStat(false)}
+              className="mt-4 w-full py-2 rounded-lg bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200 transition"
+            >
+              닫기
+            </button>
           </div>
-          {statLoading && <div>불러오는 중...</div>}
-          {stat && (
-            <ul>
-              <li>긍정: {stat["긍정"]}회</li>
-              <li>부정: {stat["부정"]}회</li>
-              <li>중립: {stat["중립"]}회</li>
-              <li>불안: {stat["불안"]}회</li>
-              <li>우울: {stat["우울"]}회</li>
-            </ul>
-          )}
-          <button onClick={() => setShowStat(false)}>닫기</button>
         </div>
       )}
     </div>

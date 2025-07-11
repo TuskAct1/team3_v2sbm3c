@@ -20,3 +20,4 @@ def get_current_time(timezone: str, location: str) -> str:
   
   return result
 
+

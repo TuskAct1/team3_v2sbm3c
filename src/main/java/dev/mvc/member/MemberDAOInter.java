@@ -45,6 +45,10 @@ public interface MemberDAOInter {
     public int addSticker(int memberno);
 
     public int existsById(String id);
+
+    public int updatePassword(int memberno, String newPasswd);
+  
     public List<MemberVO> searchWithPaging(Map<String, Object> map);
+  
     public int searchCount(Map<String, Object> map);
 }

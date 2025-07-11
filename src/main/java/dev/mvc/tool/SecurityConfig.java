@@ -139,6 +139,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -174,25 +175,24 @@ public class SecurityConfig {
 
         // ✅ customResolver: 구글 로그인 요청 시 prompt=select_account 추가
         OAuth2AuthorizationRequestResolver customResolver = new OAuth2AuthorizationRequestResolver() {
-          // 1️⃣ 첫 번째 resolve 메서드
-          @Override
-          public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
+            // 1️⃣ 첫 번째 resolve 메서드
+            @Override
+            public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
               OAuth2AuthorizationRequest original = defaultResolver.resolve(request);
               return customizeRequest(original); // 계정 선택 파라미터 추가
-          }
+            }
 
-          // 2️⃣ 두 번째 resolve 메서드 (clientRegistrationId 포함된 버전)
-          @Override
-          public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String clientRegistrationId) {
+            // 2️⃣ 두 번째 resolve 메서드 (clientRegistrationId 포함된 버전)
+            @Override
+            public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String clientRegistrationId) {
               OAuth2AuthorizationRequest original = defaultResolver.resolve(request, clientRegistrationId);
               return customizeRequest(original); // 마찬가지로 계정 선택 추가
-          }
+            }
         };
 
         http
-            .cors() // ✅ CORS 설정 허용 (React 요청 수용)
-            .and()
-            .csrf().disable() // ✅ CSRF 보호 비활성화 (API 서버 용도)
+            .cors(Customizer.withDefaults()) // ✅ CORS 설정 허용 (React 요청 수용)
+            .csrf(csrf -> csrf.disable()) // ✅ CSRF 보호 비활성화 (API 서버 용도)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/images/**", "/css/**", "/js/**", "/oauth2/**").permitAll()
                 .anyRequest().permitAll()  // 필요 시 authenticated()로 변경 가능

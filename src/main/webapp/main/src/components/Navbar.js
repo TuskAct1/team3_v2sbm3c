@@ -120,6 +120,8 @@ function Navbar() {
             <li><Link to="/emotion_report">감정분석</Link></li>
 
             <li><Link to="/product">포인트 상점</Link></li>
+
+            <li><Link to="/inquiry">1:1 문의</Link></li>
             <li><Link to="/admin/member-list">회원 리스트</Link></li>
 
             <li><Link to="/admin/member-list">회원 리스트</Link></li> 
