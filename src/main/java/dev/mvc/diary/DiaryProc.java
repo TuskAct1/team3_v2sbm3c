@@ -77,4 +77,47 @@ public class DiaryProc implements DiaryProcInter {
 
         return result;
     }
+
+    @Override
+    public Map<String, Object> listByPage(int memberno, int page, int size, int year, int month) {
+        // ✅ 해당 월의 건수만 세도록 수정
+        int totalElements = diaryDAO.countByMember(memberno, year, month);
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        int offset = page * size;
+        List<DiaryVO> content = diaryDAO.findByMemberPaged(memberno, offset, size, year, month);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("content", content);
+        result.put("page", page);
+        result.put("size", size);
+        result.put("totalPages", totalPages);
+        result.put("totalElements", totalElements);
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> search(int memberno, String keyword, String type, int page, int size) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberno", memberno);
+        params.put("keyword", keyword);
+        params.put("type", type);
+        params.put("offset", page * size);
+        params.put("size", size);
+
+        List<DiaryVO> list = diaryDAO.searchByKeyword(params);
+        int total = diaryDAO.countSearchByKeyword(params);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("content", list);
+        result.put("totalElements", total);
+        result.put("totalPages", (int)Math.ceil((double)total/size));
+        result.put("page", page);
+        result.put("size", size);
+
+        return result;
+    }
+
+
 }

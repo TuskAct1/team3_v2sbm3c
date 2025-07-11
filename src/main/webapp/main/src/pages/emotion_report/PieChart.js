@@ -11,9 +11,16 @@ import {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PieChart = ({ data }) => {
-  // ✅ 감정 항목 고정 순서
   const labels = ['긍정', '부정', '중립', '불안', '우울'];
-  const values = [
+  const defaultColors = [
+    "#FF6384", // 긍정
+    "#FFCD56", // 부정
+    "#36A2EB", // 중립
+    "#9CCC65", // 불안
+    "#BA68C8"  // 우울
+  ];
+
+  let values = [
     data['positive'] || 0,
     data['negative'] || 0,
     data['neutral'] || 0,
@@ -21,20 +28,19 @@ const PieChart = ({ data }) => {
     data['depressed'] || 0
   ];
 
+  const isAllZero = values.every((v) => v === 0);
+
+  // ✅ 데이터가 전부 0이면 -> 회색 단일값
   const pieData = {
     labels,
     datasets: [
       {
         label: "감정 비율 (%)",
-        data: values,
-        backgroundColor: [
-          "#FF6384", // 긍정 - 빨강
-          "#FFCD56", // 부정 - 노랑
-          "#36A2EB", // 중립 - 파랑
-          "#9CCC65", // 불안 - 연두
-          "#BA68C8", // 우울 - 보라
-        ],
-        borderWidth: 1,
+        data: isAllZero ? [1] : values,
+        backgroundColor: isAllZero
+          ? ["#e0e0e0"]
+          : defaultColors,
+        borderWidth: 0,
       },
     ],
   };
@@ -47,18 +53,21 @@ const PieChart = ({ data }) => {
         labels: {
           font: {
             size: 14
+          },
+          // ✅ 항상 감정별 색상과 라벨 유지
+          generateLabels: (chart) => {
+            return labels.map((label, index) => ({
+              text: label,
+              fillStyle: defaultColors[index],
+              strokeStyle: defaultColors[index],
+              hidden: false,
+              index: index
+            }));
           }
         }
       },
       tooltip: {
-        enabled: true,
-        callbacks: {
-          label: function(context) {
-            const label = context.label || '';
-            const value = context.parsed || 0;
-            return `${label}: ${value}%`;
-          }
-        }
+        enabled: !isAllZero, // 0%일 때는 툴팁도 제거
       },
     },
   };

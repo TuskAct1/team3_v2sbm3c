@@ -23,4 +23,8 @@ public interface DiaryProcInter {
     /** 특정 회원의 기간별 감정 카운트 */
     public Map<String, Integer> getEmotionCountByPeriod(int memberno, String reportType, String reportPeriod);
 
+    public Map<String, Object> listByPage(int memberno, int page, int size, int year, int month);
+
+    public Map<String, Object> search(int memberno, String keyword, String type, int page, int size);
+
 }

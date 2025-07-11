@@ -21,6 +21,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // 플레이리스트 썸네일 이미지 정적 자원 매핑
         registry.addResourceHandler("/playlist/storage/**")
         .addResourceLocations("file:///C:/kd/deploy/team3/playlist/storage/");
+
+        registry.addResourceHandler("/diary/storage/**").addResourceLocations("file:///C:/kd/deploy/team3/diary/storage/");
         
         // C:/kd/deploy/resort/food/storage ->  /food/storage -> http://localhost:9091/food/storage;
         // registry.addResourceHandler("/food/storage/**").addResourceLocations("file:///" +  Food.getUploadDir());

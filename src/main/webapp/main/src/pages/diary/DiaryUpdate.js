@@ -3,11 +3,11 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 const emotions = [
-  { score: 1, icon: "😄", label: "아주 좋음" },
-  { score: 2, icon: "🙂", label: "좋음" },
-  { score: 3, icon: "😐", label: "보통" },
-  { score: 4, icon: "🙁", label: "나쁨" },
-  { score: 5, icon: "😞", label: "아주 나쁨" },
+  { score: 1, icon: "😃", label: "긍정" },
+  { score: 2, icon: "😠", label: "부정" },
+  { score: 3, icon: "😐", label: "중립" },
+  { score: 4, icon: "😰", label: "불안" },
+  { score: 5, icon: "😢", label: "우울" },
 ];
 
 function EmotionSelector({ selectedScore, onChange }) {
@@ -51,34 +51,48 @@ const DiaryUpdate = () => {
     title: "",
     content: "",
     risk_flag: 3,
+    file1MF: null,
+    file1saved: "",
   });
+
+  const [newPreview, setNewPreview] = useState(null);
 
   const titleInput = useRef();
   const contentInput = useRef();
 
-  // ✅ 로그인 사용자 정보 가져오기
   const user = JSON.parse(localStorage.getItem("user"));
   const memberno = user?.memberno;
+
+  useEffect(() => {
+    if (!memberno) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+    }
+  }, [navigate, memberno]);
 
   useEffect(() => {
     const fetchDiary = async () => {
       try {
         const res = await axios.get(`/diary/read/${id}`);
         const data = res.data;
-        // OPTIONAL: 본인 글인지 체크
-        if (data.memberno !== memberno) {
+
+        if (!data || data.memberno !== memberno) {
           alert("권한이 없습니다!");
           navigate("/diary");
           return;
         }
-        setState({
+
+        setState((prev) => ({
+          ...prev,
           title: data.title || "",
           content: data.content || "",
           risk_flag: data.risk_flag || 3,
-        });
+          file1saved: data.file1saved || "",
+        }));
       } catch (error) {
         console.error("일기 불러오기 실패:", error);
         alert("일기 데이터를 불러오지 못했습니다.");
+        navigate("/diary");
       }
     };
 
@@ -86,15 +100,33 @@ const DiaryUpdate = () => {
   }, [id, memberno, navigate]);
 
   const handleChangeState = (e) => {
-  const { name, value } = e.target;
-  setState({
-    ...state,
-    [name]: name === "risk_flag" ? Number(value) : value,
-  });
-};
+    const { name, value } = e.target;
+    setState({
+      ...state,
+      [name]: name === "risk_flag" ? Number(value) : value,
+    });
+  };
 
-    const handleEmotionChange = (score) => {
-      setState((prev) => ({ ...prev, risk_flag: score }));
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setState({
+      ...state,
+      file1MF: file,
+    });
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setNewPreview(null);
+    }
+  };
+
+  const handleEmotionChange = (score) => {
+    setState((prev) => ({ ...prev, risk_flag: score }));
   };
 
   const handleSubmit = async () => {
@@ -110,13 +142,23 @@ const DiaryUpdate = () => {
     }
 
     try {
-      await axios.put(`/diary/update/${id}`, {
-        memberno,                       // ✅ 추가
-        title: state.title,
-        content: state.content,
-        risk_flag: state.risk_flag,
-        password: "1234",
+      const formData = new FormData();
+      formData.append("memberno", memberno);
+      formData.append("title", state.title);
+      formData.append("content", state.content);
+      formData.append("risk_flag", String(state.risk_flag));
+      formData.append("password", "1234");
+
+      if (state.file1MF) {
+        formData.append("file1MF", state.file1MF);
+      }
+
+      await axios.put(`/diary/update/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
+
       alert("일기 수정 성공!");
       navigate("/diary");
     } catch (error) {
@@ -149,6 +191,29 @@ const DiaryUpdate = () => {
           style={{ width: "100%", padding: 8, fontSize: 16, resize: "vertical" }}
         />
       </div>
+      <div style={{ marginBottom: 12 }}>
+        <label>첨부 이미지:</label>
+        <input type="file" accept="image/*" onChange={handleFileChange} />
+      </div>
+      {newPreview ? (
+        <div style={{ marginTop: 12 }}>
+          <p>선택한 새 이미지 미리보기:</p>
+          <img
+            src={newPreview}
+            alt="새 이미지 미리보기"
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </div>
+      ) : state.file1saved ? (
+        <div style={{ marginTop: 12 }}>
+          <p>현재 등록된 이미지:</p>
+          <img
+            src={`http://localhost:9093/diary/storage/${state.file1saved}`}
+            alt="첨부 이미지"
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </div>
+      ) : null}
       <div>
         <span>오늘의 감정점수 : </span>
         <EmotionSelector selectedScore={state.risk_flag} onChange={handleEmotionChange} />
