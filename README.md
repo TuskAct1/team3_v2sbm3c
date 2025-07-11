@@ -22,3 +22,10 @@ npm install chart.js react-chartjs-2
 
 ㅁ Chatbot 실행
 (ai) C:\kd\ws_java\gabia\team3_v2sbm3c\src\main\webapp\main\src\pages>uvicorn chatbot.Chat:app --reload --port 8000
+
+
+아이콘 때문에 install함 
+npm install react-icons 
+
+캘린더 할 때 씀 :)
+npm install @fullcalendar/timegrid
