@@ -1,98 +1,115 @@
-/* ✅ 전체 페이지 컨테이너 스타일 */
+/* ✅ 전체 페이지 감싸는 컨테이너 */
 .playlist-container {
-  background-color: #f4fff8; /* 연한 초록 배경 */
-  max-width: 960px;
+  background-color: #ffffff;
+  max-width: 980px;
   margin: 40px auto;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 128, 0, 0.15); /* 부드러운 초록 그림자 */
-  font-family: 'Nanum Gothic', sans-serif;
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(102, 187, 106, 0.2);
+  font-family: 'Pretendard', sans-serif;
+  font-size: 17px;
+  line-height: 1.7;
 }
 
-/* ✅ 내부 영역: 좌우 2단 구성 */
+/* ✅ 내부 양쪽 구성 */
 .playlist-inner {
   display: flex;
-  gap: 30px;
+  flex-wrap: wrap;
+  gap: 36px;
 }
 
-/* ✅ 왼쪽: 유튜브 플레이어 영역 */
+/* ✅ 왼쪽: 유튜브 플레이어 */
 .playlist-left {
   flex: 1;
+  min-width: 320px;
 }
 
 .playlist-title {
-  font-size: 1.6rem;
-  font-weight: bold;
-  margin-bottom: 16px;
-  color: #145a32; /* 짙은 초록 */
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #2e7d32;
+  border-left: 6px solid #66bb6a;
+  padding-left: 14px;
 }
 
 .yt-player {
   width: 100%;
   height: 360px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 플레이어도 살짝 그림자 */
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0f2e9;
 }
 
-/* ✅ 오른쪽: 자동 타임라인 영역 */
+/* ✅ 오른쪽: 타임라인 */
 .playlist-right {
   flex: 1;
-  background-color: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 128, 0, 0.1);
+  background-color: #f8fef9;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: inset 0 0 0 1px #e0f2e9;
+  max-height: 520px;
   overflow-y: auto;
-  max-height: 500px;
+  min-width: 320px;
 }
 
 /* ✅ 타임라인 제목 */
 .playlist-right h3 {
-  font-size: 1.2rem;
-  color: #1e8449;
-  margin-bottom: 14px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #388e3c;
+  margin-bottom: 18px;
+  text-align: center;
 }
 
-/* ✅ 타임라인 리스트 */
+/* ✅ 리스트 전체 */
 .song-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-/* ✅ 각 곡 한 줄 스타일 */
+/* ✅ 곡 한 줄 */
 .song-line {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  border-radius: 10px;
-  background-color: #f9fefb;
-  transition: background-color 0.3s;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(102, 187, 106, 0.1);
   cursor: pointer;
+  border: 1px solid transparent;
 }
 
-/* ✅ 마우스 올렸을 때 */
 .song-line:hover {
-  background-color: #eafaf0;
+  background-color: #e9f7ef;
+  transform: translateX(6px);
 }
 
-/* ✅ 현재 재생 중인 곡 강조 */
+/* ✅ 재생 중인 곡 강조 */
 .song-line.active {
-  background-color: #c8facc;
+  background-color: #d2f8db;
+  border: 1px solid #66bb6a;
   font-weight: bold;
+  color: #2e7d32;
+  transform: scale(1.02);
 }
 
-/* ✅ 시작 시간 텍스트 */
+/* ✅ 시작 시간 */
 .song-time {
-  min-width: 70px;
-  color: #1e8449;
-  font-size: 0.9rem;
+  min-width: 68px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #66bb6a;
 }
 
-/* ✅ 곡 제목 텍스트 */
+/* ✅ 곡 제목 */
 .song-text {
   flex: 1;
-  font-size: 1rem;
-  color: #333;
+  font-size: 1.05rem;
+  color: #222;
+  word-break: keep-all;
 }

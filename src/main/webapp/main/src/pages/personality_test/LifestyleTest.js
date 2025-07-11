@@ -1,21 +1,16 @@
+// src/pages/lifestyle_test/LifestyleTest.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LifestyleTest.css';      // 💚 시니어용 스타일 불러오기
-import axios from 'axios';         // 📡 서버와 통신용
+import './LifestyleTest.css';  // 💚 고유 스타일 CSS
+import axios from 'axios';
 
 function LifestyleTest() {
-  const navigate = useNavigate();  // 🔹 페이지 이동 함수
-
-  // 🔸 현재 몇 번째 질문인지 저장
+  const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
-  // 🔸 각 질문에 대한 사용자의 답 저장
   const [answers, setAnswers] = useState({});
-
-  // 🔸 결과 요청 중인지 확인하는 로딩 상태
   const [loading, setLoading] = useState(false);
 
-  // 🔸 질문 목록 (id, 질문내용, 선택지)
   const questions = [
     {
       id: 1,
@@ -49,34 +44,24 @@ function LifestyleTest() {
     },
   ];
 
-  // 🔸 현재 질문 객체
   const currentQuestion = questions[currentQuestionIndex];
+  const totalQuestions = questions.length;
 
-  /**
-   * ✅ 사용자가 선택지를 클릭했을 때 실행
-   * → 답변 저장하고 다음 질문으로 이동
-   */
   const handleOptionSelect = (option) => {
     const updatedAnswers = { ...answers, [currentQuestion.id]: option };
     setAnswers(updatedAnswers);
 
-    // 마지막 질문이면 제출, 아니면 다음 질문
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      handleSubmit(updatedAnswers); // 결과 전송
+      handleSubmit(updatedAnswers);
     }
   };
 
-  /**
-   * ✅ 답변을 서버에 전송하고 결과 페이지로 이동
-   */
-  const handleSubmit = async (finalAnswers) => {  // 여기서 finalAnswers = updatedAnswers
-    setLoading(true); // 로딩 시작
+  const handleSubmit = async (finalAnswers) => {
+    setLoading(true);
     try {
       const res = await axios.post('http://localhost:9093/lifestyle_test/submit', finalAnswers);
-
-      // 📦 결과 페이지로 이동 (res.data에 루틴 결과 포함됨)
       navigate('/lifestyle_test/result', {
         state: { result: res.data }
       });
@@ -84,44 +69,49 @@ function LifestyleTest() {
       console.error('❌ 결과 전송 실패:', err);
       alert('결과를 가져오는 데 실패했어요. 다시 시도해주세요.');
     } finally {
-      setLoading(false); // 로딩 종료
+      setLoading(false);
     }
   };
 
   return (
-    <div className="lifestyle-container">
-      <h2 className="title">🛋️ 나의 생활 스타일 진단</h2>
+    <div className="lifestyle-test-container">
+      <h2 className="lifestyle-test-title">🛋️ 나의 생활 스타일 진단</h2>
 
-      {/* ✅ 로딩 중일 때 표시 */}
+      <p className="lifestyle-test-progress">
+        질문 {currentQuestionIndex + 1} / {totalQuestions}
+      </p>
+
+      <div className="lifestyle-test-progress-bar">
+        <div
+          className="lifestyle-test-progress-fill"
+          style={{
+            width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`
+          }}
+        ></div>
+      </div>
+
       {loading ? (
-        <div className="loading-box">✨ 결과를 불러오는 중입니다...</div>
+        <div className="lifestyle-test-loading-box">✨ 결과를 불러오는 중입니다...</div>
       ) : (
         <>
-          {/* ✅ 현재 질문 박스 */}
-          <div className="question-card">
-            <p className="question-text">
+          <div className="lifestyle-test-question-card">
+            <p className="lifestyle-test-question-text">
               {currentQuestionIndex + 1}. {currentQuestion.text}
             </p>
 
-            {/* ✅ 선택지 버튼들 */}
-            <div className="option-list">
+            <div className="lifestyle-test-option-list">
               {currentQuestion.options.map((opt, idx) => (
                 <button
                   key={idx}
-                  className="option-button"
+                  className="lifestyle-test-option-button"
                   onClick={() => handleOptionSelect(opt)}
-                  disabled={loading}  // 중복 클릭 방지
+                  disabled={loading}
                 >
                   {opt}
                 </button>
               ))}
             </div>
           </div>
-
-          {/* ✅ 진행도 표시 */}
-          <p className="progress">
-            질문 {currentQuestionIndex + 1} / {questions.length}
-          </p>
         </>
       )}
     </div>
