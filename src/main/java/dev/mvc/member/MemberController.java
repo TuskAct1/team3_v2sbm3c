@@ -128,8 +128,9 @@ public class MemberController {
             e.printStackTrace(); // 콘솔에 출력
             return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
         }
-        
+
     }
+
     
 
 //    /** 로그인 */
@@ -209,6 +210,7 @@ public class MemberController {
 //        
 //    }
 //    
+
     /** 회원 조회 */
     @GetMapping("/{memberno}")
     public ResponseEntity<MemberVO> read(@PathVariable("memberno") int memberno) {

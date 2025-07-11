@@ -16,3 +16,16 @@
 8. 가상환경 ai 로 되어 있는지 확인하고 uvicorn Chat:app --reload 실행
 9. https://www.mongodb.com/try/download/compass <- MongoDB Compass 다운
 10. Compass 에서 Connect 해야함. -> mongodb://localhost:27017 여기로 연결 (MongoDB 서버 켜져있는 상태에서 해야함)
+
+ㅁ Chart 라이브러리 설치
+npm install chart.js react-chartjs-2
+
+ㅁ Chatbot 실행
+(ai) C:\kd\ws_java\gabia\team3_v2sbm3c\src\main\webapp\main\src\pages>uvicorn chatbot.Chat:app --reload --port 8000
+
+
+아이콘 때문에 install함 
+npm install react-icons 
+
+캘린더 할 때 씀 :)
+npm install @fullcalendar/timegrid

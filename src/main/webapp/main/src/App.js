@@ -46,6 +46,9 @@ import AdminPage from './pages/member/AdminPage';
 import MyPage from './pages/member/MyPage';
 import AdminMyPage from './pages/member/AdminMyPage';
 
+// import { PlantProvider } from './pages/plant/PlantContext';
+import PlantPage from './pages/plant/PlantPage';
+
 import ProductPage from './pages/product/ProductPage';
 
 import PlaylistList from './pages/playlist/PlaylistList';
@@ -59,6 +62,16 @@ import PlantCreatePage from './pages/plant/PlantCreatePage';
 import GameSelect from './pages/plant/games/GameSelect';
 
 import DiaryPage from './pages/diary/DiaryPage';
+import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
+import MemoryGame from './pages/plant/games/MemoryGame';
+// import PlantIntro from './pages/plant/PlantIntro';
+import PlantMain from './pages/plant/PlantMain';
+import GameSelect from './pages/plant/games/GameSelect';
+import PlantCreatePage from './pages/plant/PlantCreatePage'; // 존재하는 경우
+import PlantIntro from './pages/plant/PlantIntro'; 
+import ReplyReportListPage from './pages/reply/ReplyReportListPage';
+import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
+
 import DiaryCreate from './pages/diary/DiaryCreate';
 import DiaryUpdate from './pages/diary/DiaryUpdate';
 import DiaryRead from './pages/diary/DiaryRead';
@@ -145,6 +158,7 @@ function App() {
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
         </Route>
       </Routes>
+
     </BrowserRouter>
   );
 }

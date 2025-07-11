@@ -14,6 +14,7 @@ from pymongo import MongoClient
 from openai import OpenAI
 # from emotion_report.router import router as emotion_report_router
 
+
 app = FastAPI()
 
 # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
