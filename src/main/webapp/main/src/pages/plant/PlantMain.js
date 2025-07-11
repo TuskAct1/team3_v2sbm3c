@@ -43,11 +43,15 @@ const PlantMain = () => {
       try {
         const res = await axios.get(`/api/members/${user.memberno}`);
         const memberInfo = res.data;
-        
         setPlantData(prev => ({
           ...prev,
           point: memberInfo.point,
           sticker: memberInfo.sticker,
+          
+          plantno: memberInfo.plantno,                // 👈 이게 없으면 harvest API 못 씀
+          growth: memberInfo.growth_percent ?? 0,     // 👈 DB 컬럼명 맞게 사용
+          plantName: memberInfo.plant_name,
+          fruitType: memberInfo.plant_type,
         }));
       } catch (error) {
         console.error("사용자 정보 불러오기 실패", error);
@@ -157,6 +161,40 @@ const PlantMain = () => {
 
     fetchPoint();
   }, []);
+
+  useEffect(() => {
+  if (plantData.growth >= 100 && plantData.plantno) {
+    const autoHarvest = async () => {
+      try {
+        const res = await axios.post('/api/plants/harvest', null, {
+          params: {
+            plantno: plantData.plantno,
+            memberno: user.memberno,
+          },
+        });
+
+        if (res.status === 200) {
+          alert("🎉 수확 완료! 스티커 +1");
+
+          // 최신 값 갱신
+          const updated = await axios.get(`/api/members/${user.memberno}`);
+          const memberInfo = updated.data;
+
+          setPlantData(prev => ({
+            ...prev,
+            growth: 0,
+            sticker: memberInfo.sticker,
+          }));
+        }
+      } catch (err) {
+        console.error("자동 수확 실패:", err);
+      }
+    };
+
+    autoHarvest();
+  }
+}, [plantData.growth, plantData.plantno, user.memberno]);
+
 
   return (
     <div className="plant-main-container">

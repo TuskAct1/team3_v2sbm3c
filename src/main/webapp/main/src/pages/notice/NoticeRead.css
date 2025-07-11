@@ -1,97 +1,128 @@
-/* ✅ 전체 배경 (연한 연두) */
+/* ✅ 전체 페이지 배경 */
 .notice-page-bg {
-  background-color: #f1f8e9;
-  min-height: 100vh;
-  padding: 2rem;
+  background-color: #ffffff;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  font-family: 'Pretendard', sans-serif;
+  color: #222;
 }
 
-/* ✅ 상단 제목 + 버튼 정렬 영역 */
+/* ✅ 상단 영역: 제목 + 버튼 */
 .read-header {
   display: flex;
-  justify-content: space-between;   /* 제목 왼쪽, 버튼 오른쪽 */
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 40px;
 }
 
 /* ✅ 제목 스타일 */
 .read-header h2 {
-  font-size: 1.8rem;
+  font-size: 26px;
+  font-weight: 700;
   color: #2e7d32;
   margin: 0;
 }
 
-/* ✅ 오른쪽 버튼 묶음 (수정/삭제/목록) */
+/* ✅ 버튼 묶음 (오른쪽 정렬) */
 .notice-action-buttons {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-/* ✅ 작은 버튼 공통 (수정/삭제) */
+/* ✅ 버튼 공통 스타일 */
 .small-btn {
-  background-color: #aed581;
-  color: black;
-  font-size: 0.9rem;
-  padding: 0.3rem 0.7rem;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #66bb6a;
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+  box-shadow: 0 4px 10px rgba(102, 187, 106, 0.25);
 }
 
 .small-btn:hover {
-  background-color: #9ccc65;
+  background-color: #4caf50;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(76, 175, 80, 0.3);
 }
 
-/* ✅ 목록 이동 버튼 */
-.back-btn {
-  background-color: #aed581;
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.back-btn:hover {
-  background-color: #9ccc65;
-}
-
-/* ✅ 본문 전체 박스 */
+/* ✅ 콘텐츠 영역 */
 .notice-read-content {
-  background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  font-size: 1.1rem;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  background-color: #fafafa;
+  padding: 28px 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* ✅ 공지 제목 */
+/* ✅ 제목 */
 .notice-read-content h3 {
-  color: #2e7d32;
-  margin-bottom: 1rem;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 12px 0 16px;
+  color: #111;
 }
 
-/* ✅ 작성일, 조회수 */
+/* ✅ 메타 정보 */
 .notice-meta {
-  display: flex;
-  justify-content: space-between;
+  font-size: 14px;
   color: #666;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
 }
 
 /* ✅ 본문 내용 */
 .notice-body {
+  font-size: 16px;
   line-height: 1.8;
-  white-space: pre-wrap;  /* 줄바꿈, 공백 유지 */
+  white-space: pre-wrap;
+  color: #333;
 }
 
-/* ✅ 로딩 또는 없음 메시지 */
+/* ✅ 카테고리 뱃지 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1;
+  position: relative;
+  top: 1px;
+}
+
+/* ✅ 카테고리 색상 */
+.badge-event {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.badge-system {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.badge-default {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+/* ✅ 로딩 메시지 */
 .empty-message {
   text-align: center;
-  color: #555;
-  margin-top: 2rem;
-  font-size: 1.1rem;
+  padding: 40px 0;
+  font-size: 16px;
+  color: #999;
 }

@@ -1,5 +1,6 @@
 /* SignupForm.css */
 
+
 /* 전체 폼 정렬 */
 form {
   max-width: 720px;
@@ -56,6 +57,7 @@ button:disabled {
   background-color: #bbb;
   cursor: not-allowed;
 }
+
 
 /* 보호자 입력 폼 */
 .guardian-box {

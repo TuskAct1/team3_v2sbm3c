@@ -4,9 +4,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import dev.mvc.member.MemberProcInter;
+import dev.mvc.plant.PlantProcInter;
 import dev.mvc.tool.BCryptUtil;
 
 import java.util.*;
@@ -25,6 +27,9 @@ public class AdminController {
     
     @Autowired
     private BCryptUtil bcryptUtil;  // 유틸 클래스 주입
+    
+    @Autowired
+    private PlantProcInter plantProc;
 
     /** 관리자 회원가입 */
 
@@ -121,14 +126,14 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/members/delete")
-    public ResponseEntity<?> deleteMemberByAdmin(@RequestParam("memberno") int memberno) {
-        System.out.println("삭제 요청 받은 memberno: " + memberno);
-        int cnt = memberProc.delete(memberno);
-        return (cnt == 1)
-            ? ResponseEntity.ok("삭제 성공")
-            : ResponseEntity.status(500).body("삭제 실패");
-    }
+//    @DeleteMapping("/members/delete")
+//    public ResponseEntity<?> deleteMemberByAdmin(@RequestParam("memberno") int memberno) {
+//        System.out.println("삭제 요청 받은 memberno: " + memberno);
+//        int cnt = memberProc.delete(memberno);
+//        return (cnt == 1)
+//            ? ResponseEntity.ok("삭제 성공")
+//            : ResponseEntity.status(500).body("삭제 실패");
+//    }
 
     /** 관리자 이메일로 정보 조회 */
     @GetMapping("/info")
@@ -180,6 +185,25 @@ public class AdminController {
         return (cnt == 1)
             ? ResponseEntity.ok("비밀번호가 변경되었습니다.")
             : ResponseEntity.status(500).body("비밀번호 변경 실패");
+    }
+    
+    @DeleteMapping("/{memberno}")
+    @Transactional
+    public ResponseEntity<?> deleteMemberByAdmin(@PathVariable int memberno) {
+        try {
+            // 자식 테이블부터 삭제
+            plantProc.deleteByMemberno(memberno);
+
+            // 그 다음 member 삭제
+            int cnt = memberProc.delete(memberno);
+
+            return (cnt == 1)
+                ? ResponseEntity.ok("삭제 성공")
+                : ResponseEntity.status(500).body("삭제 실패");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("삭제 중 오류: " + e.getMessage());
+        }
     }
 
 

@@ -1,71 +1,83 @@
-/* ✅ 전체 컨테이너 중앙 정렬 */
-.result-container {
+/* ✅ SeniorTestResult.css */
+
+.senior-result-container {
+  min-height: 100vh;
+  padding: 60px 20px;
+  background-color: #f1f8e9;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
-  background-color: #f1f8e9; /* 연한 연두 배경 */
-  padding: 2rem;
+  font-family: 'Pretendard', sans-serif;
 }
 
-/* ✅ 결과 박스 공통 스타일 */
-.result-box {
-  background-color: white;
-  padding: 2.5rem;
-  border-radius: 15px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
-  text-align: center;
-  max-width: 600px;
+.senior-result-box {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 700px;
   width: 100%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.senior-result-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+.senior-result-score {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.senior-text-good {
+  color: #388e3c;
+}
+
+.senior-text-mid {
+  color: #fbc02d;
+}
+
+.senior-text-danger {
+  color: #e53935;
+}
+
+.senior-result-message {
   font-size: 1.1rem;
-  line-height: 1.6;
+  white-space: pre-line;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 30px;
 }
 
-/* ✅ 안전한 결과 (10점 미만) */
-.result-box.safe {
-  border-left: 10px solid #66bb6a; /* 밝은 초록 */
-}
-
-/* ✅ 위험한 결과 (10점 이상) */
-.result-box.danger {
-  border-left: 10px solid #ef5350; /* 빨간 계열 */
-  background-color: #fff3f3;       /* 옅은 분홍 배경 */
-}
-
-/* ✅ 점수 표시 */
-.result-score {
-  font-size: 1.6rem;
-  margin-bottom: 1rem;
-  color: #2e7d32; /* 진한 초록 */
-}
-
-/* ✅ 메시지 텍스트 */
-.result-message {
-  white-space: pre-wrap; /* \n 줄바꿈 적용 */
-  font-size: 1.05rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-/* ✅ 에러 상황 텍스트 */
-.result-error {
-  color: #d32f2f;
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-/* ✅ 홈으로 돌아가기 버튼 */
-.result-home-btn {
-  background-color: #388e3c;
+.senior-result-btn {
+  background-color: #66bb6a;
   color: white;
-  font-size: 1.1rem;
-  padding: 0.75rem 2rem;
+  font-weight: bold;
+  padding: 12px 28px;
+  font-size: 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.25s ease, transform 0.15s ease;
 }
 
-.result-home-btn:hover {
-  background-color: #2e7d32;
+.senior-result-btn:hover {
+  background-color: #388e3c;
+  transform: translateY(-2px);
+}
+
+.senior-result-box.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 2px solid #e57373;
+}
+
+.senior-result-error {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
 }

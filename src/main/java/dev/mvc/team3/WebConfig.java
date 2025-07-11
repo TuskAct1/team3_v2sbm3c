@@ -1,5 +1,3 @@
-// src/main/java/dev/mvc/config/WebConfig.java
-
 package dev.mvc.team3;
 
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +8,22 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**") // 모든 요청 경로에 대해
-            .allowedOrigins("http://localhost:3000") // React 서버 포트 허용
+    registry.addMapping("/**")
+            .allowedOrigins("http://localhost:3000")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+
 //            .allowedHeaders("*")
             .allowCredentials(true); // 인증정보 포함 허용 시 사용
+
+            .allowedHeaders("*")
+            .allowCredentials(true);
+  }
+
+  // ✅ 정적 리소스 매핑 추가 (이미지 등)
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/profile/**")
+            .addResourceLocations("file:///C:/kd/deploy/resort/member/storage/");
+
   }
 }

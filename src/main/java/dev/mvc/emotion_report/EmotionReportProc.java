@@ -3,7 +3,10 @@ package dev.mvc.emotion_report;
 import dev.mvc.diary.DiaryDAOInter;
 import dev.mvc.diary.DiaryEmotionCountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -21,26 +24,59 @@ public class EmotionReportProc implements EmotionReportProcInter {
     @Autowired
     private EmotionReportDAOInter emotionReportDAO;
 
-    /**
-     * ✅ MongoDB 대체 : chatbot 감정 요약 (임시 하드코딩)
-     */
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${fastapi.base-url:http://localhost:8000}")
+    private String fastapiBaseUrl;
+
     @Override
     public EmotionReportVO getReport(int memberno, String reportType, String reportPeriod) {
-        System.out.println("✔️ Service - getReport() 하드코딩 호출");
+        System.out.println("✔️ Service - getReport() FASTAPI 연동 호출");
 
-        EmotionReportVO vo = new EmotionReportVO();
-        vo.setMemberno(memberno);
-        vo.setReportType(reportType);
-        vo.setReportPeriod(reportPeriod);
+        try {
+            // FastAPI 호출 URL 생성
+            String url = String.format("%s/emotion_report/summary?memberno=%d&room_id=default&period_type=%s",
+                    fastapiBaseUrl, memberno, reportType);
 
-        // 👉 이 부분은 MongoDB 연결시 실제 감정 비율 가져오도록 교체
-        vo.setPositive(42.5);
-        vo.setNegative(15.0);
-        vo.setNeutral(30.0);
-        vo.setAnxious(8.0);
-        vo.setDepressed(4.5);
+            // 요청
+            ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+            Map body = response.getBody();
 
-        return vo;
+            // JSON 파싱
+            Map<String, Double> percent = (Map<String, Double>) body.get("percent");
+
+            // VO 채우기
+            EmotionReportVO vo = new EmotionReportVO();
+            vo.setMemberno(memberno);
+            vo.setReportType(reportType);
+            vo.setReportPeriod(reportPeriod);
+
+            vo.setPositive(percent.getOrDefault("긍정", 0.0));
+            vo.setNegative(percent.getOrDefault("부정", 0.0));
+            vo.setNeutral(percent.getOrDefault("중립", 0.0));
+            vo.setAnxious(percent.getOrDefault("불안", 0.0));
+            vo.setDepressed(percent.getOrDefault("우울", 0.0));
+
+            System.out.println("✔️ FastAPI 응답 받아서 VO 채움: " + vo);
+            return vo;
+
+        } catch (Exception e) {
+            System.err.println("❌ FastAPI 호출 실패 → 하드코딩 fallback");
+            e.printStackTrace();
+
+            // 실패 시 기존 하드코딩 유지
+            EmotionReportVO vo = new EmotionReportVO();
+            vo.setMemberno(memberno);
+            vo.setReportType(reportType);
+            vo.setReportPeriod(reportPeriod);
+            vo.setPositive(42.5);
+            vo.setNegative(15.0);
+            vo.setNeutral(30.0);
+            vo.setAnxious(8.0);
+            vo.setDepressed(4.5);
+            return vo;
+        }
     }
 
     /**
@@ -138,7 +174,7 @@ public class EmotionReportProc implements EmotionReportProcInter {
     public int saveReport(EmotionReportVO vo) {
         System.out.println("✔️ Service - saveReport() 호출");
         System.out.println("받은 내용: " + vo);
-        return 1; // DB저장 가정
+        return emotionReportDAO.saveReport(vo);
     }
 
     /**

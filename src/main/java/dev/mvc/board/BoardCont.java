@@ -260,5 +260,14 @@ public class BoardCont {
 
         return ResponseEntity.ok("수정 완료");
     }
+    
+    /**
+     * 게시판 카테고리 목록만 반환
+     */
+    @GetMapping("/category_group")
+    public ResponseEntity<List<CategoryVO>> categoryGroup() {
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+        return ResponseEntity.ok(categoryGroup);
+    }
 
 }

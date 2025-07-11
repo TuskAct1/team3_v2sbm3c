@@ -19,4 +19,5 @@ public interface PlantProcInter {
 //    public int increaseGrowth(int plantno, int growthAmount);
     public int increaseGrowth(int memberno, int amount);
     
+    public int deleteByMemberno(int memberno);
 }

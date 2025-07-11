@@ -1,18 +1,18 @@
 /* ✅ 전체 배경 */
 .testlist-page-bg {
-  background-color: #f1f8e9;
+  background-color: #ffffff;
   min-height: 100vh;
   padding: 2rem;
 }
 
-/* ✅ 흰색 카드형 박스 */
+/* ✅ 컨테이너 */
 .testlist-container {
   max-width: 1000px;
   margin: 0 auto;
-  background-color: white;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 /* ✅ 상단 제목 + 버튼 */
@@ -25,11 +25,11 @@
 
 .testlist-header h2 {
   font-size: 1.8rem;
-  color: #2e7d32;
+  color: #66bb6a;
   margin: 0;
 }
 
-/* ✅ 표 스타일 */
+/* ✅ 테이블 스타일 */
 .testlist-table {
   width: 100%;
   border-collapse: collapse;
@@ -37,31 +37,32 @@
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 10px rgba(102, 187, 106, 0.1);
 }
 
 .testlist-table th,
 .testlist-table td {
   padding: 1rem;
   text-align: center;
-  border-bottom: 1px solid #c8e6c9;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .testlist-table thead {
-  background-color: #c8e6c9;
+  background-color: #e8f5e9;
   color: #2e7d32;
-}
-
-/* ✅ 점수가 높은 경우 강조 */
-.high-risk-row {
-  background-color: #fff3e0;
-  color: #fb8c00;
   font-weight: bold;
 }
 
-/* ✅ 삭제 버튼 스타일 */
+/* ✅ 위험도 강조 행 (예: 점수 높음) */
+.high-risk-row {
+  background-color: #fff3e0;
+  color: #ef6c00;
+  font-weight: bold;
+}
+
+/* ✅ 삭제 버튼 */
 .testlist-table button {
-  background-color: #ef5350;
+  background-color: #e53935;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -72,21 +73,21 @@
 }
 
 .testlist-table button:hover {
-  background-color: #c62828;
+  background-color: #b71c1c;
 }
 
-/* ✅ 결과 없음 메시지 */
+/* ✅ 데이터 없음 */
 .empty-row {
   text-align: center;
   font-size: 1.1rem;
   padding: 30px;
-  color: #757575;
+  color: #999999;
 }
 
-/* ✅ 공통 작은 버튼 스타일 */
+/* ✅ 공통 버튼 (상단 버튼 등) */
 .small-btn {
-  background-color: #aed581;
-  color: black;
+  background-color: #66bb6a;
+  color: white;
   font-size: 0.9rem;
   padding: 0.4rem 1rem;
   border: none;
@@ -96,5 +97,5 @@
 }
 
 .small-btn:hover {
-  background-color: #9ccc65;
+  background-color: #43a047;
 }

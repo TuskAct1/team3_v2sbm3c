@@ -1,208 +1,220 @@
-/* ✅ 전체 레이아웃 */
+/* ✅ 전체 컨테이너 */
 .list-container {
-  width: 100%;                    /* ✅ 전체 너비 사용 */
-  min-height: 100vh;                    /* ✅ 여백 제거 */
-  padding: 2rem 3rem;             /* ✅ 위아래 여백 + 양옆 살짝만 여백 */
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #f2fbe0;      /* ✅ 부드러운 연두 배경 전체 적용 */
-  color: #2e7d32;
-  box-sizing: border-box;
+  padding: 32px;
+  font-family: 'Pretendard', sans-serif;
+  background-color: #ffffff;
+  font-size: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-/* ✅ 상단 타이틀 */
-.list-container h2 {
-  font-size: 2rem;
-  color: #33691e;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-}
-
-/* ✅ 감정 버튼 */
+/* ✅ 감정 버튼 영역 */
 .emotion-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 2.5rem;
+  gap: 1px;
+  margin-bottom: 28px;
+  justify-content: flex-start;
 }
 
 .emotion-buttons button {
-  padding: 10px 16px;
-  font-size: 1rem;
-  background-color: #dcedc8;
-  border: none;
-  border-radius: 20px;
-  color: #33691e;
-  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 15.5px;
+  border: 2px solid #66bb6a;
+  background-color: white;
+  color: #66bb6a;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.emotion-buttons button:hover {
-  background-color: #aed581;
+  transition: all 0.2s ease;
 }
 
 .emotion-buttons button.active {
-  background-color: #7cb342;
+  background-color: #66bb6a;
   color: white;
 }
 
-/* ✅ 플레이리스트 관리 */
-.manage-top-right {
+/* ✅ 카드형 목록 (3열 고정) */
+.song-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ✅ 카드 하나 */
+.song-card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  cursor: pointer;
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  height: 380px;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+/* ✅ 카드 호버 효과 */
+.song-card:hover {
+  transform: translateY(-6px);
+}
+
+/* ✅ 카드 호버 시 텍스트 배경 변경 */
+.song-card:hover .song-info {
+  background-color: #e8f5e9;
+  transition: background-color 0.3s ease;
+}
+
+/* ✅ 썸네일 이미지 */
+.song-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* ✅ 좋아요 버튼 */
+.like-button {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  color: #66bb6a;
+  border: 1px solid #66bb6a;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.like-button.liked {
+  background-color: #66bb6a;
+  color: white;
+}
+
+/* ✅ 곡 정보 영역 */
+.song-info {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  background-color: white;
+  transition: background-color 0.3s ease;
+}
+
+/* ✅ 곡 제목 */
+.song-info h3 {
+  font-size: 18px;
+  margin: 0 0 8px;
+  flex-grow: 1;
+  line-height: 1.5;
+  word-break: keep-all;
+  color: #222;
+  font-weight: 700;
+}
+
+/* ✅ 하단 플레이 텍스트 */
+.play-text {
+  font-size: 14.2px;
+  color: #666;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ✅ 관리자용 수정/삭제 버튼 */
+.action-buttons {
+  margin-top: auto;
+  padding: 0 16px 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.action-buttons button {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: none;
+  background-color: #e0f2f1;
+  color: #333;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ✅ 상단 관리 텍스트 */
+.manage-top-right {
+  text-align: right;
+  margin-bottom: 16px;
+  font-size: 15px;
 }
 
 .manage-text {
-  font-size: 1rem;
-  color: #558b2f;
   font-weight: bold;
   cursor: pointer;
 }
 
-.manage-options button {
-  margin-left: 10px;
-  padding: 8px 14px;
-  background-color: #a5d6a7;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.manage-options button:hover {
-  background-color: #81c784;
-}
-
-/* ✅ 카드 4개 고정 그리드 */
-.song-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.8rem;
-}
-
-/* ✅ 카드 박스 디자인 */
-.song-card {
+/* ✅ 관리자 기능 버튼 */
+.manage-options {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-height: 280px; /* 기본 높이 */
-  height: auto;      /* 관리모드 시 확장 가능하게 */
-  padding-bottom: 0; /* 관리모드 아닐 땐 아래 공간 없음 */
-}
-
-/* ✅ 관리 모드일 때 약간 여유 있는 높이 확보 */
-.song-card.manage-mode {
-  padding-bottom: 60px; /* 관리 모드일 때 버튼 들어갈 공간 확보 */
-}
-
-.song-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.song-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-bottom: 1px solid #eee;
-}
-
-/* ✅ 카드 내 정보 부분 (위쪽 텍스트) */
-.song-info {
-  position: relative;        /* 🎯 내부에서 절대 위치 요소 쓰기 위함 */
-  padding: 1rem;
-  flex-grow: 1;
-  min-height: 120px;         /* 필요시 높이 확보 */
-  display: flex;
-  flex-direction: column;
-}
-
-.song-info h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2e7d32;
-  margin: 0;
-  line-height: 1.4;
-}
-
-/* ✅ 🎵 전체 곡 듣기 문구를 완전 카드 하단에 붙이기 */
-.play-text {
-  position: absolute;
-  bottom: 0.5rem;        /* ⬇️ 더 붙이려면 0.2rem ~ 0.5rem 추천 */
-  left: 1rem;
-  font-size: 0.9rem;
-  color: #66bb6a;
-  display: flex;
-  align-items: center;
-}
-
-/* ✅ 수정/삭제 버튼 기본은 감춤 */
-.action-buttons {
-  display: none;
-  justify-content: space-around;
   gap: 10px;
-  padding: 0.6rem 1rem 0;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
 
-/* ✅ 관리 모드일 때만 버튼 보임 */
-.song-card.manage-mode .action-buttons {
-  display: flex;
-}
-
-/* ✅ 수정/삭제 버튼 스타일 */
-.action-buttons button {
-  background-color: #e0e0e0;
+.manage-options button {
+  padding: 8px 12px;
+  font-size: 14px;
   border: none;
-  border-radius: 6px;
-  padding: 0.4rem 0.6rem;
-  font-size: 0.85rem;
+  background-color: #66bb6a;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.action-buttons button:hover {
-  background-color: #c8e6c9;
-}
-
-
-/* ✅ 모달 */
+/* ✅ 모달 오버레이 */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.3);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
+/* ✅ 모달 콘텐츠 */
 .modal-content {
-  background: white;
-  padding: 2rem;
+  background-color: white;
   border-radius: 14px;
-  min-width: 500px;
-  max-width: 90%;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  padding: 24px;
+  max-width: 540px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  font-size: 16px;
+  line-height: 1.6;
 }
 
+/* ✅ 모달 닫기 버튼 */
 .modal-close {
   position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 1.2rem;
+  top: 12px;
+  right: 16px;
   background: none;
   border: none;
+  font-size: 20px;
   cursor: pointer;
 }
