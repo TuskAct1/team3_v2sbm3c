@@ -4,6 +4,9 @@ import dev.mvc.board_recommend.BoardRecommendProc;
 import dev.mvc.board_recommend.BoardRecommendVO;
 import dev.mvc.category.CategoryProc;
 import dev.mvc.category.CategoryVO;
+import dev.mvc.reply.ReplyDAOInter;
+import dev.mvc.replyRecommend.ReplyRecommendDAOInter;
+import dev.mvc.replyReport.ReplyReportDAOInter;
 import dev.mvc.tool.Tool;
 import dev.mvc.tool.Upload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import java.util.Map;
 @RequestMapping("/board")
 public class BoardCont {
 
+    // 게시판 부분
     @Autowired
     private BoardProc boardProc;
 
@@ -29,6 +33,9 @@ public class BoardCont {
 
     @Autowired
     private BoardRecommendProc boardRecommendProc;
+//-------------------------------------------------------
+
+
 
     /**
      * 전체 게시글 목록

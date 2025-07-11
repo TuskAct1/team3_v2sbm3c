@@ -11,6 +11,10 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
             .allowedOrigins("http://localhost:3000")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+
+//            .allowedHeaders("*")
+            .allowCredentials(true); // 인증정보 포함 허용 시 사용
+
             .allowedHeaders("*")
             .allowCredentials(true);
   }
@@ -20,5 +24,6 @@ public class WebConfig implements WebMvcConfigurer {
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/profile/**")
             .addResourceLocations("file:///C:/kd/deploy/resort/member/storage/");
+
   }
 }

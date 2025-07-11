@@ -46,7 +46,9 @@ import AdminPage from './pages/member/AdminPage';
 import MyPage from './pages/member/MyPage';
 import AdminMyPage from './pages/member/AdminMyPage';
 
+
 // import { PlantProvider } from './pages/plant/PlantContext';
+
 import PlantPage from './pages/plant/PlantPage';
 
 import ProductPage from './pages/product/ProductPage';
@@ -64,7 +66,6 @@ import GameSelect from './pages/plant/games/GameSelect';
 import DiaryPage from './pages/diary/DiaryPage';
 import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
 import MemoryGame from './pages/plant/games/MemoryGame';
-// import PlantIntro from './pages/plant/PlantIntro';
 import PlantMain from './pages/plant/PlantMain';
 import GameSelect from './pages/plant/games/GameSelect';
 import PlantCreatePage from './pages/plant/PlantCreatePage'; // 존재하는 경우
@@ -82,6 +83,10 @@ import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 function App() {
   return (
     <BrowserRouter>
+
+
+      <h1>토닥</h1>
+
       <Routes>
         {/* ✅ 모든 페이지 Layout으로 감쌈 (Navbar + Footer + FloatingButton 공통 적용) */}
         <Route element={<Layout />}>
@@ -138,6 +143,7 @@ function App() {
           <Route path="/playlist/form" element={<PlaylistForm />} />
           <Route path="/playlist/emotionform" element={<EmotionForm />} />
           <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
+
 
           {/* 반려식물 */}
           <Route path="/plant" element={<PlantPage />} />

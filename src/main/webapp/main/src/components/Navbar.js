@@ -118,16 +118,27 @@ function Navbar() {
             <li><Link to="/plant">반려식물</Link></li>
             <li><Link to="/diary">일기</Link></li>
             <li><Link to="/emotion_report">감정분석</Link></li>
+
+            <li><Link to="/product">포인트 상점</Link></li>
+            <li><Link to="/admin/member-list">회원 리스트</Link></li>
+
             <li><Link to="/admin/member-list">회원 리스트</Link></li> 
             {/* <li><Link to="/product">포인트 상점</Link></li> */}
             
 
+
             {/* 🔐 관리자 전용 메뉴 */}
             {isAdmin && (
               <>
+
+                
+                <li><Link to="/admin/">관리 설정</Link></li>
+                <li><Link to="/admin/settings">관리 설정</Link></li>
+
                 {/* <li><Link to="/admin/member-list">회원 리스트</Link></li> */}
                 {/* <li><Link to="/admin/">관리 설정</Link></li> */}
                 {/* <li><Link to="/admin/settings">관리 설정</Link></li> */}
+
               </>
 
       <div className="navbar-inner">

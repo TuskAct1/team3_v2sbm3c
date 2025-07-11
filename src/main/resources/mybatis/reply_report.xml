@@ -36,9 +36,60 @@
     WHERE replyReportno = #{replyReportno}
   </delete>
 
+  <!-- 삭제 -->
+  <delete id="delete_all" parameterType="int">
+    DELETE FROM replyReport
+    WHERE replyno = #{replyno}
+  </delete>
+
+<!--  &lt;!&ndash; 삭제 &ndash;&gt;-->
+<!--  <delete id="delete_board" parameterType="int">-->
+<!--    DELETE FROM replyReport-->
+<!--    WHERE boardno = #{boardno}-->
+<!--  </delete>-->
+
   <!-- 댓글의 신고 수 조회 -->
   <select id="countByReplyNo" parameterType="int" resultType="int">
     SELECT COUNT(*) FROM replyReport WHERE replyno = #{replyno}
   </select>
-  
+
+  <!-- 댓글 번호로 해당 댓글의 신고 상세 목록 조회 -->
+  <select id="list_by_replyno" parameterType="int" resultType="map">
+    SELECT
+    rr.replyReportno,
+    rr.replyno,
+    rr.memberno,
+    m.id AS reporter_id,
+    m.nickname AS reporter_nickname,
+    rr.reason,
+    TO_CHAR(rr.rdate, 'YYYY-MM-DD') AS report_date
+    FROM replyReport rr
+    INNER JOIN member m ON rr.memberno = m.memberno
+    WHERE rr.replyno = #{replyno}
+    ORDER BY rr.rdate DESC
+  </select>
+
+  <!-- 신고된 댓글 번호만 추출 -->
+  <select id="findReportedReplynos" resultType="int">
+    SELECT DISTINCT replyno FROM replyReport ORDER BY replyno DESC
+  </select>
+
+  <!-- 댓글과 작성자 정보 (JOIN) -->
+  <select id="getReplyInfo" parameterType="int" resultType="dev.mvc.reply.ReplyMemberVO">
+    SELECT r.replyno, r.content, m.memberno, m.id, m.nickname
+    FROM reply r
+    JOIN member m ON r.memberno = m.memberno
+    WHERE r.replyno = #{replyno}
+  </select>
+
+  <!-- 댓글 신고 목록 + 신고자 정보 -->
+  <select id="listByReplynoWithMember" parameterType="int" resultType="map">
+    SELECT rr.replyReportno, rr.memberno, rr.reason, TO_CHAR(rr.rdate, 'YYYY-MM-DD') AS report_date,
+    m.id AS reporter_id, m.nickname AS reporter_nickname
+    FROM replyReport rr
+    JOIN member m ON rr.memberno = m.memberno
+    WHERE rr.replyno = #{replyno}
+  </select>
+
+
   </mapper>

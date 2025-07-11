@@ -1,5 +1,7 @@
 package dev.mvc.board_report;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,6 +22,8 @@ public interface BoardReportDAOInter {
     /** 게시글 신고 조회 */
     public BoardReportVO read(int boardReportno);
 
+    /** 게시글 추천 삭제 (신고 누적시 삭제용) */
+    boolean delete_all(@Param("boardno") int boardno);
 }
 
 

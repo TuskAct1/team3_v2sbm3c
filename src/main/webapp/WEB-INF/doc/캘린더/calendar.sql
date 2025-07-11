@@ -2,8 +2,8 @@ DROP TABLE Calendar;
 
 CREATE TABLE Calendar (
     calendarno      NUMBER                  NOT NULL PRIMARY KEY,       -- 캘린더 번호 (PK)
-    memberno        NUMBER                  NOT NULL,                   -- 회원 번호 (FK)
-    adminno         NUMBER                  NOT NULL,                   -- 관리자 번호 (FK, NULL 허용)
+    memberno        NUMBER                  NULL,                   -- 회원 번호 (FK)
+    adminno         NUMBER                  NULL,                   -- 관리자 번호 (FK, NULL 허용)
     title           VARCHAR2(200)           NOT NULL,                   -- 일정 제목
     schedule_date            VARCHAR2(20)   NULL,                       -- 일정 날짜 (YYYY-MM-DD)
     schedule_time            VARCHAR2(5)    NULL,                       -- 일정 시간 (예: '14:30')
@@ -60,4 +60,20 @@ WHERE calendarno = 1;
 -- DELETE
 DELETE FROM Calendar
 WHERE calendarno = 1;
+
+ALTER TABLE Calendar ADD (
+    start_date  VARCHAR2(20),  -- 일정 시작일 (YYYY-MM-DD)
+    end_date    VARCHAR2(20)   -- 일정 종료일 (YYYY-MM-DD)
+);
+
+-- 기존 schedule_date는 제거해도 되지만, 유지할 수도 있음.
+-- 필요 없다면 제거:
+-- ALTER TABLE Calendar DROP COLUMN schedule_date;
+
+
+ALTER TABLE Calendar
+ADD (
+    image     VARCHAR2(255),  -- 원본 이미지 파일명
+    thumbnail VARCHAR2(255)   -- 썸네일 이미지 파일명
+);
 

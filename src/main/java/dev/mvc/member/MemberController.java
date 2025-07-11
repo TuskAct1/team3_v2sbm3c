@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dev.mvc.admin.AdminProcInter;
+import dev.mvc.admin.AdminVO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,20 +30,23 @@ public class MemberController {
 
     @Autowired
     private MemberProcInter memberProc;
-    
+
+    @Autowired
+    @Qualifier("dev.mvc.admin.AdminProc")
+    private AdminProcInter adminProc;
 
     @Autowired
     private MemberProcInter memberProcInter;
 
     @Autowired
     private BCryptUtil bcryptUtil; // 유틸 클래스 주입
-    
+
     @Autowired
     private PlantProcInter plantProc;
 
     @Autowired
     private AttendanceProcInter attendanceProc; // 출석 처리용 (있다면)
-    
+
     /** 회원 가입 */
     @PostMapping("/signup")
     @Transactional
@@ -49,6 +55,12 @@ public class MemberController {
         @RequestParam(value = "profileFile", required = false) MultipartFile file
     ) {
         Map<String, Object> response = new HashMap<>();
+
+        // 비밀번호 암호화
+        String encrypted = bcryptUtil.encode(memberVO.getPasswd());
+        memberVO.setPasswd(encrypted);
+
+        // ✅ 포인트 기본값 부여
 
         // 1. 프로필 이미지 저장
         if (file != null && !file.isEmpty()) {
@@ -74,14 +86,21 @@ public class MemberController {
         memberVO.setPasswd(encrypted);
 
         // 3. 포인트 기본값
+
         memberVO.setPoint(50);
 
         // 4. 회원 생성
         int cnt = memberProc.create(memberVO);
         if (cnt == 1) {
+
+            int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
+
+            // 2단계: 기본 식물 생성
+
             int memberno = memberVO.getMemberno();
 
             // 5. 기본 식물 생성
+
             PlantVO plant = new PlantVO();
             plant.setMemberno(memberno);
             plant.setPlant_name("나의 첫 식물");
@@ -104,6 +123,55 @@ public class MemberController {
         }
     }
 
+//    /** 로그인 */
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(HttpSession session, @RequestBody HashMap<String, Object> loginMap) {
+//        try {
+//            String id = (String) loginMap.get("id");
+//            String inputPasswd = (String) loginMap.get("passwd");
+//
+//            MemberVO member = memberProc.readById(id);
+//
+//            if (member == null) {
+//                return ResponseEntity.status(401).body("존재하지 않는 사용자입니다.");
+//            }
+//
+//            if (!bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+//                return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
+//            }
+//
+//            session.setAttribute("id", id);
+//            session.setAttribute("memberno", member.getMemberno()); // ✅ memberno 세션에 저장
+//
+//            // ✅ [1] 식물 존재 여부 확인
+//            boolean hasPlant = plantProc.hasPlant(member.getMemberno());
+//
+//            if (!hasPlant) {
+//                // ✅ [2] 기본 식물 생성
+//                PlantVO plant = new PlantVO();
+//                plant.setMemberno(member.getMemberno());
+//                plant.setPlant_name("새싹이");        // 기본 이름
+//                plant.setPlant_type("딸기");         // 기본 종류
+//                plant.setGrowth(0);
+//                plant.setPlant_status("정상");
+//                plant.setLast_access(LocalDate.now().toString()); // java.time.LocalDate 사용
+//                plantProc.create(plant);
+//
+//                // ✅ [3] 출석 초기화
+//                attendanceProc.initAttendance(member.getMemberno());
+//
+//                // ✅ [4] 포인트 초기 지급 (예: 100p)
+//                memberProc.updatePoint(member.getMemberno(), 100);
+//            }
+//
+//            return ResponseEntity.ok(Map.of("message", "로그인 성공", "user", member));
+//        } catch (Exception e) {
+//            e.printStackTrace(); // 콘솔에 출력
+//            return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
+//        }
+//
+//    }
+
     /** 로그인 */
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpSession session, @RequestBody HashMap<String, Object> loginMap) {
@@ -112,6 +180,7 @@ public class MemberController {
             String inputPasswd = (String) loginMap.get("passwd");
 
             MemberVO member = memberProc.readById(id);
+            AdminVO admin = adminProc.readByEmail(id);
 
             if (member == null) {
                 return ResponseEntity.status(401).body("존재하지 않는 사용자입니다.");
@@ -121,35 +190,55 @@ public class MemberController {
                 return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
             }
 
-            session.setAttribute("id", id);
+            // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
+            // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
+            if ("admin".equals(member.getGrade())) {
+                session.setAttribute("role", "admin");
+                session.setAttribute("adminno", admin.getAdminno());
+                session.removeAttribute("memberno"); // 이전 회원 세션 정보 제거
+            } else {
+                session.setAttribute("role", "member");
+                session.setAttribute("memberno", member.getMemberno());
+                session.removeAttribute("adminno"); // 이전 관리자 세션 정보 제거
+            }
 
-            // ✅ [1] 식물 존재 여부 확인
+            // ✅ 전체 사용자 정보도 세션에 저장
+            session.setAttribute("user", member);
+
+            System.out.println("Session 저장 확인 → role: " + session.getAttribute("role"));
+            System.out.println("Session memberno: " + session.getAttribute("memberno"));
+            System.out.println("Session adminno: " + session.getAttribute("adminno"));
+            System.out.println("Session user: " + session.getAttribute("user"));
+
+            // ✅ 식물 존재 여부 확인
             boolean hasPlant = plantProc.hasPlant(member.getMemberno());
 
             if (!hasPlant) {
-                // ✅ [2] 기본 식물 생성
+                // 기본 식물 생성
                 PlantVO plant = new PlantVO();
                 plant.setMemberno(member.getMemberno());
-                plant.setPlant_name("새싹이");        // 기본 이름
-                plant.setPlant_type("딸기");         // 기본 종류
+                plant.setPlant_name("새싹이");
+                plant.setPlant_type("딸기");
                 plant.setGrowth(0);
                 plant.setPlant_status("정상");
-                plant.setLast_access(LocalDate.now().toString()); // java.time.LocalDate 사용
+                plant.setLast_access(LocalDate.now().toString());
                 plantProc.create(plant);
 
-                // ✅ [3] 출석 초기화
+                // 출석 초기화 및 포인트 지급
                 attendanceProc.initAttendance(member.getMemberno());
-
-                // ✅ [4] 포인트 초기 지급 (예: 100p)
                 memberProc.updatePoint(member.getMemberno(), 100);
             }
 
-            return ResponseEntity.ok(Map.of("message", "로그인 성공", "user", member));
+            // ✅ 프론트에 사용자 정보 전달 (React localStorage용)
+            return ResponseEntity.ok(Map.of(
+                    "message", "로그인 성공",
+                    "user", member
+            ));
+
         } catch (Exception e) {
-            e.printStackTrace(); // 콘솔에 출력
+            e.printStackTrace();
             return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
         }
-
     }
 
     
@@ -294,7 +383,7 @@ public class MemberController {
             return ResponseEntity.status(500).body("삭제 중 오류: " + e.getMessage());
         }
     }
-    
+
  // 아이디 중복 확인
     @GetMapping("/check-id")
     public ResponseEntity<Map<String, Object>> checkId(@RequestParam("id") String id) {
@@ -304,7 +393,7 @@ public class MemberController {
         response.put("message", cnt == 0 ? "사용 가능한 아이디입니다" : "이미 사용중인 아이디입니다");
         return ResponseEntity.ok(response);
     }
-    
+
  // ID로 회원 조회
     @GetMapping("/id")
     public ResponseEntity<MemberVO> readById(@RequestParam("id") String id) {
@@ -320,13 +409,18 @@ public class MemberController {
             ? ResponseEntity.ok("탈퇴 성공")
             : ResponseEntity.status(500).body("탈퇴 실패");
     }
-    
+
     @GetMapping("/point")
     public ResponseEntity<Map<String, Object>> getPoint(@RequestParam("memberno") int memberno) {
         Integer point = memberProc.getPoint(memberno);  // DB에서 조회
 //        int sti = memberProc.updateSticker(memberno);
         return ResponseEntity.ok(Map.of("point", point));
     }
+
+
+
+
+
     
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> listWithSearchPaging(
@@ -351,4 +445,5 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
    
+
 }

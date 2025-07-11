@@ -71,6 +71,8 @@ const LoginPage = () => {
       const response = await axios.post("/api/members/login", {
         id: form.id,
         passwd: form.passwd,
+      }, {
+      withCredentials: true  // ✅ 세션 쿠키 저장
       });
 
       localStorage.setItem("user", JSON.stringify(response.data.user));

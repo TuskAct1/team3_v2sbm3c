@@ -25,6 +25,11 @@ public class ReplyVO {
 
   /** 등록일 */
   private String rdate;
-  
-  
+
+//  /** 원본 이미지 파일명 */
+//  private String image;
+//
+//  /** 서버에 저장된 파일명 */
+//  private String imageSaved;
+//
 }
