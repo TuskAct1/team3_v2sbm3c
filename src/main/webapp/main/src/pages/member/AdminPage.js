@@ -36,7 +36,7 @@ function AdminPage() {
   // 관리자 탈퇴
   const handleDelete = () => {
     if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-      axios.delete(`http://localhost:8080/api/admin/delete`, {
+      axios.delete(`/api/admin/delete`, {
         params: { adminno: admin.adminno }
       })
         .then(() => {

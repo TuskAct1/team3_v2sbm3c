@@ -1,16 +1,16 @@
 // EmotionDiary.jsx
 import React, { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const dummyData = [];
 
 const emotionIcons = [
-  { score: 1, icon: "😄", label: "아주 좋음" },
-  { score: 2, icon: "🙂", label: "좋음" },
-  { score: 3, icon: "😐", label: "보통" },
-  { score: 4, icon: "🙁", label: "나쁨" },
-  { score: 5, icon: "😞", label: "아주 나쁨" },
+  { score: 1, icon: "😃", label: "긍정" },
+  { score: 2, icon: "😠", label: "부정" },
+  { score: 3, icon: "😐", label: "중립" },
+  { score: 4, icon: "😰", label: "불안" },
+  { score: 5, icon: "😢", label: "우울" },
 ];
 
 function reducer(state, action) {
@@ -165,25 +165,48 @@ function DiaryList({ diaryList }) {
 }
 
 function DiaryPage() {
-  const [data, dispatch] = useReducer(reducer, dummyData);
+  const navigate = useNavigate();
+
+  const [keyword, setKeyword] = useState("");
+  const [searchType, setSearchType] = useState("all");
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // 페이지 정보
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = parseInt(searchParams.get('page')) || 0;
+  const [page, setPage] = useState(pageParam);
+  const size = 10;
+
+  // 서버 응답 데이터
+  const [data, setData] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+
   const [curDate, setCurDate] = useState(new Date());
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const memberno = user?.memberno;
+
   useEffect(() => {
+    if (!memberno) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
     const fetchDiaries = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const memberno = user?.memberno;
-
-        if (!memberno) {
-          alert("로그인이 필요합니다.");
-          return;
-        }
-
-        const res = await axios.get('/diary/list_all', {
-          params: { memberno }
+        const year = curDate.getFullYear();
+        const month = curDate.getMonth() + 1;
+        const res = await axios.get('/diary/list', {
+          params: { memberno, page, size, year, month }
         });
+
+        const list = res.data.content || [];
+
+
         const list = Array.isArray(res.data) ? res.data : res.data.list || [];
-        console.log(res,data);
+        console.log(res.data);
+
         const mapped = list.map((item) => ({
           id: item.diaryno,
           emotion: item.risk_flag,
@@ -191,16 +214,21 @@ function DiaryPage() {
           rdate: item.rdate,
           title: item.title,
         }));
-        dispatch({ type: 'SET', data: mapped });
+
+        setData(mapped);
+        setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error('일기 목록 불러오기 실패:', err);
-        dispatch({ type: 'SET', data: [] });
+        setData([]);
+        setTotalPages(0); // ✅ 서버 요청 실패하면 페이지 버튼 초기화
       }
     };
+
     fetchDiaries();
-  }, []);
+  }, [navigate, memberno, page, curDate]); // ✅ curDate 추가
 
 
+  // 월 필터
   const filteredByMonth = data.filter((item) => {
     const itemDate = new Date(item.rdate);
     return (
@@ -211,25 +239,145 @@ function DiaryPage() {
 
   const increaseMonth = () => {
     setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() + 1));
+    setPage(0);               // ✅ 페이지 리셋
+    setSearchParams({ page: 0 });
   };
 
   const decreaseMonth = () => {
     setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() - 1));
+    setPage(0);               // ✅ 페이지 리셋
+    setSearchParams({ page: 0 });
+  };
+
+  const handleSearch = async () => {
+    if (!keyword.trim()) {
+      alert("검색어를 입력해주세요!");
+      return;
+    }
+
+    try {
+      const res = await axios.get('/diary/search', {
+        params: {
+          memberno,
+          keyword,
+          type: searchType,
+          page: 0,
+          size
+        }
+      });
+
+      const list = res.data.content || [];
+      const mapped = list.map((item) => ({
+        id: item.diaryno,
+        emotion: item.risk_flag,
+        content: item.content,
+        rdate: item.rdate,
+        title: item.title,
+      }));
+
+      setData(mapped);
+      setTotalPages(res.data.totalPages);
+      setIsSearchMode(true);
+      setPage(0);
+    } catch (err) {
+      console.error('검색 실패:', err);
+      alert("검색 실패!");
+    }
   };
 
   const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
 
   return (
     <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto', background: '#FFFFFF' }}>
-        <MyHeader
-            headText={headText}
-            leftChild={<MyButton text="<" onClick={decreaseMonth} />}
-            rightChild={<MyButton text=">" onClick={increaseMonth} />}
-        />
-        <DiaryList diaryList={filteredByMonth} />
-    </div>
+      <MyHeader
+        headText={headText}
+        leftChild={<MyButton text="<" onClick={decreaseMonth} />}
+        rightChild={<MyButton text=">" onClick={increaseMonth} />}
+      />
 
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '0 8px', marginRight: '10px' }}>
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="검색어 입력 (제목/내용)"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
+            style={{
+              padding: '8px',
+              border: 'none',
+              outline: 'none',
+              width: '180px',
+              backgroundColor: 'transparent'
+            }}
+          />
+          {isSearchMode && (
+            <button
+              onClick={() => {
+                // ✅ 검색 취소 동작
+                setIsSearchMode(false);
+                setKeyword("");
+                setSearchType("all");
+                window.location.reload();
+              }}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '16px',
+                color: '#888',
+              }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+
+        <select
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+          style={{ padding: '8px', marginRight: '10px' }}
+        >
+          <option value="all">제목+내용</option>
+          <option value="title">제목</option>
+          <option value="content">내용</option>
+        </select>
+        <button onClick={handleSearch} style={{ padding: '8px 16px' }}>검색</button>
+      </div>
+
+      <DiaryList diaryList={filteredByMonth} />
+
+      
+      <div style={{ marginTop: '20px', textAlign: 'center' }}>
+        {Array.from({ length: totalPages }, (_, i) => i).map((p) => (
+          <button
+            key={p}
+            onClick={() => {
+              setPage(p);
+              setSearchParams({ page: p });
+            }}
+            style={{
+              margin: '0 5px',
+              padding: '6px 12px',
+              backgroundColor: p === page ? '#0077cc' : '#eee',
+              color: p === page ? '#fff' : '#333',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            {p + 1}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
+
 
 export default DiaryPage;

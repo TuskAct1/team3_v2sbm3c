@@ -33,3 +33,6 @@ CREATE SEQUENCE plant_seq
 SELECT * FROM user_sequences WHERE sequence_name = 'PLANT_SEQ';
 
 ALTER TABLE plant MODIFY growth NUMBER(5);
+
+ALTER TABLE plant MODIFY growth NUMBER DEFAULT 0;
+UPDATE plant SET growth = 0 WHERE growth IS NULL;

@@ -2,6 +2,7 @@ import os
 import datetime
 import DecoTool
 import requests
+from . import DecoTool
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,7 +22,8 @@ from llama_index.llms.openai import OpenAI
 from pymongo import MongoClient
 
 from openai import OpenAI
-# from emotion_report.router import router as emotion_report_router
+from emotion_report.router import router as emotion_report_router
+from db import db  # ✅ 여기서 가져옴
 
 
 app = FastAPI()
@@ -69,10 +71,21 @@ else:
 # MongoDB
 mongo_client = MongoClient("mongodb://localhost:27017/")
 db = mongo_client["mentalcare"]   # DB 이름
+# mongo_client = MongoClient("mongodb://localhost:27017/")
+# db = mongo_client["mentalcare"]   # DB 이름
 chat_collection = db["chats"]     # 저장되는 폴더 이름
 chat_rooms_collection = db["chat_rooms"]
 memory_collection = db["chatbot_memories"]  # MongoDB 컬렉션 예시
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(emotion_report_router, prefix="/emotion_report")
 
 class ChatRequest(BaseModel):
     memberno: str

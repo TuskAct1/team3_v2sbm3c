@@ -1,6 +1,7 @@
 package dev.mvc.reply;
 
 import dev.mvc.replyRecommend.ReplyRecommendProcInter;
+import dev.mvc.tool.Tool;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +39,7 @@ public class ReplyController {
         }
         replyVO.setMemberno(memberno);
 
+
         System.out.println("reply content: " + replyVO.getContent());
         replyProc.create(replyVO);
 
@@ -64,25 +66,75 @@ public class ReplyController {
         return ResponseEntity.ok(replyList);
     }
 
+//    @GetMapping(value = "/m_list", produces = "application/json")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> list_by_boardno_join(@RequestParam("boardno") int boardno,
+//                                                                          HttpSession session) {
+//        Integer memberno = (Integer) session.getAttribute("memberno");
+//
+//        ArrayList<ReplyMemberVO> list = replyProc.list_by_boardno_join(boardno);
+//        List<Map<String, Object>> result = new ArrayList<>();
+//
+//        for (ReplyMemberVO vo : list) {
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("replyno", vo.getReplyno());
+//            map.put("memberno", vo.getMemberno());
+//            map.put("content", vo.getContent());
+//            map.put("nickname", vo.getNickname());
+//            map.put("id", vo.getId());
+//            map.put("rdate", vo.getRdate());
+//            map.put("profile", vo.getProfile());
+//            map.put("recommendCount", replyRecommendProc.count_by_replyno(vo.getReplyno()));
+//            // 🔽 blind 추가
+//            map.put("blind", vo.getBlind());
+//
+//            if (memberno != null) {
+//                HashMap<String, Object> checkMap = new HashMap<>();
+//                checkMap.put("replyno", vo.getReplyno());
+//                checkMap.put("memberno", memberno);
+//                int cnt = replyRecommendProc.hartCnt(checkMap);
+//                map.put("isRecommended", cnt > 0);
+//            } else {
+//                map.put("isRecommended", false);
+//            }
+//
+//            result.add(map);
+//        }
+//
+//        return ResponseEntity.ok(result);
+//    }
+
     @GetMapping(value = "/m_list", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> list_by_boardno_join(@RequestParam("boardno") int boardno,
-                                                                          HttpSession session) {
+    public ResponseEntity<Map<String, Object>> list_by_boardno_paging(
+            @RequestParam("boardno") int boardno,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            HttpSession session) {
+
         Integer memberno = (Integer) session.getAttribute("memberno");
 
-        ArrayList<ReplyMemberVO> list = replyProc.list_by_boardno_join(boardno);
+        int startRow = (page - 1) * size;
+        int endRow = page * size;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("boardno", boardno);
+        params.put("startRow", startRow);
+        params.put("endRow", endRow);
+
+        ArrayList<ReplyMemberVO> list = (ArrayList<ReplyMemberVO>) replyProc.list_by_boardno_paging(params);
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (ReplyMemberVO vo : list) {
             Map<String, Object> map = new HashMap<>();
             map.put("replyno", vo.getReplyno());
+            map.put("memberno", vo.getMemberno());
             map.put("content", vo.getContent());
             map.put("nickname", vo.getNickname());
             map.put("id", vo.getId());
             map.put("rdate", vo.getRdate());
             map.put("profile", vo.getProfile());
             map.put("recommendCount", replyRecommendProc.count_by_replyno(vo.getReplyno()));
-            // 🔽 blind 추가
             map.put("blind", vo.getBlind());
 
             if (memberno != null) {
@@ -98,8 +150,16 @@ public class ReplyController {
             result.add(map);
         }
 
-        return ResponseEntity.ok(result);
+        int totalCount = replyProc.count_by_boardno(boardno);
+        int totalPages = (int) Math.ceil((double) totalCount / size);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("comments", result);
+        response.put("totalPages", totalPages);
+
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/update")
     @ResponseBody
@@ -108,7 +168,8 @@ public class ReplyController {
 
         Integer memberno = (Integer) session.getAttribute("memberno");
         int cnt = 0;
-
+        System.out.println("memberVO" + memberno.equals(replyVO.getMemberno()));
+        System.out.println("세션 member" + memberno);
         if (memberno != null && memberno.equals(replyVO.getMemberno())) {
             cnt = this.replyProc.update(replyVO);
         } else {
@@ -129,8 +190,12 @@ public class ReplyController {
         Integer memberno = (Integer) session.getAttribute("memberno");
         int cnt = 0;
 
+        System.out.println("memberVO" + memberno.equals(replyVO.getMemberno()));
+        System.out.println("세션 member" + memberno);
+
         if (memberno != null && memberno.equals(replyVO.getMemberno())) {
             cnt = this.replyProc.delete(replyVO.getReplyno());
+
         } else {
             System.out.println("삭제 권한 없음 또는 로그인 필요");
         }

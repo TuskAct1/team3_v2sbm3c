@@ -1,0 +1,22 @@
+/* MiniCalendar.css */
+.react-calendar {
+  width: 100%;
+  background: #fff;
+  border: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+}
+
+.react-calendar__tile--active {
+  background: #007bff;
+  color: white;
+}
+
+.react-calendar__tile--now {
+  background: #f0f8ff;
+  font-weight: bold;
+}
+
+.react-calendar__tile {
+  padding: 8px 4px;
+}

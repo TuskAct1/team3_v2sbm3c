@@ -1,8 +1,8 @@
+// ✅ MBTITest.js - 진행률 표시 + 질문 번호 + 버튼 UI까지 반영
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './MBTITest.css'; // 시니어용 스타일 따로 분리
+import './MBTITest.css'; // 새로 고친 CSS 사용
 
-// 시니어 맞춤형 감성 질문 리스트
 const mbtiQuestions = [
   { id: 1,  question: '누군가와 이야기하면 기분이 좋아진다', type: 'E' },
   { id: 2,  question: '혼자 있는 시간이 마음이 편하다', type: 'I' },
@@ -27,50 +27,54 @@ function MBTITest() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const navigate = useNavigate();
 
-  // 질문에 답했을 때
   const handleAnswer = (type) => {
     const currentQuestion = mbtiQuestions[currentQuestionIndex];
     setAnswers({ ...answers, [currentQuestion.id]: type });
     setCurrentQuestionIndex((prev) => prev + 1);
   };
 
-  // 결과 계산 후 이동
   const handleSubmit = () => {
     const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-
-    Object.values(answers).forEach((type) => {
-      if (type) counts[type]++;
-    });
+    Object.values(answers).forEach((type) => { if (type) counts[type]++; });
 
     const EI = counts.E >= counts.I ? 'E' : 'I';
     const SN = counts.S >= counts.N ? 'S' : 'N';
     const TF = counts.T >= counts.F ? 'T' : 'F';
     const JP = counts.J >= counts.P ? 'J' : 'P';
 
-    const result = EI + SN + TF + JP;
-
-    navigate('/mbti-result', { state: { mbti: result } });
+    navigate('/mbti-result', { state: { mbti: EI + SN + TF + JP } });
   };
 
   const currentQuestion = mbtiQuestions[currentQuestionIndex];
+  const progressPercent = Math.round((currentQuestionIndex / mbtiQuestions.length) * 100);
 
   return (
     <div className="mbti-page-bg">
       <div className="mbti-container">
-        <h1 className="mbti-title">🧩 나의 성향 알아보기</h1>
+
+        {/* ✅ 제목 + 질문 번호 */}
+        <h2 className="mbti-question-title">
+          Q. 나의 성향을 선택해주세요. ({currentQuestionIndex + 1}/{mbtiQuestions.length})
+        </h2>
+
+        {/* ✅ 진행 바 */}
+        <div className="mbti-progress-bar">
+          <div className="progress-fill" style={{ width: `${progressPercent}%` }}></div>
+        </div>
+        <div className="mbti-progress-label">
+          <span>{currentQuestionIndex + 1} / {mbtiQuestions.length}</span>  {/* 퍼센트 대신 비율로 표시 */}
+        </div>
 
         {currentQuestionIndex < mbtiQuestions.length ? (
-          <div className="question-card">
-            <p>{currentQuestion.question}</p>
-            <div className="button-group">
-              <button className="yes-button" onClick={() => handleAnswer(currentQuestion.type)}>그렇다</button>
-              <button className="no-button" onClick={() => handleAnswer('')}>아니다</button>
+          <div className="mbti-question-box">
+            <p className="mbti-question-text">{currentQuestion.question}</p>
+            <div className="mbti-button-group">
+              <button onClick={() => handleAnswer(currentQuestion.type)}>그렇다</button>
+              <button onClick={() => handleAnswer('')}>아니다</button>
             </div>
           </div>
         ) : (
-          <button className="submit-button" onClick={handleSubmit}>
-            결과 보기
-          </button>
+          <button className="submit-button" onClick={handleSubmit}>결과 보기</button>
         )}
       </div>
     </div>

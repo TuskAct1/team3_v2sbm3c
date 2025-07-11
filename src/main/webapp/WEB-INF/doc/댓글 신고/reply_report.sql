@@ -29,3 +29,17 @@ CREATE SEQUENCE replyReport_seq
   
 ALTER TABLE replyReport
 ADD reason VARCHAR2(50);
+
+ALTER TABLE replyReport
+ADD CONSTRAINT fk_report_reply
+FOREIGN KEY (replyno)
+REFERENCES reply(replyno)
+ON DELETE CASCADE;
+
+ALTER TABLE replyReport DROP CONSTRAINT SYS_C0019356;
+
+ALTER TABLE replyReport
+ADD CONSTRAINT fk_replyReport_replyno
+FOREIGN KEY (replyno)
+REFERENCES reply(replyno)
+ON DELETE CASCADE;

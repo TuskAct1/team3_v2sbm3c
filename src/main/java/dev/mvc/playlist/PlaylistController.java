@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,11 +69,20 @@ public class PlaylistController {
     return playlistProc.delete(playlistno);
   }
 
-
   // 감정별 조회
   @GetMapping("/list_by_emotionno/{playlistemotionno}")
   public List<PlaylistVO> listByEmotionno(@PathVariable("playlistemotionno") int playlistemotionno) {
     return playlistProc.listByEmotionno(playlistemotionno);
+  }
+  
+  // 감정별 + 좋아요 정보 포함 조회
+  @GetMapping("/list_by_emotionno_with_like/{emotionno}/{memberno}")
+  public ResponseEntity<List<PlaylistJoinVO>> listByEmotionnoWithLike(
+         @PathVariable("emotionno") int emotionno,
+         @PathVariable("memberno") int memberno) {
+  
+     List<PlaylistJoinVO> list = playlistProc.listByEmotionnoWithLike(emotionno, memberno);
+     return ResponseEntity.ok(list);
   }
   
   // ✅ 썸네일 이미지 업로드
@@ -104,5 +114,21 @@ public class PlaylistController {
       return "/playlist/storage/" + savedName;
   }
 
+  // 사용자 기준 좋아요 포함된 전체 목록
+  @GetMapping("/list_with_like/{memberno}")
+  public ResponseEntity<List<PlaylistJoinVO>> listWithLike(@PathVariable("memberno") int memberno) {
+      List<PlaylistJoinVO> list = playlistProc.listWithLikeInfo(memberno);
+      return ResponseEntity.ok(list);
+  }
+
+  // 좋아요 포함 단일 조회
+  @GetMapping("/read_with_like/{playlistno}/{memberno}")
+  public ResponseEntity<PlaylistJoinVO> readWithLike(
+         @PathVariable("playlistno") int playlistno,
+         @PathVariable("memberno") int memberno) {
+  
+     PlaylistJoinVO vo = playlistProc.readWithLike(playlistno, memberno);
+     return ResponseEntity.ok(vo);
+  }
 
 }

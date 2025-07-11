@@ -1,131 +1,122 @@
-/* ✅ 전체 결과 페이지 배경 */
+/* ✅ LifestyleResult.css - 루틴 결과 페이지 전용 */
+
 .lifestyle-result-container {
-  background: linear-gradient(to bottom, #f1f8e9, #e0f2f1);  /* 연초록~청록 그라데이션 */
-  min-height: 100vh;
   padding: 3rem 1rem;
-  font-family: 'Arial', sans-serif;
-  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Pretendard', sans-serif;
+  background-color: #ffffff; /* 🔄 단색 배경으로 변경 */
+  min-height: 100vh;
 }
 
-/* ✅ 결과 제목 */
 .result-title {
+  text-align: center;
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 700;
   color: #2e7d32;
   margin-bottom: 2.5rem;
 }
 
-/* ✅ 에러 메시지 */
-.error-msg {
-  color: red;
-  font-weight: bold;
-  margin-bottom: 2rem;
-}
-
-/* ✅ 타임라인 전체 박스 */
 .timeline {
-  margin: 0 auto 2rem;
-  max-width: 700px;
-  padding-left: 2.5rem;
-  border-left: 4px solid #a5d6a7;
-  text-align: left;
-  position: relative;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
-/* ✅ 타임라인 항목 하나 */
+/* 🔹 기본 루틴 항목 */
 .timeline-item {
-  position: relative;
-  margin-bottom: 3rem;
-  padding-left: 2.5rem;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 }
 
-/* ✅ 동그라미 위치 조정 */
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: -1.4rem;            /* 왼쪽 위치 조정 */
-  top: 0.4rem;
-  width: 1.1rem;
-  height: 1.1rem;
-  background-color: #66bb6a;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 0 0 3px #a5d6a7;
-}
-
-/* ✅ 시간 텍스트 */
 .timeline-time {
-  font-size: 1.25rem;
+  min-width: 80px;
   font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 0.5rem;
-  padding-left: 0.2rem;
+  color: #388e3c;
+  font-size: 1.1rem;
+  margin-right: 1.2rem;
 }
 
-/* ✅ 활동 텍스트 (줄바꿈 포함, 들여쓰기) */
 .timeline-content {
-  font-size: 1.1rem;
-  color: #333;
-  white-space: pre-line;   /* \n 줄바꿈 유지 */
-  padding-left: 0.2rem;
+  font-size: 1.05rem;
+  color: #444;
   line-height: 1.6;
 }
 
-/* ✅ 버튼 그룹 (가운데 정렬, 여백) */
+/* ✅ 응원의 말 - 강조 스타일 */
+.timeline-item:last-child {
+  background-color: #fffde7;  /* 💛 연한 노랑 배경 */
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 235, 59, 0.3);
+}
+
+.timeline-item:last-child .timeline-time {
+  color: #f9a825;  /* 노랑 강조 색상 */
+}
+
+.timeline-item:last-child .timeline-content {
+  font-weight: 600;
+  color: #5d4037;
+}
+
+.error-msg {
+  color: #c62828;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
 .btn-group {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 2.5rem;
+  margin-top: 3rem;
   flex-wrap: wrap;
 }
 
-/* ✅ 공통 버튼 스타일 */
-.save-btn, .retry-btn {
-  background-color: #81c784;
-  border: none;
-  border-radius: 8px;
-  padding: 0.8rem 1.6rem;
-  font-size: 1.1rem;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-/* ✅ 다른 버튼 색상 구분 */
-.retry-btn {
-  background-color: #64b5f6;
-}
-
-/* ✅ 버튼 hover 효과 */
-.save-btn:hover {
-  background-color: #66bb6a;
-}
-.retry-btn:hover {
-  background-color: #42a5f5;
-}
-
-/* ✅ 뒤로가기 버튼도 같은 스타일 적용 */
+.retry-btn,
+.save-btn,
 .back-btn {
-  background-color: #aed581;
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+  font-weight: bold;
   border: none;
-  border-radius: 8px;
-  padding: 0.8rem 1.6rem;
-  font-size: 1.1rem;
-  color: white;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow: 0 4px 10px rgba(102, 187, 106, 0.25);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.retry-btn {
+  background-color: #66bb6a;
+  color: white;
+}
+
+.retry-btn:hover {
+  background-color: #43a047;
+  transform: scale(1.05);
+}
+
+.save-btn {
+  background-color: #ffee58;
+  color: #444;
+}
+
+.save-btn:hover {
+  background-color: #fdd835;
+  transform: scale(1.05);
+}
+
+.back-btn {
+  background-color: #e0e0e0;
+  color: #333;
 }
 
 .back-btn:hover {
-  background-color: #9ccc65;
-}
-
-/* 응원의 말이 timeline-time 클래스를 그대로 쓰기 때문에, 따로 추가할 필요 없음 */
-.timeline-time {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 0.5rem;
-  padding-left: 0.2rem;
+  background-color: #bdbdbd;
+  transform: scale(1.05);
 }

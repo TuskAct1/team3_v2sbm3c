@@ -75,7 +75,7 @@ function PlaylistSongList() {
     return match ? match[1] : '';
   };
 
-  // ✅ 설명란(playlist.description)에서 다양한 타임라인 형식을 자동 파싱하는 함수
+  // ✅ 노래 타임라인 작성란(playlist.description)에서 다양한 타임라인 형식을 자동 파싱하는 함수
   const parseDescriptionToTracks = (text) => {
     const lines = text.trim().split('\n'); // 한 줄씩 자르기
     const tracks = [];

@@ -55,5 +55,10 @@ public class PlantProc implements PlantProcInter {
         return plantDAO.increaseGrowth(map);  // ✔️ 리턴값 반환
     }
     
+    @Override
+    public int deleteByMemberno(int memberno) {
+        return plantDAO.deleteByMemberno(memberno);
+    }
+    
     
 }

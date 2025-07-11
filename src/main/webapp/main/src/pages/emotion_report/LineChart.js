@@ -14,41 +14,86 @@ import {
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Legend, Tooltip);
 
 const LineChart = ({ data }) => {
-  const chartData = {
-    labels: ['긍정', '부정', '중립', '불안', '우울'],
-    datasets: data.map((item) => ({
-      label: item.reportPeriod,
-      data: [
-        item.긍정,
-        item.부정,
-        item.중립,
-        item.불안,
-        item.우울,
-      ],
-      borderColor: getRandomColor(),
-      fill: false,
+  if (!data || data.length === 0) {
+    return <p style={{ textAlign: "center" }}>데이터가 없습니다.</p>;
+  }
+
+  // 👉 1. x축 라벨: 주차나 월
+  const labels = data.map(item => item.reportPeriod);
+
+  const emotionMap = {
+    positive: '긍정',
+    negative: '부정',
+    neutral: '중립',
+    anxious: '불안',
+    depressed: '우울'
+  };
+
+  // 👉 2. 감정별 데이터 배열
+  const emotions = ['positive', 'negative', 'neutral', 'anxious', 'depressed'];
+
+  const emotionColors = {
+    긍정: '#FF6384',
+    부정: '#FFCD56',
+    중립: '#36A2EB',
+    불안: '#9CCC65',
+    우울: '#BA68C8'
+  };
+
+  const datasets = emotions.map(emotionKey => {
+    const koreanLabel = emotionMap[emotionKey];
+    return {
+      label: koreanLabel,
+      data: data.map(item =>
+        item && typeof item[emotionKey] === 'number'
+          ? item[emotionKey]
+          : 0
+      ),
+      borderColor: emotionColors[koreanLabel],
+      backgroundColor: emotionColors[koreanLabel] + '33',
+      fill: true,
       tension: 0.3,
-    })),
+    };
+  });
+
+  const chartData = {
+    labels,
+    datasets,
   };
 
   const options = {
     responsive: true,
     plugins: {
-      legend: {
-        position: 'bottom',
-      },
+      legend: { position: 'bottom' },
       tooltip: {
-        enabled: true,
-      },
+        callbacks: {
+          label: context => `${context.dataset.label}: ${context.parsed.y}%`
+        }
+      }
     },
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        title: {
+          display: true,
+          text: '퍼센트(%)',
+          color: '#333',
+          font: { size: 14, weight: 'bold' }
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: '기간',
+          color: '#333',
+          font: { size: 14, weight: 'bold' }
+        }
+      }
+    }
   };
 
   return <Line data={chartData} options={options} />;
 };
-
-function getRandomColor() {
-  const colors = ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#9CCC65', '#BA68C8'];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
 
 export default LineChart;

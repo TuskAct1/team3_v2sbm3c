@@ -1,190 +1,98 @@
-/* ================================
- ✅ 공통 설정: 전체 페이지 레이아웃
-================================= */
-.memory-test-container,
-.memory-result-container {
-  background: linear-gradient(to bottom, #f1f8e9, #e0f2f1);  /* 포근한 연초록~청록 배경 */
+
+
+.memorytest-container {
+  background-color: #f9fefb;
   min-height: 100vh;
   padding: 3rem 1rem;
   text-align: center;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Pretendard', sans-serif;
 }
 
-
-/* ================================
- ✅ 질문 페이지 (MemoryTest.js) 영역
-================================= */
-
-/* 🔹 질문 번호 (예: 3 / 10) */
-.question-count {
-  font-size: 1.2rem;
-  color: #4e684e;
-  margin-bottom: 0.8rem;
+.memorytest-title {
+  font-size: 2rem;
+  color: #2e7d32;
+  font-weight: 800;
+  margin-bottom: 1.8rem;
 }
 
-/* 🔹 질문 카드 박스 */
-.question-card {
-  background-color: white;
+/* ✅ 진행률 바 */
+.memorytest-progress-bar {
+  width: 100%;
+  max-width: 600px;
+  height: 10px;
+  background-color: #e0f2f1;
+  border-radius: 999px;
+  margin: 0 auto 0.5rem auto;
+  overflow: hidden;
+}
+
+.memorytest-progress-fill {
+  height: 100%;
+  background-color: #66bb6a;
+  transition: width 0.3s ease-in-out;
+}
+
+.memorytest-progress-text {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+/* ✅ 질문 카드 */
+.memorytest-question-card {
+  background-color: #ffffff;
   padding: 2.5rem;
   margin: 2rem auto;
-  border-radius: 24px;
+  border-radius: 20px;
   max-width: 720px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
-/* 🔹 질문 텍스트 */
-.question-card p {
-  font-size: 1.8rem;
-  font-weight: bold;
+.memorytest-question-text {
+  font-size: 1.6rem;
+  font-weight: 700;
   color: #33691e;
-  margin-bottom: 2rem;
-  line-height: 2.6rem;
+  margin-bottom: 2.2rem;
+  line-height: 2.5rem;
 }
 
-/* 🔹 답변 선택 버튼 컨테이너 (세로 정렬) */
-.options {
+.memorytest-options {
   display: flex;
-  flex-direction: column;     /* ✅ 수직 정렬 핵심 */
+  flex-direction: column;
   align-items: center;
   gap: 1.2rem;
-  margin-top: 2rem;
 }
 
-/* 🔹 각 답변 버튼 */
-.options button {
-  background-color: #558b2f;
+.memorytest-option-btn {
+  background-color: #66bb6a;
   color: white;
   font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: 600;
   padding: 1rem 2rem;
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s;
   width: 260px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.options button:hover {
-  background-color: #33691e;
+.memorytest-option-btn:hover {
+  background-color: #43a047;
   transform: scale(1.03);
 }
 
-
-/* ================================
- ✅ 결과 페이지 (MemoryResult.js) 영역
-================================= */
-
-/* 🔹 결과 카드 박스 */
-.result-card {
-  background-color: white;
-  padding: 3rem 2rem;
-  margin: 2rem auto;
-  border-radius: 24px;
-  max-width: 750px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-/* 🔹 결과 제목 (예: 주의 - 총점 35점) */
-.result-card h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1.2rem;
-  font-weight: bold;
-}
-
-/* 🔹 주요 메시지 (한 줄 요약) */
-.main-message {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #2e7d32;
-}
-
-/* 🔹 상세 설명 (장문 설명) */
-.detail {
-  font-size: 1.1rem;
-  color: #444;
-  line-height: 1.8rem;
-  margin-bottom: 2rem;
-}
-
-/* 🔹 기억력 관리 팁 리스트 */
-.tips-list {
-  text-align: left;
-  list-style: none;
-  padding-left: 0;
-  margin: 1rem 0 2rem;
-}
-
-.tips-list li {
-  font-size: 1.1rem;
-  padding: 0.6rem 0;
-  color: #33691e;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-
-/* ================================
- ✅ 결과 하단 버튼: 다시 검사 / 돌아가기
-================================= */
-
-/* 🔹 버튼 묶음 영역 (flex로 배치) */
-.result-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-}
-
-/* 🔹 버튼 공통 스타일 */
-.result-buttons button {
-  background-color: #558b2f;
-  color: white;
-  font-size: 1.1rem;
-  padding: 0.8rem 2rem;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.result-buttons button:hover {
-  background-color: #33691e;
-  transform: scale(1.03);
-}
-
-
-/* ================================
- ✅ 반응형 (모바일 대응)
-================================= */
-
-@media (max-width: 480px) {
-  .question-card,
-  .result-card {
-    padding: 2rem 1.5rem;
+/* ✅ 반응형 */
+@media (max-width: 500px) {
+  .memorytest-question-card {
+    padding: 2rem 1.2rem;
   }
 
-  .result-card h2 {
-    font-size: 1.5rem;
+  .memorytest-question-text {
+    font-size: 1.4rem;
   }
 
-  .main-message {
-    font-size: 1.3rem;
-  }
-
-  .detail,
-  .tips-list li {
-    font-size: 1rem;
-  }
-
-  .options button,
-  .result-buttons button {
-    width: 100%;  /* 모바일에서는 가로 전체 버튼 */
-  }
-
-  .result-buttons {
-    flex-direction: column;
-    align-items: center;
+  .memorytest-option-btn {
+    width: 100%;
   }
 }

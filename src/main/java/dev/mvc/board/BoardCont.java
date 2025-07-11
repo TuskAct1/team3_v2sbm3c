@@ -4,6 +4,9 @@ import dev.mvc.board_recommend.BoardRecommendProc;
 import dev.mvc.board_recommend.BoardRecommendVO;
 import dev.mvc.category.CategoryProc;
 import dev.mvc.category.CategoryVO;
+import dev.mvc.reply.ReplyDAOInter;
+import dev.mvc.replyRecommend.ReplyRecommendDAOInter;
+import dev.mvc.replyReport.ReplyReportDAOInter;
 import dev.mvc.tool.Tool;
 import dev.mvc.tool.Upload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import java.util.Map;
 @RequestMapping("/board")
 public class BoardCont {
 
+    // 게시판 부분
     @Autowired
     private BoardProc boardProc;
 
@@ -29,6 +33,9 @@ public class BoardCont {
 
     @Autowired
     private BoardRecommendProc boardRecommendProc;
+//-------------------------------------------------------
+
+
 
     /**
      * 전체 게시글 목록
@@ -269,6 +276,15 @@ public class BoardCont {
         boardProc.update(boardVO);
 
         return ResponseEntity.ok("수정 완료");
+    }
+    
+    /**
+     * 게시판 카테고리 목록만 반환
+     */
+    @GetMapping("/category_group")
+    public ResponseEntity<List<CategoryVO>> categoryGroup() {
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+        return ResponseEntity.ok(categoryGroup);
     }
 
 }

@@ -36,6 +36,12 @@
     WHERE replyRecommendno = #{replyRecommendno}
   </delete>
 
+  <!-- 삭제 -->
+  <delete id="delete_all" parameterType="int">
+    DELETE FROM replyRecommend
+    WHERE replyno = #{replyno}
+  </delete>
+
   <!-- 특정 댓글의 총 추천 수 조회 -->
   <select id="count_by_replyno" resultType="int" parameterType="int">
     SELECT COUNT(*)

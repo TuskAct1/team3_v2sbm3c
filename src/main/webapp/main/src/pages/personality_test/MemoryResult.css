@@ -1,0 +1,102 @@
+/* ✅ MemoryResult.css */
+
+.memoryresult-container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding: 3rem 1rem;
+  text-align: center;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.memoryresult-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 2rem;
+}
+
+.memoryresult-card {
+  background-color: #f1f8e9;
+  padding: 2.5rem;
+  margin: 0 auto;
+  border-radius: 20px;
+  max-width: 720px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.memoryresult-score {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.memoryresult-main-message {
+  font-size: 1.3rem;
+  color: #388e3c;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.memoryresult-detail {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.memoryresult-tip-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  color: #33691e;
+}
+
+.memoryresult-tip-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 2rem;
+}
+
+.memoryresult-tip-list li {
+  font-size: 1.05rem;
+  padding: 0.6rem 0;
+  color: #2e7d32;
+  border-bottom: 1px solid #dcedc8;
+}
+
+.memoryresult-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.memoryresult-btn {
+  font-size: 1.1rem;
+  padding: 0.8rem 1.8rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.memoryresult-btn.green {
+  background-color: #66bb6a;
+  color: white;
+}
+
+.memoryresult-btn.green:hover {
+  background-color: #43a047;
+}
+
+.memoryresult-btn.gray {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.memoryresult-btn.gray:hover {
+  background-color: #bdbdbd;
+}

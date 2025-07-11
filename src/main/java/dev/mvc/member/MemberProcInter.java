@@ -1,6 +1,9 @@
 package dev.mvc.member;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface MemberProcInter {
   
@@ -53,7 +56,7 @@ public interface MemberProcInter {
      */
     public int delete(int memberno);
 
-    public int updateSticker(int memberno, int amount);
+    public int updateSticker(@Param("memberno") int memberno, @Param("amount") int amount);
     
 //    public boolean hasPlant(int memberno);
     
@@ -69,9 +72,11 @@ public interface MemberProcInter {
 
     public MemberVO readById(String id);
 
-    
     public int existsById(String id);  // 존재 여부 확인
 
     public int updatePassword(int memberno, String newPasswd);
 
+    public List<MemberVO> searchWithPaging(Map<String, Object> map);
+  
+    public int searchCount(Map<String, Object> map);
 }

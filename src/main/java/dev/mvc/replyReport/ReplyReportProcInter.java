@@ -2,6 +2,8 @@ package dev.mvc.replyReport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface ReplyReportProcInter {
 
@@ -37,9 +39,25 @@ public interface ReplyReportProcInter {
   
   /**
    * 삭제
-   * @param replyReportVO
+   * @param replyReportno
    * @return
    */
   public int delete(int replyReportno);
-  
+
+//  /**
+//   * 삭제
+//   * @param replyReportVO
+//   * @return
+//   */
+//  public int delete_all(int replyReportno);
+
+
+  /**
+   * 신고수 조회
+   * @param replyno
+   * @return
+   */
+  public ArrayList<Map<String, Object>> list_by_replyno(int replyno);
+
+  public List<Map<String, Object>> groupedReports();
 }

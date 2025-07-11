@@ -3,6 +3,7 @@ package dev.mvc.diary;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DiaryDAOInter {
 
@@ -27,5 +28,13 @@ public interface DiaryDAOInter {
             @Param("startDate") String startDate,
             @Param("endDate") String endDate
     );
+
+    public int countByMember(int memberno, int year, int month);
+
+    public List<DiaryVO> findByMemberPaged(int memberno, int offset, int size, int year, int month);
+
+    public List<DiaryVO> searchByKeyword(Map<String, Object> params);
+
+    public int countSearchByKeyword(Map<String, Object> params);
 
 }
