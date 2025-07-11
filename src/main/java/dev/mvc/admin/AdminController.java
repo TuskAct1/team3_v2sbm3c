@@ -1,5 +1,6 @@
 package dev.mvc.admin;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -48,25 +49,64 @@ public class AdminController {
             return ResponseEntity.status(500).body(response);
         }
     }
-    /** 로그인 */
+//    /** 로그인 */
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody Map<String, Object> loginMap) {
+//        String id = (String) loginMap.get("id");
+//        String inputPasswd = (String) loginMap.get("passwd"); // ✅ key 변경!
+//
+//        if (inputPasswd == null) {
+//            return ResponseEntity.badRequest().body("비밀번호가 누락되었습니다.");
+//        }
+//
+//        AdminVO admin = adminProc.readByEmail(id);
+//
+//        if (admin != null && bcryptUtil.matches(inputPasswd, admin.getPassword())) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "로그인 성공");
+//            response.put("user", admin);
+//            return ResponseEntity.ok(response);
+//        } else {
+//            return ResponseEntity.status(401).body("로그인 실패");
+//        }
+//    }
+
+    // 관리자 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, Object> loginMap) {
-        String id = (String) loginMap.get("id");
-        String inputPasswd = (String) loginMap.get("passwd"); // ✅ key 변경!
+    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+    public ResponseEntity<?> login(HttpSession session, @RequestBody Map<String, Object> loginMap) {
+        try {
+            String id = (String) loginMap.get("id");
+            String inputPasswd = (String) loginMap.get("passwd");
 
-        if (inputPasswd == null) {
-            return ResponseEntity.badRequest().body("비밀번호가 누락되었습니다.");
-        }
+            if (id == null || inputPasswd == null) {
+                return ResponseEntity.badRequest().body("아이디 또는 비밀번호가 누락되었습니다.");
+            }
 
-        AdminVO admin = adminProc.readByEmail(id);
+            AdminVO admin = adminProc.readByEmail(id);
 
-        if (admin != null && bcryptUtil.matches(inputPasswd, admin.getPassword())) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "로그인 성공");
-            response.put("user", admin);
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(401).body("로그인 실패");
+            if (admin != null && bcryptUtil.matches(inputPasswd, admin.getPassword())) {
+
+                // ✅ 세션 저장
+                session.setAttribute("role", "admin");
+                session.setAttribute("adminno", admin.getAdminno());
+                session.setAttribute("user", admin);
+                session.removeAttribute("memberno"); // 🔥 회원 세션 정보 제거
+
+                System.out.println("관리자 로그인 성공 - 세션 저장됨 adminno: " + session.getAttribute("adminno"));
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "로그인 성공");
+                response.put("user", admin);
+
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(401).body("아이디 또는 비밀번호가 올바르지 않습니다.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("서버 오류: " + e.getMessage());
         }
     }
 

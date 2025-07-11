@@ -36,6 +36,12 @@
     FROM board_report
     WHERE boardno=#{boardno} AND memberno=#{memberno}
   </select>
-      
+
+  <!-- 신고 삭제 -->
+  <delete id="delete_all" >
+    DELETE FROM board_report
+    WHERE boardno = #{boardno}
+  </delete>
+
 </mapper>
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
@@ -84,4 +85,18 @@ public class ReplyReportController {
             return new ResponseEntity<>("삭제 실패", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(value = "/report_list", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> reportList(@RequestParam("replyno") int replyno) {
+        List<Map<String, Object>> reports = replyReportProc.list_by_replyno(replyno);
+        return ResponseEntity.ok(reports);
+    }
+
+    @GetMapping(value = "/grouped", produces = "application/json")
+    @ResponseBody
+    public List<Map<String, Object>> groupedReports() {
+        return replyReportProc.groupedReports();
+    }
+
 }

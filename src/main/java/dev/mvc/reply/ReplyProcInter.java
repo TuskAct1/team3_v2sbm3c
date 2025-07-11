@@ -1,6 +1,8 @@
 package dev.mvc.reply;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public interface ReplyProcInter {
   /**
@@ -50,4 +52,10 @@ public interface ReplyProcInter {
 
 
   int setBlind(int replyno, int blind);
+
+  // ✅ 페이징용 댓글 목록 조회
+  public ArrayList<ReplyMemberVO> list_by_boardno_paging(Map<String, Object> map);
+
+  // ✅ 댓글 총 수
+  public int count_by_boardno(int boardno);
 }

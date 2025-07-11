@@ -28,6 +28,12 @@
     WHERE boardno = #{boardno} AND memberno = #{memberno}
   </delete>
 
+  <!-- 추천 삭제(신고 누적으로 삭제 시 사용)-->
+  <delete id="delete_all" >
+    DELETE FROM board_recommend
+    WHERE boardno = #{boardno}
+  </delete>
+
   <select id="list_all" resultType="dev.mvc.board_recommend.BoardRecommendVO">
     SELECT board_recommendno, boardno, memberno, rdate
     FROM board_recommend

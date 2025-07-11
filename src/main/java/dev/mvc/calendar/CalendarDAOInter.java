@@ -18,4 +18,10 @@ public interface CalendarDAOInter {
   
   /** 일정 삭제 */
   int delete(int calendarno);
+
+  /** 관리자 일정 전체 조회 (adminno IS NOT NULL) */
+  List<CalendarVO> list_allByAdmin();
+
+  /** 회원 일정 조회 (관리자 일정 + 특정 회원 일정) */
+  List<CalendarVO> list_allByMember(int memberno);
 }

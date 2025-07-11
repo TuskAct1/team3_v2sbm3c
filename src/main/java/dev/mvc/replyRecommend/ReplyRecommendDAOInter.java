@@ -42,6 +42,13 @@ public interface ReplyRecommendDAOInter {
    */
   public int delete(int replyRecommendno);
 
+  /**
+   * 삭제
+   * @param replyVO
+   * @return
+   */
+  public int delete_all(int replyno);
+
 
   /**
    * 특정 댓글의 총 추천 수 조회

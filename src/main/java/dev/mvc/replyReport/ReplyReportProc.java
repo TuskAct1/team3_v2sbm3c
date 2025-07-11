@@ -2,8 +2,11 @@ package dev.mvc.replyReport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import dev.mvc.reply.ReplyDAOInter;
+import dev.mvc.reply.ReplyMemberVO;
 import dev.mvc.reply.ReplyProcInter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -66,7 +69,33 @@ public class ReplyReportProc implements ReplyReportProcInter{
     return replyReportDAO.delete(replyReportno);
   }
 
+  @Override
+  public ArrayList<Map<String, Object>> list_by_replyno(int replyno) {
+    return replyReportDAO.list_by_replyno(replyno);
+  }
 
+  @Override
+  public List<Map<String, Object>> groupedReports() {
+    List<Map<String, Object>> groups = new ArrayList<>();
+    List<Integer> replynos = replyReportDAO.findReportedReplynos();
 
+    for (Integer replyno : replynos) {
+      Map<String, Object> group = new HashMap<>();
+      ReplyMemberVO replyInfo = replyReportDAO.getReplyInfo(replyno); // 댓글 + 작성자 정보
+      List<Map<String, Object>> reports = replyReportDAO.listByReplynoWithMember(replyno);
+
+      group.put("replyno", replyInfo.getReplyno());
+      group.put("memberno", replyInfo.getMemberno());
+      group.put("nickname", replyInfo.getNickname());
+      group.put("id", replyInfo.getId());
+      group.put("content", replyInfo.getContent());
+      group.put("reportCount", reports.size());
+      group.put("reports", reports);
+
+      groups.add(group);
+    }
+
+    return groups;
+  }
 
 }

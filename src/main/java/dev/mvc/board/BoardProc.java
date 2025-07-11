@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import dev.mvc.board_recommend.BoardRecommendDAOInter;
+import dev.mvc.board_report.BoardReportDAOInter;
+import dev.mvc.reply.ReplyDAOInter;
+import dev.mvc.replyRecommend.ReplyRecommendDAOInter;
+import dev.mvc.replyReport.ReplyReportDAOInter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +17,28 @@ import dev.mvc.board.BoardVO;
 
 @Component("dev.mvc.board.BoardProc")
 public class BoardProc implements BoardProcInter {
-  
+
+    // 게시판 부분
     @Autowired // BoardDAOInter interface를 구현한 클래스의 객체를 만들어 자동으로 할당해라.
     private BoardDAOInter boardDAO;
+
+    @Autowired
+    private BoardRecommendDAOInter boardRecommendDAO;
+
+    @Autowired
+    BoardReportDAOInter boardReportDAO;
+//--------------------------------------------------------
+
+    // 댓글 부분
+    @Autowired
+    private ReplyDAOInter replyDAO;
+
+    @Autowired
+    private ReplyReportDAOInter replyReportDAO;
+
+    @Autowired
+    private ReplyRecommendDAOInter replyRecommendDAO;
+//-------------------------------------------------------
 
     /**
      * 게시글 등록
@@ -53,6 +77,15 @@ public class BoardProc implements BoardProcInter {
      */
     @Override
     public int delete(int boardno) {
+
+        // 댓글 부분
+        System.out.println(">>> reply 본문 삭제 시도");
+        replyDAO.delete_board(boardno);
+
+        // 게시판 부분
+        boardRecommendDAO.delete_all(boardno);
+        boardReportDAO.delete_all(boardno);
+
         return boardDAO.delete(boardno);
     }
 

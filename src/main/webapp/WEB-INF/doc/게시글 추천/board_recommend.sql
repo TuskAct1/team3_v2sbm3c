@@ -36,3 +36,12 @@ COMMIT;
 SELECT board_recommendno, boardno, memberno, rdate
 FROM board
 ORDER BY board_recommendno DESC;
+
+ALTER TABLE replyRecommend
+DROP CONSTRAINT SYS_C0019265;
+
+ALTER TABLE replyRecommend
+ADD CONSTRAINT fk_replyRecommend_replyno
+FOREIGN KEY (replyno)
+REFERENCES reply(replyno)
+ON DELETE CASCADE;

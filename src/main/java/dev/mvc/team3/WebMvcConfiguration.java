@@ -18,6 +18,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // C:/kd/deploy/resort/contents/storage ->  /contents/storage -> http://localhost:9091/contents/storage;
         registry.addResourceHandler("/board/storage/**").addResourceLocations("file:/Users/imgwanghwan/kd/deploy/team3/board/storage/");
 
+        // /calendar/storage/ 경로로 접근하면 실제 디스크 경로의 파일을 제공
+        registry.addResourceHandler("/calendar/storage/**")
+                .addResourceLocations("file:///C:/kd/deploy/resort/calendar/storage/");
+
         // 플레이리스트 썸네일 이미지 정적 자원 매핑
         registry.addResourceHandler("/playlist/storage/**")
         .addResourceLocations("file:///C:/kd/deploy/team3/playlist/storage/");

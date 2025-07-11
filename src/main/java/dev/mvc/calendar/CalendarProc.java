@@ -34,4 +34,12 @@ public class CalendarProc implements CalendarProcInter {
     public int delete(int calendarno) {
         return calendarDAO.delete(calendarno);
     }
+
+    public List<CalendarVO> list_allByAdmin() {
+        return calendarDAO.list_allByAdmin();
+    }
+
+    public List<CalendarVO> list_allByMember(int memberno) {
+        return calendarDAO.list_allByMember(memberno);
+    }
 }

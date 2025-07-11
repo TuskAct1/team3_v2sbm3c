@@ -15,6 +15,10 @@ public interface BoardRecommendDAOInter {
   
   /** 게시글 추천 삭제 */
   boolean delete(@Param("boardno") int boardno, @Param("memberno") int memberno);
+
+  /** 게시글 추천 삭제 (신고 누적시 삭제용) */
+  boolean delete_all(@Param("boardno") int boardno);
+
   /** 특정 회원이 해당 글을 추천했는지 여부(존재하면 1 이상) */
   boolean exist(@Param("boardno") int boardno, @Param("memberno") int memberno);
 
