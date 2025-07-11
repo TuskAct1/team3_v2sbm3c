@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import dev.mvc.plant.PlantVO;
 import dev.mvc.tool.BCryptUtil; // 유틸 import
@@ -41,36 +42,56 @@ public class MemberController {
     private AttendanceProcInter attendanceProc; // 출석 처리용 (있다면)
     
     /** 회원 가입 */
-    @Transactional
     @PostMapping("/signup")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> signup(@RequestBody MemberVO memberVO) {
+    @Transactional
+    public ResponseEntity<Map<String, Object>> signup(
+        @ModelAttribute MemberVO memberVO,
+        @RequestParam(value = "profileFile", required = false) MultipartFile file
+    ) {
         Map<String, Object> response = new HashMap<>();
-        
-        // 비밀번호 암호화
+
+        // 1. 프로필 이미지 저장
+        if (file != null && !file.isEmpty()) {
+            String uploadDir = "C:/upload/profile/";  // 실서버 경로에 맞게 조정
+            String originalFilename = file.getOriginalFilename();
+            String uuid = java.util.UUID.randomUUID().toString();
+            String savedFilename = uuid + "_" + originalFilename;
+
+            try {
+                java.io.File dest = new java.io.File(uploadDir + savedFilename);
+                file.transferTo(dest);
+                memberVO.setProfile(savedFilename);  // DB 저장용 파일명
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.put("success", false);
+                response.put("message", "프로필 이미지 저장 실패");
+                return ResponseEntity.status(500).body(response);
+            }
+        }
+
+        // 2. 비밀번호 암호화
         String encrypted = bcryptUtil.encode(memberVO.getPasswd());
         memberVO.setPasswd(encrypted);
-        
-        // ✅ 포인트 기본값 부여
+
+        // 3. 포인트 기본값
         memberVO.setPoint(50);
 
-        // 1단계: 회원 생성
+        // 4. 회원 생성
         int cnt = memberProc.create(memberVO);
-
         if (cnt == 1) {
-            int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
-            
-            // 2단계: 기본 식물 생성
+            int memberno = memberVO.getMemberno();
+
+            // 5. 기본 식물 생성
             PlantVO plant = new PlantVO();
             plant.setMemberno(memberno);
             plant.setPlant_name("나의 첫 식물");
             plant.setPlant_type("딸기");
             plant.setGrowth(0);
             plant.setPlant_status("정상");
-            plant.setLast_access(""); // 또는 null
+            plant.setLast_access("");
             plantProc.create(plant);
 
-            // 3단계: 출석 초기화 (해당 기능 있다면)
+            // 6. 출석 초기화
             attendanceProc.initAttendance(memberno);
 
             response.put("success", true);
@@ -221,11 +242,12 @@ public class MemberController {
     }
 
     /** 회원 목록 */
-    @GetMapping("")
+ // 🔄 전체 리스트만 보고 싶을 경우
+    @GetMapping("/all")
     public List<MemberVO> list() {
         return memberProc.list();
     }
-
+    
     /** 회원 정보 수정 */
     @PutMapping("")
     public ResponseEntity<?> update(@RequestBody MemberVO memberVO) {
@@ -255,12 +277,22 @@ public class MemberController {
     }
 
     /** 회원 삭제 */
+    @Transactional
     @DeleteMapping("/{memberno}")
     public ResponseEntity<?> delete(@PathVariable int memberno) {
-        int cnt = memberProc.delete(memberno);
-        return (cnt == 1)
-            ? ResponseEntity.ok("삭제 성공")
-            : ResponseEntity.status(500).body("삭제 실패");
+        try {
+            //  자식 테이블 삭제
+            plantProc.deleteByMemberno(memberno);
+
+            //  그 다음 member 삭제
+            int cnt = memberProc.delete(memberno);
+
+            return (cnt == 1)
+                ? ResponseEntity.ok("삭제 성공")
+                : ResponseEntity.status(500).body("삭제 실패");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("삭제 중 오류: " + e.getMessage());
+        }
     }
     
  // 아이디 중복 확인
@@ -296,6 +328,27 @@ public class MemberController {
         return ResponseEntity.ok(Map.of("point", point));
     }
     
-    
+    @GetMapping("")
+    public ResponseEntity<Map<String, Object>> listWithSearchPaging(
+        @RequestParam(name = "keyword", required = false) String keyword,
+        @RequestParam(name = "now_page", defaultValue = "1") int nowPage,
+        @RequestParam(name = "records_per_page", defaultValue = "10") int recordsPerPage
+    ) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("keyword", keyword);
+        paramMap.put("start", (nowPage - 1) * recordsPerPage + 1);
+        paramMap.put("end", nowPage * recordsPerPage);
+
+        List<MemberVO> list = memberProc.searchWithPaging(paramMap);
+        int totalCount = memberProc.searchCount(paramMap);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("list", list);
+        response.put("totalCount", totalCount);
+        response.put("nowPage", nowPage);
+        response.put("recordsPerPage", recordsPerPage);
+
+        return ResponseEntity.ok(response);
+    }
    
 }

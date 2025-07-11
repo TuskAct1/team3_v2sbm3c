@@ -35,7 +35,7 @@ function MyPage() {
   useEffect(() => {
     if (!userId) return;
 
-    axios.get(`http://localhost:9093/api/members/id`, {
+    axios.get(`http://localhost:3000/api/members/id`, {
       params: { id: userId } // 서버에서는 id=email 도 가능하게 처리되어야 함
     })
     .then(res => {
@@ -49,7 +49,7 @@ function MyPage() {
   // ✅ 회원 탈퇴 처리
   const handleDelete = () => {
     if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-      axios.delete(`http://localhost:9093/api/members/delete`, {
+      axios.delete(`http://localhost:3000/api/members/delete`, {
         params: { memberno: user.memberno } // 🔹 고유 번호로 삭제 요청
       })
       .then(() => {
@@ -85,6 +85,7 @@ function MyPage() {
       ) : (
         // ✅ 일반 보기 모드
         <div>
+          <p><strong>프로필 사진:</strong> {user.profile || user.profile}</p>
           <p><strong>이메일:</strong> {user.id || user.email}</p>
           <p><strong>이름:</strong> {user.mname}</p>
           <p><strong>닉네임:</strong> {user.nickname}</p>

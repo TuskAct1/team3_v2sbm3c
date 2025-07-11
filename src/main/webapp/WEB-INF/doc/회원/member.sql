@@ -99,3 +99,4 @@ ALTER TABLE member ADD sticker NUMBER DEFAULT 0;
 UPDATE member SET point = 0;
 
 UPDATE member SET sticker = 0;
+
