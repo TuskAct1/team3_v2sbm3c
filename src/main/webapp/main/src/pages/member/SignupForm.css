@@ -1,61 +1,6 @@
 /* SignupForm.css */
 
-/* 전체 폼 정렬 */
-form {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 20px;
-  font-size: 16px;
-  font-family: 'Noto Sans KR', sans-serif;
-  background-color: #fdfdfd;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 100, 0, 0.1);
-}
 
-/* 기본 입력박스 */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="date"],
-select {
-  width: 100%;
-  padding: 10px;
-  margin: 4px 0 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-}
-
-/* 라벨 */
-label {
-  font-weight: bold;
-  display: block;
-  margin-top: 12px;
-  margin-bottom: 4px;
-  color: #2e7d32; /* 초록 계열 */
-}
-
-/* 버튼 스타일 */
-button {
-  padding: 8px 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  margin-right: 10px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button:hover {
-  background-color: #388e3c;
-}
-
-button:disabled {
-  background-color: #bbb;
-  cursor: not-allowed;
-}
 
 /* 보호자 입력 폼 */
 .guardian-box {

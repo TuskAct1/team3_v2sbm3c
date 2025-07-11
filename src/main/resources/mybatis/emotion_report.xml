@@ -2,28 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dev.mvc.emotion_report.EmotionReportDAOInter">
 
-    <!-- reportno로 한 건 조회 -->
+    <!-- 1️⃣ reportno로 한 건 조회 -->
     <select id="selectByReportno" parameterType="int" resultType="dev.mvc.emotion_report.EmotionReportVO">
-        SELECT * FROM emotion_report WHERE reportno = #{reportno}
+        SELECT reportno, memberno, report_type AS reportType, report_period AS reportPeriod,
+        positive, negative, neutral, anxious, depressed, updated_at AS updatedAt
+        FROM emotion_report
+        WHERE reportno = #{reportno}
     </select>
 
-    <!-- update 예시 -->
+    <!-- 2️⃣ 특정 회원+기간 조회 (중복 체크, 업데이트 시 select) -->
+    <select id="selectByMemberAndPeriod" resultType="dev.mvc.emotion_report.EmotionReportVO">
+        SELECT reportno, memberno, report_type AS reportType, report_period AS reportPeriod,
+        positive, negative, neutral, anxious, depressed, updated_at AS updatedAt
+        FROM emotion_report
+        WHERE memberno = #{memberno}
+        AND report_type = #{reportType}
+        AND report_period = #{reportPeriod}
+    </select>
+
+    <!-- 3️⃣ INSERT -->
+    <insert id="saveReport" parameterType="dev.mvc.emotion_report.EmotionReportVO">
+        INSERT INTO emotion_report (
+        reportno, memberno, report_type, report_period,
+        positive, negative, neutral, anxious, depressed, updated_at
+        )
+        VALUES (
+        emotion_report_seq.NEXTVAL,
+        #{memberno}, #{reportType}, #{reportPeriod},
+        #{positive}, #{negative}, #{neutral}, #{anxious}, #{depressed}, SYSDATE
+        )
+    </insert>
+
+    <!-- 4️⃣ UPDATE -->
     <update id="update" parameterType="dev.mvc.emotion_report.EmotionReportVO">
         UPDATE emotion_report
-        SET diary_happy = #{diary_happy}, diary_normal = #{diary_normal}, diary_sad = #{diary_sad},
-        chatbot_happy = #{chatbot_happy}, chatbot_normal = #{chatbot_normal}, chatbot_sad = #{chatbot_sad},
-        test_happy = #{test_happy}, test_normal = #{test_normal}, test_sad = #{test_sad},
-        total_happy = #{total_happy}, total_normal = #{total_normal}, total_sad = #{total_sad}, updated_at = SYSDATE
+        SET positive = #{positive},
+        negative = #{negative},
+        neutral = #{neutral},
+        anxious = #{anxious},
+        depressed = #{depressed},
+        updated_at = SYSDATE
         WHERE reportno = #{reportno}
     </update>
 
-    <select id="selectByMemberAndPeriod" resultType="dev.mvc.emotion_report.EmotionReportVO">
-        SELECT * FROM emotion_report
-        WHERE memberno = #{memberno}
-            AND report_type = #{report_type}
-            AND report_period = #{report_period}
-    </select>
-
+    <!-- 5️⃣ 심리테스트 결과 최근 5개 조회 -->
     <select id="getTestResults" resultType="dev.mvc.emotion_report.TestResultDTO">
         SELECT result, score, TO_CHAR(rdate, 'YYYY-MM-DD') AS rdate
         FROM (
@@ -31,9 +53,8 @@
         FROM Twoweek_test
         WHERE memberno = #{memberno}
         ORDER BY rdate DESC
-        ) t
+        )
         WHERE ROWNUM &lt;= 5
     </select>
-
 
 </mapper>

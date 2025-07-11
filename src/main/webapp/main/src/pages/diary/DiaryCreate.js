@@ -1,14 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// 감정 아이콘과 점수 매핑
 const emotions = [
-  { score: 1, icon: "😄", label: "아주 좋음" },
-  { score: 2, icon: "🙂", label: "좋음" },
-  { score: 3, icon: "😐", label: "보통" },
-  { score: 4, icon: "🙁", label: "나쁨" },
-  { score: 5, icon: "😞", label: "아주 나쁨" },
+  { score: 1, icon: "😃", label: "긍정" },
+  { score: 2, icon: "😠", label: "부정" },
+  { score: 3, icon: "😐", label: "중립" },
+  { score: 4, icon: "😰", label: "불안" },
+  { score: 5, icon: "😢", label: "우울" },
 ];
 
 function EmotionSelector({ selectedScore, onChange }) {
@@ -48,8 +47,10 @@ const DiaryCreate = () => {
   const [state, setState] = useState({
     title: "",
     content: "",
-    risk_flag: 3, // 기본 중간값으로 설정
+    risk_flag: 3,
   });
+
+  const [file, setFile] = useState(null);
 
   const titleInput = useRef();
   const contentInput = useRef();
@@ -57,6 +58,13 @@ const DiaryCreate = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const memberno = user?.memberno;
+
+  useEffect(() => {
+    if (!memberno) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleChangeState = (e) => {
     setState({
@@ -66,13 +74,18 @@ const DiaryCreate = () => {
     });
   };
 
-  // 감정 점수 직접 변경 함수
   const handleEmotionChange = (score) => {
     setState((prev) => ({ ...prev, risk_flag: score }));
   };
 
-  const handleSubmit = async () => {
-      if (state.title.length < 1) {
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (state.title.length < 1) {
       alert("제목을 입력해주세요.");
       titleInput.current.focus();
       return;
@@ -83,92 +96,104 @@ const DiaryCreate = () => {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const memberno = user?.memberno;
-
     if (!memberno) {
       alert("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
 
+    // 👉 FormData 생성
+    const formData = new FormData();
+    formData.append("memberno", memberno);
+    formData.append("title", state.title);
+    formData.append("content", state.content);
+    formData.append("password", "1234");
+    formData.append("risk_flag", state.risk_flag);
+    if (file) {
+      formData.append("file1MF", file);
+    }
+
     try {
-      await axios.post("/diary/create", {
-        memberno,
-        title: state.title,
-        content: state.content,
-        risk_flag: state.risk_flag,
-        password: "1234",
+      await axios.post("/diary/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       alert("일기 저장 성공!");
       navigate("/diary");
     } catch (error) {
       console.error(error);
-      alert("일기 저장에 실패했습니다.");
+      alert("일기 저장 실패!");
     }
   };
 
   return (
     <div className="DiaryCreate" style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
       <h2>오늘의 일기</h2>
-      <div style={{ marginBottom: 12 }}>
-        <input
-          ref={titleInput}
-          name="title"
-          value={state.title}
-          onChange={handleChangeState}
-          placeholder="제목을 입력하세요"
-          style={{ width: "100%", padding: 8, fontSize: 16 }}
-        />
-      </div>
-      <div style={{ marginBottom: 12 }}>
-        <textarea
-          ref={contentInput}
-          name="content"
-          value={state.content}
-          onChange={handleChangeState}
-          placeholder="내용을 입력하세요"
-          rows={6}
-          style={{ width: "100%", padding: 8, fontSize: 16, resize: "vertical" }}
-        />
-      </div>
-      <div>
-        <span>오늘의 감정점수 : </span>
-        <EmotionSelector selectedScore={state.risk_flag} onChange={handleEmotionChange} />
-      </div>
-      <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
-  <button
-    onClick={handleSubmit}
-    style={{
-      flex: 1,
-      padding: "10px 20px",
-      fontSize: 16,
-      backgroundColor: "#0077cc",
-      color: "#fff",
-      border: "none",
-      borderRadius: 5,
-      cursor: "pointer",
-    }}
-  >
-    저장하기
-  </button>
-  <button
-    onClick={() => navigate(-1)}
-    style={{
-      flex: 1,
-      padding: "10px 20px",
-      fontSize: 16,
-      backgroundColor: "#6c757d",
-      color: "#fff",
-      border: "none",
-      borderRadius: 5,
-      cursor: "pointer",
-    }}
-  >
-    뒤로가기
-  </button>
-</div>
-
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: 12 }}>
+          <input
+            ref={titleInput}
+            name="title"
+            value={state.title}
+            onChange={handleChangeState}
+            placeholder="제목을 입력하세요"
+            style={{ width: "100%", padding: 8, fontSize: 16 }}
+          />
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <textarea
+            ref={contentInput}
+            name="content"
+            value={state.content}
+            onChange={handleChangeState}
+            placeholder="내용을 입력하세요"
+            rows={6}
+            style={{ width: "100%", padding: 8, fontSize: 16, resize: "vertical" }}
+          />
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <label>이미지 첨부:</label><br />
+          <input type="file" onChange={handleFileChange} accept="image/*" />
+        </div>
+        <div>
+          <span>오늘의 감정점수 : </span>
+          <EmotionSelector selectedScore={state.risk_flag} onChange={handleEmotionChange} />
+        </div>
+        <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+          <button
+            type="submit"
+            style={{
+              flex: 1,
+              padding: "10px 20px",
+              fontSize: 16,
+              backgroundColor: "#0077cc",
+              color: "#fff",
+              border: "none",
+              borderRadius: 5,
+              cursor: "pointer",
+            }}
+          >
+            저장하기
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            style={{
+              flex: 1,
+              padding: "10px 20px",
+              fontSize: 16,
+              backgroundColor: "#6c757d",
+              color: "#fff",
+              border: "none",
+              borderRadius: 5,
+              cursor: "pointer",
+            }}
+          >
+            뒤로가기
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

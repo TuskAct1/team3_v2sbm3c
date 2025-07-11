@@ -26,3 +26,56 @@
   padding: 8px;
 }
 
+/* ✅ Trend 섹션 전체 배경 */
+.trend-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.trend-card {
+  flex: 1 1 500px;
+  min-width: 300px;
+  max-width: 800px;
+  width: 45%;             /* 💥 무조건 절반 비율로 강제 */
+  box-sizing: border-box;
+
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 30px;          /* 💥 차트 영역 여유롭게 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trend-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.trend-title {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.trend-section {
+  background-color: #f9f9f9;
+  padding: 40px 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+
+/* ✅ 카드 제목 */
+.trend-card-header {
+  text-align: center;
+  margin-bottom: 16px;
+  color: #555;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
