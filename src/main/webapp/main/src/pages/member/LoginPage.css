@@ -1,0 +1,212 @@
+/* ✅ 전체 배경 */
+.login-wrapper {
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* ✅ 전체 박스 */
+.login-box {
+  display: flex;
+  gap: 60px;
+  max-width: 1000px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ✅ 왼쪽: 로그인 입력 영역 */
+.login-left {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-left h3 {
+  font-size: 30px; /* 크게 */
+  font-weight: 800;
+  color: #43a047;
+  margin-bottom: 24px;
+}
+
+/* ✅ 로그인 form 컨테이너 */
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ✅ 아이디/비밀번호 + 버튼 가로 정렬 */
+.login-inline-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.login-input-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-input-block input {
+  padding: 16px;
+  font-size: 18px; /* 크게 */
+  border: 1px solid #cfd8dc;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.login-input-block input:focus {
+  outline: none;
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+}
+
+/* ✅ 로그인 버튼 */
+.login-inline-btn {
+  background-color: #66bb6a;
+  color: white;
+  font-size: 20px; /* 크게 */
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  padding: 36px 26px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-inline-btn:hover {
+  background-color: #4caf50;
+  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.4);
+}
+
+/* ✅ 체크박스 라인 */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  font-size: 16px; /* 크게 */
+  color: #444;
+}
+
+/* ✅ 경고 메시지 */
+.span_warning {
+  color: #d32f2f;
+  font-size: 15px; /* 크게 */
+  margin: 4px 0;
+  display: block;
+}
+
+/* ✅ 하단 링크 */
+.login-find-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px; /* 크게 */
+  color: #666;
+  margin-top: 8px;
+}
+
+.login-find-links a {
+  color: #43a047;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.login-find-links a:hover {
+  color: #2e7d32;
+  text-decoration: underline;
+}
+
+/* ✅ 가운데 "또는" */
+.login-divider-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  height: 100%;
+}
+
+.login-divider {
+  font-size: 16px; /* 크게 */
+  color: #aaa;
+}
+
+/* ✅ 오른쪽: 소셜 로그인 */
+.login-right {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.social-login-box h4 {
+  font-size: 18px; /* 크게 */
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+.social-login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-login-image {
+  width: 240px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-login-image:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* ✅ 상단 글로벌 링크 */
+.login-page-global-links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  padding: 12px 32px 0 32px;
+  font-size: 16px; /* 크게 */
+  font-weight: 500;
+}
+
+.login-page-global-links a {
+  color: #66bb6a;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.login-page-global-links a:hover {
+  color: #2e7d32;
+}
+
+.login-page-global-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background-color: #66bb6a;
+  transition: width 0.3s ease;
+}
+
+.login-page-global-links a:hover::after {
+  width: 100%;
+}

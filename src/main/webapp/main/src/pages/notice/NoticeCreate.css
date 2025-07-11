@@ -1,166 +1,109 @@
-/* ✅ 전체 배경 - 연한 연두색 배경으로 전체 화면 커버 */
+/* ✅ 전체 배경 */
 .notice-page-bg {
-  background-color: #f1f8e9;
-  min-height: 100vh;
-  padding: 2rem;
+  background-color: #ffffff;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  font-family: 'Pretendard', sans-serif;
+  color: #222;
 }
 
-/* ✅ 상단 제목 + 오른쪽 버튼 영역 (등록/수정/삭제/목록 등) */
+/* ✅ 상단 제목 영역 */
 .read-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
-/* ✅ 제목 텍스트 (등록/수정 등 상단 헤더) */
 .read-header h2 {
-  font-size: 1.8rem;
+  font-size: 26px;
+  font-weight: 700;
   color: #2e7d32;
   margin: 0;
 }
 
-/* ✅ 작은 버튼 (등록/수정/삭제/목록 등) 공통 스타일 */
+.notice-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* ✅ 버튼 공통 스타일 */
 .small-btn {
-  background-color: #aed581;
-  color: black;
-  font-size: 0.9rem;
-  padding: 0.3rem 0.7rem;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: #66bb6a;
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+  box-shadow: 0 4px 10px rgba(102, 187, 106, 0.25);
 }
 
 .small-btn:hover {
-  background-color: #9ccc65;
+  background-color: #4caf50;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(76, 175, 80, 0.3);
 }
 
-/* ✅ 버튼 묶음 (수정/삭제/목록 같이 나오는 경우) */
-.notice-action-buttons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-/* ✅ 입력 폼 전체 스타일 */
+/* ✅ 폼 전체 */
 .notice-form {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;               /* label + input 사이 간격 최소화 */
-  max-width: 800px;
-  margin: 0 auto;
+  gap: 20px;
 }
 
-/* ✅ 공통 입력창 스타일 - 제목, 내용, 공개여부 */
+/* ✅ 라벨 */
+.notice-label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+/* ✅ 입력창, 셀렉트 */
 .notice-form input,
 .notice-form textarea,
 .notice-form select {
-  font-size: 1.1rem;
-  padding: 1rem;
-  border: 1px solid #a5d6a7;
-  border-radius: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
   background-color: #fff;
   box-sizing: border-box;
-  margin: 0; /* 간격 초기화 */
+  transition: border-color 0.2s;
 }
 
-/* ✅ 포커스 시 테두리 효과 */
 .notice-form input:focus,
 .notice-form textarea:focus,
 .notice-form select:focus {
+  border-color: #2e7d32;
   outline: none;
-  border-color: #66bb6a;
-  box-shadow: 0 0 4px #a5d6a7;
 }
 
-/* ✅ 폼 내 등록 버튼 - 작고 중앙 정렬 */
-.notice-form button {
-  background-color: #66bb6a;
+/* ✅ 제출 버튼 */
+.notice-form button[type="submit"] {
+  margin-top: 10px;
+  background-color: #2e7d32;
   color: white;
-  font-size: 1rem;
-  padding: 0.6rem 1.5rem;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.2s;
-
-  width: fit-content;     /* 내용만큼 너비 */
-  align-self: center;     /* 가운데 정렬 */
-  margin-top: 1rem;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
-.notice-form button:hover {
-  background-color: #388e3c;
-}
-
-/* ✅ 입력 항목 라벨 (제목 / 내용 / 공개 여부 등) */
-.notice-label {
-  font-size: 1.05rem;
-  font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 0.3rem;
-}
-
-/* ✅ 삭제 확인 박스 - 삭제 페이지에서만 사용 */
-.notice-delete-box {
-  background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-  font-size: 1.1rem;
-}
-
-.notice-delete-box p {
-  margin-bottom: 1rem;
-}
-
-/* ⚠️ 삭제 경고 문구 강조 */
-.notice-delete-warning {
-  color: #c62828;
-  font-weight: bold;
-  margin-top: 1.5rem;
-  text-align: center;
-}
-
-/* ✅ 삭제/취소 버튼 정렬 */
-.notice-delete-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-/* ✅ 삭제 버튼 스타일 */
-.delete-btn {
-  background-color: #e53935;
-  color: white;
-  padding: 0.8rem 1.5rem;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.delete-btn:hover {
-  background-color: #b71c1c;
-}
-
-/* ✅ 돌아가기 버튼 스타일 */
-.cancel-btn {
-  background-color: #aed581;
-  color: black;
-  padding: 0.8rem 1.5rem;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.cancel-btn:hover {
-  background-color: #9ccc65;
+.notice-form button[type="submit"]:hover {
+  background-color: #27642c;
+  transform: translateY(-1px);
 }
