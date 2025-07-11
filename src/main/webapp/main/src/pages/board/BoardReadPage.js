@@ -7,8 +7,9 @@ import BoardReportModal from './BoardReportModal';
 function BoardReadPage() {
   const [categoryGroup, setCategoryGroup] = useState([]);
   const [boardVO, setBoardVO] = useState({});
-  const [recommendCount, setRecommendCount] = useState(0);
+  // const [recommendCount, setRecommendCount] = useState(0);
   const [isRecommended, setIsRecommended] = useState(false);
+  const [recom, setRecom] = useState();
 
   const [reportReason, setReportReason] = useState('');
   const [reportMessage, setReportMessage] = useState('');
@@ -32,20 +33,42 @@ function BoardReadPage() {
 
   // 삭제
   const handleDelete = async (e) => {
-    e.preventDefault();
-    const confirmDelete = window.confirm('정말 삭제하시겠습니까?');
-    if (confirmDelete) {
-      await axios.delete(`/board/delete/${boardno}`);
+  e.preventDefault();
+  const passwd = window.prompt('게시글 등록시 입력한 비밀번호를 입력하세요.');
+  if (!passwd) return;
+
+  const confirmDelete = window.confirm('정말 삭제하시겠습니까?');
+  if (!confirmDelete) return;
+
+  try {
+    const res = await axios.delete(`/board/delete/${boardno}/${passwd}`);
+    if (res.status === 200) {
+      alert('삭제 완료!');
       navigate(`/board/list_all/all/1`);
+    } else {
+      alert(res.data);
     }
-  };
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      alert('비밀번호가 일치하지 않습니다.');
+    } else if (err.response && err.response.status === 404) {
+      alert('게시글을 찾을 수 없습니다.');
+    } else {
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  }
+};
 
   // 추천(좋아요) 토글
   const handleRecommend = async () => {
     try {
       if (!isRecommended) {
+        setIsRecommended(true);
+        setRecom(prev => prev + 1);
         await axios.post(`/boardRecommend/${boardno}`);
       } else {
+        setIsRecommended(false);
+        setRecom(prev => Math.max(prev - 1, 0));
         await axios.delete(`/boardRecommend/${boardno}`);
       }
       fetchRecommendStatus();
@@ -61,7 +84,6 @@ function BoardReadPage() {
       axios.get(`/boardRecommend/count/${boardno}`)
     ]);
     setIsRecommended(statusRes.data.recommended);
-    setRecommendCount(countRes.data.count);
   };
 
   useEffect(() => {
@@ -74,6 +96,17 @@ function BoardReadPage() {
       .catch(() => {});
 
     fetchRecommendStatus();
+  }, [boardno]);
+
+  useEffect(() => {
+    // 추천 수 증가
+    axios.get(`/boardRecommend/count/${boardno}`)
+      .then((res) => {
+        setRecom(res.data.recom);
+        // console.log(res.data.recom);
+        // setBoardVO(res.data.boardVO);
+      })
+      .catch(() => {});
   }, [boardno]);
 
   return (
@@ -148,7 +181,7 @@ function BoardReadPage() {
               }}
             >
               {isRecommended ? '❤️ 추천 취소' : '🤍 추천'}
-              &nbsp; {recommendCount}
+              &nbsp; {boardVO.recom}
             </button>
           </div>
             <div style={{ marginTop: '18px', textAlign: 'right' }}>
@@ -216,8 +249,7 @@ function BoardReadPage() {
           </button>
         </div>
         <ReplySection boardno={boardno} />
-      </fieldset>
->>>>>>> Stashed changes */}
+      </fieldset> */}
     </div>
   );
 }

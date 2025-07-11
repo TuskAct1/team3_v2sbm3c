@@ -89,66 +89,64 @@ function ChatBotContainer({ memberno }) {
   };
 
   return (
-    <div style={{ display: "flex", height: "90vh" }}>
+    <div className="flex h-[90vh] rounded-2xl shadow-lg overflow-hidden bg-white border border-gray-200">
       {/* 좌측 채팅방 목록 */}
-      <div style={{
-      width: 240, background: "#f4f7fd", borderRight: "1px solid #e5e7eb", padding: "18px 0"
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 12px 18px 12px" }}>
-        <span style={{ fontWeight: "bold", fontSize: 22 }}>채팅방</span>
-        <button
-          onClick={handleCreateRoom}
-          style={{
-            background: "#6f98ff",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            padding: "8px 18px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            fontSize: 16,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.06)"
-          }}
-        >+ 새 채팅</button>
-      </div>
-      <div>
-        {rooms.map(room => (
-          <div
-            key={room.room_id}
-            style={{
-              display: "flex", alignItems: "center",
-              padding: "13px 10px 13px 20px", margin: "7px 9px",
-              borderRadius: 10,
-              background: selectedRoomId === room.room_id ? "#dde7fa" : "#e9ebf5",
-              cursor: "pointer",
-              fontWeight: selectedRoomId === room.room_id ? "bold" : "normal",
-              color: "#222"
-            }}
+      <div className="w-64 bg-gray-50 border-r border-gray-200 flex flex-col">
+        <div className="flex items-center justify-between px-5 py-4 border-b">
+          <span className="font-bold text-xl">채팅방</span>
+          <button
+            onClick={handleCreateRoom}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-1.5 rounded-lg shadow transition"
           >
-            <span
+            + 새 채팅
+          </button>
+        </div>
+        <div className="p-2 flex flex-col gap-1 overflow-y-auto flex-1">
+          {rooms.map(room => (
+            <div
+              key={room.room_id}
+              className={`flex items-center px-4 py-2 rounded-lg cursor-pointer select-none
+                ${selectedRoomId === room.room_id
+                  ? "bg-blue-100 text-blue-700 font-semibold"
+                  : "hover:bg-gray-100 text-gray-800"
+                }`}
               onClick={() => handleRoomClick(room.room_id, room.room_title)}
-              style={{ flex: 1 }}
             >
-              {room.room_title}
-            </span>
-            <button
-              onClick={e => handleDeleteRoom(e, room)}
-              style={{
-                marginLeft: 8,
-                border: "none",
-                background: "transparent",
-                color: "#888",
-                fontSize: 18,
-                cursor: "pointer"
-              }}
-              title="대화방 삭제"
-            >🗑️</button>
-          </div>
-        ))}
+              <span className="flex-1 truncate">{room.room_title}</span>
+              <button
+                onClick={e => handleDeleteRoom(e, room)}
+                className="ml-2 text-gray-400 hover:text-red-400 text-lg"
+                title="대화방 삭제"
+              >🗑️</button>
+            </div>
+          ))}
+        </div>
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded ml-2"
+          onClick={async () => {
+            if(window.confirm("정말 모든 대화방과 메시지를 완전히 삭제하시겠습니까? 복구가 불가합니다.")) {
+              const res = await fetch("http://localhost:8000/chat/delete-all-rooms", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ memberno: String(memberno) }),
+              });
+              const data = await res.json();
+              if(data.result === "success") {
+                alert("모든 대화방과 메시지가 삭제되었습니다.");
+                setRooms([]);
+                setSelectedRoomId("");
+                setSelectedRoomTitle("");
+              } else {
+                alert("삭제에 실패했습니다.");
+              }
+            }
+          }}
+        >
+          전체 대화방 삭제
+        </button>
       </div>
-    </div>
       {/* 채팅 영역 */}
-      <div style={{ flex: 1, background: "#fff" }}>
+      <div className="flex-1 bg-white flex flex-col">
         {selectedRoomId &&
           <ChatBot
             memberno={memberno}

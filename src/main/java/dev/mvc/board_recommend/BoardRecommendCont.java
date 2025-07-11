@@ -1,5 +1,8 @@
 package dev.mvc.board_recommend;
 
+import dev.mvc.board.BoardProc;
+import dev.mvc.board.BoardProcInter;
+import dev.mvc.board.BoardVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +15,23 @@ import java.util.Map;
 public class BoardRecommendCont {
 
     @Autowired
-    private BoardRecommendProcInter boardRecommendProc;
+    private BoardRecommendProc boardRecommendProc;
+
+    @Autowired
+    private BoardProc boardProc;
 
 
     // 1. 추천수 조회
     @GetMapping("/count/{boardno}")
     public ResponseEntity<Map<String, Object>> recommendCnt(@PathVariable("boardno") int boardno) {
         int recommendCnt = boardRecommendProc.RecommendCnt(boardno);
+        int recom = boardProc.RecommendCnt(boardno);
+        BoardVO boardVO = boardProc.read(boardno);
 
         Map<String, Object> response = new HashMap<>();
         response.put("recommendCnt", recommendCnt);
+        response.put("recom", recom);
+        response.put("boardVO", boardVO);
 
         return ResponseEntity.ok(response);
     }
@@ -43,6 +53,8 @@ public class BoardRecommendCont {
     public ResponseEntity<?> addRecommend(@PathVariable("boardno") int boardno) {
         int memberno = 1;
         boolean success = boardRecommendProc.create(boardno, memberno);
+        boardProc.increaseRecommend(boardno);
+
         if (success) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().body("이미 추천하셨습니다.");
     }
@@ -52,6 +64,8 @@ public class BoardRecommendCont {
     public ResponseEntity<?> removeRecommend(@PathVariable("boardno") int boardno) {
         int memberno = 1;
         boolean success = boardRecommendProc.delete(boardno, memberno);
+        boardProc.decreaseRecommend(boardno);
+
         if (success) return ResponseEntity.ok().build();
         return ResponseEntity.badRequest().body("추천하지 않은 글입니다.");
     }

@@ -18,6 +18,19 @@ const LoginPage = () => {
     id_save: false,
     passwd_save: false,
   });
+  
+  // LoginPage.js 파일 안쪽에 추가(상단 useState 등 포함)
+  const [showFindId, setShowFindId] = useState(false);
+  const [showFindPw, setShowFindPw] = useState(false);
+
+  // 아이디 찾기용
+  const [findIdEmail, setFindIdEmail] = useState('');
+  const [findIdResult, setFindIdResult] = useState('');
+
+  // 비밀번호 찾기용
+  const [findPwId, setFindPwId] = useState('');
+  const [findPwResult, setFindPwResult] = useState('');
+
 
   const [idMsg, setIdMsg] = useState("");
   const [idMsgClass, setIdMsgClass] = useState("");
@@ -111,6 +124,30 @@ const LoginPage = () => {
   // 회원가입 버튼
   const handleSignup = () => {
     window.location.href = "/signup";
+  };
+
+  // 아이디 찾기 요청 함수
+  const handleFindId = async () => {
+    if (!findIdEmail) return alert("이메일을 입력하세요");
+    try {
+      const res = await axios.post("/api/members/find-id", { email: findIdEmail });
+      setFindIdResult(res.data.id || "해당 정보로 가입된 아이디가 없습니다.");
+    } catch {
+      setFindIdResult("아이디 찾기에 실패했습니다.");
+    }
+  };
+
+  // 비밀번호 찾기 요청 함수
+  const handleFindPw = async () => {
+    if (!findPwId) return alert("이메일을 입력하세요.");
+    try {
+      const res = await axios.post("/api/members/find-password", {
+        id: findPwId
+      });
+      setFindPwResult(res.data.msg || "임시 비밀번호가 이메일로 전송되었습니다.");
+    } catch {
+      setFindPwResult("비밀번호 찾기 실패");
+    }
   };
 
   return (
@@ -213,6 +250,16 @@ const LoginPage = () => {
             회원 가입
           </button>
         </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
+          <button type="button" className="btn btn-link"
+            onClick={() => setShowFindId(true)}>
+            아이디 찾기
+          </button>
+          <button type="button" className="btn btn-link"
+            onClick={() => setShowFindPw(true)}>
+            비밀번호 찾기
+          </button>
+        </div>
 
         {/* 🔹 소셜 로그인 이미지 */}
         <div style={{ marginTop: '20px' }}>
@@ -242,6 +289,41 @@ const LoginPage = () => {
           </div>
         </div>
       </form>
+
+      {/* 아이디 찾기 모달 */}
+      {showFindId && (
+        <div className="modal-bg">
+          <div className="modal">
+            <h3>아이디 찾기</h3>
+            <input
+              type="email"
+              placeholder="가입한 이메일 입력"
+              value={findIdEmail}
+              onChange={e => setFindIdEmail(e.target.value)}
+            />
+            <button onClick={handleFindId}>아이디 찾기</button>
+            <button onClick={() => { setShowFindId(false); setFindIdResult(""); }}>닫기</button>
+            {findIdResult && <div style={{marginTop:10}}>{findIdResult}</div>}
+          </div>
+        </div>
+      )}
+      {/* 비밀번호 찾기 모달 */}
+      {showFindPw && (
+        <div className="modal-bg">
+          <div className="modal">
+            <h3>비밀번호 찾기</h3>
+            <input
+              type="text"
+              placeholder="아이디 입력"
+              value={findPwId}
+              onChange={e => setFindPwId(e.target.value)}
+            />
+            <button onClick={handleFindPw}>비밀번호 찾기</button>
+            <button onClick={() => { setShowFindPw(false); setFindPwResult(""); }}>닫기</button>
+            {findPwResult && <div style={{marginTop:10}}>{findPwResult}</div>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

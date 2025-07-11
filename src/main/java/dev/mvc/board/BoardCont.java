@@ -34,9 +34,10 @@ public class BoardCont {
      * 전체 게시글 목록
      * http://localhost:9093/board/list_all
      */
-    @GetMapping("/list_all/{word}/{now_page}")
-    public ResponseEntity<Map<String, Object>> list_all(@PathVariable("word") String word,
-                                                        @PathVariable("now_page") Integer now_page) {
+    @GetMapping("/list_all")
+    public ResponseEntity<Map<String, Object>> list_all(@RequestParam(name = "word", defaultValue = "all") String word,
+                                                        @RequestParam(name = "now_page", defaultValue = "1") Integer now_page,
+                                                        @RequestParam(name = "searchType", defaultValue="all") String searchType) {
         // 게시판 카테고리 그룹
         List<CategoryVO> categoryGroup = categoryProc.list_all();
 
@@ -45,10 +46,12 @@ public class BoardCont {
         HashMap<String, Object> map = new HashMap<>();
         map.put("word", word);
         map.put("now_page", now_page);
+        map.put("searchType", searchType);
 
-        ArrayList<BoardVO> boardList = boardProc.list_all_search_paging(map);
-
-        int totalCount = boardProc.list_all_search_count(map);
+//        ArrayList<BoardVO> boardList = boardProc.list_all_search_paging(map);
+        List<BoardVO> boardList = boardProc.listAllWithSearch(map);
+//        int totalCount = boardProc.list_all_search_count(map);
+        int totalCount = boardProc.countAllWithSearch(map);
 
         // 페이지네이션 정보 계산 (예: 전체 페이지, 현재 페이지 등)
         int pageSize = 5; // 한 페이지당 글 수
@@ -69,10 +72,11 @@ public class BoardCont {
      * 카테고리 선택시 관련 글 목록
      * http://localhost:9093/board/list_category/{categoryno}
      */
-    @GetMapping("/list_category/{categoryno}/{word}/{now_page}")
+    @GetMapping("/list_category/{categoryno}")
     public ResponseEntity<Map<String, Object>> getByCategory(@PathVariable("categoryno") Integer categoryno,
-                                                             @PathVariable("word") String word,
-                                                             @PathVariable("now_page") Integer now_page) {
+                                                             @RequestParam(name = "word", defaultValue = "all") String word,
+                                                             @RequestParam(name = "now_page", defaultValue = "1") Integer now_page,
+                                                             @RequestParam(name = "searchType", defaultValue="all") String searchType) {
         // 카테고리 전체 목록
         List<CategoryVO> categoryGroup = categoryProc.list_all();
 
@@ -89,6 +93,7 @@ public class BoardCont {
         map.put("categoryno", categoryno);
         map.put("word", word);
         map.put("now_page", now_page);
+        map.put("searchType", searchType);
 
         // 특정 카테고리 게시글 목록
         // 게시글 목록(검색 + 페이징)
@@ -218,8 +223,20 @@ public class BoardCont {
     /**
      * 게시글 삭제 처리
      */
-    @DeleteMapping("/delete/{boardno}")
-    public ResponseEntity<String> deleteProcess(@PathVariable("boardno") int boardno) {
+    @DeleteMapping("/delete/{boardno}/{passwd}")
+    public ResponseEntity<String> deleteProcess(@PathVariable("boardno") int boardno,
+                                                @PathVariable("passwd") String passwd) {
+        BoardVO boardVO = boardProc.read(boardno);
+        if (boardVO == null) {
+            return ResponseEntity.status(404).body("게시글을 찾을 수 없습니다.");
+        }
+
+        // 비밀번화 확인
+        if (!boardVO.getPasswd().equals(passwd)) {
+            // 비밀번호 불일치
+            return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
+        }
+
         // 게시글 삭제
         boardProc.delete(boardno);
 

@@ -26,7 +26,6 @@ public class AdminController {
     private BCryptUtil bcryptUtil;  // 유틸 클래스 주입
 
     /** 관리자 회원가입 */
-
     @PostMapping("/signup")
     public ResponseEntity<Map<String, Object>> signup(@RequestBody AdminVO adminVO) {
         Map<String, Object> response = new HashMap<>();
@@ -48,11 +47,12 @@ public class AdminController {
             return ResponseEntity.status(500).body(response);
         }
     }
+
     /** 로그인 */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, Object> loginMap) {
         String id = (String) loginMap.get("id");
-        String inputPasswd = (String) loginMap.get("passwd"); // ✅ key 변경!
+        String inputPasswd = (String) loginMap.get("passwd");
 
         if (inputPasswd == null) {
             return ResponseEntity.badRequest().body("비밀번호가 누락되었습니다.");

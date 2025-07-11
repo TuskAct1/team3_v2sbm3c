@@ -6,7 +6,7 @@ CREATE TABLE board_report(
         board_reportno      NUMBER(10)      NOT NULL   PRIMARY KEY,
         boardno             NUMBER(10)      NOT NULL , -- FK
         memberno            NUMBER(10)      NOT NULL , -- FK
-        reason              VARCHAR2(50)    NOT NULL   DEFAULT '',
+        reason              VARCHAR2(50),
         rdate               DATE            DEFAULT SYSDATE,
         FOREIGN KEY (boardno) REFERENCES board (boardno),
         FOREIGN KEY (memberno) REFERENCES member (memberno)

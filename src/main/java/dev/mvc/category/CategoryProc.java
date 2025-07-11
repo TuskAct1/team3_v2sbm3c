@@ -60,9 +60,7 @@ public class CategoryProc implements CategoryProcInter {
         map.put("start_num", start_num);
         map.put("end_num", end_num);
 
-        List<CategoryVO> list = this.categoryDAO.list_search_paging(map);
-
-        return list;
+        return categoryDAO.list_search_paging(map);
     }
 
     @Override
@@ -85,14 +83,14 @@ public class CategoryProc implements CategoryProcInter {
             str.append("<span class='span_box_1'><a href='"+list_url+"?&word="+word+"&now_page="+_now_page+"'>이전</a></span>");
         }
 
-        for(int i=start_page; i<=end_page; i++){
+        for (int i = start_page; i <= end_page; i++){
             if (i > total_page){
                 break;
             }
 
             if (now_page == i){
                 str.append("<span class='span_box_2'>"+i+"</span>");
-            }else{
+            } else{
                 str.append("<span class='span_box_1'><a href='"+list_url+"?word="+word+"&now_page="+i+"'>"+i+"</a></span>");
             }
         }

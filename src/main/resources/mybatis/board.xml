@@ -3,142 +3,274 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="dev.mvc.board.BoardDAOInter">
-  <!-- 게시글 등록 -->
-  <insert id="create" parameterType="dev.mvc.board.BoardVO">
-    INSERT INTO board(boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
-                                file1, file1saved, thumb1, size1)
-    VALUES(board_seq.nextval, #{categoryno}, #{memberno}, #{title}, #{content}, #{passwd}, #{word},  sysdate, #{visible},
-                #{file1}, #{file1saved}, #{thumb1}, #{size1})
-  </insert>
+    <!-- 게시글 등록 -->
+    <insert id="create" parameterType="dev.mvc.board.BoardVO">
+        INSERT INTO board(boardno, categoryno, memberno, title, content, passwd, word, rdate, visible,
+                                    file1, file1saved, thumb1, size1)
+        VALUES(board_seq.nextval, #{categoryno}, #{memberno}, #{title}, #{content}, #{passwd}, #{word},  sysdate, #{visible},
+                    #{file1}, #{file1saved}, #{thumb1}, #{size1})
+    </insert>
 
-  <!-- 모든 카테고리의 등록된 게시글 목록 -->
-  <select id="list_all" resultType="dev.mvc.board.BoardVO">
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
-               file1, file1saved, thumb1, size1, recom
-    FROM board
-    ORDER BY boardno DESC
-  </select>
-  
-  <!-- 일반적인 게시글 조회 -->
-  <select id="read" resultType="dev.mvc.board.BoardVO" parameterType="int">
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
-               file1, file1saved, thumb1, size1, recom
-    FROM board
-    WHERE boardno = #{boardno}
-  </select>
+    <!-- 모든 카테고리의 등록된 게시글 목록 -->
+    <select id="list_all" resultType="dev.mvc.board.BoardVO">
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
+                   file1, file1saved, thumb1, size1, recom
+        FROM board
+        ORDER BY boardno DESC
+    </select>
 
-  <!-- 게시글 삭제 -->
-  <delete id="delete" parameterType="int">
-    DELETE FROM board
-    WHERE boardno=#{boardno}
-  </delete>
+    <!-- 일반적인 게시글 조회 -->
+    <select id="read" resultType="dev.mvc.board.BoardVO" parameterType="int">
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
+                   file1, file1saved, thumb1, size1, recom
+        FROM board
+        WHERE boardno = #{boardno}
+    </select>
 
-  <!-- 카테고리 선택시 관련 글 목록 -->
-  <select id="listByCategory" resultType="dev.mvc.board.BoardVO">
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, file1, file1saved, thumb1, size1, cnt, recom
-    FROM board
-    WHERE categoryno = #{categoryno}
-    ORDER BY boardno DESC
-  </select>
+    <!-- 게시글 삭제 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM board
+        WHERE boardno=#{boardno}
+    </delete>
 
-  <!-- 게시글 수정 -->
-  <update id="update" parameterType="dev.mvc.board.BoardVO">
-    UPDATE board
-    SET title = #{title}, content = #{content}
-    WHERE boardno = #{boardno}
-  </update>
+    <!-- 카테고리 선택시 관련 글 목록 -->
+    <select id="listByCategory" resultType="dev.mvc.board.BoardVO">
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, file1, file1saved, thumb1, size1, cnt, recom
+        FROM board
+        WHERE categoryno = #{categoryno}
+        ORDER BY boardno DESC
+    </select>
 
-  <!-- 조회수 증가 -->
-  <update id="increaseCnt" parameterType="int">
-    UPDATE board
-    SET cnt = cnt + 1
-    WHERE boardno = #{boardno}
-  </update>
+    <!-- 게시글 수정 -->
+    <update id="update" parameterType="dev.mvc.board.BoardVO">
+        UPDATE board
+        SET title = #{title}, content = #{content}
+        WHERE boardno = #{boardno}
+    </update>
 
-  <!-- 게시글 추천 수 증가 -->
-  <update id="increaseRecommend" parameterType="int">
-    UPDATE board
-    SET recom = recom + 1
-    WHERE boardno = #{boardno}
-  </update>
+    <!-- 조회수 증가 -->
+    <update id="increaseCnt" parameterType="int">
+        UPDATE board
+        SET cnt = cnt + 1
+        WHERE boardno = #{boardno}
+    </update>
 
-  <!-- 게시글 추천 수 감소 -->
-  <update id="decreaseRecommend" parameterType="int">
-    UPDATE contents
-    SET recom = recom - 1
-    WHERE boardno = #{boardno}
-  </update>
+    <!-- 게시글 추천 수 증가 -->
+    <update id="increaseRecommend" parameterType="int">
+        UPDATE board
+        SET recom = recom + 1
+        WHERE boardno = #{boardno}
+    </update>
 
-  <!-- 카테고리별 검색 + 페이징 목록 -->
-  <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, r
-    FROM (
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
-    FROM (
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
-    FROM board
-    <choose>
-      <when test="word == null or word == '' or word == 'all'"> <!-- 검색하지 않는 경우 -->
-        WHERE categoryno=#{categoryno}
-      </when>
-      <otherwise>
-        WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
-        OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
-        OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
-      </otherwise>
-    </choose>
-    ORDER BY boardno DESC
-    )
-    )
-    WHERE <![CDATA[ r >= #{start_num} AND r <= #{end_num} ]]>
+    <!-- 게시글 추천 수 감소 -->
+    <update id="decreaseRecommend" parameterType="int">
+        UPDATE board
+        SET recom = recom - 1
+        WHERE boardno = #{boardno}
+    </update>
 
-    <!-- 1 page: WHERE r >= 1 AND r <= 10;
-          2 page: WHERE r >= 11 AND r <= 20;
-          3 page: WHERE r >= 21 AND r <= 30; -->
-  </select>
+    <!-- 추천 수 -->
+    <select id="RecommendCnt" resultType="int" parameterType="int">
+        SELECT COUNT(*) as cnt
+        FROM board
+        WHERE boardno=#{boardno}
+    </select>
 
-  <!-- 카테고리별 검색 레코드 갯수 -->
-  <select id="list_by_categoryno_search_count" resultType="int" parameterType="HashMap">
-    SELECT COUNT(*) as cnt
-    FROM board
-    <choose>
-      <when test="word == null or word == '' or word == 'all'"> <!-- 검색하지 않는 경우의 레코드 갯수 -->
-        WHERE categoryno=#{categoryno}
-      </when>
-      <otherwise> <!-- 검색하는 경우의 레코드 갯수 -->
-        WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
-        OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
-        OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
-      </otherwise>
-    </choose>
-  </select>
+    <!-- 카테고리별 검색 + 페이징 목록 -->
+  <!--  <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
+      SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, r
+      FROM (
+      SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
+      FROM (
+      SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
+      FROM board
+      <choose>
+        <when test="word == null or word == '' or word == 'all'"> &lt;!&ndash; 검색하지 않는 경우 &ndash;&gt;
+          WHERE categoryno=#{categoryno}
+        </when>
+        <otherwise>
+          WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+          OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+          OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+        </otherwise>
+      </choose>
+      ORDER BY boardno DESC
+      )
+      )
+      WHERE <![CDATA[ r >= #{start_num} AND r <= #{end_num} ]]>
+    </select>-->
 
-  <!-- 전체글 검색 + 페이징 -->
-  <select id="list_all_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="hashmap">
-    SELECT * FROM (
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
-    FROM (
-    SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
-    FROM board
-    <if test="word != null and word != '' and word != 'all'">
-      WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
-      OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
-      OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
-    </if>
-    ORDER BY boardno DESC
-    )
-    )
-    WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
-  </select>
+    <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, r
+        FROM (
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
+        FROM (
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
+        FROM board b
+        <choose>
+            <when test="word == null or word == '' or word == 'all'">
+                WHERE categoryno = #{categoryno}
+            </when>
+                <otherwise>
+                    WHERE categoryno = #{categoryno}
+                    <choose>
+                        <when test="searchType == 'all'">
+                            AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                            OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+                            OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+                        </when>
+                        <when test="searchType == 'title'">
+                            AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%')
+                        </when>
+                        <when test="searchType == 'reply'">
+                            AND EXISTS (
+                            SELECT 1 FROM reply r
+                            WHERE r.boardno = b.boardno
+                            AND UPPER(r.content) LIKE '%' || UPPER(#{word}) || '%' AND r.blind = 0
+                            )
+                        </when>
+                        <otherwise>
+                            <!-- 기본은 제목+내용+검색어 -->
+                            AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                            OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+                            OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+                        </otherwise>
+                    </choose>
+              </otherwise>
+        </choose>
+        ORDER BY boardno DESC
+        )
+        )
+        WHERE <![CDATA[ r >= #{start_num} AND r <= #{end_num} ]]>
+    </select>
 
-  <!-- 전체글 개수 (검색 포함) -->
-  <select id="list_all_search_count" resultType="int" parameterType="hashmap">
-    SELECT COUNT(*) FROM board
-    <if test="word != null and word != '' and word != 'all'">
-      WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
-      OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
-      OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
-    </if>
-  </select>
+    <!-- 카테고리별 검색 레코드 갯수 -->
+    <select id="list_by_categoryno_search_count" resultType="int" parameterType="HashMap">
+        SELECT COUNT(*) as cnt
+        FROM board b
+        <choose>
+            <when test="word == null or word == '' or word == 'all'">
+                WHERE categoryno = #{categoryno}
+            </when>
+            <otherwise>
+                WHERE categoryno = #{categoryno}
+                <choose>
+                    <when test="searchType == 'all'">
+                        AND (
+                        UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                        OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+                        OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+                        )
+                    </when>
+                    <when test="searchType == 'title'">
+                        AND UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                    </when>
+                    <when test="searchType == 'reply'">
+                        AND EXISTS (
+                        SELECT 1 FROM reply r
+                        WHERE r.boardno = b.boardno
+                        AND UPPER(r.content) LIKE '%' || UPPER(#{word}) || '%'
+                        AND r.blind = 0
+                        )
+                    </when>
+                    <otherwise>
+                        AND (
+                        UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                        OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+                        OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+                        )
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 전체글 검색 + 페이징 -->
+    <select id="list_all_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="hashmap">
+        SELECT * FROM (
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
+        FROM (
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
+        FROM board
+        <if test="word != null and word != '' and word != 'all'">
+            WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+            OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+            OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+        </if>
+        ORDER BY boardno DESC
+        )
+        )
+        WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+    </select>
+
+    <!-- 전체글 개수 (검색 포함) -->
+    <select id="list_all_search_count" resultType="int" parameterType="hashmap">
+        SELECT COUNT(*) FROM board
+        <if test="word != null and word != '' and word != 'all'">
+            WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+            OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+            OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+        </if>
+    </select>
+
+
+    <!-- 게시글+댓글 JOIN 검색 -->
+    <select id="listAllWithSearch" resultType="dev.mvc.board.BoardVO" parameterType="hashmap">
+        SELECT * FROM (
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
+        FROM (
+        SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
+        FROM board b
+        <where>
+            <if test="word != null and word != '' and word != 'all' and (searchType == 'all' or searchType == 'title')">
+                (UPPER(title) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
+            </if>
+            <if test="searchType == 'title' and word != null and word != '' and word != 'all'">
+                AND UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+            </if>
+            <if test="searchType == 'reply' and word != null and word != '' and word != 'all'">
+                AND EXISTS (
+                SELECT 1 FROM reply r
+                WHERE r.boardno = b.boardno
+                AND UPPER(r.content) LIKE '%' || UPPER(#{word}) || '%' AND r.blind = 0
+                )
+            </if>
+        </where>
+        ORDER BY boardno DESC
+        )
+        )
+        WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+    </select>
+
+
+    <!-- 게시글+댓글 JOIN 검색시 전체 글 수 구하기 -->
+    <select id="countAllWithSearch" resultType="int" >
+        SELECT COUNT(*) FROM board b
+        <where>
+            <if test="searchType == null or searchType == 'all'">
+                <if test="word != null and word != '' and word != 'all'">
+                    (
+                    UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                    OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
+                    OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%'
+                    )
+                </if>
+            </if>
+            <if test="searchType == 'title'">
+                <if test="word != null and word != '' and word != 'all'">
+                    UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
+                </if>
+            </if>
+            <if test="searchType == 'reply'">
+                <if test="word != null and word != '' and word != 'all'">
+                    EXISTS (
+                    SELECT 1 FROM reply r
+                    WHERE r.boardno = b.boardno
+                    AND UPPER(r.content) LIKE '%' || UPPER(#{word}) || '%' AND r.blind = 0
+                    )
+                </if>
+            </if>
+        </where>
+    </select>
 
 </mapper>

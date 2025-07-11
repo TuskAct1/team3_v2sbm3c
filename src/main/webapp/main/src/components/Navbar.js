@@ -78,6 +78,7 @@ function Navbar() {
             <li><Link to="/diary">일기</Link></li>
             <li><Link to="/emotion_report">감정분석</Link></li>
             <li><Link to="/product">포인트 상점</Link></li>
+            <li><Link to="/inquiry">1:1 문의</Link></li>
             
 
             {/* 🔐 관리자 전용 메뉴 */}

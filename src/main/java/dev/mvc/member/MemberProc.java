@@ -114,4 +114,9 @@ public class MemberProc implements MemberProcInter {
     public int existsById(String id) {
         return memberDAO.existsById(id);
     }
+
+    @Override
+    public int updatePassword(int memberno, String newPasswd) {
+        return memberDAO.updatePassword(memberno, newPasswd);
+    }
 }

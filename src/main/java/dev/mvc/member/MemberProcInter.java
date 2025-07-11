@@ -72,4 +72,6 @@ public interface MemberProcInter {
     
     public int existsById(String id);  // 존재 여부 확인
 
+    public int updatePassword(int memberno, String newPasswd);
+
 }

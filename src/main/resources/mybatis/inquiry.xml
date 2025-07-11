@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.inquiry.InquiryDAOInter">
+
+    <!-- 1:1 문의 등록 -->
+    <insert id="inquiryCreate" parameterType="dev.mvc.inquiry.InquiryVO">
+        INSERT INTO inquiry(inquiryno, memberno, title, content)
+        VALUES(inquiry_seq.nextval, #{memberno}, #{title}, #{content})
+    </insert>
+
+    <!-- 1:1 문의 목록 -->
+    <select id="list_all" resultType="dev.mvc.inquiry.InquiryVO">
+        SELECT inquiryno, memberno, title, content, answer, status, create_date, answer_date
+        FROM inquiry
+        ORDER BY create_date DESC
+    </select>
+
+    <!-- 특정 1:1 문의 조회 -->
+    <select id="read" resultType="dev.mvc.inquiry.InquiryVO" parameterType="int">
+        SELECT inquiryno, memberno, title, content, answer, status, create_date, answer_date
+        FROM inquiry
+        WHERE inquiryno = #{inquiryno}
+    </select>
+
+    <!-- 1:1 문의 삭제 -->
+    <delete id="inquiryDelete" parameterType="int">
+        DELETE FROM inquiry
+        WHERE inquiryno = #{inquiryno}
+    </delete>
+
+    <!-- 1:1 문의 답변 -->
+    <update id="inquiryAnswer">
+        UPDATE inquiry
+        SET answer = #{answer}, answer_date = sysdate, status = 'Y'
+        WHERE inquiryno = #{inquiryno}
+    </update>
+
+</mapper>

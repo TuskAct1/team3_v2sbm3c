@@ -84,7 +84,6 @@
       guardian2_phone = #{guardian2_phone},
       point = #{point},
       grade = #{grade},
-      mdate = #{mdate},
       sticker = #{sticker},
       login_time = #{login_time},
       logout_time = #{logout_time}
@@ -163,12 +162,16 @@
     WHERE memberno = #{memberno}
   </update>
 
-
-
   <!-- ✅ ID 존재 여부 확인 (소셜 자동가입 전 체크) -->
   <select id="existsById" resultType="int">
     SELECT COUNT(*) FROM member 
     WHERE id = #{id}
   </select>
+
+  <update id="updatePassword" >
+    UPDATE member
+    SET passwd = #{newPasswd}
+    WHERE memberno = #{memberno}
+  </update>
 
 </mapper>

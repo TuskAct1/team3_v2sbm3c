@@ -72,6 +72,9 @@ import DiaryCreate from './pages/diary/DiaryCreate';
 import DiaryUpdate from './pages/diary/DiaryUpdate';
 import DiaryRead from './pages/diary/DiaryRead';
 
+import InquiryPage from './pages/inquiry/InquiryPage';
+import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
+
 
 function App() {
   return (
@@ -213,12 +216,15 @@ function App() {
 
         <Route path="/product" element={<ProductPage/>} />
 
-          {/* plant 관련 설정 */}
-          <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
-          <Route path="/plant/create" element={<PlantCreatePage />} />
-          <Route path="/plant" element={<PlantPage />} />
-          <Route path="/plant/game" element={<GameSelect />} />
-
+        {/* plant 관련 설정 */}
+        <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
+        <Route path="/plant/create" element={<PlantCreatePage />} />
+        <Route path="/plant" element={<PlantPage />} />
+        <Route path="/plant/game" element={<GameSelect />} />
+        
+        {/* 1:1 문의 */}
+        <Route path="/inquiry" element={<InquiryPage />} />
+        <Route path="/inquiry/create" element={<InquiryCreatePage />} />
 
         <Route path='/admin/reply-list' element={<ReplyReportListPage />} />
 
