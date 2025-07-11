@@ -14,11 +14,10 @@
       zipcode, address1, address2, tel,
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
       guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, 
-      point, provider
+      point,sticker, provider
     )
     VALUES (
-      #{memberno}, #{mname}, #{id}, #{passwd}, #{passwd2}, #{nickname}, #{profile}, #{birthdate}, #{gender}, 
-      member_seq.nextval, 
+      #{memberno}, 
       #{mname}, #{id}, #{passwd}, #{passwd2},
       #{nickname, jdbcType=VARCHAR},
       #{profile, jdbcType=VARCHAR},
@@ -33,18 +32,11 @@
       #{guardian2_email, jdbcType=VARCHAR},
       #{guardian2_phone, jdbcType=VARCHAR},
       #{point, jdbcType=NUMERIC},
+      #{sticker, jdbcType=NUMERIC},
       #{provider, jdbcType=VARCHAR}
-      
     )
   </insert>
 
-  <!-- <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
-    SELECT 
-      memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
-      zipcode, address1, address2, tel, 
-      guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
-      login_time, logout_time, point, grade, mdate, sticker -->
 
   <!-- ✅ 회원 상세 조회 (by memberno) -->
   <select id="read" resultType="dev.mvc.member.MemberVO" parameterType="int">
@@ -53,7 +45,7 @@
       zipcode, address1, address2, tel,
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
       guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
-      login_time, logout_time, point, provider
+      login_time, logout_time, point, sticker, provider
     FROM member
     WHERE memberno = #{memberno}
   </select>
@@ -87,8 +79,8 @@
       mdate = #{mdate},
       sticker = #{sticker},
       login_time = #{login_time},
-      logout_time = #{logout_time}
-      provider = #{provider}
+      logout_time = #{logout_time},
+      provider = #{provider},
     WHERE memberno = #{memberno}
   </update>
 
@@ -110,9 +102,6 @@
     WHERE id = #{id}
   </select>
 
-  <!-- <select id="readById" parameterType="String" resultType="dev.mvc.member.MemberVO">
-    SELECT * FROM member WHERE id = #{id }-->
-
   <!-- ✅ 회원 조회 (by id - 소셜 로그인 등에서 사용) -->
   <select id="readById" resultType="dev.mvc.member.MemberVO" parameterType="String">
     SELECT 
@@ -120,7 +109,7 @@
       zipcode, address1, address2, tel,
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
       guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone,
-      login_time, logout_time, point, provider
+      login_time, logout_time, point, sticker, provider
     FROM member 
     WHERE id = #{id}
   </select>
@@ -133,7 +122,7 @@
     ORDER BY memberno DESC
   </select>
   
-  <update id="updateSticker">
+  <update id="updateSticker" parameterType="map">
     UPDATE member
     SET sticker = sticker + #{amount}
     WHERE memberno = #{memberno}
@@ -169,6 +158,33 @@
   <select id="existsById" resultType="int">
     SELECT COUNT(*) FROM member 
     WHERE id = #{id}
+  </select>
+    
+  <select id="searchWithPaging" resultType="dev.mvc.member.MemberVO" parameterType="map">
+    SELECT * FROM (
+      SELECT ROWNUM rnum, A.* FROM (
+        SELECT 
+          memberno, id, mname, tel, address1, mdate, grade
+        FROM member 
+        <where>
+          <if test="keyword != null and keyword != ''">
+            id LIKE '%' || #{keyword} || '%' 
+            OR mname LIKE '%' || #{keyword} || '%'
+          </if>
+        </where>
+        ORDER BY memberno DESC
+      ) A WHERE ROWNUM &lt;= #{end}  <!-- ✅ 여기 수정 -->
+    ) WHERE rnum &gt;= #{start}     <!-- ✅ 여기도 같이 수정 -->
+  </select>
+  
+  <select id="searchCount" resultType="int" parameterType="map">
+    SELECT COUNT(*) FROM member 
+    <where>
+      <if test="keyword != null and keyword != ''">
+        id LIKE '%' || #{keyword} || '%' 
+        OR mname LIKE '%' || #{keyword} || '%'
+      </if>
+    </where>
   </select>
 
 </mapper>

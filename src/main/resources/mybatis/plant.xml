@@ -45,23 +45,26 @@
     SELECT COUNT(*) FROM plant WHERE memberno = #{memberno}
   </select>
   
-<!--  <update id="increaseGrowth" parameterType="map">
-    UPDATE plant
-    SET growth = LEAST(growth + #{growthAmount}, 100)
-    WHERE plantno = #{plantno}
-  </update>-->
   <update id="increaseGrowth" parameterType="map">
     UPDATE plant
-    SET growth = growth + #{amount}
+    SET growth = CASE
+      WHEN NVL(growth, 0) + #{amount} > 100 THEN 100
+      ELSE NVL(growth, 0) + #{amount}
+    END
     WHERE memberno = #{memberno}
   </update>
-    
+  
   <update id="updateForToday" parameterType="int">
     UPDATE attendance
     SET total_days = total_days + 1,
         last_check = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
     WHERE memberno = #{memberno}
   </update>
+  
+  <delete id="deleteByMemberno" parameterType="int">
+    DELETE FROM plant
+    WHERE memberno = #{memberno}
+  </delete>
   
 
 </mapper>

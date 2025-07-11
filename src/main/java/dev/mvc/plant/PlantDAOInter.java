@@ -26,5 +26,7 @@ public interface PlantDAOInter {
     public int increaseGrowth(Map<String, Object> map);
     
 //    public int getPoint(int memberno);
+    
+    public int deleteByMemberno(int memberno);
 
 }
