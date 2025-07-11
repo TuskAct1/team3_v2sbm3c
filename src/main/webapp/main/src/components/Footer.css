@@ -1,0 +1,57 @@
+/* ✅ 푸터 영역 */
+.footer-section {
+  padding: 60px 20px;
+  background-color: #2f2f2f;
+  color: #dddddd;
+  text-align: center;
+  border-top: 1px solid #444;
+}
+
+.footer-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+  color: #66bb6a;
+}
+
+.footer-buttons {
+  margin-bottom: 20px;
+}
+
+.footer-buttons button {
+  margin: 6px;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  color: #66bb6a;
+  border: 1px solid #66bb6a;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s;
+
+  min-width: 140px; /* 버튼 크기 통일 */
+  text-align: center;
+  white-space: nowrap;
+}
+
+.footer-buttons button:hover {
+  background-color: #66bb6a;
+  color: white;
+}
+
+.footer-info {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-top: 18px;
+  color: #aaa;
+}
+
+.footer-icons {
+  margin-top: 20px;
+  font-size: 24px; 
+}
+
+.footer-icons span {
+  margin: 0 10px;
+  cursor: pointer;
+  color: #66bb6a;
+}

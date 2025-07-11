@@ -1,134 +1,112 @@
-/* ✅ 전체 페이지 배경 */
+/* ✅ 전체 배경 */
 .mbti-page-bg {
-  background-color: #f1f8e9;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  box-sizing: border-box;
-}
-
-/* ✅ 카드 컨테이너 (메인 박스) */
-.mbti-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;     /* ✅ 수직 가운데 정렬 */
-  align-items: center;         /* ✅ 수평 가운데 정렬 */
   background-color: #ffffff;
-  padding: 3rem 2rem;
-  border-radius: 25px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  max-width: 700px;
-  width: 100%;
-  font-family: 'Arial', sans-serif;
-  box-sizing: border-box;
-  min-height: 400px;           /* ✅ 내용이 적을 때 높이 유지 */
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: 'Pretendard', sans-serif;
 }
 
-/* ✅ 타이틀 */
+/* ✅ 중앙 정렬 컨테이너 */
+.mbti-container {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* ✅ 제목 */
 .mbti-title {
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 2.5rem;
+  margin-bottom: 40px;
+  color: #388e3c;
 }
 
-/* ✅ 질문 카드 영역 (❗박스처럼 보이지 않게!) */
-.question-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  width: 100%;
+/* ✅ 진행률 바 */
+.mbti-progress-bar {
+  background-color: #e0e0e0;
+  height: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #66bb6a;
+  transition: width 0.3s ease;
+}
+
+/* ✅ 진행률 숫자 (숨기고 싶으면 삭제하거나 display: none 해도 됨) */
+.mbti-progress-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2e7d32;
+  margin-bottom: 10px;
+}
+
+/* ✅ 질문 제목 */
+.mbti-question-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 28px;
+  color: #333;
+}
+
+/* ✅ 질문 박스 */
+.mbti-question-box {
+  background-color: #f9f9f9;
+  padding: 40px 24px;
+  border-radius: 18px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 /* ✅ 질문 텍스트 */
-.question-card p {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #33691e;
-  margin: 0 0 2rem 0;
-  line-height: 1.6;
+.mbti-question-text {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 30px;
 }
 
-/* ✅ 버튼 그룹 */
-.button-group {
+/* ✅ 버튼 영역 */
+.mbti-button-group {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-/* ✅ 공통 버튼 스타일 */
-.button-group button {
-  padding: 0.9rem 1.8rem;
-  font-size: 1.2rem;
+.mbti-button-group button {
+  font-size: 1.1rem;
   font-weight: bold;
-  border: none;
-  border-radius: 10px;
+  padding: 14px 32px;
+  border: 2px solid #66bb6a;
+  background-color: #fff;
+  color: #388e3c;
+  border-radius: 999px;
   cursor: pointer;
-  min-width: 100px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-/* ✅ '그렇다' 버튼 - 초록색 */
-.yes-button {
+.mbti-button-group button:hover {
   background-color: #66bb6a;
-  color: white;
-}
-.yes-button:hover {
-  background-color: #388e3c;
+  color: #ffffff;
 }
 
-/* ✅ '아니다' 버튼 - 회색 */
-.no-button {
-  background-color: #e0e0e0;
-  color: #333;
-}
-.no-button:hover {
-  background-color: #bdbdbd;
-}
-
-/* ✅ 결과 보기 버튼 */
+/* ✅ 제출 버튼 */
 .submit-button {
-  margin-top: 2rem;
-  padding: 1rem 2.5rem;
-  font-size: 1.3rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 12px;
+  font-size: 1.1rem;
   font-weight: bold;
+  padding: 14px 36px;
+  margin-top: 30px;
+  background-color: #66bb6a;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 }
+
 .submit-button:hover {
-  background-color: #2e7d32;
-}
-
-/* ✅ 모바일 대응 */
-@media screen and (max-width: 600px) {
-  .mbti-container {
-    padding: 2rem 1.2rem;
-  }
-
-  .question-card p {
-    font-size: 1.2rem;
-  }
-
-  .button-group {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .button-group button,
-  .submit-button {
-    width: 100%;
-    font-size: 1.1rem;
-  }
+  background-color: #4caf50;
 }

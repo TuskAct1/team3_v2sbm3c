@@ -2,7 +2,8 @@ DROP TABLE notice;
 
 CREATE TABLE notice (
     noticeno     NUMBER(10)                     NOT NULL PRIMARY KEY,       -- 공지사항 번호 (PK)
-    adminno      NUMBER(10)                     NOT NULL,                   -- 작성자 (관리자 FK)
+    adminno      NUMBER(10)                     NOT NULL,     
+    category     VARCHAR2(30)                   DEFAULT '공지' NOT NULL,     -- ✅ 카테고리: 공지/이벤트/시스템 점검 등-- 작성자 (관리자 FK)
     title        VARCHAR2(200)                  NOT NULL,                   -- 제목
     content      CLOB                           NOT NULL,                   -- 내용 (긴 글 지원)
     rdate        DATE DEFAULT SYSDATE           NOT NULL,                   -- 작성일
@@ -14,6 +15,7 @@ CREATE TABLE notice (
 COMMENT ON TABLE notice is '공지사항';
 COMMENT ON COLUMN notice.noticeno is '공지사항 번호';
 COMMENT ON COLUMN notice.adminno is '작성자(관리자)';
+COMMENT ON COLUMN notice.category is '공지사항 카테고리';
 COMMENT ON COLUMN notice.title is '제목';
 COMMENT ON COLUMN notice.content is '내용';
 COMMENT ON COLUMN notice.rdate is '작성일';

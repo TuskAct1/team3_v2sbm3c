@@ -111,7 +111,7 @@ function TwoweekResultList() {
           <div className="calendar-container">
             <Calendar
               tileContent={getTileContent}
-              locale="ko-KR"
+              locale="en-US"
               prevLabel="← 이전 달"
               nextLabel="다음 달 →"
               showNeighboringMonth={false}

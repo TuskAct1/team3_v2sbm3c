@@ -90,30 +90,6 @@ public class MemberController {
             String id = (String) loginMap.get("id");
             String inputPasswd = (String) loginMap.get("passwd");
 
-//    /** 로그인 */
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap) {
-//        String id = (String) loginMap.get("id");
-//        String inputPasswd = (String) loginMap.get("passwd");
-//
-//        MemberVO member = memberProc.readById(id);
-//
-//        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("message", "로그인 성공");
-//            response.put("user", member);
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.status(401).body("로그인 실패");
-//        }
-//    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap, HttpSession session) {
-        String id = (String) loginMap.get("id");
-        String inputPasswd = (String) loginMap.get("passwd");
-
-
             MemberVO member = memberProc.readById(id);
 
             if (member == null) {
@@ -151,22 +127,88 @@ public class MemberController {
         } catch (Exception e) {
             e.printStackTrace(); // 콘솔에 출력
             return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
-
-        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
-            // 로그인 성공 시 세션에 memberno 저장
-            session.setAttribute("memberno", member.getMemberno());  // 세션 저장 추가!
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "로그인 성공");
-            response.put("user", member);
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(401).body("로그인 실패");
-
         }
         
     }
     
+
+//    /** 로그인 */
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap) {
+//        String id = (String) loginMap.get("id");
+//        String inputPasswd = (String) loginMap.get("passwd");
+//
+//        MemberVO member = memberProc.readById(id);
+//
+//        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "로그인 성공");
+//            response.put("user", member);
+//            return ResponseEntity.ok(response);
+//        } else {
+//            return ResponseEntity.status(401).body("로그인 실패");
+//        }
+//    }
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody HashMap<String, Object> loginMap, HttpSession session) {
+//        String id = (String) loginMap.get("id");
+//        String inputPasswd = (String) loginMap.get("passwd");
+//
+//
+//            MemberVO member = memberProc.readById(id);
+//
+//            if (member == null) {
+//                return ResponseEntity.status(401).body("존재하지 않는 사용자입니다.");
+//            }
+//
+//            if (!bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+//                return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
+//            }
+//
+//            session.setAttribute("id", id);
+//
+//            // ✅ [1] 식물 존재 여부 확인
+//            boolean hasPlant = plantProc.hasPlant(member.getMemberno());
+//
+//            if (!hasPlant) {
+//                // ✅ [2] 기본 식물 생성
+//                PlantVO plant = new PlantVO();
+//                plant.setMemberno(member.getMemberno());
+//                plant.setPlant_name("새싹이");        // 기본 이름
+//                plant.setPlant_type("딸기");         // 기본 종류
+//                plant.setGrowth(0);
+//                plant.setPlant_status("정상");
+//                plant.setLast_access(LocalDate.now().toString()); // java.time.LocalDate 사용
+//                plantProc.create(plant);
+//
+//                // ✅ [3] 출석 초기화
+//                attendanceProc.initAttendance(member.getMemberno());
+//
+//                // ✅ [4] 포인트 초기 지급 (예: 100p)
+//                memberProc.updatePoint(member.getMemberno(), 100);
+//            }
+//
+//            return ResponseEntity.ok(Map.of("message", "로그인 성공", "user", member));
+//        } catch (Exception e) {
+//            e.printStackTrace(); // 콘솔에 출력
+//            return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
+//
+//        if (member != null && bcryptUtil.matches(inputPasswd, member.getPasswd())) {
+//            // 로그인 성공 시 세션에 memberno 저장
+//            session.setAttribute("memberno", member.getMemberno());  // 세션 저장 추가!
+//
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("message", "로그인 성공");
+//            response.put("user", member);
+//            return ResponseEntity.ok(response);
+//        } else {
+//            return ResponseEntity.status(401).body("로그인 실패");
+//
+//        }
+//        
+//    }
+//    
     /** 회원 조회 */
     @GetMapping("/{memberno}")
     public ResponseEntity<MemberVO> read(@PathVariable("memberno") int memberno) {

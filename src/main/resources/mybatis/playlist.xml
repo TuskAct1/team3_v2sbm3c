@@ -61,5 +61,46 @@
   <delete id="deleteByEmotionno" parameterType="int">
     DELETE FROM playlist WHERE playlistemotionno = #{playlistemotionno}
   </delete>
+  
+  <!-- 사용자 기준 좋아요 포함된 전체 목록 -->
+  <select id="listWithLikeInfo" resultType="dev.mvc.playlist.PlaylistJoinVO" parameterType="int">
+    SELECT p.*,
+           (SELECT COUNT(*) 
+              FROM playlist_like pl 
+             WHERE pl.playlistno = p.playlistno) AS likecount,
+           (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+              FROM playlist_like pl 
+             WHERE pl.playlistno = p.playlistno 
+               AND pl.memberno = #{memberno}) AS liked
+    FROM playlist p
+    ORDER BY p.rdate DESC
+  </select>
+
+  <!-- 감정별 목록 + 좋아요 여부 포함 (memberno가 누른 것 포함) -->
+  <select id="listByEmotionnoWithLike" resultType="dev.mvc.playlist.PlaylistJoinVO" parameterType="map">
+    SELECT 
+      p.*,
+      (SELECT COUNT(*) FROM playlist_like pl 
+       WHERE pl.playlistno = p.playlistno) AS likecount,
+      (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+       FROM playlist_like pl 
+       WHERE pl.playlistno = p.playlistno AND pl.memberno = #{memberno}) AS liked
+    FROM playlist p
+    WHERE p.playlistemotionno = #{emotionno}
+    ORDER BY p.rdate DESC
+  </select>
+
+  
+  <select id="readWithLike" resultType="dev.mvc.playlist.PlaylistJoinVO" parameterType="map">
+    SELECT 
+      p.*,
+      (SELECT COUNT(*) FROM playlist_like pl 
+       WHERE pl.playlistno = p.playlistno) AS likecount,
+      (SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+       FROM playlist_like pl 
+       WHERE pl.playlistno = p.playlistno AND pl.memberno = #{memberno}) AS liked
+    FROM playlist p
+    WHERE p.playlistno = #{playlistno}
+  </select>
 
 </mapper>
