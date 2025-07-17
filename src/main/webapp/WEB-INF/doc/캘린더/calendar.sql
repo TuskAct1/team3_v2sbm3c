@@ -77,3 +77,8 @@ ADD (
     thumbnail VARCHAR2(255)   -- 썸네일 이미지 파일명
 );
 
+ALTER TABLE CALENDAR
+  ADD (
+    START_TIME VARCHAR2(5 BYTE),
+    END_TIME   VARCHAR2(5 BYTE)
+  );

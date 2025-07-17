@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.calendar_alarm.CalendarAlarmDAOInter">
+
+    <!-- 1. 새 알람 등록 -->
+    <insert id="create" parameterType="dev.mvc.calendar_alarm.CalendarAlarmVO">
+        INSERT INTO calendar_alarm
+        (alarmno, calendarno, memberno, alarm_dt, alarm_type, sent_flag, retry_count, rdate)
+        VALUES
+        (calendar_alarm_seq.nextval,
+        #{calendarno},
+        #{memberno},
+        #{alarm_dt,jdbcType=TIMESTAMP},
+        #{alarm_type},
+        #{sent_flag},
+        #{retry_count},
+        SYSTIMESTAMP)
+    </insert>
+
+    <select id="read" resultType="dev.mvc.calendar_alarm.CalendarAlarmVO" parameterType="int">
+        SELECT *
+        FROM calendar_alarm
+        WHERE alarmno = #{alarmno}
+    </select>
+
+    <!-- 2. 발송 대기 중인 알람 조회 (5분 이내) -->
+    <select id="listPending" resultType="dev.mvc.calendar_alarm.CalendarAlarmVO">
+        SELECT
+        a.alarmno,
+        a.calendarno,
+        a.memberno,
+        c.title,
+        c.start_date,
+        c.start_time,
+        a.alarm_dt
+        FROM calendar_alarm a
+        JOIN Calendar c ON a.calendarno = c.calendarno
+        WHERE a.sent_flag = 'N'
+        <![CDATA[
+      AND a.alarm_dt <= SYSTIMESTAMP + INTERVAL '10' MINUTE
+    ]]>
+    </select>
+
+    <!-- 3. 발송 완료 표시 -->
+    <update id="updateSentFlag" parameterType="int">
+        UPDATE calendar_alarm
+        SET sent_flag = 'Y'
+        WHERE alarmno = #{alarmno}
+    </update>
+
+    <!-- 4. 일정 또는 회원 삭제 시 함께 삭제 (대체로 DB CASCADE로 처리) -->
+    <delete id="deleteByCalendar" parameterType="int">
+        DELETE FROM calendar_alarm
+        WHERE calendarno = #{calendarno}
+    </delete>
+
+    <delete id="deleteByMember" parameterType="int">
+        DELETE FROM calendar_alarm
+        WHERE memberno = #{memberno}
+    </delete>
+
+    <select id="readByCalendarno" parameterType="int" resultType="dev.mvc.calendar_alarm.CalendarAlarmVO">
+        SELECT * FROM calendar_alarm WHERE calendarno = #{calendarno}
+    </select>
+
+</mapper>

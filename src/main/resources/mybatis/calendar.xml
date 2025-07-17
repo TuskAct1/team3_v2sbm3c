@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dev.mvc.calendar.CalendarDAOInter">
 
+
+    <!-- 일정 등록3 -->
+    <insert id="create" parameterType="dev.mvc.calendar.CalendarVO">
+        <selectKey keyProperty="calendarno" resultType="int" order="BEFORE">
+            SELECT calendar_seq.NEXTVAL FROM DUAL
+        </selectKey>
+
 <!--  &lt;!&ndash; 일정 등록1 &ndash;&gt;-->
 <!--  <insert id="create" parameterType="dev.mvc.calendar.CalendarVO">-->
 <!--    INSERT INTO calendar(calendarno, memberno, adminno, title, schedule_date, schedule_time, category,-->
@@ -20,6 +27,35 @@
     </insert>
 
 
+        INSERT INTO calendar (
+        calendarno,
+        memberno,
+        adminno,
+        title,
+        category,
+        description,
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+        alarm_yn,
+        rdate
+        ) VALUES (
+        #{calendarno},
+        #{memberno, jdbcType=INTEGER},
+        #{adminno, jdbcType=INTEGER},
+        #{title},
+        #{category},
+        #{description},
+        #{start_date},
+        #{end_date},
+        #{end_time},
+        #{start_time},
+        #{alarm_yn},
+        SYSTIMESTAMP
+        )
+    </insert>
+
   <!-- 전체 일정 조회 -->
   <select id="list_all" resultType="dev.mvc.calendar.CalendarVO">
     SELECT calendarno, memberno, adminno, title,
@@ -35,24 +71,6 @@
     FROM calendar
     WHERE calendarno = #{calendarno}
   </select>
-
-<!--  &lt;!&ndash; 일정 수정 &ndash;&gt;-->
-<!--  <update id="update" parameterType="dev.mvc.calendar.CalendarVO">-->
-<!--    UPDATE calendar-->
-<!--    SET title = #{title},-->
-<!--        schedule_date = #{schedule_date},-->
-<!--        schedule_time = #{schedule_time},-->
-<!--        category = #{category},-->
-<!--        description = #{description},-->
-<!--        alarm_yn = #{alarm_yn},-->
-<!--        favorite_yn = #{favorite_yn},-->
-<!--        rdate=sysdate,-->
-<!--        start_date = #{start_date},-->
-<!--        end_date = #{end_date},-->
-<!--        image = #{image},-->
-<!--        thumbnail = #{thumbnail}-->
-<!--    WHERE calendarno = #{calendarno}-->
-<!--  </update>-->
 
     <update id="update" parameterType="dev.mvc.calendar.CalendarVO">
         UPDATE calendar

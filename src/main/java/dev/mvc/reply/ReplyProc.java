@@ -95,4 +95,9 @@ public class ReplyProc implements ReplyProcInter {
   public int count_by_boardno(int boardno) {
     return replyDAO.count_by_boardno(boardno);
   }
+
+  @Override
+  public List<ReplyVO> list_by_boardno_tree(int boardno) {
+    return replyDAO.list_by_boardno_tree(boardno);
+  }
 }

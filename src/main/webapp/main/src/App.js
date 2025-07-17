@@ -61,6 +61,13 @@ import PlantCreatePage from './pages/plant/PlantCreatePage';
 import GameSelect from './pages/plant/games/GameSelect';
 
 import DiaryPage from './pages/diary/DiaryPage';
+import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
+import MemoryGame from './pages/plant/games/MemoryGame';
+import PlantMain from './pages/plant/PlantMain';
+import ReplyReportListPage from './pages/reply/ReplyReportListPage';
+import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
+
+
 import DiaryCreate from './pages/diary/DiaryCreate';
 import DiaryUpdate from './pages/diary/DiaryUpdate';
 import DiaryRead from './pages/diary/DiaryRead';
@@ -68,20 +75,20 @@ import DiaryRead from './pages/diary/DiaryRead';
 import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
+
 import FaqPage from './pages/faq/FaqPage';
 import FaqCreatePage from './pages/faq/FaqCreatePage';
 
-import ReplyReportListPage from './pages/reply/ReplyReportListPage';
-import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* ✅ 모든 페이지 Layout으로 감쌈 (Navbar + Footer + FloatingButton 공통 적용) */}
-        <Route element={<Layout />}>
+          <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
           <Route path="/todaki" element={<TodakiPage />} />
+
 
           {/* 심리테스트 */}
           <Route path="/personality_test" element={<PersonalityTest />} />

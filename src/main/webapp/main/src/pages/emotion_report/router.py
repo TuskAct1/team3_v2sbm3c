@@ -137,8 +137,14 @@ async def get_emotion_summary(
         if not since or not until:
             return {"error": "Missing since/until parameters"}
 
-        start_date = datetime.fromisoformat(since)
-        end_date = datetime.fromisoformat(until)
+        # 기존 코드
+        # start_date = datetime.fromisoformat(since)
+        # end_date = datetime.fromisoformat(until)
+
+        # 수정된 코드
+        start_date = datetime.fromisoformat(since.replace("Z", ""))
+        end_date = datetime.fromisoformat(until.replace("Z", ""))
+        
     else:
         return {"error": "Invalid period_type"}
 
