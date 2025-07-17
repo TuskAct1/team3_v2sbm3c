@@ -86,7 +86,6 @@ public class MemberController {
         }
 
         // 2. 비밀번호 암호화
-        String encrypted = bcryptUtil.encode(memberVO.getPasswd());
         memberVO.setPasswd(encrypted);
 
         // 3. 포인트 기본값
@@ -101,7 +100,7 @@ public class MemberController {
 
             // 2단계: 기본 식물 생성
 
-            int memberno = memberVO.getMemberno();
+
 
             // 5. 기본 식물 생성
 

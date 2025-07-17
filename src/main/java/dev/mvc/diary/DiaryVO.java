@@ -23,6 +23,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter @Setter @ToString
 public class DiaryVO {
 
@@ -46,12 +48,19 @@ public class DiaryVO {
     /** 우울증 위험도 */
     private int risk_flag = 0;
 
-    private MultipartFile file1MF;
+    private List<MultipartFile> files;
+
+    private List<String> deletedFiles;
 
     private String file1;         // 원본 파일명
     private String file1saved;    // 서버에 저장된 파일명
     private String thumb1;        // 썸네일 파일명
     private long size1;           // 파일 크기
     private String size1_label;   // 사용자에게 표시할 크기 예: "123 KB"
+    /** 클라이언트에서 '서버에 남기고 싶은 썸네일 파일명들' 전달용 */
+    private List<String> remainFiles;
+
+    /** 클라이언트에서 '서버에 남기고 싶은 저장된 파일명들' 전달용 */
+    private List<String> remainFilesSaved;
 
 }

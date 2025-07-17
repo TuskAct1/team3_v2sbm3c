@@ -8,9 +8,11 @@
 
     <!-- 일기 등록 -->
     <insert id="create" parameterType="dev.mvc.diary.DiaryVO">
-        INSERT INTO diary(diaryno, memberno, title, content, password, rdate, file1, file1saved, thumb1, size1, risk_flag)
-        VALUES(diary_seq.nextval, #{memberno}, #{title}, #{content}, #{password}, SYSDATE, #{file1}, #{file1saved}, #{thumb1}, #{size1}, #{risk_flag})
+        INSERT INTO diary (diaryno, memberno, title, content, password, rdate, file1, file1saved, thumb1, size1, risk_flag )
+        VALUES ( diary_seq.nextval, #{memberno}, #{title}, #{content}, #{password}, SYSDATE, #{file1, jdbcType=VARCHAR},
+        #{file1saved, jdbcType=VARCHAR}, #{thumb1, jdbcType=VARCHAR}, #{size1, jdbcType=NUMERIC}, #{risk_flag})
     </insert>
+
 
     <!-- 일기 전체 목록 -->
     <select id="list_all" resultType="dev.mvc.diary.DiaryVO">
@@ -27,24 +29,11 @@
     <!-- 일기 수정 -->
     <update id="update" parameterType="dev.mvc.diary.DiaryVO">
         UPDATE diary
-        SET title = #{title},
-        content = #{content},
-        rdate = sysdate,
-        risk_flag = #{risk_flag}
-        <if test="file1 != null">
-            , file1 = #{file1}
-        </if>
-        <if test="file1saved != null">
-            , file1saved = #{file1saved}
-        </if>
-        <if test="thumb1 != null">
-            , thumb1 = #{thumb1}
-        </if>
-        <if test="size1 != null">
-            , size1 = #{size1}
-        </if>
+        SET title = #{title}, content = #{content}, rdate = sysdate, risk_flag = #{risk_flag},
+        file1 = #{file1, jdbcType=VARCHAR}, file1saved = #{file1saved, jdbcType=VARCHAR}, thumb1 = #{thumb1, jdbcType=VARCHAR}, size1 = #{size1, jdbcType=NUMERIC}
         WHERE diaryno = #{diaryno}
     </update>
+
 
 
     <!-- 일기 삭제 -->

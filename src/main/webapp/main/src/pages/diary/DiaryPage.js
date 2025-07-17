@@ -2,6 +2,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import DiaryReadModal from './DiaryReadModal';  
 
 const dummyData = [];
 
@@ -49,7 +50,7 @@ function MyButton({ text, onClick }) {
   );
 }
 
-function DiaryItem({ id, emotion, content, rdate, title }) {
+function DiaryItem({ id, emotion, content, rdate, title, onClick }) {
   const navigate = useNavigate();
 
   const handleDelete = async (e) => {
@@ -69,7 +70,7 @@ function DiaryItem({ id, emotion, content, rdate, title }) {
   };
 
   const handleRead = () => {
-    navigate(`/diary/read/${id}`);
+    onClick(id);
   };
 
   const emotionIcon = emotionIcons.find(e => e.score === emotion)?.icon || "😐";
@@ -107,7 +108,7 @@ function DiaryItem({ id, emotion, content, rdate, title }) {
   );
 }
 
-function DiaryList({ diaryList }) {
+function DiaryList({ diaryList, onDiaryClick, onCreateClick }) {
   const [sortType, setSortType] = useState('latest');
   const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
@@ -154,11 +155,11 @@ function DiaryList({ diaryList }) {
           ))}
         </select>
 
-        <button onClick={() => navigate('/diary/create')} style={{ marginLeft: '10px' }}>새 일기쓰기</button>
+        <button onClick={onCreateClick}>새 일기쓰기</button>
       </div>
 
       {getProcessedDiaryList().map((it) => (
-        <DiaryItem key={it.id} {...it} />
+        <DiaryItem key={it.id} {...it} onClick={onDiaryClick}/>
       ))}
     </div>
   );
@@ -166,6 +167,9 @@ function DiaryList({ diaryList }) {
 
 function DiaryPage() {
   const navigate = useNavigate();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const [selectedDiaryId, setSelectedDiaryId] = useState(null);
 
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
@@ -192,8 +196,10 @@ function DiaryPage() {
       navigate("/login");
       return;
     }
+    fetchDiaries();
+  }, [navigate, memberno, page, curDate]); // ✅ curDate 추가
 
-    const fetchDiaries = async () => {
+  const fetchDiaries = async () => {
       try {
         const year = curDate.getFullYear();
         const month = curDate.getMonth() + 1;
@@ -204,7 +210,7 @@ function DiaryPage() {
         const list = res.data.content || [];
 
 
-        const list = Array.isArray(res.data) ? res.data : res.data.list || [];
+        // const list = Array.isArray(res.data) ? res.data : res.data.list || [];
         console.log(res.data);
 
         const mapped = list.map((item) => ({
@@ -223,9 +229,6 @@ function DiaryPage() {
         setTotalPages(0); // ✅ 서버 요청 실패하면 페이지 버튼 초기화
       }
     };
-
-    fetchDiaries();
-  }, [navigate, memberno, page, curDate]); // ✅ curDate 추가
 
 
   // 월 필터
@@ -350,7 +353,26 @@ function DiaryPage() {
         <button onClick={handleSearch} style={{ padding: '8px 16px' }}>검색</button>
       </div>
 
-      <DiaryList diaryList={filteredByMonth} />
+      <DiaryList diaryList={filteredByMonth} onDiaryClick={(id) => setSelectedDiaryId(id)} onCreateClick={() => setIsCreateModalOpen(true)}/>
+
+      {selectedDiaryId && (
+        <DiaryReadModal
+          id={selectedDiaryId}
+          onClose={() => setSelectedDiaryId(null)}
+          onSuccess={(newId) => {setSelectedDiaryId(newId);}}
+        />
+      )}
+      {isCreateModalOpen && (
+        <DiaryReadModal
+          createMode
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={(newId) => {
+            setIsCreateModalOpen(false);
+            setSelectedDiaryId(newId);
+            fetchDiaries();
+          }}
+        />
+      )}
 
       
       <div style={{ marginTop: '20px', textAlign: 'center' }}>

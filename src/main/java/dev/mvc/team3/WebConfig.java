@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 
 //            .allowedHeaders("*")
-            .allowCredentials(true); // 인증정보 포함 허용 시 사용
+            .allowCredentials(true) // 인증정보 포함 허용 시 사용
 
             .allowedHeaders("*")
             .allowCredentials(true);
@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry.addResourceHandler("/profile/**")
-            .addResourceLocations("file:///C:/kd/deploy/resort/member/storage/");
+            .addResourceLocations("file:///C:/kd/deploy/team3/member/storage/");
 
   }
 }
