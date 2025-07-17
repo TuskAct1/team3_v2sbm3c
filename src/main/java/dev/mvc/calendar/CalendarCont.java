@@ -342,4 +342,11 @@ public class CalendarCont {
 
         return ResponseEntity.ok(response);
     }
+
+    // ✅ 오늘 일정만 조회 (memberno 기준)
+    @GetMapping("")
+    public ResponseEntity<List<CalendarVO>> getTodaySchedules(@RequestParam("memberno") int memberno) {
+        List<CalendarVO> todayList = calendarProc.listTodayByMember(memberno);
+        return ResponseEntity.ok(todayList);
+    }
 }

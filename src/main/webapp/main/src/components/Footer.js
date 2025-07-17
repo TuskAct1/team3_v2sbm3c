@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css'; // 푸터 전용 스타일
+import { Link } from 'react-router-dom';
 
 function Footer() {
   return (

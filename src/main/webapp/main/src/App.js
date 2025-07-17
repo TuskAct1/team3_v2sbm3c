@@ -77,7 +77,6 @@ import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 function App() {
   return (
     <BrowserRouter>
-
       <Routes>
         {/* ✅ 모든 페이지 Layout으로 감쌈 (Navbar + Footer + FloatingButton 공통 적용) */}
         <Route element={<Layout />}>
@@ -132,17 +131,10 @@ function App() {
           <Route path="/playlist/form" element={<PlaylistForm />} />
           <Route path="/playlist/emotionform" element={<EmotionForm />} />
           <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
-
           
           {/* 1:1 문의 */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/create" element={<InquiryCreatePage />} />
-          
-
-          {/* 1:1 문의 */}
-          <Route path="/inquiry" element={<InquiryPage />} />
-          <Route path="/inquiry/create" element={<InquiryCreatePage />} />
-
           {/* 자주 묻는 질문 */}
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/faq/create" element={<FaqCreatePage />} />
@@ -170,7 +162,7 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
-
+        
         </Route>
       </Routes>
 

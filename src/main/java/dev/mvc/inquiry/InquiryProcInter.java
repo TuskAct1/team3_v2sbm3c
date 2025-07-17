@@ -2,6 +2,8 @@ package dev.mvc.inquiry;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 public interface InquiryProcInter {
 
     /** 1:1 문의 등록 */
@@ -15,6 +17,7 @@ public interface InquiryProcInter {
 
     /** 1:1 문의 답변 */
     public int inquiryAnswer(int inquiryno, String answer);
+//    public int inquiryAnswer(@Param("inquiryno") int inquiryno, @Param("answer") String answer);
 
     /** 1:1 문의 삭제 */
     public int inquiryDelete(int inquiryno);

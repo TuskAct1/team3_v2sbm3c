@@ -1,200 +1,186 @@
-// SignupForm.js
-import React, { useRef, useState, useEffect } from "react";
-import axios from "axios";
+// SignupForm.js (주소 자동입력 + 전화번호 인증 포함)
+import React, { useState, useEffect } from "react";
 import './SignupForm.css';
-import SmsAuthInput from "./SmsAuthInput";
+// ⬆️ 최상단 import 부분
+import axios from "axios"; // ✅ axios import 추가
+import { useRef } from "react"; // ✅ useRef 사용 시 추가
+import Select from 'react-select';
 
-const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }) => {
+
+const SignupForm = () => {
   const [form, setForm] = useState({
     id: "",
-    passwd: "",
-    passwd2: "",
+    email: "",
+    password: "",
+    password2: "",
     mname: "",
     nickname: "",
-    birthdate: "",
+    birthYear: "",
+    birthMonth: "",
+    birthDay: "",
     gender: "",
     tel: "",
     zipcode: "",
     address1: "",
     address2: "",
+    profile: null,
+    phoneCode: "",
   });
 
-  const [avatarPreview, setAvatarPreview] = useState("/images/signup_image.png");
-  const [avatarFile, setAvatarFile] = useState(null);
-
-  const [guardians, setGuardians] = useState([]);
-  const [guardianFormOpen, setGuardianFormOpen] = useState(false);
-
-  const [idMsg, setIdMsg] = useState("");
-  const [idMsgClass, setIdMsgClass] = useState("");
-  const [passwd2Msg, setPasswd2Msg] = useState("");
-  const [idAvailable, setIdAvailable] = useState(false);
-  const [idLoading, setIdLoading] = useState(false);
-
-  const passwdRef = useRef();
-  const passwd2Ref = useRef();
-  const mnameRef = useRef();
-  const telRef = useRef();
-  const btnDaumRef = useRef();
-  const address2Ref = useRef();
-  const btnSendRef = useRef();
-
-  const [telVerified, setTelVerified] = useState(false);
+  // const [terms, setTerms] = useState({ terms1: false, terms2: false, terms3: false });
+  const [allChecked, setAllChecked] = useState(false);
+  const [phoneSent, setPhoneSent] = useState(false);
+  const [terms, setTerms] = useState({
+    terms1: false,
+    terms2: false,
+    terms3: false,
+  });
 
   useEffect(() => {
-    if (initialData) {
-      setForm({
-        id: initialData.id || "",
-        passwd: "",
-        passwd2: "",
-        mname: initialData.mname || "",
-        nickname: initialData.nickname || "",
-        birthdate: initialData.birthdate || "",
-        gender: initialData.gender || "",
-        tel: initialData.tel || "",
-        zipcode: initialData.zipcode || "",
-        address1: initialData.address1 || "",
-        address2: initialData.address2 || "",
-      });
-      if (initialData.guardians) {
-        setGuardians(initialData.guardians);
-        setGuardianFormOpen(true);
-      }
-    }
-  }, [initialData]);
-
-  useEffect(() => {
-    if (!window.daum) {
-      const script = document.createElement("script");
-      script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
+    const script = document.createElement("script");
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+    document.body.appendChild(script);
   }, []);
 
+
+  const [passwd2Msg, setPasswd2Msg] = useState("");
+  const [passwd2MsgValid, setPasswd2MsgValid] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+    setForm({ ...form, [name]: value });
 
-  const handleKeyPress = (e, nextRef) => {
-    if (e.key === "Enter" && nextRef?.current) {
-      nextRef.current.focus();
-    }
-  };
-
-  const checkID = async () => {
-    if (form.id.trim().length === 0) {
-      setIdMsg("아이디(이메일) 입력은 필수입니다.");
-      setIdMsgClass("span_warning");
-      setIdAvailable(false);
-      return;
-    }
-    try {
-      setIdLoading(true);
-      setIdMsg("");
-      const response = await axios.get(`/api/members/check-id?id=${encodeURIComponent(form.id)}`);
-      if (response.data.available) {
-        setIdMsg("사용 가능한 아이디입니다");
-        setIdMsgClass("span_info");
-        setIdAvailable(true);
-        passwdRef.current?.focus();
+    if (name === "passwd2") {
+      if (value !== form.passwd) {
+        setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
+        setPasswd2MsgValid(false);
       } else {
-        setIdMsg("이미 사용중인 아이디입니다");
-        setIdMsgClass("span_warning");
-        setIdAvailable(false);
+        setPasswd2Msg("비밀번호가 일치합니다.");
+        setPasswd2MsgValid(true);
       }
-    } catch (error) {
-      setIdMsg("서버 오류가 발생했습니다");
-      setIdMsgClass("span_warning");
-      setIdAvailable(false);
-    } finally {
-      setIdLoading(false);
     }
   };
 
-  const handleDaumPostcode = () => {
-    new window.daum.Postcode({
-      oncomplete: function (data) {
-        let addr = data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress;
-        setForm((prev) => ({
-          ...prev,
-          zipcode: data.zonecode,
-          address1: addr,
-          address2: "",
-        }));
-        setTimeout(() => {
-          address2Ref.current?.focus();
-        }, 100);
-      },
-    }).open();
+  useEffect(() => {
+    if (form.password2 && form.password !== form.password2) {
+      setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
+      setPasswd2MsgValid(false);
+    } else if (form.password2 && form.password === form.password2) {
+      setPasswd2Msg("비밀번호가 일치합니다.");
+      setPasswd2MsgValid(true);
+    } else {
+      setPasswd2Msg("");
+    }
+  }, [form.password, form.password2]);
+
+  // const handleFileChange = (e) => {
+  //   setForm((prev) => ({ ...prev, profile: e.target.files[0] }));
+  // };
+  const [previewUrl, setPreviewUrl] = useState("");
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreviewUrl(URL.createObjectURL(file));
+      setForm((prev) => ({ ...prev, profileFile: file }));
+    }
   };
 
-  const handleGuardianChange = (idx, e) => {
-    const { name, value } = e.target;
-    setGuardians((prev) => {
-      const next = [...prev];
-      next[idx][name] = value;
-      return next;
+const handleTermsChange = (e) => {
+  const { name, checked } = e.target;
+  const newTerms = { ...terms, [name]: checked };  // ✅ 여기서 newTerms로 정의
+  setTerms(newTerms);
+
+  const all = Object.values(newTerms).every(Boolean);  // ✅ 여기도 newTerms 사용
+  setAllChecked(all);
+};
+
+  const handleAllAgreeChange = (e) => {
+  const checked = e.target.checked;
+    setAllChecked(checked);
+    setTerms({
+      terms1: checked,
+      terms2: checked,
+      terms3: checked,
     });
   };
 
-  const openGuardianForm = () => {
-    setGuardianFormOpen(true);
-    if (guardians.length === 0) {
-      setGuardians([{ name: "", relationship: "", email: "", phone: "" }]);
-    }
+  const handlePostcode = () => {
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        let addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+        setForm((prev) => ({
+          ...prev,
+          zipcode: data.zonecode,
+          address1: addr
+        }));
+      }
+    }).open();
   };
 
-  const addGuardian = () => {
-    setGuardians([...guardians, { name: "", relationship: "", email: "", phone: "" }]);
+  const sendPhoneCode = () => {
+    if (!form.tel) return alert("전화번호를 입력하세요.");
+    setPhoneSent(true);
+    alert("인증번호가 발송되었습니다 (모의 발송)");
   };
 
-  const removeGuardian = (idx) => {
-    if (guardians.length === 1) {
-      setGuardians([]);
-      setGuardianFormOpen(false);
+  const verifyPhoneCode = () => {
+    if (form.phoneCode === "1234") {
+      alert("전화번호 인증 성공");
     } else {
-      setGuardians(guardians.filter((_, i) => i !== idx));
+      alert("인증번호가 일치하지 않습니다");
     }
   };
 
-  const handleCancel = () => {
-    if (onCancel) onCancel();
-  };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("회원가입 시 전송되는 데이터:", form); // 이 줄을 추가
+  //   if (!idAvailable) {
+  //     alert("아이디 중복 확인을 완료해주세요");
+  //     return;
+  //   }
 
-  const SignupPageHeader = () => (
-    <div style={{ width: "100%", margin: "0 auto" }}>
-      <div style={{ fontSize: "1.6em", fontWeight: "bold", margin: "32px 0 8px 0" }}>
-        회원 가입
-      </div>
-      <div style={{ borderBottom: "2px solid #222", margin: "10px 0 16px 0", width: "100%" }} />
-      <aside style={{ textAlign: "right", marginBottom: "10px" }}>
-        <a href="#" onClick={() => window.location.reload()}>새로고침</a>
-        <span style={{ margin: "0 8px" }}>|</span>
-        <a href="/login">로그인</a>
-        <span style={{ margin: "0 8px" }}>|</span>
-        <a href="/admin_signup">관리자 회원 가입</a>
-        <span style={{ margin: "0 8px" }}>|</span>
-        <a href="/admin_list">목록</a>
-      </aside>
-      <div style={{ borderBottom: "1px solid #222", margin: "1px 0 16px 0", width: "100%" }} />
-    </div>
-  );
+  //   if (form.password !== form.password2) {
+  //     setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
+  //     passwdRef.current?.focus();
+  //     return;
+  //   }
+
+  //   try {
+  //     const formData = new FormData();
+  //     for (const key in form) {
+  //       formData.append(key, form[key]);
+  //     }
+  //     // if (avatarFile) formData.append("profileFile", avatarFile);
+  //     if (form.profile) formData.append("profileFile", form.profile);
+
+  //     formData.append("point", 0);
+  //     formData.append("provider", "local");
+
+  //     const res = await axios.post("/api/members/signup", formData, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+
+  //     if (res.data.success) {
+  //       alert("회원가입이 완료되었습니다!");
+  //       window.location.href = "/login"; // ✅ 로그인 페이지로 이동
+  //     } else {
+  //       alert("회원가입 실패: " + (res.data.message || ""));
+  //     }
+  //   } catch (err) {
+  //     console.error("회원가입 오류", err);
+  //     alert("서버 오류");
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!telVerified) {
-      alert("휴대폰 인증을 완료해 주세요.");
-      return;
-    }
 
     if (!idAvailable) {
       alert("아이디 중복 확인을 완료해주세요");
       return;
     }
-    if (form.passwd !== form.passwd2) {
+
+    if (form.password !== form.password2) {
       setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
       passwdRef.current?.focus();
       return;
@@ -202,20 +188,21 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
 
     try {
       const formData = new FormData();
-      for (const key in form) {
-        formData.append(key, form[key]);
-      }
-      if (avatarFile) formData.append("profileFile", avatarFile);
 
-      guardians.forEach((g, i) => {
-        formData.append(`guardian${i+1}_name`, g.name);
-        formData.append(`guardian${i+1}_relationship`, g.relationship);
-        formData.append(`guardian${i+1}_email`, g.email);
-        formData.append(`guardian${i+1}_phone`, g.phone);
-      });
-
-      formData.append("point", 0);
+      formData.append("id", form.id); // 또는 email 기반이라면 email도 함께
+      formData.append("passwd", form.password);
+      formData.append("passwd2", form.password2);  // ✅ 핵심
+      formData.append("mname", form.mname);
+      formData.append("nickname", form.nickname);
+      formData.append("gender", form.gender);
+      formData.append("birthdate", `${form.birthYear}-${form.birthMonth}-${form.birthDay}`);
+      formData.append("tel", form.tel);
+      formData.append("zipcode", form.zipcode);
+      formData.append("address1", form.address1);
+      formData.append("address2", form.address2);
       formData.append("provider", "local");
+      formData.append("point", 0);
+      if (form.profileFile) formData.append("profileFile", form.profileFile);
 
       const res = await axios.post("/api/members/signup", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -233,364 +220,401 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
     }
   };
   
+  
+  const [idAvailable, setIdAvailable] = useState(false);   // 사용 가능 여부
+  const [idMsg, setIdMsg] = useState("");                   // 메시지
+  const [idMsgClass, setIdMsgClass] = useState("");         // 메시지 스타일
+  const checkEmailDuplicate = async () => {
+    if (!form.id.trim()) {
+      setIdMsg("이메일을 입력해주세요.");
+      setIdMsgClass("error-msg");
+      setIdAvailable(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/members/check-id?id=${encodeURIComponent(form.id)}`);
+      const data = await res.json();
+      if (data.available) {
+        setIdMsg("사용 가능한 이메일입니다.");
+        setIdMsgClass("success-msg");
+        setIdAvailable(true);
+      } else {
+        setIdMsg("이미 사용 중인 이메일입니다.");
+        setIdMsgClass("error-msg");
+        setIdAvailable(false);
+      }
+    } catch (err) {
+      setIdMsg("서버 오류입니다. 다시 시도해주세요.");
+      setIdMsgClass("error-msg");
+      setIdAvailable(false);
+    }
+  };
+
+  // ⬇️ 컴포넌트 내부
+  // const [passwd2Msg, setPasswd2Msg] = useState(""); // ✅ 메시지 상태 추가
+  const passwdRef = useRef(null);                  // ✅ 패스워드 확인 입력창 포커싱용
+
+  // 생년월일 옵션
+  const yearOptions = Array.from({ length: 100 }, (_, i) => {
+    const year = new Date().getFullYear() - i;
+    return { value: String(year), label: String(year) };
+  });
+  const monthOptions = Array.from({ length: 12 }, (_, i) => {
+    const month = String(i + 1).padStart(2, '0');
+    return { value: month, label: month };
+  });
+  const dayOptions = Array.from({ length: 31 }, (_, i) => {
+    const day = String(i + 1).padStart(2, '0');
+    return { value: day, label: day };
+  });
+
+  const handleSelectChange = (selectedOption, name) => {
+    setForm(prev => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : '',
+    }));
+  };
+
+  const [serverCode, setServerCode] = useState("");  // 서버에서 받은 인증번호
+  const [phoneVerified, setPhoneVerified] = useState(false);  // 인증 성공 여부
+
+  const handleSendVerificationCode = async () => {
+  if (!form.tel) {
+    alert("전화번호를 입력해주세요.");
+    return;
+  }
+
+  try {
+    const res = await axios.post("/api/members/send-code", null, {
+      params: { tel: form.tel },
+    });
+    setServerCode(res.data.code);
+    alert("인증번호가 전송되었습니다. (현재는 콘솔 확인)");
+    console.log("📦 인증번호:", res.data.code);  // 실제 서비스에서는 제거
+  } catch (err) {
+    console.error("인증번호 전송 실패", err);
+    alert("인증번호 전송 실패");
+  }
+};
+
+  const handleRequestCode = async () => {
+    try {
+      const res = await axios.post("/api/sms/send-code", null, {
+        params: { tel: form.tel },
+      });
+
+      if (res.data.success) {
+        alert("인증번호가 전송되었습니다.");
+      } else {
+        alert("전송 실패: " + res.data.message);
+      }
+    } catch (err) {
+      alert("서버 오류: 인증번호 요청 실패");
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    try {
+      const res = await axios.post("/api/sms/verify-code", null, {
+        params: { tel: form.tel, code: form.phoneCode },
+      });
+
+      if (res.data.success) {
+        alert("인증되었습니다.");
+        setPhoneVerified(true); // 상태값 등으로 처리 가능
+      } else {
+        alert("인증번호가 일치하지 않습니다.");
+      }
+    } catch (err) {
+      alert("서버 오류: 인증 실패");
+    }
+  };
+  // const handleVerifyCode = () => {
+  //   if (form.phoneCode === serverCode) {
+  //     setPhoneVerified(true);
+  //     alert("인증에 성공했습니다.");
+  //   } else {
+  //     setPhoneVerified(false);
+  //     alert("인증번호가 일치하지 않습니다.");
+  //   }
+  // };
+  
+
   return (
-    <div style={{ width: "80%", margin: "0 auto" }}>
-      <form onSubmit={handleSubmit}>
-        <SignupPageHeader />
-        <div className="avatar-wrapper">
-          <img src={avatarPreview} alt="미리보기" className="avatar-overlay" />
+  <div className="signup-page-full">
+    <div className="signup-wrapper">
+      <h2 className="signup-title">회원가입</h2>
+      <p className="signup-subtitle">
+        오른손케어의 회원으로 로그인 하시면<br />
+        오른손케어만의 특별한 서비스를 이용하실 수 있습니다.
+      </p>
+
+      <form className="signup-card" onSubmit={handleSubmit}>
+        <h3 style={{ marginBottom: '24px', fontWeight: 'bold' }}>회원정보 입력</h3>
+        <div className="profile-upload-container">
+          <div className="profile-image-wrapper">
+            <img
+              src={previewUrl || "/default_profile.png"}
+              alt="프로필 이미지"
+              className="profile-image"
+            />
+            <label htmlFor="profileFile" className="camera-icon">
+              <img src="/camera-icon.png" alt="카메라" />
+            </label>
+          </div>
           <input
             type="file"
-            id="avatar_url"
-            className="avatar-input"
+            id="profileFile"
             accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                setAvatarFile(file);
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                  setAvatarPreview(event.target.result);
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
           />
-          <label htmlFor="avatar_url" className="choose-image-btn">프로필 이미지 선택</label>
+        </div>
+          <div className="form-group">
+            <label>아이디(이메일)</label>
+
+            <div className="form-row">
+              <input
+                name="id"
+                value={form.id}
+                onChange={handleChange}
+                placeholder="예: user@example.com"
+              />
+              <button type="button" onClick={checkEmailDuplicate}>
+                중복확인
+              </button>
+            </div>
+
+            {/* 메시지를 form-row 밖에 위치시킵니다 */}
+            {idMsg  && (
+              <p className={`email-message ${idAvailable ? 'valid' : 'invalid'}`}>
+                {idMsg}
+              </p>
+            )}
+          </div>
+
+        <div className="form-group">
+          <label>비밀번호</label>
+          <input type="password" name="password" value={form.password} onChange={handleChange} />
         </div>
 
-        <br/>
-        {/* 아이디 입력 필드 */}
         <div className="form-group">
-          <label htmlFor="id">아이디(이메일)*</label>
-          <div style={{ display: "flex" }}>
-            <input
-              type="text"
-              name="id"
-              id="id"
-              value={form.id}
-              placeholder="예) user1@gmail.com"
-              className="form-control form-control-sm"
-              style={{ width: "70%", marginRight: "10px" }}
-              onChange={(e) => {
-                handleChange(e);
-                setIdAvailable(false); // 아이디 변경 시 상태 초기화
-                setIdMsg(""); // 메시지 초기화
-              }}
-            />
-            <button
-              type="button"
-              onClick={checkID}
-              className="btn btn-secondary btn-sm"
-              style={{ width: "30%" }}
-            >
-              중복 확인
-            </button>
-          </div>
-          <span id="id_msg" className={idMsgClass}>
-            {idMsg}
-          </span>
-        </div>
-        {/* 비밀번호 */}
-        <div className="form-group">
-          <label htmlFor="passwd">비밀번호*</label>
+          <label>비밀번호 확인</label>
           <input
             type="password"
-            name="passwd"
-            id="passwd"
-            value={form.passwd}
-            required
-            placeholder="비밀번호"
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
+            name="password2"
+            value={form.password2}
             onChange={handleChange}
             ref={passwdRef}
-            onKeyPress={(e) => handleKeyPress(e, passwd2Ref)}
           />
+          {passwd2Msg && (
+            <p className={`email-message ${passwd2MsgValid ? 'valid' : 'invalid'}`}>
+              {passwd2Msg}
+            </p>
+          )}
         </div>
-        {/* 비밀번호 확인 */}
+
         <div className="form-group">
-          <label htmlFor="passwd2">비밀번호 확인*</label>
+          <label>이름</label>
+          <input name="mname" value={form.mname} onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>닉네임</label>
+          <input name="nickname" value={form.nickname} onChange={handleChange} />
+        </div>
+
+      <div className="form-group">
+      <label className="form-label">
+        생년월일 <span style={{ color: 'red' }}>*</span>
+      </label>
+      <div className="birth-selects">
+        <Select
+          name="birthYear"
+          options={yearOptions}
+          value={yearOptions.find(opt => opt.value === form.birthYear)}
+          onChange={(option) => handleSelectChange(option, 'birthYear')}
+          placeholder="년도"
+          className="birth-select"
+          classNamePrefix="birth"
+          menuPlacement="auto"       // 위/아래 자동 배치
+          maxMenuHeight={200}        // 최대 높이 제한 (약 5개 항목 기준)
+        />
+        <Select
+          name="birthMonth"
+          options={monthOptions}
+          value={monthOptions.find(opt => opt.value === form.birthMonth)}
+          onChange={(option) => handleSelectChange(option, 'birthMonth')}
+          placeholder="월"
+          className="birth-select"
+          classNamePrefix="birth"
+          menuPlacement="auto"       // 위/아래 자동 배치
+          maxMenuHeight={200}        // 최대 높이 제한 (약 5개 항목 기준)
+        />
+        <Select
+          name="birthDay"
+          options={dayOptions}
+          value={dayOptions.find(opt => opt.value === form.birthDay)}
+          onChange={(option) => handleSelectChange(option, 'birthDay')}
+          placeholder="일"
+          className="birth-select"
+          classNamePrefix="birth"
+          menuPlacement="auto"       // 위/아래 자동 배치
+          maxMenuHeight={200}        // 최대 높이 제한 (약 5개 항목 기준)
+        />
+      </div>
+      </div>
+
+      <div className="form-group">
+        <label>성별 <span style={{ color: "red" }}>*</span></label>
+        <div className="gender-group">
+          <label className="gender-option">
+            <input
+              type="radio"
+              name="gender"
+              value="남자"
+              checked={form.gender === "남자"}
+              onChange={handleChange}
+            />
+            남자
+          </label>
+          <label className="gender-option">
+            <input
+              type="radio"
+              name="gender"
+              value="여자"
+              checked={form.gender === "여자"}
+              onChange={handleChange}
+            />
+            여자
+          </label>
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label>전화번호 <span style={{ color: "red" }}>*</span></label>
+        
+        {/* 전화번호 입력 + 인증요청 */}
+        <div className="form-row">
           <input
-            type="password"
-            name="passwd2"
-            id="passwd2"
-            value={form.passwd2}
-            required
-            placeholder="비밀번호 확인"
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
+            type="tel"
+            name="tel"
+            placeholder="숫자만 입력하세요."
+            value={form.tel}
             onChange={handleChange}
-            ref={passwd2Ref}
-            onKeyPress={(e) => handleKeyPress(e, mnameRef)}
-          />
-          <span id="passwd2_msg" className="span_warning">{passwd2Msg}</span>
-        </div>
-        {/* 이름 */}
-        <div className="form-group">
-          <label htmlFor="mname">이름*</label>
-          <input
-            type="text"
-            name="mname"
-            id="mname"
-            value={form.mname}
-            required
-            placeholder="이름"
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
-            onChange={handleChange}
-            ref={mnameRef}
-            onKeyPress={(e) => handleKeyPress(e, telRef)}
-          />
-        </div>
-        {/* 닉네임 */}
-        <div className="form-group">
-          <label htmlFor="nickname">닉네임*</label>
-          <input
-            type="text"
-            name="nickname"
-            id="nickname"
-            value={form.nickname}
-            required
-            placeholder="닉네임"
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
-            onChange={handleChange}
-          />
-        </div>
-        {/* 생년월일 */}
-        <div className="form-group">
-          <label htmlFor="birthdate">생년월일*</label>
-          <input
-            type="date"
-            name="birthdate"
-            id="birthdate"
-            value={form.birthdate}
-            required
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
-            onChange={handleChange}
-          />
-        </div>
-        {/* 성별 */}
-        <div className="form-group">
-          <label>성별*</label>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="남자"
-                checked={form.gender === "남자"}
-                onChange={handleChange}
-                required
-              />{" "}
-              남자
-            </label>
-            <label style={{ marginLeft: "1em" }}>
-              <input
-                type="radio"
-                name="gender"
-                value="여자"
-                checked={form.gender === "여자"}
-                onChange={handleChange}
-                required
-              />{" "}
-              여자
-            </label>
-          </div>
-        </div>
-        {/* 전화번호 */}
-        {/* 전화번호 + SMS 인증 */}
-<div className="form-group">
-  <label htmlFor="tel">전화번호*</label>
-  <SmsAuthInput
-    value={form.tel}
-    onChange={e => setForm(prev => ({ ...prev, tel: e.target.value }))}
-    verified={telVerified}
-    onVerified={() => setTelVerified(true)}
-  />
-</div>
-        {/* 우편번호 */}
-        <div className="form-group">
-          <label htmlFor="zipcode">우편번호*</label>
-          <input
-            type="text"
-            name="zipcode"
-            id="zipcode"
-            value={form.zipcode}
-            placeholder="우편번호"
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
-            onChange={handleChange}
-            readOnly
           />
           <button
             type="button"
-            id="btn_DaumPostcode"
-            onClick={handleDaumPostcode}
-            className="btn btn-primary btn-sm"
-            style={{ marginTop: 4 }}
-            ref={btnDaumRef}
+            className="cert-btn"
+            onClick={handleSendVerificationCode}
           >
-            우편번호 찾기
+            인증요청
           </button>
         </div>
-        {/* 주소 */}
-        <div className="form-group">
-          <label htmlFor="address1" style={{ width: "100%" }}>주소*</label>
+
+        {/* 인증번호 입력 + 확인 */}
+        <div className="form-row">
           <input
             type="text"
-            name="address1"
-            id="address1"
-            value={form.address1}
-            placeholder="주소"
-            className="form-control form-control-sm"
+            name="phoneCode"
+            placeholder="인증번호를 입력해주세요."
+            value={form.phoneCode}
             onChange={handleChange}
-            readOnly
           />
+          <button
+            type="button"
+            className="verify-btn"
+            onClick={handleVerifyCode}
+          >
+            확인
+          </button>
         </div>
-        {/* 상세 주소 */}
+
+        {phoneVerified && (
+          <p style={{ color: "green" }}>✅ 인증이 완료되었습니다!</p>
+        )}
+      </div>
+
+
         <div className="form-group">
-          <label htmlFor="address2" style={{ width: "100%" }}>상세 주소</label>
-          <input
-            type="text"
-            name="address2"
-            id="address2"
-            value={form.address2}
-            placeholder="상세 주소"
-            className="form-control form-control-sm"
-            onChange={handleChange}
-            ref={address2Ref}
-            onKeyPress={(e) => handleKeyPress(e, btnSendRef)}
-          />
+          <label>우편번호</label>
+          <div className="form-row">
+            <input name="zipcode" value={form.zipcode} onChange={handleChange} readOnly />
+            <button type="button" onClick={handlePostcode}>주소 찾기</button>
+          </div>
         </div>
-        <br/>
-        {/* 보호자 정보 입력 버튼 */}
+
         <div className="form-group">
-          {!guardianFormOpen && (
-            <button
-              type="button"
-              className="btn btn-outline-secondary btn-sm"
-              onClick={openGuardianForm}
-            >
-              보호자 정보 기입
-            </button>
-          )}
+          <label>주소</label>
+          <input name="address1" value={form.address1} onChange={handleChange} readOnly />
         </div>
-        {/* 보호자 입력폼 */}
-        {guardianFormOpen &&
-          guardians.map((guardian, idx) => (
-            <div
-              key={idx}
-              style={{
-                border: "1px solid #eee",
-                padding: "10px",
-                marginBottom: "10px",
-                background: "#f9f9f9",
-                position: "relative",
-              }}
-            >
-              <div className="form-group">
-                <label>보호자{idx + 1} 이름</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={guardian.name}
-                  required
-                  placeholder="이름"
-                  className="form-control form-control-sm"
-                  style={{ width: "30%" }}
-                  onChange={(e) => handleGuardianChange(idx, e)}
-                />
-              </div>
-              <div className="form-group">
-                <label>보호자{idx + 1}과의 관계</label>
-                <input
-                  type="text"
-                  name="relationship"
-                  value={guardian.relationship}
-                  required
-                  placeholder="예) 아들, 딸"
-                  className="form-control form-control-sm"
-                  style={{ width: "30%" }}
-                  onChange={(e) => handleGuardianChange(idx, e)}
-                />
-              </div>
-              <div className="form-group">
-                <label>보호자{idx + 1} 이메일</label>
-                <input
-                  type="text"
-                  name="email"
-                  value={guardian.email}
-                  required
-                  placeholder="예) user1@gmail.com"
-                  className="form-control form-control-sm"
-                  style={{ width: "30%" }}
-                  onChange={(e) => handleGuardianChange(idx, e)}
-                />
-              </div>
-              <div className="form-group">
-                <label>보호자{idx + 1} 전화번호</label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={guardian.phone}
-                  required
-                  placeholder="예) 010-1234-5678"
-                  className="form-control form-control-sm"
-                  style={{ width: "30%" }}
-                  onChange={(e) => handleGuardianChange(idx, e)}
-                />
-              </div>
-              {/* ▽더보기 버튼(마지막 보호자 폼에만 표시) */}
-              {idx === guardians.length - 1 && (
-                <div style={{ marginTop: "5px" }}>
-                  <button
-                    type="button"
-                    className="btn btn-link"
-                    style={{ fontSize: "1.1em", padding: 0 }}
-                    onClick={addGuardian}
-                  >
-                    보호자 추가
-                  </button>
-                </div>
-              )}
-              {/* 보호자 삭제 버튼 */}
-              {guardians.length > 0 && (
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  style={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                  }}
-                  onClick={() => removeGuardian(idx)}
-                >
-                  삭제
-                </button>
-              )}
-            </div>
-          ))}
-        {/* 회원가입 버튼 */}
-        <button
-          type="submit"
-          className="btn btn-primary"
-          ref={btnSendRef}
-          style={{ marginTop: 12 }}
-        >
-          회원가입
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={handleCancel}
-        >
-          취소
-        </button>
+
+        <div className="form-group">
+          <label>상세주소</label>
+          <input name="address2" value={form.address2} onChange={handleChange} />
+        </div>
+     {/* // SignupForm.js 약관 UI 개선 */}
+        <div className="terms-section">
+          <div className="terms-all">
+            <label className="terms-label">
+              <input
+                type="checkbox"
+                checked={allChecked}
+                onChange={handleAllAgreeChange}
+              />
+              <span className="terms-title">약관 전체동의</span>
+            </label>
+            <p className="terms-guide">
+              서비스 이용과 정보보호를 위해 약관동의가 필요합니다.
+            </p>
+          </div>
+
+          <hr className="terms-divider" />
+
+          <div className="terms-item">
+            <label className="terms-label">
+              <input
+                type="checkbox"
+                name="terms1"
+                checked={terms.terms1}
+                onChange={handleTermsChange}
+              />
+              <span>서비스 이용약관 <span className="required">(필수)</span></span>
+            </label>
+            <span className="view-link" onClick={() => window.open('https://heemintest.notion.site/AI-230bf84fec728053a4f4ff25052d06d9?source=copy_link://link1', '_blank')}>자세히보기</span>
+          </div>
+
+          <div className="terms-item">
+            <label className="terms-label">
+              <input
+                type="checkbox"
+                name="terms2"
+                checked={terms.terms2}
+                onChange={handleTermsChange}
+              />
+              <span>개인정보 처리방침 <span className="required">(필수)</span></span>
+            </label>
+            <span className="view-link" onClick={() => window.open('https://link2', '_blank')}>자세히보기</span>
+          </div>
+
+          <div className="terms-item">
+            <label className="terms-label">
+              <input
+                type="checkbox"
+                name="terms3"
+                checked={terms.terms3}
+                onChange={handleTermsChange}
+              />
+              <span>마케팅 수신 정보동의 <span className="optional">(선택)</span></span>
+            </label>
+            <span className="view-link" onClick={() => window.open('https://link3', '_blank')}>자세히보기</span>
+          </div>
+        </div>
+        <button type="submit" className="submit-btn">가입완료</button>
       </form>
     </div>
+  </div>
   );
 };
 
