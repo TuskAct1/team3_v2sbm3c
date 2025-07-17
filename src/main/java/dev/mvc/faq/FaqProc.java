@@ -1,10 +1,11 @@
 package dev.mvc.faq;
 
-import dev.mvc.faq_file.FaqFileVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class FaqProc implements FaqProcInter {
 
     @Autowired
@@ -33,6 +34,16 @@ public class FaqProc implements FaqProcInter {
     @Override
     public List<FaqVO> allFaqList() {
         return faqDAO.allFaqList();
+    }
+
+    @Override
+    public int deleteFaq(int faqno) {
+        return faqDAO.deleteFaq(faqno);
+    }
+
+    @Override
+    public int deleteFiles(int faqno) {
+        return faqDAO.deleteFiles(faqno);
     }
 
 }

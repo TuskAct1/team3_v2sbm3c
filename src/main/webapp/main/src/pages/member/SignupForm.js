@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import './SignupForm.css';
+import SmsAuthInput from "./SmsAuthInput";
 
 const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }) => {
   const [form, setForm] = useState({
@@ -37,6 +38,8 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
   const btnDaumRef = useRef();
   const address2Ref = useRef();
   const btnSendRef = useRef();
+
+  const [telVerified, setTelVerified] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -181,6 +184,11 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!telVerified) {
+      alert("휴대폰 인증을 완료해 주세요.");
+      return;
+    }
 
     if (!idAvailable) {
       alert("아이디 중복 확인을 완료해주세요");
@@ -393,22 +401,16 @@ const SignupForm = ({ mode = 'signup', initialData = null, onCancel, onUpdated }
           </div>
         </div>
         {/* 전화번호 */}
-        <div className="form-group">
-          <label htmlFor="tel">전화번호*</label>
-          <input
-            type="text"
-            name="tel"
-            id="tel"
-            value={form.tel}
-            required
-            placeholder="예) 010-1234-5678"
-            className="form-control form-control-sm"
-            style={{ width: "30%" }}
-            onChange={handleChange}
-            ref={telRef}
-            onKeyPress={(e) => handleKeyPress(e, btnDaumRef)}
-          />
-        </div>
+        {/* 전화번호 + SMS 인증 */}
+<div className="form-group">
+  <label htmlFor="tel">전화번호*</label>
+  <SmsAuthInput
+    value={form.tel}
+    onChange={e => setForm(prev => ({ ...prev, tel: e.target.value }))}
+    verified={telVerified}
+    onVerified={() => setTelVerified(true)}
+  />
+</div>
         {/* 우편번호 */}
         <div className="form-group">
           <label htmlFor="zipcode">우편번호*</label>

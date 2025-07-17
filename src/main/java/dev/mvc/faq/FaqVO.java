@@ -1,10 +1,8 @@
 package dev.mvc.faq;
 
-import dev.mvc.faq_file.FaqFileVO;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter @Setter
@@ -23,7 +21,6 @@ public class FaqVO {
 
     /** 작성일 */
     private String rdate;
-
 
     /** 첨부파일 목록 (조회용) */
     private List<FaqFileVO> files;

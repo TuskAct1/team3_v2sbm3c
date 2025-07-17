@@ -1,8 +1,8 @@
 import os
 import datetime
-import DecoTool
+from chatbot import DecoTool
 import requests
-from . import DecoTool
+from dotenv import load_dotenv
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,9 +15,6 @@ from llama_index.core.base.llms.types import ChatMessage, MessageRole, TextBlock
 from llama_index.core.memory import ChatMemoryBuffer
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, StorageContext, load_index_from_storage
 from llama_index.llms.openai import OpenAI
-# pip install langchain_community
-# pip install llama-index-llms-langchain
-# pip install llama-index
 
 from pymongo import MongoClient
 
@@ -52,15 +49,11 @@ agent = initialize_agent(
     verbose=True
 )
 
-# /data/center 폴더 내에 있는 파일을 자동으로 불러옴
-# documents = SimpleDirectoryReader("./data/center").load_data()
-# index = VectorStoreIndex.from_documents(documents)
-
 storage_dir = "./storage"
 
 # 기존 방식으로 하면 계속 임베딩이 일어나기 때문에 비용이 계속 추가됨. 
 if not os.path.exists(storage_dir):
-    documents = SimpleDirectoryReader("./data/center").load_data()
+    documents = SimpleDirectoryReader("./chatbot/data/center").load_data()
     index = VectorStoreIndex.from_documents(documents)
     index.storage_context.persist(persist_dir=storage_dir)
 else:
@@ -68,8 +61,12 @@ else:
     index = load_index_from_storage(storage_context)
 
 
+
+
 # MongoDB
-mongo_client = MongoClient("mongodb://localhost:27017/")
+load_dotenv()
+
+mongo_client = MongoClient(f"mongodb://{os.environ['MONGO_USER']}:{os.environ['MONGO_PW']}@121.78.128.139:27017/admin")
 db = mongo_client["mentalcare"]   # DB 이름
 # mongo_client = MongoClient("mongodb://localhost:27017/")
 # db = mongo_client["mentalcare"]   # DB 이름
@@ -217,14 +214,6 @@ async def chat_endpoint(req: ChatRequest):
         messages.append({"role": "assistant", "content": h['response']})
     messages.append({"role": "user", "content": req.message})
 
-    # 3. agent.invoke로 도구 자동 사용 + 대화
-    # if any(x in req.message for x in ["상담센터", "연락처", "심리상담", "센터", "전화번호"]):
-    #     # response = query_engine.query(req.message)    # 멀티턴은 query() 지원 X
-    #     response = query_engine.chat(req.message)
-    #     reply = str(response)
-    # else:            
-    #     response = query_engine.chat(req.message)  # 멀티턴 기억력
-    #     reply = str(response)   
     response = query_engine.chat(req.message)  # 멀티턴 기억력
     reply = str(response)   
 
@@ -248,8 +237,8 @@ async def chat_endpoint(req: ChatRequest):
     }).sort("timestamp", -1).limit(5))
     recent_emotions = [c.get("emotion", "중립") for c in recent_chats if c.get("emotion")]
 
-    # 베포할 때 주석 해제 (채팅 사용할 때마다 문자 보내짐)
-    # check_emotion_alert(req.memberno, recent_emotions)
+    # 베포할 때 주석 해제 (채팅 사용할 때마다 문자 보내짐) SMS
+    check_emotion_alert(req.memberno, recent_emotions)
 
     return {"response": reply, "emotion": emotion}
 

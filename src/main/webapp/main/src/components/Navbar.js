@@ -64,15 +64,9 @@ function Navbar() {
           logoutPopup.close();
         }
         window.location.href = '/login';
-
-      }, 500); // 약간의 여유 시간 후 이동
-    } else {
-      window.location.href = '/login';
-
       }, 500);
 
       return; // ✅ 아래 코드 실행 안 하게 종료
-
     }
 
     // 3️⃣ 나머지 로그인은 그냥 로그인 페이지로 이동
@@ -101,48 +95,6 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/playlist/list">🎵 플레이리스트</Link></li>
-        <li><Link to="/personality_test">심리테스트</Link></li>
-        <li><Link to="/calendar">캘린더</Link></li>
-        <li><Link to="/board/list_all/all/1">게시판</Link></li>
-        <li><Link to="/notice/list">공지사항</Link></li>
-        <li><Link to="/admin/reply-list">신고 리스트</Link></li>
-
-        {user ? (
-          <>
-            {/* 🔓 로그인한 사용자만 접근 가능한 메뉴 */}
-            <li><Link to="/todaki">토닥이</Link></li>
-            <li><Link to="/plant">반려식물</Link></li>
-            <li><Link to="/diary">일기</Link></li>
-            <li><Link to="/emotion_report">감정분석</Link></li>
-
-            <li><Link to="/product">포인트 상점</Link></li>
-
-            <li><Link to="/inquiry">1:1 문의</Link></li>
-            <li><Link to="/admin/member-list">회원 리스트</Link></li>
-
-            <li><Link to="/admin/member-list">회원 리스트</Link></li> 
-            {/* <li><Link to="/product">포인트 상점</Link></li> */}
-            
-
-
-            {/* 🔐 관리자 전용 메뉴 */}
-            {isAdmin && (
-              <>
-
-                
-                <li><Link to="/admin/">관리 설정</Link></li>
-                <li><Link to="/admin/settings">관리 설정</Link></li>
-
-                {/* <li><Link to="/admin/member-list">회원 리스트</Link></li> */}
-                {/* <li><Link to="/admin/">관리 설정</Link></li> */}
-                {/* <li><Link to="/admin/settings">관리 설정</Link></li> */}
-
-              </>
-
       <div className="navbar-inner">
         {/* 좌측 로고 */}
         <div className="navbar-left">
@@ -218,7 +170,6 @@ function Navbar() {
                   </div>
                 </div>
               </div>
-
             )}
           </li>
 

@@ -27,7 +27,7 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, []);
 
   // "처음 마운트될 때" 히스토리 불러오기
   const fetchHistory = async () => {
@@ -54,6 +54,13 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     setMessages(newMessages);
     setInput("");
     setLoading(true);
+
+    // 내가 보낸 메시지까지 스크롤!
+    setTimeout(() => {
+      if (messageEndRef.current) {
+        messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 0);
 
     // 여기에 실제 FastAPI 서버 주소로 POST 요청
     try {

@@ -203,8 +203,6 @@ function DiaryPage() {
 
         const list = res.data.content || [];
 
-
-        const list = Array.isArray(res.data) ? res.data : res.data.list || [];
         console.log(res.data);
 
         const mapped = list.map((item) => ({
