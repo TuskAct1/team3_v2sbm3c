@@ -35,16 +35,7 @@ function ReplyReportListPage() {
   }
 }
 
-  // // 게시글 신고 불러오기
-  // async function fetchBoardReports() {
-  //   try {
-  //     const res = await axios.get('/boardReport/list');
-  //     setBoardReports(res.data);
-  //   } catch (err) {
-  //     console.error('게시글 신고 목록 불러오기 실패:', err);
-  //     alert('게시글 신고 목록 불러오기에 실패했습니다.');
-  //   }
-  // }
+
 
   useEffect(() => {
     fetchGroupedReplyReports();
@@ -60,9 +51,6 @@ function ReplyReportListPage() {
 
   }, []);
 
-  // const toggleExpand = (replyno) => {
-  //   setExpandedReplyId(expandedReplyId === replyno ? null : replyno);
-  // };
 
   const toggleExpand = (id, type) => {
   if (type === 'reply') {
@@ -72,89 +60,7 @@ function ReplyReportListPage() {
   }
 };
 
-//   const handleDelete = async (id, type) => {
-//     const url = type === 'reply'
-//       ? '/reply/delete'
-//       : '/board/delete';
 
-//     const data = type === 'reply'
-//       ? { replyno: id }        // 서버에서 ReplyVO의 replyno로 사용
-//       : { boardno: id };       // 서버에서 BoardVO의 boardno로 사용
-
-//     if (window.confirm(`정말로 ${type === 'reply' ? '댓글' : '게시글'} 신고번호 ${id}를 삭제하시겠습니까?`)) {
-//       try {
-//         await axios.post(url, data); // ✅ POST로 변경하고 JSON 전달
-//         alert('삭제되었습니다.');
-//         type === 'reply'
-//           ? fetchGroupedReplyReports()
-//           : setBoardReports(prev => prev.filter(b => b.board_reportno !== id));
-//       } catch (err) {
-//         console.error(err);
-//         alert('삭제 중 오류 발생');
-//       }
-//     }
-// };
-
-
-  // const handleDelete = async (id, type) => {
-  //   if (type === 'board') {
-  //     const passwd = prompt('게시글 비밀번호를 입력하세요:');
-  //     if (!passwd) return;
-
-  //     try {
-  //       await axios.delete(`/board/delete/${id}/${passwd}`);
-  //       alert('게시글이 삭제되었습니다.');
-  //       fetchGroupedBoardReports();
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert(err.response?.data || '삭제 중 오류 발생');
-  //     }
-  //   } else {
-  //     // 댓글 삭제는 기존처럼
-  //     try {
-  //       await axios.post('/reply/delete', { replyno: id });
-  //       alert('댓글이 삭제되었습니다.');
-  //       fetchGroupedReplyReports();
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert('댓글 삭제 중 오류 발생');
-  //     }
-  //   }
-  // };
-
-
-  // const handleDelete = async (id, type) => {
-  //   if (type === 'board') {
-  //     let passwd = '';
-
-  //     // ⬇️ 관리자 아니면 비밀번호 입력 요청
-  //     if (!isAdmin) {
-  //       passwd = prompt('게시글 비밀번호를 입력하세요:');
-  //       if (!passwd) return;
-  //     }
-
-  //     try {
-  //       await axios.delete(`/board/delete/${id}`, {
-  //         params: { passwd }
-  //       });
-  //       alert('게시글이 삭제되었습니다.');
-  //       fetchGroupedBoardReports();
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert(err.response?.data || '삭제 중 오류 발생');
-  //     }
-  //   } else {
-  //     // 댓글 삭제
-  //     try {
-  //       await axios.post('/reply/delete', { replyno: id });
-  //       alert('댓글이 삭제되었습니다.');
-  //       fetchGroupedReplyReports();
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert('댓글 삭제 중 오류 발생');
-  //     }
-  //   }
-  // };
 
   const handleDelete = async (id, type) => {
     if (type === 'board') {
