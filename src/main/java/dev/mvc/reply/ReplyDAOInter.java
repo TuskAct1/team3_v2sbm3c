@@ -67,4 +67,7 @@ public interface ReplyDAOInter {
 
   // ✅ 댓글 총 수
   public int count_by_boardno(int boardno);
+
+  // 리스트 트리구조
+  public List<ReplyVO> list_by_boardno_tree(int boardno);
 }

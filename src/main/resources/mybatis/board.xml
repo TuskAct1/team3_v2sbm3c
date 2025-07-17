@@ -273,4 +273,18 @@
         </where>
     </select>
 
+
+    <!-- 특정 게시글의 제목 + 작성자 정보 조회 -->
+    <select id="getBoardInfo" parameterType="int" resultType="dev.mvc.board.BoardAuthorVO">
+        SELECT
+        b.boardno,
+        b.title,
+        m.memberno,
+        m.id,
+        m.nickname
+        FROM board b
+        JOIN member m ON b.memberno = m.memberno
+        WHERE b.boardno = #{boardno}
+    </select>
+
 </mapper>

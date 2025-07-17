@@ -84,8 +84,13 @@
 
   <!-- 댓글 신고 목록 + 신고자 정보 -->
   <select id="listByReplynoWithMember" parameterType="int" resultType="map">
-    SELECT rr.replyReportno, rr.memberno, rr.reason, TO_CHAR(rr.rdate, 'YYYY-MM-DD') AS report_date,
-    m.id AS reporter_id, m.nickname AS reporter_nickname
+    SELECT
+    rr.replyReportno AS "replyReportno",
+    rr.memberno AS "memberno",
+    rr.reason AS "reason",
+    TO_CHAR(rr.rdate, 'YYYY-MM-DD') AS "report_date",
+    m.id AS "reporter_id",
+    m.nickname AS "reporter_nickname"
     FROM replyReport rr
     JOIN member m ON rr.memberno = m.memberno
     WHERE rr.replyno = #{replyno}

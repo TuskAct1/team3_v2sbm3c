@@ -18,6 +18,9 @@ function BoardReadPage() {
   const { boardno } = useParams();
   const navigate = useNavigate();
 
+  const memberno = parseInt(localStorage.getItem("memberno"), 10); // ✅ 추가
+
+
   // 이미지 체크
   const isImage = (filename) => {
     if (!filename) return false;
@@ -192,7 +195,7 @@ function BoardReadPage() {
               신고
               </button>
           </div>
-        <BoardReportModal boardno={boardVO.boardno} show={showReport} onClose={() => setShowReport(false)} />
+        <BoardReportModal boardno={boardVO.boardno} show={showReport} memberno={memberno} onClose={() => setShowReport(false)} />
         </div>
       </div>
 

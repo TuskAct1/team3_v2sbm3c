@@ -58,4 +58,6 @@ public interface ReplyProcInter {
 
   // ✅ 댓글 총 수
   public int count_by_boardno(int boardno);
+
+  public List<ReplyVO> list_by_boardno_tree(int boardno);
 }

@@ -9,6 +9,8 @@ import dev.mvc.replyRecommend.ReplyRecommendDAOInter;
 import dev.mvc.replyReport.ReplyReportDAOInter;
 import dev.mvc.tool.Tool;
 import dev.mvc.tool.Upload;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -152,9 +154,9 @@ public class BoardCont {
      * 게시글 등록 처리
      */
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> boardCreateProcess(@ModelAttribute BoardVO boardVO) {
-//        int memberno = (int) session.getAttribute("memberno"); // memberno FK
-        boardVO.setMemberno(1);
+    public ResponseEntity<String> boardCreateProcess(@ModelAttribute BoardVO boardVO, HttpSession session) {
+        int memberno = (int) session.getAttribute("memberno"); // memberno FK
+//        boardVO.setMemberno(1); //test용
 
         // ------------------------------------------------------------------------------
         // 파일 전송 코드 시작
@@ -198,7 +200,7 @@ public class BoardCont {
                 System.out.println("-> 글만 등록");
             }
         }
-
+        boardVO.setMemberno(memberno); // ✅ 반드시 필요
         boardProc.create(boardVO);
 
         return ResponseEntity.ok("등록 성공");
@@ -226,29 +228,112 @@ public class BoardCont {
 
         return ResponseEntity.ok(response);
     }
+//
+//    /**
+//     * 게시글 삭제 처리
+//     */
+//    @DeleteMapping("/delete/{boardno}/{passwd}")
+//    public ResponseEntity<String> deleteProcess(@PathVariable("boardno") int boardno,
+//                                                @PathVariable("passwd") String passwd) {
+//        BoardVO boardVO = boardProc.read(boardno);
+//        if (boardVO == null) {
+//            return ResponseEntity.status(404).body("게시글을 찾을 수 없습니다.");
+//        }
+//
+//        // 비밀번화 확인
+//        if (!boardVO.getPasswd().equals(passwd)) {
+//            // 비밀번호 불일치
+//            return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        // 게시글 삭제
+//        boardProc.delete(boardno);
+//
+//        return ResponseEntity.ok("삭제 완료");
+//    }
 
-    /**
-     * 게시글 삭제 처리
-     */
     @DeleteMapping("/delete/{boardno}/{passwd}")
     public ResponseEntity<String> deleteProcess(@PathVariable("boardno") int boardno,
-                                                @PathVariable("passwd") String passwd) {
+                                                @PathVariable("passwd") String passwd,
+                                                HttpSession session) {
+        Integer memberno = (Integer) session.getAttribute("memberno");  // 일반 사용자
+        Integer adminno = (Integer) session.getAttribute("adminno");    // 관리자
+
+        if (memberno == null && adminno == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
         BoardVO boardVO = boardProc.read(boardno);
         if (boardVO == null) {
             return ResponseEntity.status(404).body("게시글을 찾을 수 없습니다.");
         }
 
-        // 비밀번화 확인
-        if (!boardVO.getPasswd().equals(passwd)) {
-            // 비밀번호 불일치
+        boolean isWriter = memberno != null && memberno.equals(boardVO.getMemberno());
+        boolean isAdmin = adminno != null;
+
+        // 관리자이거나, 작성자인 경우(작성자일 땐 비밀번호 확인)
+        if (isAdmin || (isWriter && boardVO.getPasswd().equals(passwd))) {
+            boardProc.delete(boardno);
+            return ResponseEntity.ok("삭제 완료");
+        }
+
+        if (isWriter) {
             return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
         }
 
-        // 게시글 삭제
-        boardProc.delete(boardno);
-
-        return ResponseEntity.ok("삭제 완료");
+        return ResponseEntity.status(403).body("삭제 권한이 없습니다.");
     }
+
+    @DeleteMapping("/delete/{boardno}")
+    public ResponseEntity<String> deleteProcess(@PathVariable("boardno") int boardno,
+                                                @RequestParam(required = false) String passwd,
+                                                @RequestParam(required = false) Boolean admin,
+                                                HttpSession session) {
+        Integer loggedInMemberno = (Integer) session.getAttribute("memberno");  // 일반 사용자
+        Integer adminno = (Integer) session.getAttribute("adminno");            // 관리자
+
+        BoardVO boardVO = boardProc.read(boardno);
+        if (boardVO == null) {
+            return ResponseEntity.status(404).body("게시글을 찾을 수 없습니다.");
+        }
+
+        // 관리자 삭제 요청
+        if (Boolean.TRUE.equals(admin)) {
+            if (adminno == null) {
+                return ResponseEntity.status(403).body("관리자만 삭제할 수 있습니다.");
+            }
+            boardProc.delete(boardno);
+            return ResponseEntity.ok("관리자에 의해 게시글이 삭제되었습니다.");
+        }
+
+        // 일반 사용자 삭제 요청
+        if (loggedInMemberno == null) {
+            return ResponseEntity.status(401).body("로그인이 필요합니다.");
+        }
+
+        boolean isWriter = loggedInMemberno.equals(boardVO.getMemberno());
+        if (!isWriter) {
+            return ResponseEntity.status(403).body("삭제 권한이 없습니다.");
+        }
+
+        if (passwd == null || !boardVO.getPasswd().equals(passwd)) {
+            return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
+        }
+
+        boardProc.delete(boardno);
+        return ResponseEntity.ok("게시글이 삭제되었습니다.");
+    }
+
+
+    @GetMapping("/sessionInfo")
+    @ResponseBody
+    public Map<String, Object> getSessionInfo(HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("memberno", session.getAttribute("memberno"));
+        result.put("adminno", session.getAttribute("adminno"));
+        return result;
+    }
+
 
     /**
      * 게시글 수정

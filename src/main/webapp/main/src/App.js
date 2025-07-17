@@ -49,7 +49,6 @@ import AdminMyPage from './pages/member/AdminMyPage';
 
 // import { PlantProvider } from './pages/plant/PlantContext';
 
-import PlantPage from './pages/plant/PlantPage';
 
 import ProductPage from './pages/product/ProductPage';
 
@@ -67,9 +66,6 @@ import DiaryPage from './pages/diary/DiaryPage';
 import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
 import MemoryGame from './pages/plant/games/MemoryGame';
 import PlantMain from './pages/plant/PlantMain';
-import GameSelect from './pages/plant/games/GameSelect';
-import PlantCreatePage from './pages/plant/PlantCreatePage'; // 존재하는 경우
-import PlantIntro from './pages/plant/PlantIntro'; 
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
@@ -80,76 +76,17 @@ import DiaryRead from './pages/diary/DiaryRead';
 import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
-import ReplyReportListPage from './pages/reply/ReplyReportListPage';
-import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
 function App() {
   return (
     <BrowserRouter>
 
 
-      <h1>토닥</h1>
-
       <Routes>
-        {/* ✅ 모든 페이지 Layout으로 감쌈 (Navbar + Footer + FloatingButton 공통 적용) */}
-        <Route element={<Layout />}>
+          <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
           <Route path="/todaki" element={<TodakiPage />} />
 
-          {/* 심리테스트 */}
-          <Route path="/personality_test" element={<PersonalityTest />} />
-          <Route path="/senior_test" element={<SeniorTest />} />
-          <Route path="/senior_test/result" element={<SeniorTestResult />} />
-          <Route path="/mbti" element={<MBTITest />} />
-          <Route path="/mbti-result" element={<MBTIResult />} />
-          <Route path="/twoweek_test" element={<TwoweekQuestionnaire />} />
-          <Route path="/twoweek_test/result" element={<TwoweekResult />} />
-          <Route path="/senior_test/testlist" element={<SeniorTestList />} />
-          <Route path="/twoweek_test/testlist" element={<TwoweekResultList />} />
-          <Route path="/hobby_test" element={<HobbyTest />} />
-          <Route path="/memory_test" element={<MemoryTest />} />
-          <Route path="/memory_test/result" element={<MemoryResult />} />
-          <Route path="/lifestyle_test" element={<LifestyleTest />} />
-          <Route path="/lifestyle_test/result" element={<LifestyleResult />} />
-          <Route path="/lifestyle_test/list" element={<LifestyleResultList />} />
-
-          {/* 기타 */}
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/emotion_report" element={<EmotionReportPage />} />
-          <Route path="/self-check" element={<SelfCheckPage />} />
-
-          {/* 게시판 */}
-          <Route path="/board" element={<BoardPage />} />
-          <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
-          <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
-          <Route path="/board/read/:boardno" element={<BoardReadPage />} />
-          <Route path="/board/update/:boardno" element={<BoardUpdatePage />} />
-          <Route path="/board/list_category/:categoryno/:word/:now_page" element={<BoardByCategoryPage />} />
-
-          {/* 공지사항 */}
-          <Route path="/notice/list" element={<NoticeList />} />
-          <Route path="/notice/read/:noticeno" element={<NoticeRead />} />
-          <Route path="/notice/create" element={<NoticeCreate />} />
-          <Route path="/notice/update/:noticeno" element={<NoticeUpdate />} />
-
-          {/* 회원 */}
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin_signup" element={<SignUpPageAdmin />} />
-          <Route path="/admin_login" element={<LoginPageAdmin />} />
-          <Route path="/admin/member-list" element={<MemberListPage />} />
-          <Route path="/mypage" element={<MyPage />} />
-          <Route path="/admin/mypage" element={<AdminMyPage />} />
-
-          {/* 감정 플레이리스트 */}
-          <Route path="/playlist/list" element={<PlaylistList />} />
-          <Route path="/playlist/form" element={<PlaylistForm />} />
-          <Route path="/playlist/emotionform" element={<EmotionForm />} />
-          <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
-
-
-      <Navbar />
-      <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/todaki" element={<TodakiPage />} />
 
@@ -186,7 +123,7 @@ function App() {
         <Route path="/notice/read/:noticeno" element={<NoticeRead />} />
         <Route path="/notice/create" element={<NoticeCreate />} />
         <Route path="/notice/update/:noticeno" element={<NoticeUpdate />} />
-        <Route path="/notice/delete/:noticeno" element={<NoticeDelete />} />
+        {/* <Route path="/notice/delete/:noticeno" element={<NoticeDelete />} /> */}
 
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />

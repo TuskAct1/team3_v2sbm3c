@@ -43,5 +43,56 @@
     WHERE boardno = #{boardno}
   </delete>
 
+  <!-- 게시글 단위로 신고 정보 그룹화 -->
+  <select id="groupedBoardReports" resultType="map">
+    SELECT
+    br.boardno,
+    COUNT(*) AS report_count,
+    b.title,
+    m.id AS id,
+    m.nickname AS nickname,
+    m.memberno AS memberno
+    FROM board_report br
+    JOIN board b ON br.boardno = b.boardno
+    JOIN member m ON b.memberno = m.memberno
+    GROUP BY br.boardno, b.title, m.id, m.nickname, m.memberno
+    ORDER BY report_count DESC
+  </select>
+
+<!--  &lt;!&ndash; 각 게시글 신고 상세 목록 &ndash;&gt;-->
+<!--  <select id="listByBoardnoWithMember" parameterType="int" resultType="map">-->
+<!--    SELECT-->
+<!--    br.board_reportno AS boardReportno,-->
+<!--    br.memberno AS memberno,-->
+<!--    br.reason AS reason,-->
+<!--    TO_CHAR(br.rdate, 'YYYY-MM-DD') AS rdate,-->
+<!--    m.id AS reporterId,-->
+<!--    m.nickname AS reporterNickname-->
+<!--    FROM board_report br-->
+<!--    JOIN member m ON br.memberno = m.memberno-->
+<!--    WHERE br.boardno = #{boardno}-->
+<!--  </select>-->
+
+  <select id="listByBoardnoWithMember" parameterType="int" resultType="map">
+    SELECT
+    br.board_reportno AS "boardReportno",
+    br.memberno AS "memberno",
+    br.reason AS "reason",
+    TO_CHAR(br.rdate, 'YYYY-MM-DD') AS "rdate",
+    m.id AS "reporterId",
+    m.nickname AS "reporterNickname"
+    FROM board_report br
+    JOIN member m ON br.memberno = m.memberno
+    WHERE br.boardno = #{boardno}
+  </select>
+
+
+  <!-- 신고된 게시글 번호 목록 -->
+  <select id="findReportedBoardnos" resultType="int">
+    SELECT DISTINCT boardno
+    FROM board_report
+  </select>
+
+
 </mapper>
 

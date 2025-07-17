@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function BoardReportModal({ boardno, show, onClose }) {
+function BoardReportModal({ boardno, show, onClose, memberno}) {
   const [reason, setReason] = useState('');
   const [resultMsg, setResultMsg] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log({
+      boardno,
+      memberno,
+      reason
+    });
+
     try {
       await axios.post(`/boardReport/report/${boardno}`, {
         boardno: boardno,
         // memberno 추가
+        memberno: memberno, 
         reason: reason
       });
       handleClose();
