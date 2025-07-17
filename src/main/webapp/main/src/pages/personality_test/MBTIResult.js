@@ -297,33 +297,11 @@ function MBTIResult() {
   return (
     <div
       className="result-container"
-      style={{
-        width: '100vw',
-        maxWidth: '100%',
-        backgroundColor: '#f1f8e9',
-        minHeight: '100vh',
-        padding: '3rem 2rem',
-        boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}
     >
       <h1 className="result-title">🎉 나의 MBTI 결과</h1>
 
       <div
         className="result-card"
-        style={{
-          width: '90vw',
-          maxWidth: '1200px',
-          margin: '0 auto 2.5rem',
-          backgroundColor: '#ffffff',
-          borderRadius: '25px',
-          boxShadow: '0 6px 16px rgba(0, 0, 0, 0.1)',
-          padding: '3rem',
-          boxSizing: 'border-box',
-          textAlign: 'left',
-        }}
       >
         <h2 className="mbti-type">
           <span className="highlight">{mbti}</span> - {result.title}
@@ -331,13 +309,12 @@ function MBTIResult() {
 
         <p
           className="mbti-description"
-          style={{ whiteSpace: 'pre-line', fontSize: '1.25rem', lineHeight: 1.85, color: '#333' }}
         >
           {result.description}
         </p>
 
         {/* 🔹 포스트잇 카드 */}
-        <div className="postit-grid" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div className="postit-grid">
           <div className="postit-card">
             <h4 className="postit-title">💡 추천 활동</h4>
             <ul className="postit-list">
@@ -363,18 +340,8 @@ function MBTIResult() {
       <button
         className="retry-button"
         onClick={() => navigate('/personality_test')}
-        style={{
-          backgroundColor: '#4caf50',
-          color: 'white',
-          fontSize: '1.3rem',
-          padding: '1rem 2.5rem',
-          border: 'none',
-          borderRadius: '12px',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-        }}
       >
-        심리테스트로 돌아가기
+        자가진단 홈
       </button>
     </div>
   );

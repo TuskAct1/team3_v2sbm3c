@@ -2,36 +2,29 @@ import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-
+import { useParams } from 'react-router-dom';
+import './NBoardCreate.css'; // ✅ CSS import
 
 const BoardCreate = () => {
-  const { categoryno: paramCategoryno } = useParams(); // URL에서 카테고리 번호 가져오기
+  const { categoryno: paramCategoryno } = useParams();
   const [categoryno, setCategoryno] = useState(paramCategoryno ? String(paramCategoryno) : '');
-
   const [categoryGroup, setCategoryGroup] = useState([]);
   const [categoryVO, setCategoryVO] = useState({});
-
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [passwd, setPasswd] = useState('');
   const [file1MF, setFile1MF] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
-
+  // 카테고리 목록 불러오기
   useEffect(() => {
     axios
-        .get(`/board/list_all?word=all&now_page=1`)
-        .then((res) => {
-          setCategoryGroup(res.data.categoryGroup);
-        })
-        .catch((err) => {
-          console.error('게시판 데이터 불러오기 실패:', err);
-        });
+      .get(`/board/list_all?word=all&now_page=1`)
+      .then((res) => setCategoryGroup(res.data.categoryGroup))
+      .catch((err) => console.error('게시판 데이터 불러오기 실패:', err));
   }, []);
 
-  // 이미지 미리보기
-  const handleFileChange = e => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     setFile1MF(file);
     if (file) {
@@ -43,32 +36,24 @@ const BoardCreate = () => {
     }
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!categoryno) {
-      alert('카테고리를 선택해주세요.');
-      return;
-    }
-  
-    if (!passwd) {
-      alert('비밀번호를 입력해주세요.');
-      return;
-    }
+    if (!categoryno) return alert('카테고리를 선택해주세요.');
+    if (!passwd) return alert('비밀번호를 입력해주세요.');
 
     const formData = new FormData();
     formData.append('categoryno', categoryno);
     formData.append('title', title);
-    formData.append('content', content); // 리치에디터 내용
+    formData.append('content', content);
     if (file1MF) formData.append('file1MF', file1MF);
     formData.append('passwd', passwd);
-
-    // 기타 필요한 필드 (카테고리, 회원 등) 추가 가능
 
     try {
       const response = await axios.post('/board/create', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+
       if (response.status >= 200 && response.status < 300) {
         alert('게시글이 등록되었습니다!');
         window.location.href = '/board/list_all/all/1';
@@ -81,24 +66,22 @@ const BoardCreate = () => {
   };
 
   return (
-    <div className="blog-form-container" style={{
-      maxWidth: 720, margin: '40px auto', background: '#fff', borderRadius: 16, boxShadow: '0 4px 32px rgba(0,0,0,0.07)', padding: 32
-    }}>
-      <div className='title_line'>
-        <span className="title_line_text">{categoryVO.name}</span> &gt; 게시글 등록
+    <div className="board-create-wrap">
+      <div className="board-create-title-line">
+        <span>{categoryVO.name}</span> 게시글 등록
       </div>
 
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <form onSubmit={handleSubmit} className="board-create-form" encType="multipart/form-data">
         {paramCategoryno && (
-          <div>
-            <label>카테고리</label>
+          <div className="form-row">
+            <label>게시판</label>
             <select
-              className="form-control"
+              className="board-create-select"
               value={categoryno}
               onChange={(e) => setCategoryno(e.target.value)}
               required
             >
-              <option value="">카테고리 선택</option>
+              <option value="">게시판을 선택해주세요</option>
               {categoryGroup.map((categoryVO) => (
                 <option key={categoryVO.categoryno} value={categoryVO.categoryno}>
                   {categoryVO.name}
@@ -108,74 +91,55 @@ const BoardCreate = () => {
           </div>
         )}
 
-        <input
-          type="text"
-          placeholder="제목을 입력하세요"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          required
-          style={{
-            width: '100%',
-            fontSize: 28,
-            fontWeight: 600,
-            marginBottom: 24,
-            border: 'none',
-            borderBottom: '2px solid #eee',
-            outline: 'none',
-            padding: '8px 0'
-          }}
-        />
-        <ReactQuill
-          value={content}
-          onChange={setContent}
-          placeholder="내용을 입력하세요 (텍스트, 사진, 링크 등)"
-          style={{
-            height: 320,
-            marginBottom: 24,
-            background: '#fafbfc',
-            borderRadius: 8
-          }}
-        />
-        
-        <div style={{ marginBottom: 20, padding: 20 }}>
-          <label style={{ fontWeight: 500 }}>대표 이미지 업로드</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          {imagePreview && (
-            <img src={imagePreview} alt="미리보기" style={{ maxWidth: 240, marginTop: 12, borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }} />
-          )}
-        </div>
-
-        <div style={{ marginBottom: 28 }}>
-          <label style={{ fontWeight: 500 }}>비밀번호</label>
+        <div className="form-row">
+          <label>제목</label>
           <input
-            type="password"
-            value={passwd}
-            onChange={e => setPasswd(e.target.value)}
+            type="text"
+            className="board-create-title-input"
+            placeholder="제목을 입력해주세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             required
-            placeholder="비밀번호를 입력하세요"
-            style={{
-              width: '100%',
-              fontSize: 20,
-              padding: '8px',
-              marginTop: 8,
-              border: '1px solid #ddd',
-              borderRadius: 8
-            }}
           />
         </div>
 
-        <button type="submit" style={{
-          padding: '12px 32px',
-          background: '#1ec800',
-          color: '#fff',
-          fontWeight: 700,
-          border: 'none',
-          borderRadius: 12,
-          fontSize: 18,
-          cursor: 'pointer'
-        }}>
-          등록하기
-        </button>
+        {/* 에디터는 세로로 */}
+        <div className="form-row form-full">
+          <label className="form-label">내용</label>
+          <ReactQuill
+            value={content}
+            onChange={setContent}
+            placeholder="내용을 입력하세요 (텍스트, 사진, 링크 등)"
+            className="board-create-editor"
+          />
+        </div>
+
+        {/* 사진 첨부를 한 줄에 맞추기 */}
+        <div className="form-row">
+          <label className="form-label">사진 첨부</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} className="form-input" />
+        </div>
+
+        {imagePreview && (
+          <div className="form-row">
+            <img src={imagePreview} alt="미리보기" className="board-create-preview" />
+          </div>
+        )}
+
+        <div className="form-row">
+          <label>비밀번호</label>
+          <input
+            type="password"
+            className="board-create-pass-input"
+            value={passwd}
+            onChange={(e) => setPasswd(e.target.value)}
+            placeholder="비밀번호 입력"
+            required
+          />
+          <button type="submit" className="board-create-submit-btn">
+            등록하기
+          </button>
+        </div>
       </form>
     </div>
   );

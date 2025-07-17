@@ -95,5 +95,7 @@ public class BoardVO {
     /** 메인 이미지 크기 */
     private long size1 = 0;
     
+    private String nickname;  
+    private String categoryname;  
 }
 

@@ -37,8 +37,7 @@ function NoticeCreate() {
         <h2>📝 공지사항 등록</h2>
 
         <div className="notice-action-buttons">
-          <button className="small-btn" onClick={() => navigate(`/notice/create`)}>등록</button>
-          <button className="small-btn" onClick={() => navigate('/notice/list')}>목록</button>
+          <button className="pretty-back-button" onClick={() => navigate('/notice/list')}>목록</button>
         </div>
       </div>
 
@@ -54,7 +53,7 @@ function NoticeCreate() {
         >
           <option value="공지">공지</option>
           <option value="이벤트">이벤트</option>
-          <option value="시스템 점검">시스템 점검</option>
+          <option value="점검">점검</option>
         </select>
 
         {/* 제목 입력 */}

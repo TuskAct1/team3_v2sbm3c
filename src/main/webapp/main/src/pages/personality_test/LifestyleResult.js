@@ -91,9 +91,9 @@ function LifestyleResult() {
       )}
 
       <div className="btn-group">
-        <button className="retry-btn" onClick={handleRetry}>🔁 다시 생성하기</button>
-        <button className="save-btn" onClick={handleSave}>🧾 결과 저장하기</button>
-        <button className="back-btn" onClick={handleBack}>🔙 심리테스트로 돌아가기</button>
+        <button className="retry-btn" onClick={handleRetry}>다시 생성하기</button>
+        <button className="save-btn" onClick={handleSave}>결과 저장하기</button>
+        <button className="back-btn" onClick={handleBack}>자가진단 홈</button>
       </div>
     </div>
   );

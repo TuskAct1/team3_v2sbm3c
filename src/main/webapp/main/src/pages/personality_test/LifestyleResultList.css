@@ -1,162 +1,188 @@
-/* ✅ 버튼 초기화 */
-button {
-  font-family: 'Arial', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1.2;
-  box-shadow: none;
-  border: none;
-  cursor: pointer;
-}
-
-/* ✅ 전체 페이지 배경 */
-.routine-list-container {
+/* ✅ 전체 배경 */
+.routine-slide-container {
   padding: 2rem;
   background-color: #ffffff;
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
 }
 
-/* ✅ 상단 제목 */
-.routine-title {
-  font-size: 2rem;
-  color: #66bb6a;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-/* ✅ 데이터 없을 때 안내문 */
-.no-data {
-  text-align: center;
-  color: #999;
-  font-size: 1.1rem;
-}
-
-/* ✅ 아코디언 리스트 */
-.accordion-list {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-/* ✅ 아코디언 카드 */
-.accordion-item {
-  background-color: #ffffff;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  position: relative;
-}
-
-/* ✅ 고정 헤더 */
-.accordion-header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: #f1f8e9;
-  padding: 0.8rem 1.2rem;
-  font-size: 1.05rem;
-  font-weight: bold;
-  color: #2e7d32;
+/* ✅ 상단 제목 + 이전 버튼 */
+.routine-title-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #c8e6c9;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+  max-width: 900px;      /* ✅ 카드와 동일한 최대 너비 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.accordion-header:hover {
-  background-color: #e0f2f1;
-}
-
-/* ✅ 버튼 그룹 */
-.button-group {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.view-btn {
-  background-color: #66bb6a;
-  color: white;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  border-radius: 4px;
-  min-width: 44px;
-}
-
-.view-btn:hover {
-  background-color: #388e3c;
-}
-
-.delete-btn {
-  background-color: #ef5350;
-  color: white;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  border-radius: 4px;
-  min-width: 44px;
-}
-
-.delete-btn:hover {
-  background-color: #c62828;
-}
-
-/* ✅ 펼쳐진 내용 */
-.accordion-content {
-  padding: 1rem 1.5rem;
-  background-color: #fafafa;
-  border-top: 1px solid #c8e6c9;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.routine-time-list {
-  list-style: none;
-  padding-left: 0;
+/* ✅ 제목 텍스트 */
+.routine-title-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4caf50;
   margin: 0;
 }
 
+/* ✅ '이전' 버튼 */
+.small-btn {
+  background-color: #66bb6a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.small-btn:hover {
+  background-color: #81c784;
+}
+
+/* ✅ 루틴 없음 안내 */
+.no-data {
+  color: #999;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+/* ✅ 날짜 + 화살표 버튼 */
+.routine-top-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 1.8rem;
+  transform: translateX(-12px);
+}
+
+/* ✅ 날짜 텍스트 */
+.routine-date {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ✅ 슬라이드 전체 감싸기 */
+.routine-slide-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* ✅ 루틴 카드 */
+.routine-slide-card {
+  width: 100%;
+  max-width: 900px;
+  min-height: 460px;
+  background-color: #f9fff6;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 28px;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+/* ✅ 루틴 리스트 */
+.routine-time-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ✅ 루틴 한 줄 */
 .routine-line {
   display: flex;
+  gap: 14px;
   align-items: flex-start;
-  padding: 0.6rem 1rem;
-  border-bottom: 1px solid #e0f2f1;
-  background-color: #ffffff;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 10px 0;
+  border-bottom: 1px dashed #c8e6c9;
 }
 
 .routine-time {
-  flex-shrink: 0;
   font-weight: bold;
-  color: #66bb6a;
-  margin-right: 0.8rem;
-  min-width: 70px;
+  color: #388e3c;
+  min-width: 80px;
 }
 
 .routine-desc {
   color: #444;
-  font-size: 1rem;
-  word-break: keep-all;
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
 
+/* ✅ 응원의 메시지 */
 .routine-message {
-  background-color: #fff8e1;
-  border: 1px solid #ffe0b2;
-  padding: 0.8rem 1.2rem;
+  margin-top: 20px;
+  font-size: 1.15rem;
+  background: #e8f5e9;
+  padding: 14px;
   border-radius: 10px;
-  margin-top: 1.2rem;
-  font-size: 1rem;
-  color: #5d4037;
-  font-style: italic;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .message-label {
   font-weight: bold;
-  margin-right: 0.5rem;
-  color: #d84315;
+  color: #2e7d32;
 }
 
 .message-content {
+  margin-left: 6px;
   color: #4e342e;
+}
+
+/* ✅ 삭제 버튼 아래쪽 중앙 */
+.delete-btn-wrap {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.delete-btn-bottom {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.delete-btn-bottom:hover {
+  background-color: #c62828;
+}
+
+/* ✅ 좌우 화살표 버튼 */
+.slide-arrow.small {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #a5d6a7;
+  border: none;
+  color: #1b5e20;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0;
+  transform: translateX(7px);
+}
+
+.slide-arrow.small:hover {
+  background-color: #81c784;
+}
+
+.slide-arrow.small:disabled {
+  background-color: #e0e0e0;
+  color: #888;
+  cursor: not-allowed;
 }

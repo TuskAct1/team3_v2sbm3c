@@ -1,12 +1,13 @@
 /* ✅ 전체 배경 */
 .login-wrapper {
   background-color: #ffffff;
-  min-height: 100vh;
+  min-height: calc(100vh - 140px); /* ✅ 상단 Navbar + 하단 Footer 제외한 높이 */
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 80px;
+  align-items: center; /* ✅ 세로 가운데 정렬 */
   font-family: 'Pretendard', sans-serif;
+  box-sizing: border-box;
+  padding: 0 20px; /* ✅ 좌우 여백만 */
 }
 
 /* ✅ 전체 박스 */
@@ -209,4 +210,33 @@
 
 .login-page-global-links a:hover::after {
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .login-box {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .login-left,
+  .login-right {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .login-inline-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .login-inline-btn {
+    width: 100%;
+    padding: 16px; /* 버튼이 너무 커서 축소 */
+  }
+
+  .login-page-global-links {
+    justify-content: center;
+    padding: 12px 0;
+  }
 }
