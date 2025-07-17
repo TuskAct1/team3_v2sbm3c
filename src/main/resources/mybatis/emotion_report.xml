@@ -54,7 +54,7 @@
         WHERE memberno = #{memberno}
         ORDER BY rdate DESC
         )
-        WHERE ROWNUM &lt;= 5
+        WHERE ROWNUM &lt;= 1
     </select>
 
 </mapper>

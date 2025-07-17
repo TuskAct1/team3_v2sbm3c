@@ -89,8 +89,7 @@ public class MemberController {
                 return ResponseEntity.status(500).body(response);
             }
         }
-
-
+        
         // 3. 포인트 기본값
         memberVO.setPoint(50);
 

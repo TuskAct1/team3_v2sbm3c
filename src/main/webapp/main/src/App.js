@@ -132,7 +132,13 @@ function App() {
           <Route path="/playlist/form" element={<PlaylistForm />} />
           <Route path="/playlist/emotionform" element={<EmotionForm />} />
           <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
+
           
+          {/* 1:1 문의 */}
+          <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry/create" element={<InquiryCreatePage />} />
+          
+
           {/* 1:1 문의 */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/create" element={<InquiryCreatePage />} />
@@ -140,7 +146,7 @@ function App() {
           {/* 자주 묻는 질문 */}
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/faq/create" element={<FaqCreatePage />} />
-          
+
           {/* plant 관련 설정 */}
           <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
           <Route path="/plant/create" element={<PlantCreatePage />} />
@@ -164,7 +170,7 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
-          
+
         </Route>
       </Routes>
 
