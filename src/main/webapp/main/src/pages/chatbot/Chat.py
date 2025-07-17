@@ -2,11 +2,8 @@ import os
 import datetime
 from chatbot import DecoTool
 import requests
-<<<<<<< HEAD
-=======
 
 from dotenv import load_dotenv
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -68,14 +65,10 @@ else:
 
 
 # MongoDB
-<<<<<<< HEAD
-mongo_client = MongoClient("mongodb://121.78.128.139:27017/")
-=======
-mongo_client = MongoClient("mongodb://team3:0514@121.78.128.139:27017/admin")
+
 load_dotenv()
 
 mongo_client = MongoClient(f"mongodb://{os.environ['MONGO_USER']}:{os.environ['MONGO_PW']}@121.78.128.139:27017/admin")
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
 db = mongo_client["mentalcare"]   # DB 이름
 # mongo_client = MongoClient("mongodb://localhost:27017/")
 # db = mongo_client["mentalcare"]   # DB 이름

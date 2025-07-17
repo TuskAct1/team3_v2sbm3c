@@ -1,125 +1,259 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MemberEditForm from './MemberEditForm'; // ✅ MemberEditForm으로 수정
-import MyRewardList from '../reward/MyRewardList'; // 경로는 실제 위치에 따라 조정
-
+import './MyPage.css';
+import { FaCheckCircle, FaCamera, FaHome } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import MyInquiryList from './MyInquiryList';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaChevronRight } from 'react-icons/fa'; // ⬅️ 아이콘 추가
+import { useNavigate } from 'react-router-dom'; // ⬅️ useNavigate 추가
+import EditProfileForm from './EditProfileForm'; // 추가
 
 function MyPage() {
-  const [userId, setUserId] = useState(null); // 🔹 서버에 보낼 사용자 식별자 (일반은 id, 소셜은 email)
-  const [user, setUser] = useState(null);     // 🔹 서버에서 가져온 사용자 정보
-  const [editing, setEditing] = useState(false); // 🔹 수정 모드 여부
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
+  const [rewards, setRewards] = useState([]);
+  const [schedules, setSchedules] = useState([]);
+  const [isMorning, setIsMorning] = useState(true);
+  const [activeTab, setActiveTab] = useState("home");
+  const [previousTab, setPreviousTab] = useState("home");
+  const [completedScheduleMap, setCompletedScheduleMap] = useState({});
 
-  // ✅ 로그인된 사용자 정보 로컬스토리지에서 가져오기
+  // ✅ 로컬스토리지에서 불러오기
+  useEffect(() => {
+    const storedMap = localStorage.getItem("completedScheduleMap");
+    if (storedMap) {
+      setCompletedScheduleMap(JSON.parse(storedMap));
+    }
+  }, []);
+
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       try {
         const parsed = JSON.parse(savedUser);
-
-        // 🔸 일반 로그인 사용자는 id 사용
-        // 🔸 소셜 로그인 사용자는 email 사용
-        if (parsed.id) {
-          setUserId(parsed.id); // 일반 로그인
-        } else if (parsed.email) {
-          setUserId(parsed.email); // 소셜 로그인
-        } else {
-          console.warn("⚠️ 사용자 식별 정보 없음");
-        }
+        setUserId(parsed.id || parsed.email || null);
       } catch (e) {
         console.error("user 정보 파싱 실패", e);
       }
     }
   }, []);
 
-  // ✅ 사용자 정보 조회 (id or email로 조회)
   useEffect(() => {
     if (!userId) return;
-
-    axios.get(`http://localhost:3000/api/members/id`, {
-      params: { id: userId } // 서버에서는 id=email 도 가능하게 처리되어야 함
-    })
-    .then(res => {
-      setUser(res.data); // 🔹 사용자 정보 상태에 저장
-    })
-    .catch(err => {
-      console.error("회원 정보 불러오기 실패", err);
-    });
+    axios.get("http://localhost:3000/api/members/id", { params: { id: userId } })
+      .then(res => {
+        setUser(res.data);
+        fetchRewards(res.data.memberno);
+        fetchSchedules(res.data.memberno);
+      })
+      .catch(err => console.error("회원 정보 불러오기 실패", err));
   }, [userId]);
 
-  // ✅ 회원 탈퇴 처리
-  const handleDelete = () => {
-    if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-      axios.delete(`http://localhost:3000/api/members/delete`, {
-        params: { memberno: user.memberno } // 🔹 고유 번호로 삭제 요청
-      })
+  const fetchRewards = (memberno) => {
+    axios.get("http://localhost:3000/api/rewards", { params: { memberno } })
+      .then(res => setRewards(res.data))
+      .catch(err => console.error("보상 정보 불러오기 실패", err));
+  };
+
+  // const fetchSchedules = (memberno) => {
+  //   if (!memberno) return;
+  //   axios.get(`/calendar/list_all?memberno=${memberno}`, { withCredentials: true })
+  //     .then(res => setSchedules(res.data))
+  //     .catch(err => console.error("일정 불러오기 실패", err));
+  // };
+
+
+  const handleProfileUpload = (file) => {
+    if (!file || !user) return;
+    const formData = new FormData();
+    formData.append("memberno", user.memberno);
+    formData.append("profileFile", file);
+
+    axios.post("/api/members/update-profile", formData)
       .then(() => {
-        alert("탈퇴 완료");
-        localStorage.removeItem("user");
-        window.location.href = "/";
+        alert("프로필 이미지가 변경되었습니다.");
+        axios.get(`/api/members/${user.memberno}`).then(res => setUser(res.data));
       })
-      .catch(() => {
-        alert("탈퇴 실패");
+      .catch(err => {
+        alert("업로드 실패");
+        console.error(err);
       });
+  };
+
+  const handleTabChange = (newTab) => {
+    if (newTab !== activeTab) {
+      setPreviousTab(activeTab);
+      setActiveTab(newTab);
     }
   };
 
-  // ✅ 아직 사용자 정보를 못 불러온 상태라면
+  // const filteredSchedules = schedules; // 지금은 모든 일정 표시
+  const filteredSchedules = schedules.filter((s) => {
+  const hour = parseInt(s.start_time?.split(':')[0], 10);
+  return isMorning ? hour < 12 : hour >= 12;
+});
+
+  const handleToggleComplete = (calendarno) => {
+    const idStr = String(calendarno);
+    setCompletedScheduleMap(prev => {
+      const updated = {
+        ...prev,
+        [idStr]: !prev[idStr],
+      };
+      localStorage.setItem("completedScheduleMap", JSON.stringify(updated));
+      return updated;
+    });
+  };
+  const fetchSchedules = (memberno) => {
+  if (!memberno) return;
+  axios.get(`/calendar/list_all?memberno=${memberno}`)
+    .then(res => {
+      console.log("📅 일정 데이터:", res.data); // ✅ 여기에 로그 추가
+      setSchedules(res.data);
+    })
+    .catch(err => console.error("일정 불러오기 실패", err));
+};
+
   if (!user) return <div>로딩 중...</div>;
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>사용자 정보</h2>
+    <div className="mypage-container">
+      <div className="breadcrumb">
+        <FaHome className="home-icon" />
+        <span>&nbsp;&gt;&nbsp;</span>
+        <span>마이페이지</span>
+      </div>
+      <div className="breadcrumb-line"></div>
 
-      {/* ✅ 수정 모드일 경우 수정 폼 렌더링 */}
-      {editing ? (
-        //  수정 모드일 경우 MemberEditForm 사용
-        <MemberEditForm
-          initialData={user}
-          onCancel={() => setEditing(false)}
-          onUpdated={(updatedData) => {
-            setUser(updatedData);
-            setEditing(false);
-            alert("회원 정보가 수정되었습니다.");
-          }}
-        />
-      ) : (
-        // ✅ 일반 보기 모드
-        <div>
-          <p><strong>프로필 사진:</strong> {user.profile || user.profile}</p>
-          <p><strong>이메일:</strong> {user.id || user.email}</p>
-          <p><strong>이름:</strong> {user.mname}</p>
-          <p><strong>닉네임:</strong> {user.nickname}</p>
-          <p><strong>전화번호:</strong> {user.tel}</p>
-          <p><strong>주소:</strong> {user.address1} {user.address2}</p>
-          <p><strong>생년월일:</strong> {user.birthdate}</p>
-          <p><strong>성별:</strong> {user.gender}</p>
-
-          {/* 🔸 보호자 정보가 있는 경우 렌더링 */}
-          {user.guardians && user.guardians.length > 0 && (
-            <div>
-              <h4>보호자 정보</h4>
-              {user.guardians.map((g, idx) => (
-                <div key={idx}>
-                  <p>보호자{idx + 1} 이름: {g.name}</p>
-                  <p>관계: {g.relationship}</p>
-                  <p>이메일: {g.email}</p>
-                  <p>전화번호: {g.phone}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* 🔸 수정 및 탈퇴 버튼 */}
-          <button onClick={() => setEditing(true)}>수정</button>
-          <button onClick={handleDelete} style={{ marginLeft: "10px" }}>탈퇴</button>
+      <div className="profile-section">
+        <div className="profile-box">
+          <div className="profile-img-wrapper">
+            <img
+              className="profile-img"
+              src={`/profile/${user.profile}`}
+              alt="프로필"
+              onError={(e) => (e.target.src = "/profile/default_profile.png")}
+            />
+            <label htmlFor="profileUpload" className="camera-icon">
+              <FaCamera />
+            </label>
+            <input
+              id="profileUpload"
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => handleProfileUpload(e.target.files[0])}
+            />
+          </div>
+          <div className="profile-name">{user.nickname || user.mname} 님</div>
         </div>
-      )}
-        {/* ✅ 보상 신청 내역 컴포넌트 추가 */}
-        <div style={{ marginTop: "40px" }}>
-          <h3>보상 신청 내역</h3>
-          <MyRewardList memberno={user.memberno} />
+
+        <div className="tabs-wrapper">
+          {["home", "inquiry", "info", "settings"].map((tab) => (
+            <div
+              key={tab}
+              className={`tab-item ${activeTab === tab ? "active" : ""}`}
+              onClick={() => handleTabChange(tab)}
+            >
+              {{
+                home: "홈",
+                inquiry: "문의내역",
+                info: "내정보",
+                settings: "설정"
+              }[tab]}
+            </div>
+          ))}
+        </div>
+
+        <div className="tab-content-wrapper">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              className="tab-motion-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.1 }}
+            >
+              {activeTab === "home" && (
+                <>
+                  {/* 하루 일정 제목 (박스 바깥) */}
+                    <div className="schedule-title-row" onClick={() => navigate('/calendar')}>
+                      <h3 className="schedule-title">하루 일정
+                      <FaChevronRight className="schedule-more-arrow" onClick={() => window.location.href = "/calendar"} /></h3>
+                    </div>
+
+
+                  {/* 하루 일정 본체 박스 */}
+                  <div className="schedule-section">
+                    <div className="schedule-toggle">
+                      <button className={isMorning ? 'active' : ''} onClick={() => setIsMorning(true)}>오전</button>
+                      <button className={!isMorning ? 'active' : ''} onClick={() => setIsMorning(false)}>오후</button>
+                    </div>
+
+                    {filteredSchedules.length === 0 ? (
+                      <div className="schedule-empty-box">
+                        <div className="emoji">📭</div>
+                        <div className="text-bold">등록된 일정이 없습니다</div>
+                        <div className="text-sub">캘린더에서 일정을 추가해보세요.</div>
+                      </div>
+                    ) : (
+                      <div className="schedule-list">
+                      {filteredSchedules.map((item) => {
+                        const idStr = String(item.calendarno);
+                        const isCompleted = completedScheduleMap[idStr] === true;
+
+                        return (
+                          <div key={item.calendarno} className="schedule-card">
+                            <div className="schedule-info">
+                              <p className={`title ${isCompleted ? 'completed' : ''}`}>{item.title}</p>
+                              <p className="desc">{item.category || '일정'} | {item.start_time || '날짜 없음'}</p>
+                            </div>
+                            <div className="check-icon-wrapper">
+                              <FaCheckCircle
+                                className={`schedule-check-icon ${isCompleted ? 'completed' : 'not-completed'}`}
+                                onClick={() => handleToggleComplete(item.calendarno)}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="reward-section">
+                    <h3 className="section-title">보상 신청 내역</h3>
+                    {rewards.length === 0 ? (
+                      <div className="reward-empty-box">
+                        <div className="emoji">🥹</div>
+                        <div className="text-bold">신청된 보상이 없습니다</div>
+                        <div className="text-sub">스티커 10개를 다 모아 보상을 신청해보세요.</div>
+                        <Link to="/plant" className="reward-button">반려식물 키우러 가기</Link>
+                      </div>
+                    ) : (
+                      <div className="reward-list">
+                        {rewards.map((reward) => (
+                          <div key={reward.reward_id || `${reward.itemName}-${reward.status}`} className="reward-item">
+                            <p>{reward.itemName} ({reward.status})</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+              {activeTab === "inquiry" && <MyInquiryList memberno={user.memberno} />}
+              {activeTab === "info" && <EditProfileForm user={user} />}
+              {/* {activeTab === "info" && <div>내정보 탭 내용</div>} */}
+              {activeTab === "settings" && <div>설정 탭 내용</div>}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
+    </div>
   );
 }
 

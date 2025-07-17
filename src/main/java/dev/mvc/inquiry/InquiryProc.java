@@ -1,5 +1,6 @@
 package dev.mvc.inquiry;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,11 @@ public class InquiryProc implements InquiryProcInter {
     public int inquiryAnswer(int inquiryno, String answer) {
         return inquiryDAO.inquiryAnswer(inquiryno, answer);
     }
+//
+//    @Override
+//    public int inquiryAnswer(@Param("inquiryno") int inquiryno, @Param("answer") String answer) {
+//        return inquiryDAO.inquiryAnswer(inquiryno, answer);
+//    }
 
     @Override
     public int inquiryDelete(int inquiryno) {
