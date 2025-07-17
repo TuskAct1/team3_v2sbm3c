@@ -2,99 +2,108 @@
 .senior-test-container {
   max-width: 1000px;
   margin: 2rem auto;
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   background-color: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
   font-family: 'Pretendard', sans-serif;
-  font-size: 1.2rem; /* 전체 기본 폰트 크기 */
+  font-size: 1.1rem;
 }
 
 /* ✅ 제목 */
 .senior-test-title {
   text-align: center;
-  font-size: 2.4rem; /* 기존 2rem → 확대 */
-  color: #388e3c;
+  font-size: 2.2rem;
+  color: #4caf50;
   font-weight: 800;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 /* ✅ 테이블 스타일 */
 .senior-test-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
 }
 
 .senior-test-table thead tr {
-  background-color: #e8f5e9;
-  border-bottom: 2px solid #c8e6c9;
+  background-color: #edf7ed;
+  border-bottom: 2px solid #dcefdc;
 }
 
 .senior-test-table th,
 .senior-test-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #e0f2f1;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
 }
 
+/* ✅ 문항 번호 */
 .senior-test-table th:nth-child(1),
 .senior-test-table td:nth-child(1) {
-  width: 10%;
+  width: 8%;
   text-align: center;
-  color: #777;
+  color: #888;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
+/* ✅ 질문 셀 */
 .senior-test-table th:nth-child(2),
 .senior-test-table td:nth-child(2) {
-  width: 60%;
+  width: 64%;
   text-align: left;
   line-height: 1.6;
-  padding: 1.2rem;
-  font-size: 1.25rem;
+  padding: 1rem;
+  font-size: 1.15rem;
+  color: #333;
 }
 
+/* ✅ 예 / 아니오 셀 */
 .senior-test-table th:nth-child(3),
 .senior-test-table th:nth-child(4),
 .senior-test-table td:nth-child(3),
 .senior-test-table td:nth-child(4) {
-  width: 15%;
+  width: 14%;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
-/* ✅ 응답 선택 셀 */
+/* ✅ 응답 클릭 셀 */
 .clickable {
   cursor: pointer;
-  padding: 0.75rem;
+  padding: 0.7rem;
   transition: background-color 0.2s, color 0.2s;
   border-radius: 10px;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
+  user-select: none;
 }
 
-/* ✅ 선택된 응답 */
+/* ✅ 선택된 응답 스타일 (부드럽게) */
 .selected-yes {
-  background-color: #66bb6a;
-  color: white;
-  font-weight: bold;
+  background-color: #d6f5db;
+  color: #2e7d32;
+  font-weight: 600;
 }
 
 .selected-no {
-  background-color: #e0e0e0;
-  color: #333;
-  font-weight: bold;
+  background-color: #eeeeee;
+  color: #444;
+  font-weight: 600;
 }
 
-/* ✅ 미응답 문항 강조 */
+/* ✅ 미응답 강조 */
 .unanswered-cell {
-  background-color: #ffebee;
-  border-left: 6px solid #e53935;
+  background-color: #fcebea;
+  border-left: 5px solid #ffcdd2;
   font-weight: bold;
-  color: #c62828;
+  color: #c62828; 
   padding-left: 1rem;
   border-radius: 6px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 /* ✅ 제출 버튼 */
@@ -102,18 +111,17 @@
   display: block;
   background-color: #66bb6a;
   color: white;
-  font-size: 1.3rem;
-  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  padding: 0.9rem 2.5rem;
   border: none;
   border-radius: 999px;
   cursor: pointer;
   font-weight: bold;
-  margin: 2rem auto 0;
-  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+  margin: 2.5rem auto 0;
+  box-shadow: 0 4px 12px rgba(102, 187, 106, 0.25);
   transition: background-color 0.3s ease, transform 0.2s ease;
   text-align: center;
 }
-
 .senior-test-submit-btn:hover {
   background-color: #388e3c;
   transform: translateY(-2px);
@@ -123,12 +131,11 @@
 .senior-test-speak-btn {
   all: unset;
   cursor: pointer;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: #66bb6a;
-  margin-left: 0.6rem;
+  margin-left: 0.5rem;
   transition: color 0.2s ease;
 }
-
 .senior-test-speak-btn:hover {
   color: #2e7d32;
 }

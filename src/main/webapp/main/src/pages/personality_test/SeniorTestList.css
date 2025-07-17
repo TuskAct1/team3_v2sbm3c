@@ -1,101 +1,149 @@
 /* ✅ 전체 배경 */
-.testlist-page-bg {
+.twoweek-page-bg {
   background-color: #ffffff;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 60px 20px;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
 }
 
 /* ✅ 컨테이너 */
-.testlist-container {
-  max-width: 1000px;
+.twoweek-list-container {
+  max-width: 960px;
   margin: 0 auto;
-  padding: 0;
-  background-color: transparent;
-  box-shadow: none;
-  border-radius: 0;
 }
 
 /* ✅ 상단 제목 + 버튼 */
-.testlist-header {
+.twoweek-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 40px;
 }
 
-.testlist-header h2 {
-  font-size: 1.8rem;
-  color: #66bb6a;
+.twoweek-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4caf50;
   margin: 0;
 }
 
-/* ✅ 테이블 스타일 */
-.testlist-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1rem;
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(102, 187, 106, 0.1);
-}
-
-.testlist-table th,
-.testlist-table td {
-  padding: 1rem;
-  text-align: center;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.testlist-table thead {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  font-weight: bold;
-}
-
-/* ✅ 위험도 강조 행 (예: 점수 높음) */
-.high-risk-row {
-  background-color: #fff3e0;
-  color: #ef6c00;
-  font-weight: bold;
-}
-
-/* ✅ 삭제 버튼 */
-.testlist-table button {
-  background-color: #e53935;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.testlist-table button:hover {
-  background-color: #b71c1c;
-}
-
-/* ✅ 데이터 없음 */
-.empty-row {
-  text-align: center;
-  font-size: 1.1rem;
-  padding: 30px;
-  color: #999999;
-}
-
-/* ✅ 공통 버튼 (상단 버튼 등) */
 .small-btn {
   background-color: #66bb6a;
   color: white;
-  font-size: 0.9rem;
-  padding: 0.4rem 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: bold;
+  font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .small-btn:hover {
-  background-color: #43a047;
+  background-color: #4caf50;
+}
+
+/* ✅ 테이블 전체 */
+.twoweek-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
+.twoweek-list-table th,
+.twoweek-list-table td {
+  text-align: center;
+  padding: 12px 12px;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+/* ✅ 테이블 헤더 */
+.twoweek-list-table thead {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+/* ✅ 위험도에 따른 배경 */
+.low-risk {
+  background-color: #e8f5e9; /* 연초록 */
+}
+
+.mild-risk {
+  background-color: #fff8e1; /* 연노랑 */
+}
+
+.moderate-risk {
+  background-color: #fff3e0; /* 주황빛 */
+}
+
+.high-risk {
+  background-color: #ffebee; /* 연빨강 */
+  color: #c62828;             /* 진한 빨강 글자색 */
+  font-weight: 700;           /* 글자 굵게 */
+}
+
+/* ✅ 삭제 버튼 */
+.twoweek-list-table button {
+  background-color: #ef5350;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.twoweek-list-table button:hover {
+  background-color: #c62828;
+}
+
+/* ✅ 결과 없음 */
+.empty-row {
+  text-align: center;
+  padding: 40px 0;
+  font-size: 18px;
+  color: #888;
+}
+
+/* ✅ 페이징 영역 */
+.pagination {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:hover {
+  background-color: #e0f2f1;
+}
+
+.pagination button:disabled {
+  color: #aaa;
+  cursor: default;
+}
+
+.pagination .active-page {
+  background-color: #66bb6a;
+  color: white;
+  border-color: #4caf50;
 }

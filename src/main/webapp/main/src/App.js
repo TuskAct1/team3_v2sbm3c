@@ -13,7 +13,7 @@ import SeniorTest from './pages/personality_test/SeniorTest';
 import SeniorTestResult from './pages/personality_test/SeniorTestResult';
 import MBTITest from './pages/personality_test/MBTITest';
 import MBTIResult from './pages/personality_test/MBTIResult';
-import TwoweekQuestionnaire from './pages/personality_test/TwoweekQuestionnaire';
+import TwoweekTest from './pages/personality_test/TwoweekTest';
 import TwoweekResult from './pages/personality_test/TwoweekResult';
 import SeniorTestList from './pages/personality_test/SeniorTestList';
 import TwoweekResultList from './pages/personality_test/TwoweekResultList';
@@ -68,6 +68,9 @@ import DiaryRead from './pages/diary/DiaryRead';
 import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
+import FaqPage from './pages/faq/FaqPage';
+import FaqCreatePage from './pages/faq/FaqCreatePage';
+
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
@@ -86,7 +89,7 @@ function App() {
           <Route path="/senior_test/result" element={<SeniorTestResult />} />
           <Route path="/mbti" element={<MBTITest />} />
           <Route path="/mbti-result" element={<MBTIResult />} />
-          <Route path="/twoweek_test" element={<TwoweekQuestionnaire />} />
+          <Route path="/twoweek_test" element={<TwoweekTest />} />
           <Route path="/twoweek_test/result" element={<TwoweekResult />} />
           <Route path="/senior_test/testlist" element={<SeniorTestList />} />
           <Route path="/twoweek_test/testlist" element={<TwoweekResultList />} />
@@ -132,7 +135,10 @@ function App() {
           {/* 1:1 문의 */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/create" element={<InquiryCreatePage />} />
-          
+          {/* 자주 묻는 질문 */}
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/faq/create" element={<FaqCreatePage />} />
+
           {/* plant 관련 설정 */}
           <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
           <Route path="/plant/create" element={<PlantCreatePage />} />
@@ -156,7 +162,6 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
-
         
         </Route>
       </Routes>

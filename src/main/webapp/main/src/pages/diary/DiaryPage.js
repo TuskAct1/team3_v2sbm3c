@@ -388,6 +388,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import DiaryReadModal from './DiaryReadModal';  
 
 const emotionIcons = [
   { score: 1, icon: "😃", label: "긍정" },
@@ -415,8 +416,32 @@ function MyButton({ text, onClick }) {
   );
 }
 
-function DiaryItem({ id, emotion, content, rdate, title }) {
+function DiaryItem({ id, emotion, content, rdate, title, onClick }) {
   const navigate = useNavigate();
+<<<<<<< HEAD
+=======
+
+  const handleDelete = async (e) => {
+    e.stopPropagation(); // 카드 클릭 방지
+    try {
+      await axios.delete(`/diary/delete/${id}`);
+      alert('삭제되었습니다.');
+      window.location.reload();
+    } catch (e) {
+      alert('삭제 실패');
+    }
+  };
+
+  const handleUpdate = (e) => {
+    e.stopPropagation(); // 카드 클릭 방지
+    navigate(`/diary/update/${id}`);
+  };
+
+  const handleRead = () => {
+    onClick(id);
+  };
+
+>>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
   const emotionIcon = emotionIcons.find(e => e.score === emotion)?.icon || "😐";
 
   const handleRead = () => navigate(`/diary/read/${id}`);
@@ -442,6 +467,7 @@ function DiaryItem({ id, emotion, content, rdate, title }) {
   );
 }
 
+<<<<<<< HEAD
 function DiaryList({ diaryList }) {
   return (
     <div
@@ -452,12 +478,74 @@ function DiaryList({ diaryList }) {
       }}
     >
       {diaryList.map((it) => <DiaryItem key={it.id} {...it} />)}
+=======
+function DiaryList({ diaryList, onDiaryClick, onCreateClick }) {
+  const [sortType, setSortType] = useState('latest');
+  const [filter, setFilter] = useState('all');
+  const navigate = useNavigate();
+
+  const sortOptionList = [
+    { value: 'latest', name: '최신순' },
+    { value: 'oldest', name: '오래된순' },
+  ];
+
+  const filterOptionList = [
+    { value: 'all', name: '전체' },
+    { value: 'good', name: '좋은감정만' },
+    { value: 'bad', name: '나쁜감정만' },
+  ];
+
+  const getProcessedDiaryList = () => {
+    const filtered = diaryList.filter((it) => {
+      if (filter === 'good') return it.emotion <= 3;
+      if (filter === 'bad') return it.emotion > 3;
+      return true;
+    });
+
+    const sorted = [...filtered].sort((a, b) => {
+      const dateA = new Date(a.rdate).getTime();
+      const dateB = new Date(b.rdate).getTime();
+      return sortType === 'latest' ? dateB - dateA : dateA - dateB;
+    });
+
+    return sorted;
+  };
+
+  return (
+    <div>
+      <div style={{ marginBottom: '10px' }}>
+        <select value={sortType} onChange={(e) => setSortType(e.target.value)}>
+          {sortOptionList.map((it) => (
+            <option key={it.value} value={it.value}>{it.name}</option>
+          ))}
+        </select>
+
+        <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ marginLeft: '10px' }}>
+          {filterOptionList.map((it) => (
+            <option key={it.value} value={it.value}>{it.name}</option>
+          ))}
+        </select>
+
+        <button onClick={onCreateClick}>새 일기쓰기</button>
+      </div>
+
+      {getProcessedDiaryList().map((it) => (
+        <DiaryItem key={it.id} {...it} onClick={onDiaryClick}/>
+      ))}
+>>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
     </div>
   );
 }
 
 function DiaryPage() {
   const navigate = useNavigate();
+<<<<<<< HEAD
+=======
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const [selectedDiaryId, setSelectedDiaryId] = useState(null);
+
+>>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
   const [sortType, setSortType] = useState("latest");
@@ -479,8 +567,10 @@ function DiaryPage() {
       navigate("/login");
       return;
     }
+    fetchDiaries();
+  }, [navigate, memberno, page, curDate]); // ✅ curDate 추가
 
-    const fetchDiaries = async () => {
+  const fetchDiaries = async () => {
       try {
         const year = curDate.getFullYear();
         const month = curDate.getMonth() + 1;
@@ -489,6 +579,13 @@ function DiaryPage() {
         });
 
         const list = res.data.content || [];
+<<<<<<< HEAD
+=======
+
+        // const list = Array.isArray(res.data) ? res.data : res.data.list || [];
+        console.log(res.data);
+
+>>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
         const mapped = list.map((item) => ({
           id: item.diaryno,
           emotion: item.risk_flag,
@@ -506,9 +603,14 @@ function DiaryPage() {
       }
     };
 
+<<<<<<< HEAD
     fetchDiaries();
   }, [navigate, memberno, page, curDate]);
 
+=======
+
+  // 월 필터
+>>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
   const filteredByMonth = data.filter((item) => {
     const itemDate = new Date(item.rdate);
     return itemDate.getFullYear() === curDate.getFullYear() && itemDate.getMonth() === curDate.getMonth();
@@ -607,7 +709,26 @@ function DiaryPage() {
         <button onClick={() => navigate('/diary/create')} style={{ padding: '8px 16px', backgroundColor: '#6DBD5F', color: '#fff', border: 'none', borderRadius: '5px' }}>새 일기쓰기</button>
       </div>
 
-      <DiaryList diaryList={filteredByMonth} />
+      <DiaryList diaryList={filteredByMonth} onDiaryClick={(id) => setSelectedDiaryId(id)} onCreateClick={() => setIsCreateModalOpen(true)}/>
+
+      {selectedDiaryId && (
+        <DiaryReadModal
+          id={selectedDiaryId}
+          onClose={() => setSelectedDiaryId(null)}
+          onSuccess={(newId) => {setSelectedDiaryId(newId);}}
+        />
+      )}
+      {isCreateModalOpen && (
+        <DiaryReadModal
+          createMode
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={(newId) => {
+            setIsCreateModalOpen(false);
+            setSelectedDiaryId(newId);
+            fetchDiaries();
+          }}
+        />
+      )}
 
       <div style={{ marginTop: '40px', textAlign: 'center' }}>
         {Array.from({ length: totalPages }, (_, i) => i).map((p) => (

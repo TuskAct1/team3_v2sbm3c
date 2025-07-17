@@ -5,6 +5,8 @@
   color: #dddddd;
   text-align: center;
   border-top: 1px solid #444;
+  width: 100%; /* ✅ 전체 화면 대응 */
+  box-sizing: border-box;
 }
 
 .footer-section h3 {
@@ -15,6 +17,10 @@
 
 .footer-buttons {
   margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 
 .footer-buttons button {
@@ -31,6 +37,8 @@
   min-width: 140px; /* 버튼 크기 통일 */
   text-align: center;
   white-space: nowrap;
+  flex: 1 0 auto; /* ✅ 너무 작게 붙지 않게 */
+  max-width: 200px;
 }
 
 .footer-buttons button:hover {
@@ -43,6 +51,9 @@
   line-height: 1.6;
   margin-top: 18px;
   color: #aaa;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .footer-icons {

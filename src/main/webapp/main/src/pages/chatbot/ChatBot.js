@@ -231,6 +231,11 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     if (messageEndRef.current) messageEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  //   if (messageEndRef.current) {
+  //     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }, []);
+
   const fetchHistory = async () => {
     const res = await fetch("http://localhost:8000/chat/history", {
       method: "POST",
@@ -254,6 +259,14 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     setInput("");
     setLoading(true);
 
+    // 내가 보낸 메시지까지 스크롤!
+    setTimeout(() => {
+      if (messageEndRef.current) {
+        messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 0);
+
+    // 여기에 실제 FastAPI 서버 주소로 POST 요청
     try {
       const res = await fetch("http://localhost:8000/chat", {
         method: "POST",

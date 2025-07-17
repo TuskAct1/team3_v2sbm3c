@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.faq.FaqDAOInter">
+    <!-- 파일 등록 -->
+    <insert id="createFaqFile" parameterType="dev.mvc.faq.FaqFileVO">
+        INSERT INTO faq_file (fileno, faqno, filename, savedname, filesize, rdate)
+        VALUES (faq_file_seq.NEXTVAL, #{faqno}, #{filename}, #{savedname}, #{filesize}, SYSDATE)
+    </insert>
+
+    <!-- FAQ 파일 목록 (faqno로 조회) -->
+    <select id="selectFaqFiles" parameterType="int" resultType="dev.mvc.faq.FaqFileVO">
+        SELECT fileno, faqno, filename, savedname, filesize, rdate
+        FROM faq_file
+        WHERE faqno = #{faqno}
+        ORDER BY fileno
+    </select>
+</mapper>

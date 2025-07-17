@@ -1,0 +1,37 @@
+/* ✅ 전체 카테고리 바 영역 */
+.category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* 🔼 간격 조금 넓힘 */
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  font-size: 1.05rem; /* 🔼 전체 기본 글씨 살짝 키움 */
+}
+
+/* ✅ 카테고리 버튼 스타일 */
+.category-btn {
+  padding: 10px 22px; /* 🔼 버튼 크기 살짝 키움 */
+  background-color: #e8f5e9;  /* 연한 초록 배경 */
+  color: #388e3c;             /* 진한 초록 텍스트 */
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.05rem; /* 🔼 폰트 사이즈 키움 */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* ✅ hover 시 더 진한 초록으로 변경 */
+.category-btn:hover {
+  background-color: #c8e6c9;
+  transform: scale(1.03); /* 🔼 약간 확대 효과로 누르는 느낌 */
+}
+
+/* ✅ 선택된 버튼(active) */
+.category-btn.active {
+  background-color: #66bb6a;
+  color: white;
+  box-shadow: 0 0 0 3px #e8f5e9;
+}

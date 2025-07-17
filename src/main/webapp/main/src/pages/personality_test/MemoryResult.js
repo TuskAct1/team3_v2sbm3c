@@ -33,10 +33,10 @@ function MemoryResult() {
 
         <div className="memoryresult-buttons">
           <button className="memoryresult-btn green" onClick={() => navigate('/memory_test')}>
-            🔁 다시 검사하기
+            다시 검사하기
           </button>
           <button className="memoryresult-btn gray" onClick={() => navigate('/personality_test')}>
-            🔙 심리테스트로 돌아가기
+            자가진단 홈
           </button>
         </div>
       </div>

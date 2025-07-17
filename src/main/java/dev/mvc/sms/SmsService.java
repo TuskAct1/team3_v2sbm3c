@@ -1,4 +1,4 @@
-package dev.mvc.openai;
+package dev.mvc.sms;
 
 
 import com.google.gson.Gson;

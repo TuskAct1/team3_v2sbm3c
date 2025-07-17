@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,47 +30,68 @@ public class DiaryController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(@ModelAttribute DiaryVO diaryVO) {
 
-        String file1 = "";
-        String file1saved = "";
-        String thumb1 = "";
-
         String upDir = Tool.getUploadDir() + "diary/storage/";
         System.out.println("-> upDir: " + upDir);
 
-        MultipartFile mf = diaryVO.getFile1MF();
-        if (mf != null && !mf.isEmpty()) {
-            file1 = mf.getOriginalFilename();
-            System.out.println("-> 원본 파일명: " + file1);
+        List<MultipartFile> files = diaryVO.getFiles();
 
-            long size1 = mf.getSize();
-            if (size1 > 0 && Tool.checkUploadFile(file1)) {
-                // 저장 처리
-                file1saved = Upload.saveFileSpring(mf, upDir);
+        // 여러 파일명 저장용
+        List<String> originalNames = new ArrayList<>();
+        List<String> savedNames = new ArrayList<>();
+        List<String> thumbs = new ArrayList<>();
+        List<String> sizes = new ArrayList<>();
 
-                if (Tool.isImage(file1saved)) {
-                    thumb1 = Tool.preview(upDir, file1saved, 200, 150);
+        if (files != null && !files.isEmpty()) {
+            System.out.println("-> 업로드된 파일 수: " + files.size());
+
+            for (MultipartFile mf : files) {
+                if (mf != null && !mf.isEmpty()) {
+                    String originalFileName = mf.getOriginalFilename();
+                    System.out.println("-> 원본 파일명: " + originalFileName);
+
+                    long size = mf.getSize();
+                    if (size > 0 && Tool.checkUploadFile(originalFileName)) {
+                        // 저장
+                        String savedFileName = Upload.saveFileSpring(mf, upDir);
+                        System.out.println("-> 저장된 파일명: " + savedFileName);
+
+                        String thumb = "";
+                        if (Tool.isImage(savedFileName)) {
+                            thumb = Tool.preview(upDir, savedFileName, 200, 150);
+                        }
+
+                        // 리스트에 누적
+                        originalNames.add(originalFileName);
+                        savedNames.add(savedFileName);
+                        thumbs.add(thumb);
+                        sizes.add(String.valueOf(size));
+
+                    } else {
+                        System.out.println("-> 허용되지 않는 파일형식: " + originalFileName);
+                    }
                 }
-
-                diaryVO.setFile1(file1);
-                diaryVO.setFile1saved(file1saved);
-                diaryVO.setThumb1(thumb1);
-                diaryVO.setSize1(size1);
-
-            } else {
-                System.out.println("-> 허용되지 않는 파일형식");
             }
+
+            // ✅ 여러 개를 콤마로 합쳐서 VO에 세팅 (기존 테이블 설계 유지)
+            diaryVO.setFile1(String.join(",", originalNames));
+            diaryVO.setFile1saved(String.join(",", savedNames));
+            diaryVO.setThumb1(String.join(",", thumbs));
+            diaryVO.setSize1_label(String.join(",", sizes));
+
         } else {
             System.out.println("-> 파일 없이 글만 등록");
         }
 
         // DB 저장
         int cnt = this.diaryProc.create(diaryVO);
+
         if (cnt == 1) {
             return ResponseEntity.ok("일기 등록 성공");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("일기 등록 실패");
         }
     }
+
 
     @GetMapping("/list_all")
     public ResponseEntity<?> list_all(@RequestParam int memberno) {
@@ -98,41 +120,87 @@ public class DiaryController {
             uploadFolder.mkdirs();
         }
 
-        // ▶ 기존 DB에 저장된 내용 조회
+        // ▶ 기존 DB 정보 조회
         DiaryVO oldDiary = diaryProc.read(diaryno);
 
-        MultipartFile mf = diaryVO.getFile1MF();
-        if (mf != null && !mf.isEmpty()) {
-            // ✅ 새 파일이 있다면 기존 파일 삭제
-            Tool.deleteFile(upDir, oldDiary.getFile1saved());
-            Tool.deleteFile(upDir, oldDiary.getThumb1());
+        // ▶ 기존 파일 정보
+        List<String> existingFiles = oldDiary.getFile1saved() != null && !oldDiary.getFile1saved().isEmpty()
+                ? new ArrayList<>(List.of(oldDiary.getFile1saved().split(",")))
+                : new ArrayList<>();
 
-            String file1 = mf.getOriginalFilename();
-            long size1 = mf.getSize();
+        List<String> existingThumbs = oldDiary.getThumb1() != null && !oldDiary.getThumb1().isEmpty()
+                ? new ArrayList<>(List.of(oldDiary.getThumb1().split(",")))
+                : new ArrayList<>();
 
-            if (Tool.checkUploadFile(file1)) {
-                String file1saved = Upload.saveFileSpring(mf, upDir);
-                String thumb1 = "";
+        // ✅ 삭제 요청 처리
+        List<String> deletedFiles = diaryVO.getDeletedFiles();
+        if (deletedFiles != null && !deletedFiles.isEmpty()) {
+            System.out.println("✅ 삭제 요청된 기존 파일들: " + deletedFiles);
 
-                if (Tool.isImage(file1saved)) {
-                    thumb1 = Tool.preview(upDir, file1saved, 200, 150);
-                }
-
-                diaryVO.setFile1(file1);
-                diaryVO.setFile1saved(file1saved);
-                diaryVO.setThumb1(thumb1);
-                diaryVO.setSize1(size1);
-            } else {
-                System.out.println("❌ 업로드 불가능한 파일 형식");
+            for (String filename : deletedFiles) {
+                Tool.deleteFile(upDir, filename.trim());
             }
-        } else {
-            // ✅ 새 파일 업로드 없으면 기존 정보 유지
-            diaryVO.setFile1(oldDiary.getFile1());
-            diaryVO.setFile1saved(oldDiary.getFile1saved());
-            diaryVO.setThumb1(oldDiary.getThumb1());
-            diaryVO.setSize1(oldDiary.getSize1());
+
+            existingFiles.removeIf(f -> deletedFiles.contains(f.trim()));
+            existingThumbs.removeIf(t -> {
+                String tName = new File(t).getName();
+                return deletedFiles.contains(tName);
+            });
         }
 
+        // ✅ 새 업로드된 파일 처리
+        List<MultipartFile> files = diaryVO.getFiles();
+        boolean hasNewFiles = (files != null && !files.isEmpty() && files.stream().anyMatch(f -> !f.isEmpty()));
+
+        List<String> newSavedNames = new ArrayList<>();
+        List<String> newThumbs = new ArrayList<>();
+
+        if (hasNewFiles) {
+            System.out.println("✅ 새 파일 업로드 감지");
+
+            for (MultipartFile mf : files) {
+                if (mf != null && !mf.isEmpty()) {
+                    String originalFileName = mf.getOriginalFilename();
+                    long size = mf.getSize();
+
+                    if (Tool.checkUploadFile(originalFileName)) {
+                        String savedFileName = Upload.saveFileSpring(mf, upDir);
+                        String thumb = "";
+
+                        if (Tool.isImage(savedFileName)) {
+                            thumb = Tool.preview(upDir, savedFileName, 200, 150);
+                        }
+
+                        newSavedNames.add(savedFileName);
+                        newThumbs.add(thumb);
+                    } else {
+                        System.out.println("❌ 업로드 불가능한 파일 형식: " + originalFileName);
+                    }
+                }
+            }
+        }
+
+        // ✅ 최종 저장할 리스트 구성
+        // 🟢 클라이언트에서 남길 것 보내준 remainFiles (삭제 후 화면에 남은 기존 이미지)
+        List<String> finalThumbNames = diaryVO.getRemainFiles() != null ? diaryVO.getRemainFiles() : new ArrayList<>();
+
+        // 🟢 새로 업로드한 썸네일 추가
+        if (newThumbs != null && !newThumbs.isEmpty()) {
+            finalThumbNames.addAll(newThumbs);
+        }
+
+        // ✅ 파일1saved도 같은 방식
+        List<String> finalFileSavedNames = diaryVO.getRemainFilesSaved() != null ? diaryVO.getRemainFilesSaved() : new ArrayList<>();
+        if (newSavedNames != null && !newSavedNames.isEmpty()) {
+            finalFileSavedNames.addAll(newSavedNames);
+        }
+
+        // ✅ VO에 최종 반영
+        diaryVO.setFile1saved(String.join(",", finalFileSavedNames));
+        diaryVO.setThumb1(String.join(",", finalThumbNames));
+        diaryVO.setDiaryno(diaryno);
+
+        // ✅ DB 수정
         int result = diaryProc.update(diaryVO);
         System.out.println("✅ update() → 결과: " + result);
 
@@ -142,6 +210,7 @@ public class DiaryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("수정 실패");
         }
     }
+
 
 
     // 5. 일기 삭제

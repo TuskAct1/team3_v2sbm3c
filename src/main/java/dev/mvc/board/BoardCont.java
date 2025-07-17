@@ -55,9 +55,8 @@ public class BoardCont {
         map.put("now_page", now_page);
         map.put("searchType", searchType);
 
-//        ArrayList<BoardVO> boardList = boardProc.list_all_search_paging(map);
         List<BoardVO> boardList = boardProc.listAllWithSearch(map);
-//        int totalCount = boardProc.list_all_search_count(map);
+        System.out.println(boardList);
         int totalCount = boardProc.countAllWithSearch(map);
 
         // 페이지네이션 정보 계산 (예: 전체 페이지, 현재 페이지 등)
@@ -268,15 +267,57 @@ public class BoardCont {
     }
 
     /**
-     * 게시글 수정 처리
+     * 게시글 수정 처리 (파일 + 카테고리 포함)
      */
-    @PutMapping("/update")
+    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateProcess(@ModelAttribute("boardVO") BoardVO boardVO) {
-        // 게시글 수정
-        boardProc.update(boardVO);
+        // --------------------------------------------------------------------
+        // 1. 기존 게시글 정보 불러오기 (파일 삭제나 비교용으로 필요하면)
+        // --------------------------------------------------------------------
+        BoardVO existingVO = boardProc.read(boardVO.getBoardno());
 
-        return ResponseEntity.ok("수정 완료");
+        // --------------------------------------------------------------------
+        // 2. 파일 업로드 처리
+        // --------------------------------------------------------------------
+        MultipartFile mf = boardVO.getFile1MF();
+        if (mf != null && !mf.isEmpty()) {
+            String file1 = mf.getOriginalFilename();     // 원본 파일명
+            long size1 = mf.getSize();                   // 크기
+
+            if (Tool.checkUploadFile(file1)) { // 업로드 가능 파일이면
+                String upDir = Contents.getUploadDir(); // 업로드 폴더 경로
+                String file1saved = Upload.saveFileSpring(mf, upDir); // 저장
+                String thumb1 = "";
+
+                if (Tool.isImage(file1saved)) {
+                    thumb1 = Tool.preview(upDir, file1saved, 200, 150);
+                }
+
+                // VO에 설정
+                boardVO.setFile1(file1);
+                boardVO.setFile1saved(file1saved);
+                boardVO.setThumb1(thumb1);
+                boardVO.setSize1(size1);
+            }
+        } else {
+            // 기존 파일 유지 (안 바꾼 경우)
+            boardVO.setFile1(existingVO.getFile1());
+            boardVO.setFile1saved(existingVO.getFile1saved());
+            boardVO.setThumb1(existingVO.getThumb1());
+            boardVO.setSize1(existingVO.getSize1());
+        }
+
+        // --------------------------------------------------------------------
+        // 3. 수정 처리
+        // --------------------------------------------------------------------
+        int result = boardProc.update(boardVO);
+        if (result == 1) {
+            return ResponseEntity.ok("수정 완료");
+        } else {
+            return ResponseEntity.status(500).body("수정 실패");
+        }
     }
+
     
     /**
      * 게시판 카테고리 목록만 반환

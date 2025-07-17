@@ -4,23 +4,23 @@ import PieChart from '../emotion_report/PieChart';
 import LineChart from '../emotion_report/LineChart';
 import './EmotionReportPage.css';
 
-const korToEng = {
-  긍정: 'positive',
-  부정: 'negative',
-  중립: 'neutral',
-  불안: 'anxious',
-  우울: 'depressed'
-};
+// const korToEng = {
+//   긍정: 'positive',
+//   부정: 'negative',
+//   중립: 'neutral',
+//   불안: 'anxious',
+//   우울: 'depressed'
+// };
 
-function convertTrendDataToEnglish(data) {
-  return data.map(item => {
-    const converted = { reportPeriod: item.reportPeriod };
-    Object.keys(korToEng).forEach(kor => {
-      converted[korToEng[kor]] = item[kor] ?? 0;
-    });
-    return converted;
-  });
-}
+// function convertTrendDataToEnglish(data) {
+//   return data.map(item => {
+//     const converted = { reportPeriod: item.reportPeriod };
+//     Object.keys(korToEng).forEach(kor => {
+//       converted[korToEng[kor]] = item[kor] ?? 0;
+//     });
+//     return converted;
+//   });
+// }
 
 const EmotionReportPage = () => {
   // 탭
@@ -53,10 +53,10 @@ const EmotionReportPage = () => {
 
   // 👉 감정 변화 트렌드 불러오기
   useEffect(() => {
-    if (mainTab === "TREND" && memberno) {
+    if (memberno) {
       loadAllTrendData();
     }
-  }, [mainTab]);
+  }, [memberno]);
 
   useEffect(() => {
     if (weeklyAverage) {
@@ -236,9 +236,9 @@ const EmotionReportPage = () => {
   function renderComparisonTable(data) {
     if (!data) return null;
     return (
-      <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", width: "90%" }}>
+      <table cellPadding="8" style={{ borderCollapse: "collapse", width: "100%", fontSize: "18px" }}>
         <thead>
-          <tr>
+          <tr style={{ backgroundColor: "#f5f5f5" }}>
             <th>구분</th>
             <th>긍정</th>
             <th>부정</th>
@@ -264,9 +264,9 @@ const EmotionReportPage = () => {
   function renderTestResultsTable(data) {
     if (!data || data.length === 0) return <p>데이터가 없습니다.</p>;
     return (
-      <table border="1" cellPadding="8" style={{ borderCollapse: "collapse", width: "90%" }}>
+      <table cellPadding="8" style={{ borderCollapse: "collapse", width: "100%", fontSize: "18px" }}>
         <thead>
-          <tr>
+          <tr style={{ backgroundColor: "#f5f5f5" }}>
             <th>실행일</th>
             <th>결과 내용</th>
             <th>점수</th>
@@ -290,73 +290,88 @@ const EmotionReportPage = () => {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>📊 Emotion Report Page</h2>
-
-      {/* 상단 메인 탭 */}
-      <div style={{ marginBottom: "20px" }}>
-        <button onClick={() => setMainTab("WEEKLY")} style={mainTab === "WEEKLY" ? activeStyle : buttonStyle}>주간 보기</button>
-        <button onClick={() => setMainTab("MONTHLY")} style={mainTab === "MONTHLY" ? activeStyle : buttonStyle}>월간 보기</button>
-        <button onClick={() => setMainTab("TREND")} style={mainTab === "TREND" ? activeStyle : buttonStyle}>감정 변화 보기</button>
+    <div className="page-container">
+      <div className="report-header">
+        <h2>감정분석 리포트</h2>
+        <p className="subtitle">“괜찮아요, 어떤 감정이든 다 괜찮습니다.”</p>
+        <p className="description">토닥이가 조심스럽게 당신의 마음을 들여다보았어요.</p>
       </div>
 
+      {/* 상단 메인 탭 */}
+      <div className="toggle-wrapper">
+        <button className={mainTab === "WEEKLY" ? "active" : ""} onClick={() => setMainTab("WEEKLY")}>주간</button>
+        <button className={mainTab === "MONTHLY" ? "active" : ""} onClick={() => setMainTab("MONTHLY")}>월간</button>
+      </div>
+
+      <hr className="divider" />
+
       {mainTab === "WEEKLY" && weeklyAverage && (
-        <div style={flexContainer}>
-          <div style={chartArea}>
-            <h3>✅ 주간 평균</h3>
-            <PieChart data={weeklyAverage} />
-          </div>
-          <div style={sideArea}>
-            <h3>✅ 주간 표</h3>
-            {renderComparisonTable(weeklyAverage)}
-            <div style={{ marginTop: "30px" }}>
-              <h3>✅ 심리테스트 결과</h3>
-              {renderTestResultsTable(testResults)}
+        <div className="emotion-wrapper">
+          <p style={{ paddingTop: "5px", fontSize: "20px"}}>{weeklySummary || "총평을 생성 중입니다..."}</p>
+          <div className="emotion-top">
+
+            {/* ✅ 카드: 주간 평균 원그래프 */}
+            <div className="section card">
+              <PieChart data={weeklyAverage} />
             </div>
 
-            <div style={{ marginTop: "30px" }}>
-              <h3>✅ 총평</h3>
-              <p>{weeklySummary || "총평을 생성 중입니다..."}</p>
+            {/* ✅ 주간 표 + 심리테스트 결과 묶음 */}
+            <div className="side-area">
+              <div className="section card weekly-table-card">
+                <h3 style={{ marginBottom: '50px' }}>주간 표</h3>
+                {renderComparisonTable(weeklyAverage)}
+              </div>
+
+              <div className="section card test-result-card">
+                <h3 style={{ marginBottom: '50px' }}>심리테스트 결과</h3>
+                {renderTestResultsTable(testResults)}
+              </div>
+            </div>
+          </div>
+
+          <div className="emotion-bottom">
+            <h3 className="chart-title">주간 감정 변화 보기</h3>
+            <div className="chart-card">
+              <div className="chart-container">
+                <LineChart data={weeklyTrendData} mode="WEEKLY" />
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {mainTab === "MONTHLY" && monthlyAverage && (
-        <div style={flexContainer}>
-          <div style={chartArea}>
-            <h3>✅ 월간 평균</h3>
-            <PieChart data={monthlyAverage} />
-          </div>
-          <div style={sideArea}>
-            <h3>✅ 월간 표</h3>
-            {renderComparisonTable(monthlyAverage)}
-            <div style={{ marginTop: "30px" }}>
-              <h3>✅ 심리테스트 결과</h3>
-              {renderTestResultsTable(testResults)}
-            </div>
-            <div style={{ marginTop: "30px" }}>
-              <h3>✅ 총평</h3>
-              <p>{monthlySummary || "총평을 생성 중입니다..."}</p>
-            </div>
-          </div>
-        </div>
-      )}
+        <div className="emotion-wrapper">
+          <p style={{ paddingTop: "5px", fontSize: "20px"}}>{monthlySummary || "총평을 생성 중입니다..."}</p>
+          <div className="emotion-top">
 
-      {mainTab === "TREND" && (
-        <div className="trend-section">
-          <h3 className="trend-title">✅ 감정 변화 보기 (주간 + 월간)</h3>
-          <div className="trend-container">
-            <div className="trend-card">
-              <h4 className="trend-card-header">📈 주간 감정 변화</h4>
-              <LineChart data={weeklyTrendData} mode="WEEKLY" />
+            {/* ✅ 카드: 주간 평균 원그래프 */}
+            <div className="section card">
+              <PieChart data={monthlyAverage} />
             </div>
-            <div className="trend-card">
-              <h4 className="trend-card-header">📈 월간 감정 변화</h4>
-              <LineChart data={monthlyTrendData} mode="MONTHLY" />
+
+            {/* ✅ 주간 표 + 심리테스트 결과 묶음 */}
+            <div className="side-area">
+              <div className="section card weekly-table-card">
+                <h3 style={{ marginBottom: '50px' }}>주간 표</h3>
+                {renderComparisonTable(monthlyAverage)}
+              </div>
+
+              <div className="section card test-result-card">
+                <h3 style={{ marginBottom: '50px' }}>심리테스트 결과</h3>
+                {renderTestResultsTable(testResults)}
+              </div>
             </div>
           </div>
 
+          <div className="emotion-bottom">
+            <h3 className="chart-title">주간 감정 변화 보기</h3>
+            <div className="chart-card">
+              <div className="chart-container">
+                <LineChart data={monthlyTrendData} mode="MONTHLY" />
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

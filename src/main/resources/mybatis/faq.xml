@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.faq.FaqDAOInter">
+    <!-- FAQ 등록 -->
+    <insert id="createFaq" parameterType="dev.mvc.faq.FaqVO" useGeneratedKeys="true" keyProperty="faqno" keyColumn="faqno">
+        INSERT INTO faq (faqno, adminno, question, answer, rdate)
+        VALUES (faq_seq.NEXTVAL, #{adminno}, #{question}, #{answer}, SYSDATE)
+    </insert>
+
+    <!-- FAQ 1개 조회 -->
+    <select id="selectFaq" parameterType="int" resultType="dev.mvc.faq.FaqVO">
+        SELECT faqno, adminno, question, answer, rdate
+        FROM faq
+        WHERE faqno = #{faqno}
+    </select>
+
+    <!-- FAQ + 파일 목록 (JOIN, 파일은 1개만 보여줄 때/대표용) -->
+    <select id="allFaqList" resultType="dev.mvc.faq.FaqVO">
+        SELECT faqno, adminno, question, answer, rdate
+        FROM faq
+        ORDER BY faqno DESC
+    </select>
+
+    <delete id="deleteFaq" parameterType="int">
+        DELETE FROM faq
+        WHERE faqno = #{faqno}
+    </delete>
+
+    <delete id="deleteFiles" parameterType="int">
+        DELETE FROM faq_file
+        WHERE faqno = #{faqno}
+    </delete>
+
+</mapper>

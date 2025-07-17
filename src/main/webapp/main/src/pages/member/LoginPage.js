@@ -230,6 +230,7 @@ const LoginPage = () => {
       passwd_save: !!savedPasswd,
     }));
     window.scrollTo({ top: 0 });
+
   }, []);
 
   const handleChange = (e) => {
@@ -280,7 +281,11 @@ const LoginPage = () => {
       alert("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
   };
-  
+
+
+  const handleCancel = () => {
+    window.history.back();
+  };
 
   return (
     <div className="signup-page-full">
@@ -332,11 +337,15 @@ const LoginPage = () => {
           <button type="submit" ref={btnSendRef} className="submit-btn">
             로그인
           </button>
+          </form>
 
           <div className="login-find-links" style={{ marginTop: "12px", textAlign: "center" }}>
             <a href="/find_passwd">비밀번호 찾기</a> <span style={{ margin: "0 8px" }}>|</span>
             <a href="/signup">회원 가입</a> <span style={{ margin: "0 8px" }}>|</span>
             <a href="/admin_login">관리자 로그인</a>
+          {/* 가운데 "또는" */}
+          <div className="login-divider-wrapper">
+            <div className="login-divider">또는</div>
           </div>
 
           <hr style={{ margin: "24px 0" }} />
@@ -366,9 +375,9 @@ const LoginPage = () => {
                 </a>
               </div>
             </div>
-        </form>
+          </div>
+        </div>
       </div>
-    </div>
   );
 };
 
