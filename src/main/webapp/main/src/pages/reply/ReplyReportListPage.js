@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../../styles/MemberListPage.css';
-import { FaTrash } from 'react-icons/fa';
+import '../../styles/ReplyReportListPage.css';
 
 function ReplyReportListPage() {
   const [activeTab, setActiveTab] = useState('reply');
@@ -14,37 +13,17 @@ function ReplyReportListPage() {
   // 관리자 확인용
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const tableRef = useRef(null);
-
-
-  useEffect(() => {
-    fetchReplyReports();
-    fetchBoardReports();
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        tableRef.current?.classList.add('fade-in');
-      }
-    }, { threshold: 0.1 });
-
-    if (tableRef.current) observer.observe(tableRef.current);
-    return () => {
-      if (tableRef.current) observer.unobserve(tableRef.current);
-    };
-  }, [activeTab]);
-
-  const fetchReplyReports = async () => {
+  // 댓글 신고 그룹 불러오기 (댓글별로 묶어서)
+  async function fetchGroupedReplyReports() {
     try {
       const res = await axios.get('/replyReport/grouped');
       console.log('✅ 서버 응답 replyGroups:', res.data); // 여기에 찍기
       setReplyGroups(res.data);
     } catch (err) {
-      alert('댓글 신고 목록 불러오기 실패');
+      console.error('댓글 신고 목록 불러오기 실패:', err);
+      alert('댓글 신고 목록 불러오기에 실패했습니다.');
     }
-  };
-
+  }
 
   async function fetchGroupedBoardReports() {
   try {
@@ -73,7 +52,6 @@ function ReplyReportListPage() {
   }, []);
 
 
-
   const toggleExpand = (id, type) => {
   if (type === 'reply') {
     setExpandedReplyId(expandedReplyId === id ? null : id);
@@ -82,14 +60,6 @@ function ReplyReportListPage() {
   }
 };
 
-  const fetchBoardReports = async () => {
-    try {
-      const res = await axios.get('/boardReport/list');
-      setBoardReports(res.data);
-    } catch (err) {
-      alert('게시글 신고 목록 불러오기 실패');
-    }
-  };
 
 
   const handleDelete = async (id, type) => {
@@ -98,7 +68,6 @@ function ReplyReportListPage() {
         alert('관리자만 게시글을 삭제할 수 있습니다.');
         return;
       }
-
 
       const confirm = window.confirm('정말로 게시글을 삭제하시겠습니까?');
       if (!confirm) return;
@@ -123,32 +92,23 @@ function ReplyReportListPage() {
       } catch (err) {
         console.error(err);
         alert('댓글 삭제 중 오류 발생');
-
-    if (window.confirm(`${type === 'reply' ? '댓글' : '게시글'} 신고번호 ${id}를 삭제할까요?`)) {
-      try {
-        await axios.delete(url);
-        alert('삭제 완료');
-        type === 'reply' ? fetchReplyReports() : fetchBoardReports();
-      } catch (err) {
-        alert('삭제 중 오류');
-
       }
     }
   };
 
   return (
-    <div className="member-page">
-      <h2 className="member-title">신고 리스트</h2>
+    <div style={{ padding: '20px' }}>
+      <h2>신고 리스트</h2>
 
-      <div className="search-bar">
+      <div style={{ marginBottom: '20px' }}>
         <button
-          onClick={() => { setActiveTab('reply'); setExpandedReplyId(null); }}
+          onClick={() => setActiveTab('reply')}
           className={activeTab === 'reply' ? 'active-tab' : ''}
         >
           댓글 신고
         </button>
         <button
-          onClick={() => { setActiveTab('board'); setExpandedReplyId(null); }}
+          onClick={() => setActiveTab('board')}
           className={activeTab === 'board' ? 'active-tab' : ''}
         >
           게시글 신고
@@ -157,7 +117,6 @@ function ReplyReportListPage() {
 
       {activeTab === 'reply' && (
         <div>
-
           {replyGroups.map(group => (
             <div key={group.replyno} style={{ marginBottom: '16px', border: '1px solid #ccc', padding: '10px' }}>
               <div style={{ fontWeight: 'bold' }}>
@@ -182,69 +141,13 @@ function ReplyReportListPage() {
                   </ul>
                 </div>
               )}
-
-          <table className="member-table" ref={tableRef}>
-            <thead>
-              <tr>
-                <th>댓글번호</th>
-                <th>신고 수</th>
-                <th>작성자</th>
-                <th>댓글 내용</th>
-                <th>관리</th>
-              </tr>
-            </thead>
-            <tbody>
-              {replyGroups.map(group => (
-                <tr key={group.replyno}>
-                  <td>{group.replyno}</td>
-                  <td>{group.reportCount}</td>
-                  <td>{group.nickname} (ID: {group.id})</td>
-                  <td>{group.content}</td>
-                  <td>
-                    <button
-                      className="icon-btn delete"
-                      onClick={() => setExpandedReplyId(prev => prev === group.replyno ? null : group.replyno)}
-                    >
-                      {expandedReplyId === group.replyno ? '접기' : '펼치기'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {expandedReplyId && (
-            <div className="myinquiry-detail animate-fade">
-              <div className="myinquiry-detail-header">
-                <h4>📋 댓글 신고 상세 내역</h4>
-              </div>
-              <div className="myinquiry-detail-content">
-                {replyGroups
-                  .find(g => g.replyno === expandedReplyId)
-                  ?.reports.map(r => (
-                    <div key={r.replyReportno} style={{ marginBottom: '10px' }}>
-                      - 신고자: {r.reporter_nickname} (ID: {r.reporter_id})<br />
-                      사유: {r.reason}<br />
-                      날짜: {r.report_date}
-                      <button
-                        className="icon-btn delete"
-                        style={{ marginLeft: '10px' }}
-                        onClick={() => handleDelete(r.replyReportno, 'reply')}
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  ))}
-              </div>
-
             </div>
-          )}
+          ))}
         </div>
       )}
 
       {activeTab === 'board' && (
         <div>
-
           {boardGroups.map(group => (
             <div key={group.boardno} style={{ marginBottom: '16px', border: '1px solid #ccc', padding: '10px' }}>
               <div style={{ fontWeight: 'bold' }}>
@@ -271,41 +174,6 @@ function ReplyReportListPage() {
               )}
             </div>
           ))}
-
-          {boardReports.length > 0 ? (
-            <table className="member-table" ref={tableRef}>
-              <thead>
-                <tr>
-                  <th>신고번호</th>
-                  <th>게시글번호</th>
-                  <th>신고자</th>
-                  <th>신고일</th>
-                  <th>관리</th>
-                </tr>
-              </thead>
-              <tbody>
-                {boardReports.map(report => (
-                  <tr key={report.board_reportno}>
-                    <td>{report.board_reportno}</td>
-                    <td>{report.boardno}</td>
-                    <td>{report.memberno}</td>
-                    <td>{report.rdate?.slice(0, 10)}</td>
-                    <td>
-                      <button
-                        className="icon-btn delete"
-                        onClick={() => handleDelete(report.board_reportno, 'board')}
-                      >
-                        <FaTrash />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>등록된 게시글 신고가 없습니다.</p>
-          )}
-
         </div>
       )}
     </div>

@@ -1,10 +1,5 @@
 /* SignupForm.css - 약관 체크박스 스타일 + 숨겨진 입력 필드 보이게 수정 */
 
-body {
-  background-color: #f7f7fb;
-  font-family: 'Pretendard', sans-serif;
-}
-
 /* 🚨 강제 스타일 삽입 */
 .signup-page-full {
   width: 100vw !important;
@@ -31,7 +26,6 @@ body {
   margin-bottom: 10px;
 }
 
-<<<<<<< HEAD
 .signup-subtitle {
   text-align: center;
   font-size: 16px;
@@ -184,10 +178,9 @@ body {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 10px;
-=======
+
 /* 보호자 입력 폼 */
-.guardian-box {
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
+
   border: 1px solid #ddd;
 }
 

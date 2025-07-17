@@ -25,9 +25,6 @@ public interface BoardReportDAOInter {
     public BoardReportVO read(int boardReportno);
 
     /** 게시글 추천 삭제 (신고 누적시 삭제용) */
-
-    boolean delete_all(@Param("boardno") int boardno);
-
     public boolean delete_all(@Param("boardno") int boardno);
 
     List<Map<String, Object>> groupedBoardReports();

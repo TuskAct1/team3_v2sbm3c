@@ -62,26 +62,6 @@ function ReplySection({ boardno }) {
 
 
 
-    try {
-      const formData = new FormData();
-      formData.append('boardno', boardno);
-      formData.append('content', newReply);
-      if (replyImage) formData.append('file', replyImage);  // ✅ 이미지 포함
-
-
-      await axios.post('/reply/create', {
-        boardno: boardno,
-
-      await axios.post('/reply/create', {
-        boardno,
-
-        content: newReply
-      }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-
-
   // 게시판 번호 또는 페이지 변경 시 데이터 로드
 useEffect(() => {
   console.log("reply")
@@ -91,6 +71,46 @@ useEffect(() => {
 
 
 
+  // const handleReplySubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!newReply.trim()) return;
+
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append('boardno', boardno);
+  //     formData.append('content', newReply);
+  //     if (replyImage) formData.append('file', replyImage);  // ✅ 이미지 포함
+
+
+  //     await axios.post(
+  //       '/reply/create',
+  //       {
+  //         boardno,
+  //         content: newReply,
+  //         parent_replyno: replyTo,
+  //         level: replyLevel
+  //       },
+  //       {
+  //         withCredentials: true,
+  //         headers: { 'Content-Type': 'application/json' }
+  //       }
+  //     );
+
+  //     await axios.post('/reply/create', {
+  //       boardno,
+  //       content: newReply
+  //     }, {
+  //       headers: { 'Content-Type': 'application/json' }
+  //     });
+
+
+  //     setNewReply('');
+  //     fetchReplies(1);
+  //   } catch (err) {
+  //     console.error('댓글 등록 실패:', err);
+  //     alert('로그인이 필요합니다.');
+  //   }
+  // };
 
 const handleReplySubmit = async (e, isReply = false, parentReplyno = null, level = 1) => {
   e.preventDefault();
