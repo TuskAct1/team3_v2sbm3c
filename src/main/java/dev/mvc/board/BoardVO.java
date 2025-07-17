@@ -94,8 +94,10 @@ public class BoardVO {
     
     /** 메인 이미지 크기 */
     private long size1 = 0;
+
+
+    private String nickname;       // 작성자 닉네임
+    private String categoryname;   // 카테고리 이름
     
-    private String nickname;  
-    private String categoryname;  
 }
 

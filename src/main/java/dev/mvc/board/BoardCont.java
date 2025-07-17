@@ -55,9 +55,8 @@ public class BoardCont {
         map.put("now_page", now_page);
         map.put("searchType", searchType);
 
-//        ArrayList<BoardVO> boardList = boardProc.list_all_search_paging(map);
         List<BoardVO> boardList = boardProc.listAllWithSearch(map);
-//        int totalCount = boardProc.list_all_search_count(map);
+        System.out.println(boardList);
         int totalCount = boardProc.countAllWithSearch(map);
 
         // 페이지네이션 정보 계산 (예: 전체 페이지, 현재 페이지 등)

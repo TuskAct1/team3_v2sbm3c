@@ -68,6 +68,9 @@ import DiaryRead from './pages/diary/DiaryRead';
 import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
+import FaqPage from './pages/faq/FaqPage';
+import FaqCreatePage from './pages/faq/FaqCreatePage';
+
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
@@ -133,6 +136,10 @@ function App() {
           {/* 1:1 문의 */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/create" element={<InquiryCreatePage />} />
+
+          {/* 자주 묻는 질문 */}
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/faq/create" element={<FaqCreatePage />} />
           
           {/* plant 관련 설정 */}
           <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
@@ -157,8 +164,7 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
-
-        
+          
         </Route>
       </Routes>
 

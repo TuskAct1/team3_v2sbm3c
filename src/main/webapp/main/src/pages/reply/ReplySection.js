@@ -48,6 +48,10 @@ function ReplySection({ boardno }) {
     if (!newReply.trim()) return;
 
     try {
+      const formData = new FormData();
+      formData.append('boardno', boardno);
+      formData.append('content', newReply);
+      if (replyImage) formData.append('file', replyImage);  // ✅ 이미지 포함
       await axios.post('/reply/create', {
         boardno,
         content: newReply
