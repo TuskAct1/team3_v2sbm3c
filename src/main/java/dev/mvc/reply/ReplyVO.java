@@ -26,6 +26,12 @@ public class ReplyVO {
   /** 등록일 */
   private String rdate;
 
+  /** 부모 replyno */
+  private Integer parent_replyno;
+
+
+  private Integer level; // 트리 레벨 (계층 표시용, 선택)
+
 //  /** 원본 이미지 파일명 */
 //  private String image;
 //

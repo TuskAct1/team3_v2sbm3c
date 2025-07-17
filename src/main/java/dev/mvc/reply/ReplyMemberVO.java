@@ -38,4 +38,8 @@ public class ReplyMemberVO {
 
     /** 등록일 */
     private String rdate;
+
+    private Integer level;
+
+    private Integer parent_replyno;
 }

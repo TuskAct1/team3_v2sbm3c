@@ -1,4 +1,4 @@
-package dev.mvc.openai;
+package dev.mvc.sms;
 
 import java.util.HashMap;
 import java.util.Map;

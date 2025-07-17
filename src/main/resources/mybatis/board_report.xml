@@ -1,7 +1,116 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper -->
+<!--  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" -->
+<!--  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="dev.mvc.board_report.BoardReportDAOInter">-->
+
+<!--  &lt;!&ndash; 게시글 신고 등록 &ndash;&gt;-->
+<!--  <insert id="create" parameterType="dev.mvc.board_report.BoardReportVO">-->
+<!--    INSERT INTO board_report (board_reportno, boardno, memberno, reason)-->
+<!--    VALUES (board_report_seq.nextval, #{boardno}, #{memberno}, #{reason})-->
+<!--  </insert>-->
+
+<!--  &lt;!&ndash; 특정 회원이 해당 글을 신고했는지 여부 &ndash;&gt;-->
+<!--  <select id="isReported" resultType="int"> &lt;!&ndash; ✅ parameterType 제거 &ndash;&gt;-->
+<!--    SELECT COUNT(*)-->
+<!--    FROM board_report-->
+<!--    WHERE boardno = #{boardno}-->
+<!--      AND memberno = #{memberno}-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; 게시글 신고 전체 목록 &ndash;&gt;-->
+<!--  <select id="list_all" resultType="dev.mvc.board_report.BoardReportVO">-->
+<!--    SELECT board_reportno, boardno, memberno, reason, rdate-->
+<!--    FROM board_report-->
+<!--    ORDER BY board_reportno DESC-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; 게시글 신고 조회 &ndash;&gt;-->
+<!--  <select id="read" parameterType="int" resultType="dev.mvc.board_report.BoardReportVO">-->
+<!--    SELECT board_reportno, boardno, memberno, reason, rdate-->
+<!--    FROM board_report-->
+<!--    WHERE board_reportno = #{board_reportno}-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; 특정 게시글의 특정 회원 신고 갯수 &ndash;&gt;-->
+<!--  <select id="reportCnt" parameterType="map" resultType="int">-->
+<!--    SELECT COUNT(*) AS cnt-->
+<!--    FROM board_report-->
+<!--    WHERE boardno = #{boardno}-->
+<!--      AND memberno = #{memberno}-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; 신고 삭제 &ndash;&gt;-->
+<!--  <delete id="delete_all">-->
+<!--    DELETE FROM board_report-->
+<!--    WHERE boardno = #{boardno}-->
+<!--  </delete>-->
+
+<!--  &lt;!&ndash; 게시글 단위로 신고 정보 그룹화 &ndash;&gt;-->
+<!--  <select id="groupedBoardReports" resultType="map">-->
+<!--    SELECT-->
+<!--    br.boardno,-->
+<!--    COUNT(*) AS report_count,-->
+<!--    b.title,-->
+<!--    m.id AS id,-->
+<!--    m.nickname AS nickname,-->
+<!--    m.memberno AS memberno-->
+<!--    FROM board_report br-->
+<!--    JOIN board b ON br.boardno = b.boardno-->
+<!--    JOIN member m ON b.memberno = m.memberno-->
+<!--    GROUP BY br.boardno, b.title, m.id, m.nickname, m.memberno-->
+<!--    ORDER BY report_count DESC-->
+<!--  </select>-->
+
+<!--&lt;!&ndash;  &lt;!&ndash; 각 게시글 신고 상세 목록 &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;  <select id="listByBoardnoWithMember" parameterType="int" resultType="map">&ndash;&gt;-->
+<!--&lt;!&ndash;    SELECT&ndash;&gt;-->
+<!--&lt;!&ndash;    br.board_reportno AS boardReportno,&ndash;&gt;-->
+<!--&lt;!&ndash;    br.memberno AS memberno,&ndash;&gt;-->
+<!--&lt;!&ndash;    br.reason AS reason,&ndash;&gt;-->
+<!--&lt;!&ndash;    TO_CHAR(br.rdate, 'YYYY-MM-DD') AS rdate,&ndash;&gt;-->
+<!--&lt;!&ndash;    m.id AS reporterId,&ndash;&gt;-->
+<!--&lt;!&ndash;    m.nickname AS reporterNickname&ndash;&gt;-->
+<!--&lt;!&ndash;    FROM board_report br&ndash;&gt;-->
+<!--&lt;!&ndash;    JOIN member m ON br.memberno = m.memberno&ndash;&gt;-->
+<!--&lt;!&ndash;    WHERE br.boardno = #{boardno}&ndash;&gt;-->
+<!--&lt;!&ndash;  </select>&ndash;&gt;-->
+
+<!--  <select id="listByBoardnoWithMember" parameterType="int" resultType="map">-->
+<!--    SELECT-->
+<!--    br.board_reportno AS "boardReportno",-->
+<!--    br.memberno AS "memberno",-->
+<!--    br.reason AS "reason",-->
+<!--    TO_CHAR(br.rdate, 'YYYY-MM-DD') AS "rdate",-->
+<!--    m.id AS "reporterId",-->
+<!--    m.nickname AS "reporterNickname"-->
+<!--    FROM board_report br-->
+<!--    JOIN member m ON br.memberno = m.memberno-->
+<!--    WHERE br.boardno = #{boardno}-->
+<!--  </select>-->
+
+
+<!--  &lt;!&ndash; 신고된 게시글 번호 목록 &ndash;&gt;-->
+<!--  <select id="findReportedBoardnos" resultType="int">-->
+<!--    SELECT DISTINCT boardno-->
+<!--    FROM board_report-->
+<!--  </select>-->
+
+
+<!--</mapper>-->
+
+
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
  
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
+=======
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+>>>>>>> b4e7f777a0ac18029bfe780a9dafe818f25b7f0c
 <mapper namespace="dev.mvc.board_report.BoardReportDAOInter">
   <!-- 게시글 신고 등록 -->
   <insert id="create" parameterType="dev.mvc.board_report.BoardReportVO">
@@ -29,7 +138,11 @@
     FROM board_report
     WHERE board_reportno = #{board_reportno}
   </select>
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> b4e7f777a0ac18029bfe780a9dafe818f25b7f0c
   <!-- 특정 컨텐츠의 특정 회원 신고 갯수 산출, 하나의 글에 대하여 중복 신고 안됨 -->
   <select id="reportCnt" resultType="int" parameterType='HashMap'>
     SELECT COUNT(*) as cnt

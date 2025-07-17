@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import dev.mvc.openai.GPTService;
+import dev.mvc.sms.GPTService;
 
 @RestController
 @RequestMapping("/lifestyle_test")

@@ -19,3 +19,8 @@ INCREMENT BY 1       -- 증가값
 MAXVALUE 9999999999  -- 최대값: 9999999999 --> NUMBER(10) 대응
 CACHE 2              -- 2번은 메모리에서만 계산
 NOCYCLE;             -- 다시 1부터 생성되는 것을 방지
+
+ALTER TABLE diary ADD (file1 VARCHAR2(300));
+ALTER TABLE diary ADD (file1saved VARCHAR2(300));
+ALTER TABLE diary ADD (thumb1 VARCHAR2(300));
+ALTER TABLE diary ADD (size1 NUMBER(10) DEFAULT 0);

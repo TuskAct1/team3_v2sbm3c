@@ -24,4 +24,6 @@ public interface CalendarProcInter {
 
   /** 회원 일정 조회 (관리자 일정 + 특정 회원 일정) */
   List<CalendarVO> list_allByMember(int memberno);
+
+  List<CalendarVO> listTodayByMember(int memberno);
 }

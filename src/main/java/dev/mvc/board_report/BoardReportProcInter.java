@@ -2,6 +2,7 @@ package dev.mvc.board_report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface BoardReportProcInter {
 
@@ -20,6 +21,8 @@ public interface BoardReportProcInter {
     /** 게시글 신고 조회 */
     public BoardReportVO read(int boardReportno);
 
+    /** 게시글 신고 그룹화 조회 */
+    public List<GroupedBoardReportDTO> groupedBoardReports();
 }
 
 

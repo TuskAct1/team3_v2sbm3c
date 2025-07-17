@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import "./DiaryPage.css";
 
 const emotions = [
   { score: 1, icon: "😃", label: "긍정" },
@@ -12,23 +15,13 @@ const emotions = [
 
 function EmotionSelector({ selectedScore, onChange }) {
   return (
-    <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
+    <div className="EmotionSelector">
       {emotions.map(({ score, icon, label }) => (
         <div
           key={score}
           onClick={() => onChange(score)}
           title={label}
-          style={{
-            cursor: "pointer",
-            fontSize: "2rem",
-            userSelect: "none",
-            transition: "transform 0.2s",
-            transform: selectedScore === score ? "scale(1.3)" : "scale(1)",
-            filter: selectedScore === score ? "none" : "grayscale(70%)",
-            border: selectedScore === score ? "2px solid #0077cc" : "2px solid transparent",
-            borderRadius: "8px",
-            padding: "4px",
-          }}
+          className={`EmotionSelector-item ${selectedScore === score ? "active" : ""}`}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
@@ -46,31 +39,29 @@ function EmotionSelector({ selectedScore, onChange }) {
 const DiaryUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const [state, setState] = useState({
     title: "",
     content: "",
     risk_flag: 3,
-    file1MF: null,
-    file1saved: "",
   });
-
-  const [newPreview, setNewPreview] = useState(null);
-
-  const titleInput = useRef();
-  const contentInput = useRef();
+  const [files, setFiles] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [deletedExistingImages, setDeletedExistingImages] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const memberno = user?.memberno;
 
+  // Fetch Diary on load
   useEffect(() => {
     if (!memberno) {
       alert("로그인이 필요합니다.");
       navigate("/login");
+      return;
     }
-  }, [navigate, memberno]);
 
-  useEffect(() => {
     const fetchDiary = async () => {
       try {
         const res = await axios.get(`/diary/read/${id}`);
@@ -82,13 +73,16 @@ const DiaryUpdate = () => {
           return;
         }
 
-        setState((prev) => ({
-          ...prev,
+        setState({
           title: data.title || "",
           content: data.content || "",
           risk_flag: data.risk_flag || 3,
-          file1saved: data.file1saved || "",
-        }));
+        });
+
+        if (data.file1saved) {
+          const filesArray = data.file1saved.split(",").map(f => f.trim());
+          setExistingImages(filesArray);
+        }
       } catch (error) {
         console.error("일기 불러오기 실패:", error);
         alert("일기 데이터를 불러오지 못했습니다.");
@@ -99,130 +93,203 @@ const DiaryUpdate = () => {
     fetchDiary();
   }, [id, memberno, navigate]);
 
+  // Handlers
   const handleChangeState = (e) => {
     const { name, value } = e.target;
-    setState({
-      ...state,
+    setState(prev => ({
+      ...prev,
       [name]: name === "risk_flag" ? Number(value) : value,
-    });
+    }));
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setState({
-      ...state,
-      file1MF: file,
-    });
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setNewPreview(null);
-    }
+  const handleQuillChange = (value) => {
+    setState(prev => ({ ...prev, content: value }));
   };
 
   const handleEmotionChange = (score) => {
-    setState((prev) => ({ ...prev, risk_flag: score }));
+    setState(prev => ({ ...prev, risk_flag: score }));
   };
 
-  const handleSubmit = async () => {
-    if (state.title.length < 1) {
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    setFiles(prev => [...prev, ...newFiles]);
+  };
+
+  const handleRemoveImage = (index) => {
+    setFiles(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleRemoveExistingImage = (index) => {
+    const toDelete = existingImages[index];
+    setDeletedExistingImages(prev => [...prev, toDelete]);
+    setExistingImages(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  // Combine existing, new, add-button
+  const thumbnails = [
+    ...existingImages.map((filename, idx) => ({
+      type: "existing",
+      src: `http://localhost:9093/diary/storage/${filename}`,
+      index: idx
+    })),
+    ...files.map((file, idx) => ({
+      type: "new",
+      src: URL.createObjectURL(file),
+      index: idx
+    })),
+  ];
+
+  useEffect(() => {
+    const totalPages = Math.ceil(thumbnails.length / 4);
+    if (pageIndex >= totalPages) {
+      setPageIndex(Math.max(0, totalPages - 1));
+    }
+  }, [thumbnails]);
+
+  // Pagination - 4 per page
+  const pagedThumbnails = [];
+  for (let i = 0; i < thumbnails.length; i += 4) {
+    pagedThumbnails.push(thumbnails.slice(i, i + 4));
+  }
+  const totalPages = pagedThumbnails.length;
+
+  // Submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (state.title.trim().length < 1) {
       alert("제목을 입력해주세요.");
-      titleInput.current.focus();
       return;
     }
-    if (state.content.length < 5) {
+    if (state.content.trim().length < 5) {
       alert("내용은 최소 5자 이상 입력해주세요.");
-      contentInput.current.focus();
       return;
     }
+    if (!memberno) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("memberno", memberno);
+    formData.append("title", state.title);
+    formData.append("content", state.content);
+    formData.append("risk_flag", String(state.risk_flag));
+    formData.append("password", "1234");
+
+    files.forEach(f => formData.append("files", f));
+    deletedExistingImages.forEach(name => formData.append("deletedFiles", name));
+    existingImages.forEach(name => {
+      formData.append("remainFilesSaved", name);
+      formData.append("remainFiles", name);
+    });
 
     try {
-      const formData = new FormData();
-      formData.append("memberno", memberno);
-      formData.append("title", state.title);
-      formData.append("content", state.content);
-      formData.append("risk_flag", String(state.risk_flag));
-      formData.append("password", "1234");
-
-      if (state.file1MF) {
-        formData.append("file1MF", state.file1MF);
-      }
-
       await axios.put(`/diary/update/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" }
       });
-
       alert("일기 수정 성공!");
-      navigate("/diary");
+      navigate(`/diary/read/${id}`);
     } catch (error) {
       console.error(error);
       alert("일기 수정에 실패했습니다.");
     }
   };
 
-  return (
-    <div className="DiaryUpdate" style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
-      <h2>일기 수정</h2>
-      <div style={{ marginBottom: 12 }}>
+    return (
+    <div className="DiaryUpdate">
+      <form onSubmit={handleSubmit}>
+        <div className="DiaryUpdate-sectionTitle">제목</div>
         <input
-          ref={titleInput}
           name="title"
           value={state.title}
           onChange={handleChangeState}
           placeholder="제목을 입력하세요"
-          style={{ width: "100%", padding: 8, fontSize: 16 }}
+          className="DiaryUpdate-input"
         />
-      </div>
-      <div style={{ marginBottom: 12 }}>
-        <textarea
-          ref={contentInput}
-          name="content"
+        <div className="DiaryUpdate-sectionTitle">내용</div>
+        <ReactQuill
+          theme="snow"
           value={state.content}
-          onChange={handleChangeState}
+          onChange={handleQuillChange}
           placeholder="내용을 입력하세요"
-          rows={6}
-          style={{ width: "100%", padding: 8, fontSize: 16, resize: "vertical" }}
+          style={{ height: "350px" }}
         />
-      </div>
-      <div style={{ marginBottom: 12 }}>
-        <label>첨부 이미지:</label>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-      </div>
-      {newPreview ? (
-        <div style={{ marginTop: 12 }}>
-          <p>선택한 새 이미지 미리보기:</p>
-          <img
-            src={newPreview}
-            alt="새 이미지 미리보기"
-            style={{ maxWidth: "100%", height: "auto" }}
+
+        <div className="DiaryUpdate-section">
+          <div className="DiaryUpdate-sectionTitle">사진 선택</div>
+          
+          <div className="DiaryUpdate-carouselContainer">
+            <button
+              type="button"
+              onClick={() => setPageIndex(prev => Math.max(0, prev - 1))}
+              disabled={pageIndex === 0}
+              className="DiaryUpdate-carouselArrow left"
+            >
+              <span>{"<"}</span>
+            </button>
+
+            <div className="DiaryUpdate-carouselImages">
+              {pagedThumbnails[pageIndex]?.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="DiaryUpdate-carouselImageCard"
+                  onClick={() => {
+                    if (item.type === "existing") handleRemoveExistingImage(item.index);
+                    else if (item.type === "new") handleRemoveImage(item.index);
+                  }}
+                >
+                  <img src={item.src} alt="" />
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setPageIndex(prev => Math.min(totalPages - 1, prev + 1))}
+              disabled={pageIndex >= totalPages - 1}
+              className="DiaryUpdate-carouselArrow right"
+            >
+              <span>{">"}</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="DiaryUpdate-addImageButton"
+          >
+            + 이미지 추가
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            style={{ display: "none" }}
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
           />
         </div>
-      ) : state.file1saved ? (
-        <div style={{ marginTop: 12 }}>
-          <p>현재 등록된 이미지:</p>
-          <img
-            src={`http://localhost:9093/diary/storage/${state.file1saved}`}
-            alt="첨부 이미지"
-            style={{ maxWidth: "100%", height: "auto" }}
-          />
+
+        <div>
+          <span>오늘의 감정점수 : </span>
+          <EmotionSelector selectedScore={state.risk_flag} onChange={handleEmotionChange} />
         </div>
-      ) : null}
-      <div>
-        <span>오늘의 감정점수 : </span>
-        <EmotionSelector selectedScore={state.risk_flag} onChange={handleEmotionChange} />
-      </div>
-      <div style={{ marginTop: 20 }}>
-        <button onClick={handleSubmit} style={{ padding: "10px 20px", fontSize: 16 }}>
-          수정하기
-        </button>
-      </div>
+
+        <div className="DiaryUpdate-buttons">
+          <button type="submit" className="DiaryUpdate-button save">
+            저장
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`/diary/read/${id}`)}
+            className="DiaryUpdate-button back"
+          >
+            뒤로가기
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

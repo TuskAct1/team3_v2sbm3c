@@ -35,4 +35,5 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // registry.addResourceHandler("/trip/storage/**").addResourceLocations("file:///" +  Trip.getUploadDir());
 
     }
+
 }

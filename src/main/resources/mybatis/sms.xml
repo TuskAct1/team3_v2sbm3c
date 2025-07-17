@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.sms.SmsDAOInter">
+    <!-- SMS 로그 등록 -->
+    <insert id="createSMS" parameterType="dev.mvc.sms.SmsVO">
+        INSERT INTO sms (smsno, memberno, phone, message, rdate)
+        VALUES (sms_seq.NEXTVAL, #{memberno}, #{phone}, #{message}, SYSDATE)
+    </insert>
+
+    <!-- SMS 로그 전체 목록 -->
+    <select id="allSmsList" resultType="dev.mvc.sms.SmsVO">
+        SELECT smsno, memberno, phone, message, rdate
+        FROM sms
+        ORDER BY smsno DESC
+    </select>
+
+</mapper>

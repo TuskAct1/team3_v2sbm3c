@@ -2,28 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dev.mvc.calendar.CalendarDAOInter">
 
+
+    <!-- 일정 등록3 -->
+    <insert id="create" parameterType="dev.mvc.calendar.CalendarVO">
+        <selectKey keyProperty="calendarno" resultType="int" order="BEFORE">
+            SELECT calendar_seq.NEXTVAL FROM DUAL
+        </selectKey>
+
 <!--  &lt;!&ndash; 일정 등록1 &ndash;&gt;-->
 <!--  <insert id="create" parameterType="dev.mvc.calendar.CalendarVO">-->
 <!--    INSERT INTO calendar(calendarno, memberno, adminno, title, schedule_date, schedule_time, category,-->
-<!--                         description, alarm_yn, rdate, favorite_yn)-->
+<!--                         description, alarm_yn, rdate, )-->
 <!--    VALUES(calendar_seq.nextval, #{memberno, jdbcType=INTEGER}, #{adminno, jdbcType=INTEGER}, #{title}, #{schedule_date}, #{schedule_time}, #{category},-->
-<!--           #{description}, #{alarm_yn}, sysdate, #{favorite_yn})-->
+<!--           #{description}, #{alarm_yn}, sysdate)-->
 <!--  </insert>-->
 <!--    -->
 
     <!-- 일정 등록2 -->
     <insert id="create" parameterType="dev.mvc.calendar.CalendarVO">
         INSERT INTO calendar(calendarno, memberno, adminno, title, category,
-            description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time)
+            description, alarm_yn, rdate,  start_date, end_date, image, thumbnail, start_time, end_time)
         VALUES(calendar_seq.nextval, #{memberno, jdbcType=INTEGER}, #{adminno, jdbcType=INTEGER}, #{title}, #{category},
-            #{description}, #{alarm_yn}, sysdate, #{favorite_yn}, #{start_date}, #{end_date},  #{image, jdbcType=VARCHAR}, #{thumbnail, jdbcType=VARCHAR}, #{start_time}, #{end_time})
+            #{description}, #{alarm_yn}, sysdate, #{start_date}, #{end_date},  #{image, jdbcType=VARCHAR}, #{thumbnail, jdbcType=VARCHAR}, #{start_time}, #{end_time})
     </insert>
 
+
+        INSERT INTO calendar (
+        calendarno,
+        memberno,
+        adminno,
+        title,
+        category,
+        description,
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+        alarm_yn,
+        rdate
+        ) VALUES (
+        #{calendarno},
+        #{memberno, jdbcType=INTEGER},
+        #{adminno, jdbcType=INTEGER},
+        #{title},
+        #{category},
+        #{description},
+        #{start_date},
+        #{end_date},
+        #{end_time},
+        #{start_time},
+        #{alarm_yn},
+        SYSTIMESTAMP
+        )
+    </insert>
 
   <!-- 전체 일정 조회 -->
   <select id="list_all" resultType="dev.mvc.calendar.CalendarVO">
     SELECT calendarno, memberno, adminno, title,
-           category, description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time
+           category, description, alarm_yn, rdate,  start_date, end_date, image, thumbnail, start_time, end_time
     FROM calendar
     ORDER BY schedule_date ASC, schedule_time ASC
   </select>
@@ -31,28 +67,10 @@
   <!-- 특정 일정 조회 -->
   <select id="read" resultType="dev.mvc.calendar.CalendarVO" parameterType="int">
     SELECT calendarno, memberno, adminno, title,
-           category, description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time
+           category, description, alarm_yn, rdate,  start_date, end_date, image, thumbnail, start_time, end_time
     FROM calendar
     WHERE calendarno = #{calendarno}
   </select>
-
-<!--  &lt;!&ndash; 일정 수정 &ndash;&gt;-->
-<!--  <update id="update" parameterType="dev.mvc.calendar.CalendarVO">-->
-<!--    UPDATE calendar-->
-<!--    SET title = #{title},-->
-<!--        schedule_date = #{schedule_date},-->
-<!--        schedule_time = #{schedule_time},-->
-<!--        category = #{category},-->
-<!--        description = #{description},-->
-<!--        alarm_yn = #{alarm_yn},-->
-<!--        favorite_yn = #{favorite_yn},-->
-<!--        rdate=sysdate,-->
-<!--        start_date = #{start_date},-->
-<!--        end_date = #{end_date},-->
-<!--        image = #{image},-->
-<!--        thumbnail = #{thumbnail}-->
-<!--    WHERE calendarno = #{calendarno}-->
-<!--  </update>-->
 
     <update id="update" parameterType="dev.mvc.calendar.CalendarVO">
         UPDATE calendar
@@ -60,7 +78,6 @@
         category = #{category},
         description = #{description},
         alarm_yn = #{alarm_yn},
-        favorite_yn = #{favorite_yn},
         rdate = sysdate,
         start_date = #{start_date},
         end_date = #{end_date},
@@ -93,6 +110,13 @@
         FROM calendar
         WHERE adminno IS NOT NULL OR memberno = #{memberno}
         ORDER BY schedule_date ASC, schedule_time ASC
+    </select>
+
+    <select id="listTodayByMember" resultType="dev.mvc.calendar.CalendarVO" parameterType="int">
+        SELECT *
+        FROM calendar
+        WHERE memberno = #{memberno}
+        AND start_date = TO_CHAR(SYSDATE, 'YYYY-MM-DD')  <!-- Oracle 기준 -->
     </select>
 
 

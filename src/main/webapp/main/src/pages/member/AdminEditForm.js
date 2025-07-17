@@ -1,40 +1,86 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './AdminEditForm.css';
 
-function AdminEditForm({ initialData, onCancel, onUpdated }) {
-  const [form, setForm] = useState({ ...initialData });
+function AdminEditForm({ admin }) {
+  const [form, setForm] = useState({
+    id: '',
+    email: '',
+    name: '',
+    tel: '',
+    address: '',
+    password: '', // 현재 비밀번호
+  });
+
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (admin) {
+      setForm({
+        id: admin.id || '',
+        email: admin.email || '',
+        name: admin.name || '',
+        tel: admin.tel || '',
+        address: admin.address || '',
+        password: '',
+      });
+    }
+  }, [admin]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.put(`/api/admin/update`, form)
-      .then(() => {
-        onUpdated(form);
-      })
-      .catch(() => {
-        alert("수정 실패");
-      });
+  const handleSubmit = async () => {
+    setError('');
+
+    if (!form.password) {
+      setError('비밀번호를 입력해야 수정할 수 있습니다.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/admin/update-info', form);
+
+      if (response.data === 'SUCCESS') {
+        alert('관리자 정보가 성공적으로 수정되었습니다.');
+        setForm(prev => ({ ...prev, password: '' }));
+      } else {
+        setError(response.data || '수정에 실패했습니다.');
+      }
+    } catch (err) {
+      console.error('수정 실패', err);
+      setError('서버 오류 발생');
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>이름:</label>
-        <input name="name" value={form.name} onChange={handleChange} />
-      </div>
-      <div>
-        <label>이메일:</label>
-        <input name="email" value={form.email} onChange={handleChange} readOnly />
-      </div>
-      <div style={{ marginTop: "10px" }}>
-        <button type="submit">저장</button>
-        <button type="button" onClick={onCancel} style={{ marginLeft: "10px" }}>취소</button>
-      </div>
-    </form>
+    <div className="admin-edit-form">
+      <h3>관리자 정보 수정</h3>
+
+      <label>아이디</label>
+      <input name="id" value={form.id} readOnly />
+
+      <label>이름</label>
+      <input name="name" value={form.name} onChange={handleChange} />
+
+      <label style={{ marginTop: '16px' }}>🔐 현재 비밀번호</label>
+      <input
+        name="password"
+        type="password"
+        placeholder="정보 수정을 위해 비밀번호 입력"
+        value={form.password}
+        onChange={handleChange}
+        required
+      />
+
+      {error && <div className="error-message">{error}</div>}
+
+      <button className="save-btn" onClick={handleSubmit}>정보 수정</button>
+    </div>
   );
 }
 

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import './LoginPage.css'; // ✅ 공통 CSS 사용
+import './SignupForm.css';
+import './LoginPageAdmin.css';
 
 const LoginPageAdmin = () => {
   const [form, setForm] = useState({
@@ -77,8 +78,9 @@ const LoginPageAdmin = () => {
           id: data.user.id || data.user.email,
           role: "admin",
         }));
+        
         const redirectPath = localStorage.getItem("redirectAfterLogin");
-        window.location.href = redirectPath || "/";
+        window.location.href =  "/";
       } else {
         alert("아이디 또는 비밀번호가 일치하지 않습니다.");
       }
@@ -88,83 +90,80 @@ const LoginPageAdmin = () => {
   };
 
   return (
-    <>
-      {/* ✅ 상단 링크 */}
-      <div className="login-page-global-links">
-        <a href="#" onClick={() => window.location.reload()}>새로고침</a>
-        <a href="/admin_signup">관리자 가입</a>
-        <a href="/login">일반 로그인</a>
-      </div>
+    <div className="signup-wrapper">
+      <h2 className="signup-title">관리자 로그인</h2>
+      <p className="signup-subtitle">
+        오른손케어 관리자 페이지에 접속합니다.<br />
+        등록된 계정으로 로그인해주세요.
+      </p>
 
-      {/* ✅ 관리자 로그인 화면 */}
-      <div className="login-wrapper">
-        <div className="login-box">
-          {/* 왼쪽 입력 + 버튼 */}
-          <div className="login-left">
-            <h3>관리자 로그인</h3>
-            <form onSubmit={handleLogin} className="login-form-container">
-              <div className="login-inline-row">
-                <div className="login-input-block">
-                  <input
-                    type="text"
-                    name="id"
-                    value={form.id}
-                    placeholder="아이디(이메일)"
-                    onChange={handleChange}
-                    onKeyPress={(e) => handleKeyPress(e, passwdRef)}
-                  />
-                  <input
-                    type="password"
-                    name="passwd"
-                    value={form.passwd}
-                    placeholder="비밀번호"
-                    onChange={handleChange}
-                    ref={passwdRef}
-                    onKeyPress={(e) => handleKeyPress(e, btnSendRef)}
-                  />
-                </div>
+      <form className="signup-card" onSubmit={handleLogin}>
+        {/* 아이디 */}
+        <div className="form-group">
+          <label>아이디(이메일)</label>
+          <input
+            type="text"
+            name="id"
+            value={form.id}
+            onChange={handleChange}
+            onKeyPress={(e) => handleKeyPress(e, passwdRef)}
+            placeholder="admin@example.com"
+          />
+          {idMsg && <p className="email-message invalid">{idMsg}</p>}
 
-                <button type="submit" ref={btnSendRef} className="login-inline-btn">
-                  로그인
-                </button>
-              </div>
-
-              {idMsg && <span className="span_warning">{idMsg}</span>}
-              {passwdMsg && <span className="span_warning">{passwdMsg}</span>}
-
-              <div className="checkbox-row">
-                <input
-                  type="checkbox"
-                  name="id_save"
-                  checked={form.id_save}
-                  onChange={handleChange}
-                  id="id_save"
-                />
-                <label htmlFor="id_save">아이디 저장</label>
-
-                <input
-                  type="checkbox"
-                  name="passwd_save"
-                  checked={form.passwd_save}
-                  onChange={handleChange}
-                  id="passwd_save"
-                  style={{ marginLeft: "16px" }}
-                />
-                <label htmlFor="passwd_save">비밀번호 저장</label>
-              </div>
-
-              <div className="login-find-links">
-                <a href="/find_id">아이디 찾기</a>
-                <span>|</span>
-                <a href="/find_passwd">비밀번호 찾기</a>
-                <span>|</span>
-                <a href="/admin_signup">관리자 가입</a>
-              </div>
-            </form>
+          {/* ✅ 아이디 저장 체크박스 */}
+          <div className="checkbox-inline-row">
+            <input
+              type="checkbox"
+              name="id_save"
+              checked={form.id_save}
+              onChange={handleChange}
+              id="id_save"
+            />
+            <label htmlFor="id_save">아이디 저장</label>
           </div>
         </div>
-      </div>
-    </>
+
+        {/* 비밀번호 */}
+        <div className="form-group">
+          <label>비밀번호</label>
+          <input
+            type="password"
+            name="passwd"
+            value={form.passwd}
+            onChange={handleChange}
+            ref={passwdRef}
+            onKeyPress={(e) => handleKeyPress(e, btnSendRef)}
+            placeholder="비밀번호 입력"
+          />
+          {passwdMsg && <p className="email-message invalid">{passwdMsg}</p>}
+
+          {/* ✅ 비밀번호 저장 체크박스 */}
+          <div className="checkbox-inline-row">
+            <input
+              type="checkbox"
+              name="passwd_save"
+              checked={form.passwd_save}
+              onChange={handleChange}
+              id="passwd_save"
+            />
+            <label htmlFor="passwd_save">비밀번호 저장</label>
+          </div>
+        </div>
+
+        <button type="submit" ref={btnSendRef} className="submit-btn">
+          로그인
+        </button>
+
+        <div className="login-find-links">
+          <a href="/find_passwd">비밀번호 찾기</a>
+          <span>|</span>
+          <a href="/admin_signup">관리자 가입</a>
+          <span>|</span>
+          <a href="/login">일반 로그인</a>
+        </div>
+      </form>
+    </div>
   );
 };
 

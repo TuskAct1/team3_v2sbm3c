@@ -23,6 +23,10 @@ npm install chart.js react-chartjs-2
 ㅁ Chatbot 실행
 (ai) C:\kd\ws_java\gabia\team3_v2sbm3c\src\main\webapp\main\src\pages>uvicorn chatbot.Chat:app --reload --port 8000
 
+ㅁ ChatBot 라이브러리
+- pip install langchain_community
+- pip install llama-index-llms-langchain
+- pip install llama-index
 
 아이콘 때문에 install함 
 npm install react-icons 

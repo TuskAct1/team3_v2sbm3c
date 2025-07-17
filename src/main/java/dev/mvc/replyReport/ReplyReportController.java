@@ -95,8 +95,8 @@ public class ReplyReportController {
 
     @GetMapping(value = "/grouped", produces = "application/json")
     @ResponseBody
-    public List<Map<String, Object>> groupedReports() {
-        return replyReportProc.groupedReports();
+    public List<GroupedReplyReportDTO> groupedReports() {
+        return replyReportProc.groupedReports(); // ✅ 타입이 일치함
     }
 
 }
