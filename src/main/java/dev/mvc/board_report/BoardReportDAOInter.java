@@ -13,7 +13,7 @@ public interface BoardReportDAOInter {
     public int create(BoardReportVO boardReportVO);
 
     /** 특정 회원이 해당 글을 신고했는지 여부(신고 했으면 1 이상) */
-    public int isReported(@Param("boardno") int boardno, @Param("memberno") int memberno);  // ✅ 핵심 수정
+    public int isReported(int boardno, int memberno);
 
     /** 게시글 신고 모든 목록 */
     public ArrayList<BoardReportVO> list_all();

@@ -84,7 +84,6 @@ import FaqCreatePage from './pages/faq/FaqCreatePage';
 function App() {
   return (
     <BrowserRouter>
-
       <Routes>
           <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
@@ -139,17 +138,10 @@ function App() {
           <Route path="/playlist/form" element={<PlaylistForm />} />
           <Route path="/playlist/emotionform" element={<EmotionForm />} />
           <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
-
           
           {/* 1:1 문의 */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/create" element={<InquiryCreatePage />} />
-          
-
-          {/* 1:1 문의 */}
-          <Route path="/inquiry" element={<InquiryPage />} />
-          <Route path="/inquiry/create" element={<InquiryCreatePage />} />
-
           {/* 자주 묻는 질문 */}
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/faq/create" element={<FaqCreatePage />} />
@@ -177,7 +169,7 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
-
+        
         </Route>
       </Routes>
 

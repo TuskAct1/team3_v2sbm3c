@@ -1,9 +1,12 @@
 package dev.mvc.member;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import dev.mvc.admin.AdminProcInter;
 import dev.mvc.admin.AdminVO;
@@ -50,21 +53,19 @@ public class MemberController {
 
     @Autowired
     private MailService mailService;
-    
     /** 회원 가입 */
     @PostMapping("/signup")
     @Transactional
     public ResponseEntity<Map<String, Object>> signup(
-        @ModelAttribute MemberVO memberVO,
-        @RequestParam(value = "profileFile", required = false) MultipartFile file
+            @ModelAttribute MemberVO memberVO,
+            @RequestParam(value = "profileFile", required = false) MultipartFile file
     ) {
         Map<String, Object> response = new HashMap<>();
 
-        // 비밀번호 암호화
+
+        // 1. 비밀번호 암호화
         String encrypted = bcryptUtil.encode(memberVO.getPasswd());
         memberVO.setPasswd(encrypted);
-
-        // ✅ 포인트 기본값 부여
 
         // 1. 프로필 이미지 저장
         if (file != null && !file.isEmpty()) {
@@ -81,33 +82,51 @@ public class MemberController {
 
             String uploadDir = "C:/upload/profile/";  // 실서버 경로에 맞게 조정
             String originalFilename = file.getOriginalFilename();
-            String uuid = java.util.UUID.randomUUID().toString();
+            String uuid = UUID.randomUUID().toString();
             String savedFilename = uuid + "_" + originalFilename;
 
             try {
-                java.io.File dest = new java.io.File(uploadDir + savedFilename);
+                // ✅ 폴더 없으면 생성
+                File dir = new File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                // ✅ 실제 파일 저장
+                File dest = new File(uploadDir + savedFilename);
                 file.transferTo(dest);
-                memberVO.setProfile(savedFilename);  // DB 저장용 파일명
+
+                // ✅ DB에는 파일명만 저장
+                memberVO.setProfile(savedFilename);
             } catch (Exception e) {
                 e.printStackTrace();
                 response.put("success", false);
                 response.put("message", "프로필 이미지 저장 실패");
                 return ResponseEntity.status(500).body(response);
             }
+        } else {
+            // ✅ 기본 이미지 파일명 저장 (정적 자원 경로에 있어야 함)
+            memberVO.setProfile("default_profile.png");
         }
 
 
         // 3. 포인트 기본값
 
+
+
+        // 3. 기본 포인트
+
+        
+        // 3. 포인트 기본값
+
         memberVO.setPoint(50);
 
-        // 4. 회원 생성
+        // 4. 회원 DB 저장
         int cnt = memberProc.create(memberVO);
         if (cnt == 1) {
 
-            int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
+            int memberno = memberVO.getMemberno();
 
-            // 2단계: 기본 식물 생성
 
 
             // 5. 기본 식물 생성
@@ -118,7 +137,8 @@ public class MemberController {
             plant.setPlant_type("딸기");
             plant.setGrowth(0);
             plant.setPlant_status("정상");
-            plant.setLast_access("");
+            plant.setLast_access(null); // ✅ 날짜 에러 방지
+
             plantProc.create(plant);
 
             // 6. 출석 초기화
@@ -133,6 +153,7 @@ public class MemberController {
             return ResponseEntity.status(500).body(response);
         }
     }
+
 
     /** 로그인 */
     @PostMapping("/login")
@@ -360,6 +381,34 @@ public class MemberController {
 
         return ResponseEntity.ok(response);
     }
-   
+
+    @PostMapping("/update-profile")
+    public ResponseEntity<?> updateProfileImage(
+            @RequestParam("memberno") int memberno,
+            @RequestParam("profileFile") MultipartFile file
+    ) {
+        String uploadDir = "C:/kd/deploy/team3/member/storage/";
+        String originalFilename = file.getOriginalFilename();
+        String uuid = UUID.randomUUID().toString();
+        String savedFilename = uuid + "_" + originalFilename;
+
+        try {
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+
+            File dest = new File(uploadDir + savedFilename);
+            file.transferTo(dest);
+
+            memberProc.updateProfile(memberno, savedFilename);
+            return ResponseEntity.ok("프로필 변경 성공");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("프로필 변경 실패");
+        }
+    }
+
+
+
 
 }
