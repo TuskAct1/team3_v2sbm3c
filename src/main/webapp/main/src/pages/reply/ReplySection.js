@@ -71,8 +71,11 @@ function ReplySection({ boardno }) {
       formData.append('content', newReply);
       if (replyImage) formData.append('file', replyImage);  // ✅ 이미지 포함
 
-      await axios.post('/reply/create', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      await axios.post('/reply/create', {
+        boardno: boardno,
+        content: newReply
+      }, {
+        headers: { 'Content-Type': 'application/json' }
       });
 
       setNewReply('');

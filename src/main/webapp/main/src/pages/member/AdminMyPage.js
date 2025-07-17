@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminMyPage.css';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaUserCog, FaUsers, FaExclamationTriangle, FaHome } from 'react-icons/fa';
+import MemberListPage from './MemberListPage'; // 경로는 실제 구조에 따라 조정
+import ReplyReportListPage from '../reply/ReplyReportListPage';
+import AdminEditForm from './AdminEditForm';
 
 function AdminMyPage() {
   const [admin, setAdmin] = useState(null);
-  const [currentPasswd, setCurrentPasswd] = useState('');
-  const [newPasswd, setNewPasswd] = useState('');
-  const [confirmPasswd, setConfirmPasswd] = useState('');
+  const [activeTab, setActiveTab] = useState('members');
+  const [previousTab, setPreviousTab] = useState('members');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,39 +34,10 @@ function AdminMyPage() {
     }
   }, [navigate]);
 
-  const handleChangePassword = async () => {
-    if (!currentPasswd || !newPasswd || !confirmPasswd) {
-      alert("모든 항목을 입력해주세요.");
-      return;
-    }
-
-    if (newPasswd !== confirmPasswd) {
-      alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:3000/api/admin/update-passwd", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: admin.email,
-          currentPasswd,
-          newPasswd
-        }),
-      });
-
-      if (response.ok) {
-        alert("비밀번호가 성공적으로 변경되었습니다.");
-        setCurrentPasswd('');
-        setNewPasswd('');
-        setConfirmPasswd('');
-      } else {
-        const errorText = await response.text();
-        alert("변경 실패: " + errorText);
-      }
-    } catch (error) {
-      alert("서버 오류 발생: " + error.message);
+  const handleTabChange = (tab) => {
+    if (tab !== activeTab) {
+      setPreviousTab(activeTab);
+      setActiveTab(tab);
     }
   };
 
@@ -70,52 +45,58 @@ function AdminMyPage() {
 
   return (
     <div className="admin-mypage-container">
-      <h2>👨‍💼 관리자 마이페이지</h2>
-      <div className="admin-info-box">
-        <p><strong>🆔 아이디:</strong> {admin.id}</p>
-        <p><strong>📧 이메일:</strong> {admin.email}</p>
-        <p><strong>🔢 관리자 번호:</strong> {admin.adminno}</p>
+      <div className="breadcrumb">
+        <FaHome className="home-icon" />
+        <span>&nbsp;&gt;&nbsp;</span>
+        <span>관리자 마이페이지</span>
+      </div>
+      <div className="breadcrumb-line"></div>
+
+      <div className="admin-profile-box">
+        <div className="admin-name">{admin.id} 관리자님</div>
       </div>
 
-      <h3 style={{ marginTop: "30px" }}>🔐 비밀번호 변경</h3>
-      <div className="admin-info-box">
-        <div>
-          <label>현재 비밀번호:</label>
-          <input
-            type="password"
-            value={currentPasswd}
-            onChange={(e) => setCurrentPasswd(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
-        <div>
-          <label>새 비밀번호:</label>
-          <input
-            type="password"
-            value={newPasswd}
-            onChange={(e) => setNewPasswd(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
-        <div>
-          <label>새 비밀번호 확인:</label>
-          <input
-            type="password"
-            value={confirmPasswd}
-            onChange={(e) => setConfirmPasswd(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
-        <button
-          onClick={handleChangePassword}
-          style={{ marginTop: '10px', backgroundColor: '#2ecc71', color: '#fff', padding: '8px 16px', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
-        >
-          비밀번호 변경
-        </button>
+      <div className="tabs-wrapper">
+        {[
+          { key: 'members', label: '회원 리스트', icon: <FaUsers /> },
+          { key: 'reports', label: '신고 리스트', icon: <FaExclamationTriangle /> },
+          { key: 'info', label: '관리자 정보', icon: <FaUserCog /> },
+        ].map(({ key, label, icon }) => (
+          <div
+            key={key}
+            className={`tab-item ${activeTab === key ? 'active' : ''}`}
+            onClick={() => handleTabChange(key)}
+          >
+            {icon} {label}
+          </div>
+        ))}
       </div>
 
-      <div className="admin-mypage-buttons">
-        <button onClick={() => navigate('/')}>🏠 홈으로 가기</button>
+      <div className="tab-content-wrapper">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            className="tab-motion-content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1 }}
+          >
+          {activeTab === "members" && (
+            <div className="tab-motion-content"><MemberListPage /></div>
+          )}
+
+          {activeTab === "reports" && (
+            <div className="tab-motion-content"><ReplyReportListPage /></div>
+          )}
+
+          {activeTab === "info" && (
+            <div className="tab-motion-content">
+              <AdminEditForm admin={admin} />
+            </div>
+          )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

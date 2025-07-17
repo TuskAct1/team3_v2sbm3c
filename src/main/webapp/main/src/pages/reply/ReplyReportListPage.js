@@ -1,42 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import '../../styles/ReplyReportListPage.css';
+import '../../styles/MemberListPage.css';
+import { FaTrash } from 'react-icons/fa';
 
 function ReplyReportListPage() {
   const [activeTab, setActiveTab] = useState('reply');
   const [replyGroups, setReplyGroups] = useState([]);
   const [expandedReplyId, setExpandedReplyId] = useState(null);
   const [boardReports, setBoardReports] = useState([]);
+  const tableRef = useRef(null);
 
-  // 댓글 신고 그룹 불러오기 (댓글별로 묶어서)
-  async function fetchGroupedReplyReports() {
+  useEffect(() => {
+    fetchReplyReports();
+    fetchBoardReports();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        tableRef.current?.classList.add('fade-in');
+      }
+    }, { threshold: 0.1 });
+
+    if (tableRef.current) observer.observe(tableRef.current);
+    return () => {
+      if (tableRef.current) observer.unobserve(tableRef.current);
+    };
+  }, [activeTab]);
+
+  const fetchReplyReports = async () => {
     try {
       const res = await axios.get('/replyReport/grouped');
       setReplyGroups(res.data);
     } catch (err) {
-      console.error('댓글 신고 목록 불러오기 실패:', err);
-      alert('댓글 신고 목록 불러오기에 실패했습니다.');
+      alert('댓글 신고 목록 불러오기 실패');
     }
-  }
+  };
 
-  // 게시글 신고 불러오기
-  async function fetchBoardReports() {
+  const fetchBoardReports = async () => {
     try {
       const res = await axios.get('/boardReport/list');
       setBoardReports(res.data);
     } catch (err) {
-      console.error('게시글 신고 목록 불러오기 실패:', err);
-      alert('게시글 신고 목록 불러오기에 실패했습니다.');
+      alert('게시글 신고 목록 불러오기 실패');
     }
-  }
-
-  useEffect(() => {
-    fetchGroupedReplyReports();
-    fetchBoardReports();
-  }, []);
-
-  const toggleExpand = (replyno) => {
-    setExpandedReplyId(expandedReplyId === replyno ? null : replyno);
   };
 
   const handleDelete = async (id, type) => {
@@ -44,33 +51,30 @@ function ReplyReportListPage() {
       ? `/replyReport/delete?replyReportno=${id}`
       : `/boardReport/delete?board_reportno=${id}`;
 
-    if (window.confirm(`정말로 ${type === 'reply' ? '댓글' : '게시글'} 신고번호 ${id}를 삭제하시겠습니까?`)) {
+    if (window.confirm(`${type === 'reply' ? '댓글' : '게시글'} 신고번호 ${id}를 삭제할까요?`)) {
       try {
         await axios.delete(url);
-        alert('삭제되었습니다.');
-        type === 'reply'
-          ? fetchGroupedReplyReports()
-          : setBoardReports(prev => prev.filter(b => b.board_reportno !== id));
+        alert('삭제 완료');
+        type === 'reply' ? fetchReplyReports() : fetchBoardReports();
       } catch (err) {
-        console.error(err);
-        alert('삭제 중 오류 발생');
+        alert('삭제 중 오류');
       }
     }
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>신고 리스트</h2>
+    <div className="member-page">
+      <h2 className="member-title">신고 리스트</h2>
 
-      <div style={{ marginBottom: '20px' }}>
+      <div className="search-bar">
         <button
-          onClick={() => setActiveTab('reply')}
+          onClick={() => { setActiveTab('reply'); setExpandedReplyId(null); }}
           className={activeTab === 'reply' ? 'active-tab' : ''}
         >
           댓글 신고
         </button>
         <button
-          onClick={() => setActiveTab('board')}
+          onClick={() => { setActiveTab('board'); setExpandedReplyId(null); }}
           className={activeTab === 'board' ? 'active-tab' : ''}
         >
           게시글 신고
@@ -79,60 +83,100 @@ function ReplyReportListPage() {
 
       {activeTab === 'reply' && (
         <div>
-          {replyGroups.map(group => (
-            <div key={group.replyno} style={{ marginBottom: '16px', border: '1px solid #ccc', padding: '10px' }}>
-              <div style={{ fontWeight: 'bold' }}>
-                [댓글번호: {group.replyno}] (신고 수: {group.reportCount}건)
-                <button onClick={() => toggleExpand(group.replyno)} style={{ marginLeft: '10px' }}>
-                  {expandedReplyId === group.replyno ? '⬆️ 접기' : '⬇️ 펼치기'}
-                </button>
+          <table className="member-table" ref={tableRef}>
+            <thead>
+              <tr>
+                <th>댓글번호</th>
+                <th>신고 수</th>
+                <th>작성자</th>
+                <th>댓글 내용</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              {replyGroups.map(group => (
+                <tr key={group.replyno}>
+                  <td>{group.replyno}</td>
+                  <td>{group.reportCount}</td>
+                  <td>{group.nickname} (ID: {group.id})</td>
+                  <td>{group.content}</td>
+                  <td>
+                    <button
+                      className="icon-btn delete"
+                      onClick={() => setExpandedReplyId(prev => prev === group.replyno ? null : group.replyno)}
+                    >
+                      {expandedReplyId === group.replyno ? '접기' : '펼치기'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {expandedReplyId && (
+            <div className="myinquiry-detail animate-fade">
+              <div className="myinquiry-detail-header">
+                <h4>📋 댓글 신고 상세 내역</h4>
               </div>
-              <div>작성자: {group.nickname} (ID: {group.id}, 회원번호: {group.memberno})</div>
-              <div>📝 댓글 내용: {group.content}</div>
-              {expandedReplyId === group.replyno && (
-                <div style={{ marginTop: '10px' }}>
-                  <div>📋 신고 목록:</div>
-                  <ul>
-                    {group.reports.map(r => (
-                      <li key={r.replyReportno}>
-                        - 신고자: {r.reporter_nickname} (ID: {r.reporter_id}, 회원번호: {r.memberno}) |
-                        신고일: {r.report_date} | 사유: {r.reason}
-                        <button style={{ marginLeft: '10px' }} onClick={() => handleDelete(r.replyReportno, 'reply')}>삭제</button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div className="myinquiry-detail-content">
+                {replyGroups
+                  .find(g => g.replyno === expandedReplyId)
+                  ?.reports.map(r => (
+                    <div key={r.replyReportno} style={{ marginBottom: '10px' }}>
+                      - 신고자: {r.reporter_nickname} (ID: {r.reporter_id})<br />
+                      사유: {r.reason}<br />
+                      날짜: {r.report_date}
+                      <button
+                        className="icon-btn delete"
+                        style={{ marginLeft: '10px' }}
+                        onClick={() => handleDelete(r.replyReportno, 'reply')}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  ))}
+              </div>
             </div>
-          ))}
+          )}
         </div>
       )}
 
       {activeTab === 'board' && (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>신고번호</th>
-              <th>게시글번호</th>
-              <th>신고자 회원번호</th>
-              <th>신고일</th>
-              <th>관리</th>
-            </tr>
-          </thead>
-          <tbody>
-            {boardReports.map(report => (
-              <tr key={report.board_reportno}>
-                <td>{report.board_reportno}</td>
-                <td>{report.boardno}</td>
-                <td>{report.memberno}</td>
-                <td>{report.rdate?.slice(0, 10)}</td>
-                <td>
-                  <button onClick={() => handleDelete(report.board_reportno, 'board')}>삭제</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div>
+          {boardReports.length > 0 ? (
+            <table className="member-table" ref={tableRef}>
+              <thead>
+                <tr>
+                  <th>신고번호</th>
+                  <th>게시글번호</th>
+                  <th>신고자</th>
+                  <th>신고일</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {boardReports.map(report => (
+                  <tr key={report.board_reportno}>
+                    <td>{report.board_reportno}</td>
+                    <td>{report.boardno}</td>
+                    <td>{report.memberno}</td>
+                    <td>{report.rdate?.slice(0, 10)}</td>
+                    <td>
+                      <button
+                        className="icon-btn delete"
+                        onClick={() => handleDelete(report.board_reportno, 'board')}
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>등록된 게시글 신고가 없습니다.</p>
+          )}
+        </div>
       )}
     </div>
   );
