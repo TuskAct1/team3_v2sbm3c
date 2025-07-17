@@ -75,7 +75,7 @@
   
   <!-- 검색 -->
   <select id="searchByKeyword" resultType="dev.mvc.notice.NoticeVO">
-    SELECT noticeno, category, title, content, rdate, views
+    SELECT noticeno, category, title, content, rdate, views, status
     FROM notice
     WHERE LOWER(title) LIKE '%' || LOWER(#{keyword}) || '%'
        OR LOWER(content) LIKE '%' || LOWER(#{keyword}) || '%'

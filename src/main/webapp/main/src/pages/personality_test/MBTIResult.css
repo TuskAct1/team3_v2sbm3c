@@ -1,6 +1,6 @@
 /* ✅ 전체 페이지 배경 및 가운데 정렬 */
 .result-container {
-  background-color: #f1f8e9;
+  background-color: #ffffff;
   min-height: 100vh;
   padding: 3rem 2rem;
 
@@ -142,53 +142,19 @@
 
 /* ✅ 다시 테스트 버튼 */
 .retry-button {
+  display: block;    
+  margin: 2rem auto 0;      
   background-color: #4caf50;
   color: white;
-  font-size: 1.3rem;
-  padding: 1rem 2.5rem;
+  font-size: 1rem;           
+  padding: 0.6rem 1.8rem;    
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 1.5rem;
 }
 
 .retry-button:hover {
   background-color: #2e7d32;
   transform: scale(1.03);
-}
-
-/* ✅ 모바일 대응 */
-@media screen and (max-width: 650px) {
-  .result-card {
-    padding: 2rem;
-    width: 95vw;
-  }
-
-  .result-title {
-    font-size: 2rem;
-  }
-
-  .mbti-type {
-    font-size: 1.5rem;
-  }
-
-  .mbti-description {
-    font-size: 1.1rem;
-  }
-
-  .postit-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .postit-card {
-    width: 90%;
-    min-height: auto;
-  }
-
-  .retry-button {
-    width: 100%;
-    font-size: 1.1rem;
-  }
 }

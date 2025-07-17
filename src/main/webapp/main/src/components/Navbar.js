@@ -173,110 +173,122 @@ function Navbar() {
             )}
           </li>
 
-          {/* ▼ 심리테스트 드롭다운 */}
+          {/* ▼ 자가진단 드롭다운 */}
           <li
             className="dropdown-full"
-            onMouseEnter={() => handleMouseEnterDropdown('test')}
+              onMouseEnter={() => {
+                handleMouseEnterDropdown('checkup');
+                setHoveredTest('all'); // ✅ 드롭다운 열릴 때 '전체 자가진단 보기'가 기본 설명으로!
+              }}
             onMouseLeave={handleMouseLeaveDropdown}
           >
-            <span className="dropbtn" onClick={() => handleClickAndClose('/personality_test')}>심리테스트</span>
-            {activeDropdown === 'test' && (
-              <div className="dropdown-full-menu" onMouseEnter={() => handleMouseEnterDropdown('test')} onMouseLeave={handleMouseLeaveDropdown}>
+            <span className="dropbtn" onClick={() => handleClickAndClose('/personality_test')}>자가진단</span>
+            {activeDropdown === 'checkup' && (
+              <div className="dropdown-full-menu" onMouseEnter={() => handleMouseEnterDropdown('checkup')} onMouseLeave={handleMouseLeaveDropdown}>
                 <div className="dropdown-columns">
+                  {/* 왼쪽: 항목 목록 */}
                   <div className="dropdown-left">
-                    <span onMouseEnter={() => setHoveredTest('personality')} onClick={() => handleClickAndClose('/personality_test')}>전체 심리테스트 보기</span>
-                    <span onMouseEnter={() => setHoveredTest('twoweek')} onClick={() => handleClickAndClose('/twoweek_test')}>2주 주기 우울증 자가진단</span>
-                    <span onMouseEnter={() => setHoveredTest('senior')} onClick={() => handleClickAndClose('/senior_test')}>노인 우울증 자가진단</span>
-                    <span onMouseEnter={() => setHoveredTest('lifestyle')} onClick={() => handleClickAndClose('/lifestyle_test')}>생활 루틴 맞춤 추천</span>
-                    <span onMouseEnter={() => setHoveredTest('memory')} onClick={() => handleClickAndClose('/memory_test')}>기억력 자가진단</span>
-                    <span onMouseEnter={() => setHoveredTest('mbti')} onClick={() => handleClickAndClose('/mbti')}>MBTI 성격유형 테스트</span>
-                    <span onMouseEnter={() => setHoveredTest('hobby')} onClick={() => handleClickAndClose('/hobby_test')}>나에게 어울리는 취미 찾기</span>
+                    <span onMouseEnter={() => setHoveredTest('all')} onClick={() => handleClickAndClose('/personality_test')}>자가진단 모아보기</span>
+                    <span onMouseEnter={() => setHoveredTest('twoweek')} onClick={() => handleClickAndClose('/twoweek_test')}>2주 우울감 점검</span>
+                    <span onMouseEnter={() => setHoveredTest('senior')} onClick={() => handleClickAndClose('/senior_test')}>노인 우울 자가진단</span>
+                    <span onMouseEnter={() => setHoveredTest('lifestyle')} onClick={() => handleClickAndClose('/lifestyle_test')}>생활 루틴 진단</span>                    
+                    <span onMouseEnter={() => setHoveredTest('memory')} onClick={() => handleClickAndClose('/memory_test')}>기억력 체크</span>
+                    <span onMouseEnter={() => setHoveredTest('hobby')} onClick={() => handleClickAndClose('/hobby_test')}>나에게 맞는 취미</span>
+                    <span onMouseEnter={() => setHoveredTest('mbti')} onClick={() => handleClickAndClose('/mbti')}>MBTI 성향 알아보기</span>
                   </div>
+
+                  {/* 오른쪽: 설명 카드 */}
                   <div className="dropdown-right">
                     <div className="content-card">
-                      {hoveredTest === 'personality' && (
+                      {hoveredTest === 'all' && (
                         <>
-                          <h4>🧠 전체 심리테스트 보기</h4>
+                          <h4>📋 자가진단 모아보기</h4>
                           <p>
-                            <strong>토닥이에서 제공하는 모든 심리테스트를 한눈에</strong> 살펴볼 수 있어요. <br />
-                            우울증 자가진단부터 생활 루틴 추천, 기억력 테스트까지 <strong>마음 건강에 도움이 되는 다양한 검사</strong>가 준비돼 있어요. <br />
-                            어떤 테스트가 나에게 맞을지 잘 모르겠다면, <strong>전체 테스트 목록</strong>에서 하나씩 살펴보며 시작해보세요.
+                            마음 건강이든 생활 습관이든, 나를 알아가는 첫걸음은 <strong>스스로의 상태를 살펴보는 것</strong>이에요. <br />
+                            토닥이에서는 다양한 자가진단을 통해 <strong>지금 나의 기분, 습관, 기억력, 성향</strong> 등을 점검해볼 수 있어요. <br />
+                            하나하나 천천히 살펴보며, 지금 나에게 필요한 것이 무엇인지 함께 찾아보아요.
                           </p>
                         </>
                       )}
 
                       {hoveredTest === 'twoweek' && (
                         <>
-                          <h4>🗓️ 2주 주기 우울증 자가진단</h4>
+                          <h4>🗓️ 2주 우울감 점검</h4>
                           <p>
-                            최근 <strong>2주 동안 느낀 감정과 행동의 변화를 점검</strong>해보는 검사예요. <br />
-                            간단한 질문에 답하면서 <strong>현재의 심리 상태</strong>를 스스로 확인할 수 있어요. <br />
-                            주기적으로 체크하면 <strong>우울 증상의 변화</strong>를 미리 파악하고 필요한 도움을 받을 수 있습니다.
+                            최근 2주 동안의 나의 기분과 행동을 되돌아보며 <strong>현재 심리 상태를 확인</strong>하는 간단한 검사예요. <br />
+                            ‘잠을 잘 못 잤던가?’, ‘무기력했는가?’, ‘슬픈 감정을 자주 느꼈는가?’ 같은 질문에 솔직하게 답하면서, <br />
+                            <strong>우울감의 신호를 조기에 발견</strong>할 수 있도록 도와줘요. <br />
+                            특히 혼자 감정을 정리하기 어려울 때, 이 검사로 나 자신을 바라보는 시간을 가져보세요.
                           </p>
                         </>
                       )}
 
                       {hoveredTest === 'senior' && (
                         <>
-                          <h4>🧓 노인 우울증 자가진단</h4>
+                          <h4>🧓 노인 우울 자가진단</h4>
                           <p>
-                            <strong>시니어를 위한 맞춤형 심리검사</strong>예요. <br />
-                            총 15문항을 통해 <strong>의욕 저하, 피로감, 수면 변화</strong> 등 우울 증상을 체크할 수 있어요. <br />
-                            검사 결과를 바탕으로 스스로를 돌아보고, 필요할 땐 <strong>전문가 상담이나 보호자와의 소통</strong>도 추천드려요.
+                            노년기에는 신체 변화나 사회적 외로움으로 인해 <strong>마음이 울적해지는 경우</strong>가 많아요. <br />
+                            이 검사는 <strong>의욕 감소, 피로, 식욕 변화, 외로움</strong> 등 시니어분들이 겪을 수 있는 감정들을 정리해보며 <br />
+                            <strong>현재의 정서적 상태를 부드럽게 점검</strong>해보도록 구성되어 있어요. <br />
+                            스스로 상태를 돌아보고, 필요하다면 <strong>가족이나 전문가와 소통할 계기</strong>로도 이어질 수 있어요.
                           </p>
                         </>
                       )}
 
                       {hoveredTest === 'lifestyle' && (
                         <>
-                          <h4>🛋️ 생활 루틴 맞춤 추천</h4>
+                          <h4>🛋️ 생활 루틴 진단</h4>
                           <p>
-                            GPT가 <strong>당신의 생활 습관과 성향을 분석</strong>해 나에게 꼭 맞는 <strong>하루 루틴을 제안</strong>해줘요. <br />
-                            규칙적인 일상은 <strong>정서 안정과 건강한 생활</strong>에 큰 도움이 됩니다. <br />
-                            아침에 일어나서 무엇을 할지, 하루를 어떻게 보낼지 고민된다면 이 테스트로 시작해보세요.
+                            하루하루가 비슷하게 지나가는 것 같을 때, <strong>나만의 규칙적인 루틴</strong>을 찾는 것이 도움이 돼요. <br />
+                            이 검사는 <strong>현재 나의 생활 습관을 분석하고</strong>, 보다 건강하고 활기찬 하루를 만들 수 있도록 <strong>GPT가 맞춤 루틴을 제안</strong>해줘요. <br />
+                            아침 기상부터 식사, 운동, 여가 활동까지 <strong>나에게 꼭 맞는 하루</strong>를 함께 설계해보세요.
                           </p>
                         </>
                       )}
 
                       {hoveredTest === 'memory' && (
                         <>
-                          <h4>🧠 기억력 자가진단</h4>
+                          <h4>🧠 기억력 체크</h4>
                           <p>
-                            요즘 자꾸 깜빡깜빡 하시나요? <strong>기억력 상태를 점검하고 인지 능력을 확인할 수 있는</strong> 테스트예요. <br />
-                            스스로 현재 기억력이 어떤지 살펴보고, <strong>치매 예방을 위한 첫걸음</strong>으로 활용해보세요. <br />
-                            간단한 문항이지만, <strong>자기 상태를 객관적으로 바라보는 데 큰 도움</strong>이 돼요.
-                          </p>
-                        </>
-                      )}
-
-                      {hoveredTest === 'mbti' && (
-                        <>
-                          <h4>🧩 MBTI 성격유형 테스트</h4>
-                          <p>
-                            나의 <strong>성격 유형과 행동 스타일</strong>을 재미있게 알아볼 수 있는 검사예요. <br />
-                            나 자신을 더 잘 이해하고, 가족이나 친구와의 관계에서도 <strong>서로의 차이를 이해하는 데 도움이 돼요</strong>. <br />
-                            검사 결과는 <strong>16가지 성격 유형 중 하나</strong>로 나와요. 재미있게 참여해보세요!
+                            “어디 뒀더라?” “방금 뭐 하려고 했지?” 같은 순간이 잦아졌다면, <strong>기억력 점검</strong>이 필요할 수 있어요. <br />
+                            이 검사는 일상 속 기억력 저하의 징후를 체크하여 <strong>인지 건강 상태를 가볍게 살펴보는 도구</strong>예요. <br />
+                            <strong>치매를 미리 예방하고, 평소 생활에서 주의해야 할 점</strong>도 함께 알려드려요. <br />
+                            간단하지만 꼭 필요한 검사입니다.
                           </p>
                         </>
                       )}
 
                       {hoveredTest === 'hobby' && (
                         <>
-                          <h4>🎯 나에게 어울리는 취미 찾기</h4>
+                          <h4>🎯 나에게 맞는 취미</h4>
                           <p>
-                            어떤 취미가 나에게 잘 맞을지 고민될 때 <strong>성향 기반으로 맞춤 추천</strong>을 해주는 검사예요. <br />
-                            만들기, 음악, 산책, 봉사 등 <strong>다양한 활동 중 나에게 어울리는 취미를 알려줘요</strong>. <br />
-                            무료한 일상에 <strong>새로운 즐거움과 활력을 찾아보는 계기</strong>가 될 수 있어요.
+                            "나도 뭔가 재미있는 걸 해보고 싶은데…" 고민 중이라면 이 검사를 추천해요! <br />
+                            나의 성향과 활동 스타일에 맞춰 <strong>산책, 그림 그리기, 음악 감상, 자원봉사</strong> 등 <br />
+                            <strong>다양한 취미 활동을 제안</strong>해드려요. <br />
+                            새로운 취미는 <strong>마음의 활력을 불어넣고, 하루의 즐거움</strong>이 될 수 있어요.
+                          </p>
+                        </>
+                      )}
+
+                      {hoveredTest === 'mbti' && (
+                        <>
+                          <h4>🧩 MBTI 성향 알아보기</h4>
+                          <p>
+                            나의 <strong>성격 유형과 사람들과의 관계에서 어떤 모습을 보이는지</strong> 알 수 있는 검사예요. <br />
+                            총 16가지 유형 중 내가 속한 성향을 통해, <strong>나 자신을 더 잘 이해하고</strong>, <br />
+                            가족, 친구, 이웃과의 관계에서도 <strong>서로 다름을 존중하며 소통</strong>할 수 있어요. <br />
+                            재밌으면서도 생각할 거리도 많은 테스트랍니다.
                           </p>
                         </>
                       )}
                     </div>
-
                   </div>
                 </div>
               </div>
             )}
           </li>
+
+
 
           {/* ▼ 콘텐츠 드롭다운 */}
           <li
@@ -293,7 +305,7 @@ function Navbar() {
               >
                 <div className="dropdown-columns">
                   <div className="dropdown-left">
-                    <span onMouseEnter={() => setHoveredContent('content')} onClick={() => handleClickAndClose('/content')}>전체 콘텐츠</span>
+                    <span onMouseEnter={() => setHoveredContent('content')} onClick={() => handleClickAndClose('/content')}>콘텐츠 모아보기</span>
                     <span onMouseEnter={() => setHoveredContent('plant')} onClick={() => handleClickAndClose('/plant')}>반려식물</span>
                     <span onMouseEnter={() => setHoveredContent('diary')} onClick={() => handleClickAndClose('/diary')}>일기</span>
                     <span onMouseEnter={() => setHoveredContent('emotion')} onClick={() => handleClickAndClose('/emotion_report')}>감정분석</span>
@@ -305,7 +317,7 @@ function Navbar() {
                     <div className="content-card">
                       {hoveredContent === 'content' && (
                         <>
-                          <h4>📚 전체 콘텐츠</h4>
+                          <h4>📚 콘텐츠 모아보기</h4>
                             <p>
                               <strong>토닥</strong>에서는 마음을 돌보고, 일상을 정리하고, 위로받을 수 있는 다양한 콘텐츠들을 제공해요. <br />
                               <strong>감정 분석, 일기, 반려식물, 음악 추천, 캘린더</strong>까지! <br />
@@ -369,10 +381,8 @@ function Navbar() {
                             <p>
                               <strong>복지관 행사, 급여일, 봉사 일정, 가족 생일</strong> 등 다양한 일정을 한눈에 정리할 수 있는 기능이에요. <br />
                               일정이 많아도 걱정하지 마세요! <strong>필터 기능</strong>으로 원하는 일정만 골라서 볼 수 있어요. <br />
-                              <strong>관리자 일정과 개인 일정이 구분</strong>되어 있어 복지관에서 알려주는 정보와 내 스케줄을 함께 확인할 수 있어요. <br />
-                              <strong>+ 버튼을 눌러 직접 일정도 추가</strong>할 수 있어서 아주 편리해요. <br />
-                              <strong>월 단위 / 주 단위 보기</strong> 전환도 가능하니, 눈에 편한 방식으로 골라보세요. <br />
-                              중요한 약속, 행사, 나만의 일정을 <strong>놓치지 않도록 도와주는 든든한 도우미</strong>입니다.
+                              <strong>관리자 일정과 개인 일정이 구분</strong>되어 있어 복지 정보와 내 스케줄을 함께 확인할 수 있어요. <br />
+                              <strong>월 단위 / 주 단위 보기</strong> 전환도 가능하니, 눈에 편한 방식으로 골라보세요. 
                             </p>
                         </>
                       )}
@@ -389,7 +399,7 @@ function Navbar() {
             onMouseEnter={() => handleMouseEnterDropdown('board')}
             onMouseLeave={handleMouseLeaveDropdown}
           >
-            <span className="dropbtn" onClick={() => handleClickAndClose('/board/list_all/all/1')}>게시판</span>
+            <span className="dropbtn" onClick={() => handleClickAndClose('/board/list_all/all/1')}>도란도란</span>
             {activeDropdown === 'board' && (
               <div className="dropdown-full-menu">
                 <div className="dropdown-columns">
@@ -408,13 +418,12 @@ function Navbar() {
                     <div className="content-card">
                       <h4>📋 게시판 모아보기</h4>
                       <p>
-                        토닥의 게시판은 <strong>다양한 주제에 맞춰 나누어진 소통 공간</strong>이에요. <br />
+                        도란도란은 <strong>다양한 주제에 맞춰 나누어진 소통 공간</strong>이에요. <br />
                         <strong>관심 있는 주제</strong>를 골라 다른 분들과 생각을 나누거나, <strong>정보도 공유하고 이야기</strong>할 수 있어요. <br />
                         예를 들어 <strong>복지, 취미, 일상 이야기, 가족 이야기</strong> 등 원하는 주제를 선택해서 구경할 수 있어요. <br />
                         글을 읽기만 해도 좋고, <strong>마음이 가는 이야기에는 댓글이나 글을 남겨보세요</strong>. <br />
                         <strong>소통을 통해 정서적인 교감과 즐거움</strong>을 느낄 수 있는 공간입니다.
                       </p>
-                      <Link to="/board/list_all/all/1">→ 전체 게시판 바로가기</Link>
                     </div>
                   </div>
                 </div>

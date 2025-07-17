@@ -44,7 +44,7 @@
     <!-- 게시글 수정 -->
     <update id="update" parameterType="dev.mvc.board.BoardVO">
         UPDATE board
-        SET title = #{title}, content = #{content}
+        SET categoryno = #{categoryno}, title = #{title}, content = #{content}, file1saved = #{file1saved}, thumb1 = #{thumb1}, size1 = #{size1}
         WHERE boardno = #{boardno}
     </update>
 
@@ -77,35 +77,12 @@
     </select>
 
     <!-- 카테고리별 검색 + 페이징 목록 -->
-  <!--  <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
-      SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, r
-      FROM (
-      SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom, rownum as r
-      FROM (
-      SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt, file1, file1saved, thumb1, size1, recom
-      FROM board
-      <choose>
-        <when test="word == null or word == '' or word == 'all'"> &lt;!&ndash; 검색하지 않는 경우 &ndash;&gt;
-          WHERE categoryno=#{categoryno}
-        </when>
-        <otherwise>
-          WHERE categoryno=#{categoryno} AND (UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
-          OR UPPER(content) LIKE '%' || UPPER(#{word}) || '%'
-          OR UPPER(word) LIKE '%' || UPPER(#{word}) || '%')
-        </otherwise>
-      </choose>
-      ORDER BY boardno DESC
-      )
-      )
-      WHERE <![CDATA[ r >= #{start_num} AND r <= #{end_num} ]]>
-    </select>-->
-
     <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
         SELECT * FROM (
             SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
                     file1, file1saved, thumb1, size1, recom, nickname, categoryname, r
             FROM (
-                SELECT b.boardno, b.categoryno, b.memberno, b.title, TO_CHAR(b.content) AS content, b.passwd, b.word, b.rdate, b.visible,
+                SELECT b.boardno, b.categoryno, b.memberno, b.title, b.content AS content, b.passwd, b.word, b.rdate, b.visible,
                         b.cnt, b.file1, b.file1saved, b.thumb1, b.size1, b.recom, m.nickname, c.name AS categoryname, rownum AS r
                 FROM ( SELECT * FROM board ) b
                 JOIN member m ON b.memberno = m.memberno
@@ -145,6 +122,7 @@
             )
         WHERE r <![CDATA[ >= ]]> #{start_num} AND r <![CDATA[ <= ]]> #{end_num}
     </select>
+
 
     <!-- 카테고리별 검색 레코드 갯수 -->
     <select id="list_by_categoryno_search_count" resultType="int" parameterType="HashMap">
@@ -197,7 +175,7 @@
         rownum AS r
         FROM (
         SELECT b.boardno, b.categoryno, b.memberno,
-        b.title, TO_CHAR(b.content) AS content, b.passwd, b.word, b.rdate, b.visible, b.cnt,
+        b.title, b.content AS content, b.passwd, b.word, b.rdate, b.visible, b.cnt,
         b.file1, b.file1saved, b.thumb1, b.size1, b.recom,
         m.nickname, c.name AS categoryname
         FROM board b

@@ -90,9 +90,6 @@ public class MemberController {
             }
         }
 
-        // 2. 비밀번호 암호화
-        String encrypted = bcryptUtil.encode(memberVO.getPasswd());
-        memberVO.setPasswd(encrypted);
 
         // 3. 포인트 기본값
         memberVO.setPoint(50);
@@ -101,6 +98,8 @@ public class MemberController {
         int cnt = memberProc.create(memberVO);
         if (cnt == 1) {
             int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
+
+            // 2단계: 기본 식물 생성
 
             // 5. 기본 식물 생성
             PlantVO plant = new PlantVO();
@@ -241,7 +240,7 @@ public class MemberController {
     /** 회원 삭제 */
     @Transactional
     @DeleteMapping("/{memberno}")
-    public ResponseEntity<?> delete(@PathVariable int memberno) {
+    public ResponseEntity<?> delete(@PathVariable ("memberno") int memberno) {
         try {
             //  자식 테이블 삭제
             plantProc.deleteByMemberno(memberno);

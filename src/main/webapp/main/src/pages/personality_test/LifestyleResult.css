@@ -1,122 +1,128 @@
-/* ✅ LifestyleResult.css - 루틴 결과 페이지 전용 */
-
+/* ✅ 전체 결과 페이지 */
 .lifestyle-result-container {
-  padding: 3rem 1rem;
-  max-width: 900px;
+  padding: 4rem 1.5rem;
+  max-width: 960px;
   margin: 0 auto;
-  font-family: 'Pretendard', sans-serif;
-  background-color: #ffffff; /* 🔄 단색 배경으로 변경 */
+  background-color: #ffffff;
   min-height: 100vh;
+  font-family: 'Pretendard', sans-serif;
+  color: #333;
 }
 
+/* ✅ 제목 */
 .result-title {
   text-align: center;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2e7d32;
-  margin-bottom: 2.5rem;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #388e3c;
+  margin-bottom: 3rem;
 }
 
+/* ✅ 타임라인 카드 전체 */
 .timeline {
-  background-color: #ffffff;
+  background-color: #ebf1eb;
   border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 2.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* 🔹 기본 루틴 항목 */
+/* ✅ 개별 루틴 항목 */
 .timeline-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .timeline-time {
-  min-width: 80px;
-  font-weight: bold;
-  color: #388e3c;
-  font-size: 1.1rem;
-  margin-right: 1.2rem;
+  min-width: 90px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-right: 1.5rem;
 }
 
 .timeline-content {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
+  line-height: 1.8;
   color: #444;
-  line-height: 1.6;
 }
 
-/* ✅ 응원의 말 - 강조 스타일 */
+/* ✅ 마지막 응원 메시지 강조 */
 .timeline-item:last-child {
-  background-color: #fffde7;  /* 💛 연한 노랑 배경 */
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(255, 235, 59, 0.3);
+  background-color: #fff8e1;
+  padding: 1.6rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(255, 214, 102, 0.25);
 }
 
 .timeline-item:last-child .timeline-time {
-  color: #f9a825;  /* 노랑 강조 색상 */
+  color: #a1887f;
 }
 
 .timeline-item:last-child .timeline-content {
   font-weight: 600;
-  color: #5d4037;
-}
-
-.error-msg {
-  color: #c62828;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 2rem;
+  color: #4e342e;
   font-size: 1.2rem;
 }
 
+/* ✅ 에러 메시지 */
+.error-msg {
+  color: #c62828;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 2.5rem;
+  font-size: 1.3rem;
+}
+
+/* ✅ 버튼 영역 */
 .btn-group {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 3rem;
+  gap: 1.2rem;
+  margin-top: 3.5rem;
   flex-wrap: wrap;
 }
 
+/* ✅ 버튼 공통 */
 .retry-btn,
 .save-btn,
 .back-btn {
-  padding: 0.8rem 1.8rem;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 1rem 2.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(102, 187, 106, 0.25);
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 
+/* 초록 버튼 */
 .retry-btn {
-  background-color: #66bb6a;
+  background-color: #81c784;
   color: white;
 }
-
 .retry-btn:hover {
-  background-color: #43a047;
-  transform: scale(1.05);
+  background-color: #66bb6a;
+  transform: scale(1.04);
 }
 
+/* 노랑 버튼 */
 .save-btn {
-  background-color: #ffee58;
-  color: #444;
+  background-color: #fff59d;
+  color: #4e4e4e;
 }
-
 .save-btn:hover {
   background-color: #fdd835;
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
+/* 회색 버튼 */
 .back-btn {
   background-color: #e0e0e0;
   color: #333;
 }
-
 .back-btn:hover {
   background-color: #bdbdbd;
-  transform: scale(1.05);
+  transform: scale(1.04);
 }

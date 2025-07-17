@@ -202,7 +202,6 @@ function DiaryPage() {
         });
 
         const list = res.data.content || [];
-
         console.log(res.data);
 
         const mapped = list.map((item) => ({
