@@ -51,4 +51,6 @@ public interface MemberDAOInter {
     public List<MemberVO> searchWithPaging(Map<String, Object> map);
   
     public int searchCount(Map<String, Object> map);
+    public int updateProfile(@Param("memberno") int memberno, @Param("profile") String profile);
+
 }

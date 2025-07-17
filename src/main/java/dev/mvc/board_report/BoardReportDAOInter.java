@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface BoardReportDAOInter {
 
@@ -23,7 +25,18 @@ public interface BoardReportDAOInter {
     public BoardReportVO read(int boardReportno);
 
     /** 게시글 추천 삭제 (신고 누적시 삭제용) */
+
     boolean delete_all(@Param("boardno") int boardno);
+
+    public boolean delete_all(@Param("boardno") int boardno);
+
+    List<Map<String, Object>> groupedBoardReports();
+
+    List<Map<String, Object>> listByBoardnoWithMember(int boardno);
+
+    /** ✅ 신고된 게시글 번호 목록 */
+    public List<Integer> findReportedBoardnos();
+
 }
 
 

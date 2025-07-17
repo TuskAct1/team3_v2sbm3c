@@ -20,7 +20,7 @@
       #{memberno}, 
       #{mname}, #{id}, #{passwd}, #{passwd2},
       #{nickname, jdbcType=VARCHAR},
-      #{profile, jdbcType=VARCHAR},
+      #{profile},
       #{birthdate}, #{gender},
       #{zipcode}, #{address1}, #{address2}, #{tel},
       #{guardian_name, jdbcType=VARCHAR},
@@ -187,6 +187,12 @@
   <update id="updatePassword" >
     UPDATE member
     SET passwd = #{newPasswd}
+    WHERE memberno = #{memberno}
+  </update>
+
+  <update id="updateProfile" parameterType="map">
+    UPDATE member
+    SET profile = #{profile}
     WHERE memberno = #{memberno}
   </update>
 

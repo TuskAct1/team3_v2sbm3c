@@ -1,0 +1,137 @@
+/* 관리자 로그인 공통 wrapper */
+.signup-wrapper {
+  max-width: 480px;
+  margin: 80px auto;
+  padding: 24px;
+  text-align: center;
+}
+
+/* 타이틀 */
+.signup-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #2d3a76; /* 관리자 전용 강조색 */
+}
+
+/* 부제목 */
+.signup-subtitle {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+/* 카드 스타일 */
+.signup-card {
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: left;
+}
+
+/* 입력 그룹 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* 레이블 */
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+/* 입력 필드 */
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #8ef557;
+  outline: none;
+}
+
+/* 경고 메시지 */
+.email-message.invalid {
+  color: #e74c3c;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* 체크박스 영역 */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #444;
+  gap: 12px;
+}
+
+/* 로그인 버튼 */
+.submit-btn {
+  width: 100%;
+  background-color: #a6f557;
+  color: white;
+  font-size: 16px;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #75dc3e;
+}
+
+/* 링크 영역 */
+.login-find-links {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+.login-find-links a {
+  color: #9ef557;
+  text-decoration: none;
+  margin: 0 6px;
+}
+
+.login-find-links span {
+  color: #999;
+}
+
+.checkbox-inline-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.checkbox-inline-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.checkbox-inline-row label {
+  margin: 0;
+  white-space: nowrap;
+  cursor: pointer;
+}

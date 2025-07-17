@@ -131,4 +131,9 @@ public class MemberProc implements MemberProcInter {
     public int searchCount(Map<String, Object> map) {
         return memberDAO.searchCount(map);
     }
+
+    @Override
+    public int updateProfile(int memberno, String profile) {
+        return memberDAO.updateProfile(memberno, profile);
+    }
 }

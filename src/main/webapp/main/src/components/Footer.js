@@ -1,14 +1,20 @@
 // src/components/Footer.js
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css'; // 푸터 전용 스타일
+import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
     <section className="footer-section">
       <h3>토닥 서비스에 대해 궁금하세요?</h3>
       <div className="footer-buttons">
-        <button>1:1 문의</button>
-        <button>자주묻는 질문</button>
+          <Link to="/inquiry">
+            <button>1:1 문의</button>
+          </Link>
+          <Link to="/faq">
+            <button>자주묻는 질문</button>
+          </Link>
       </div>
       <div className="footer-info">
         <p><strong>INFO.</strong></p>

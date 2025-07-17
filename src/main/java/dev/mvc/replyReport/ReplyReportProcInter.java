@@ -9,7 +9,7 @@ public interface ReplyReportProcInter {
 
   /**
    * 등록, 추상 메소드
-   * @param ReplyReportVO
+   * @param replyReportVO
    * @return
    */
   public int create(ReplyReportVO replyReportVO);
@@ -23,7 +23,7 @@ public interface ReplyReportProcInter {
   
   /**
    * 조회
-   * @param reply_recommendno
+   * @param replyReportno
    * @return
    */
   public ReplyReportVO read(int replyReportno);
@@ -59,5 +59,5 @@ public interface ReplyReportProcInter {
    */
   public ArrayList<Map<String, Object>> list_by_replyno(int replyno);
 
-  public List<Map<String, Object>> groupedReports();
+  List<GroupedReplyReportDTO> groupedReports(); // ✅ 여기를 DTO로 변경
 }
