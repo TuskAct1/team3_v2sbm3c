@@ -52,7 +52,7 @@ const PieChart = ({ data }) => {
         position: 'bottom',
         labels: {
           font: {
-            size: 14
+            size: 18
           },
           // ✅ 항상 감정별 색상과 라벨 유지
           generateLabels: (chart) => {

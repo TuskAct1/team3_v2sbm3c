@@ -11,7 +11,6 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addMapping("/**")
             .allowedOrigins("http://localhost:3000")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-
             .allowedHeaders("*")
             .allowCredentials(true);
   }
@@ -19,8 +18,16 @@ public class WebConfig implements WebMvcConfigurer {
   // ✅ 정적 리소스 매핑 추가 (이미지 등)
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    // Member Profile 사진 경로
     registry.addResourceHandler("/profile/**")
-            .addResourceLocations("file:///C:/kd/deploy/resort/member/storage/");
+            .addResourceLocations("file:///C:/kd/deploy/team3/member/storage/");
 
+    // FAQ 이미지 경로
+    registry.addResourceHandler("/faq/storage/**")
+            .addResourceLocations("file:/Users/imgwanghwan/kd/deploy/team3/faq/storage/");
+
+    // 📌 게시판 첨부파일 경로 추가
+    registry.addResourceHandler("/contents/storage/**")
+            .addResourceLocations("file:///C:/kd/deploy/resort/contents/storage/");
   }
 }

@@ -1,83 +1,95 @@
-/* ✅ SeniorTestResult.css */
-
-.senior-result-container {
-  min-height: 100vh;
-  padding: 60px 20px;
-  background-color: #f1f8e9;
+/* ✅ 전체 결과 컨테이너 */
+.twoweek-result-container {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 0 24px;
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 70vh;
   font-family: 'Pretendard', sans-serif;
-}
-
-.senior-result-box {
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 700px;
-  width: 100%;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* ✅ 결과 카드 */
+.twoweek-result-card {
+  padding: 60px 40px;
+  border-radius: 24px;
   text-align: center;
+  width: 100%;
+  max-width: 770px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  background-color: #ffffff;
 }
 
-.senior-result-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 20px;
+/* ✅ 점수별 배경색 */
+.twoweek-mood-good {
+  background-color: #e3f9e5;
+}
+.twoweek-mood-light {
+  background-color: #f5fbe4;
+}
+.twoweek-mood-mid {
+  background-color: #fffde8;
+}
+.twoweek-mood-severe {
+  background-color: #fef2e2;
+}
+.twoweek-mood-critical {
+  background-color: #ffe5e8;
 }
 
-.senior-result-score {
+/* ✅ 이모지 */
+.twoweek-result-emoji {
+  font-size: 60px;
+  margin-bottom: 24px;
+}
+
+/* ✅ 타이틀 */
+.twoweek-result-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222; /* 검정 계열로 수정 */
+  margin-bottom: 28px;
+}
+
+/* ✅ 점수 텍스트 */
+.twoweek-result-score {
   font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 20px;
+  font-weight: 700;
+  color: #333; /* 강조 줄임 */
+  margin-bottom: 12px;
 }
 
-.senior-text-good {
-  color: #388e3c;
-}
-
-.senior-text-mid {
-  color: #fbc02d;
-}
-
-.senior-text-danger {
-  color: #e53935;
-}
-
-.senior-result-message {
-  font-size: 1.1rem;
-  white-space: pre-line;
+/* ✅ 판정 결과 텍스트 */
+.twoweek-result-message {
+  font-size: 1.2rem;
   color: #444;
-  line-height: 1.7;
-  margin-bottom: 30px;
+  margin-bottom: 48px;
+  line-height: 1.6;
 }
 
-.senior-result-btn {
-  background-color: #66bb6a;
-  color: white;
-  font-weight: bold;
-  padding: 12px 28px;
-  font-size: 1rem;
-  border: none;
+.twoweek-result-message strong {
+  color: #2e7d32; /* 초록 포인트 강조만 유지 */
+  font-weight: 700;
+}
+
+/* ✅ 버튼 */
+.twoweek-back-button {
+  background-color: #e0e0e0;
+  color: #333;
+  font-size: 1.15rem;
+  padding: 0.9rem 2.2rem;
   border-radius: 999px;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.15s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
 }
 
-.senior-result-btn:hover {
-  background-color: #388e3c;
-  transform: translateY(-2px);
-}
-
-.senior-result-box.error {
-  background-color: #ffebee;
-  color: #c62828;
-  border: 2px solid #e57373;
-}
-
-.senior-result-error {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
+.twoweek-back-button:hover {
+  background-color: #bdbdbd;
+  transform: scale(1.04);
 }

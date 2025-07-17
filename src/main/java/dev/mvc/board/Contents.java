@@ -12,7 +12,7 @@ public class Contents {
         String path = "";
 
         if (osName.contains("win")) { // Windows
-            path = "C:\\kd\\deploy\\resort\\board\\storage\\";
+            path = "C:\\kd\\deploy\\resort\\contents\\storage\\";
             // System.out.println("Windows: " + path);
         } else if (osName.contains("mac")) { // MacOS
             path = "/Users/imgwanghwan/kd/deploy/team3/board/storage";

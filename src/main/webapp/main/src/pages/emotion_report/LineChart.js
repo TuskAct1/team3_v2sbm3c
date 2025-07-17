@@ -15,7 +15,7 @@ ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Legend, 
 
 const LineChart = ({ data }) => {
   if (!data || data.length === 0) {
-    return <p style={{ textAlign: "center" }}>데이터가 없습니다.</p>;
+    return <p style={{ textAlign: "center" }}>로딩중...</p>;
   }
 
   // 👉 1. x축 라벨: 주차나 월
@@ -63,6 +63,7 @@ const LineChart = ({ data }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false, 
     plugins: {
       legend: { position: 'bottom' },
       tooltip: {
@@ -79,7 +80,7 @@ const LineChart = ({ data }) => {
           display: true,
           text: '퍼센트(%)',
           color: '#333',
-          font: { size: 14, weight: 'bold' }
+          font: { size: 18, weight: 'bold' }
         }
       },
       x: {
@@ -87,7 +88,7 @@ const LineChart = ({ data }) => {
           display: true,
           text: '기간',
           color: '#333',
-          font: { size: 14, weight: 'bold' }
+          font: { size: 18, weight: 'bold' }
         }
       }
     }

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
+import './NBoardCreate.css'; // ✅ 동일한 CSS 사용
 
 function BoardUpdatePage() {
   const { boardno } = useParams();
@@ -8,56 +11,23 @@ function BoardUpdatePage() {
   
   const [boardVO, setBoardVO] = useState(null);
   const [categoryGroup, setCategoryGroup] = useState([]);
+  const [categoryno, setCategoryno] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [file1MF, setFile1MF] = useState(null);
   const [passwd, setPasswd] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isImage = (filename) => {
     if (!filename) return false;
     const lower = filename.toLowerCase();
-    return lower.endsWith('jpg') || 
-           lower.endsWith('jpeg') || 
-           lower.endsWith('png') || 
-           lower.endsWith('gif');
+    return lower.endsWith('jpg') || lower.endsWith('jpeg') || lower.endsWith('png') || lower.endsWith('gif');
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    
-    if (!passwd) {
-      alert('패스워드를 입력해주세요.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('boardno', boardno);
-    formData.append('title', title);
-    formData.append('content', content);
-    formData.append('passwd', passwd);
-    
-    if (file1MF) {
-      formData.append('file1MF', file1MF);
-    }
-
-    try {
-      const response = await axios.put('/board/update', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      if (response.status === 200) {
-        alert('수정이 완료되었습니다.');
-        navigate(`/board/read/${boardno}`);
-      } else {
-        alert('수정에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('수정 오류:', error);
-      alert('오류가 발생했습니다.');
-    }
+  const stripHtml = (html) => {
+    if (!html) return '';
+    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
   };
 
   useEffect(() => {
@@ -65,18 +35,14 @@ function BoardUpdatePage() {
       try {
         setIsLoading(true);
         const response = await axios.get(`/board/update/${boardno}`);
-        
-        setBoardVO(response.data.boardVO);
-        setCategoryGroup(response.data.categoryGroup || []);
-        setTitle(response.data.boardVO.title);
-        setContent(stripHtml(response.data.boardVO.content));
-        
-        // 기존 파일 정보가 있는 경우 설정
-        if (response.data.boardVO.file1) {
-          // 서버에서 파일 정보를 받아와서 설정
-          // 실제 구현에서는 서버에서 파일 정보를 제공해야 함
-        }
-        
+        const board = response.data.boardVO;
+        const categories = response.data.categoryGroup || [];
+
+        setBoardVO(board);
+        setCategoryGroup(categories);
+        setCategoryno(String(board.categoryno)); // 현재 카테고리 선택
+        setTitle(board.title);
+        setContent(stripHtml(board.content));
       } catch (error) {
         console.error('데이터 로딩 실패:', error);
         alert('게시글 정보를 불러오는데 실패했습니다.');
@@ -88,119 +54,133 @@ function BoardUpdatePage() {
     fetchData();
   }, [boardno]);
 
-  function stripHtml(html) {
-    if (!html) return ''; // undefined, null, '' 모두 빈 문자열 반환
-    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
-  }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFile1MF(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
-  if (isLoading) {
-    return <div className="text-center mt-5">로딩 중...</div>;
-  }
+  const handleUpdate = async (e) => {
+    e.preventDefault();
 
-  if (!boardVO) {
-    return <div className="alert alert-danger mt-5">게시글 정보를 찾을 수 없습니다.</div>;
-  }
+    if (!passwd) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('boardno', boardno);
+    formData.append('categoryno', categoryno); // ✅ 추가
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('passwd', passwd);
+    if (file1MF) formData.append('file1MF', file1MF);
+
+    try {
+      const response = await axios.put('/board/update', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (response.status === 200) {
+        alert('수정이 완료되었습니다.');
+        navigate(`/board/read/${boardno}`);
+      } else {
+        alert('수정 실패');
+      }
+    } catch (error) {
+      console.error('수정 오류:', error);
+      alert('서버 오류 발생');
+    }
+  };
+
+  if (isLoading) return <div className="text-center mt-5">로딩 중...</div>;
+  if (!boardVO) return <div className="alert alert-danger mt-5">게시글 정보를 찾을 수 없습니다.</div>;
 
   return (
-    <div className="container mt-4">
-      <h1 className="mb-4">게시글 수정</h1>
-      <hr />
+    <div className="board-create-wrap">
+      <div className="board-create-title-line">게시글 수정</div>
 
-      <div className="mb-4">
-        {categoryGroup.map((category) => (
-          <a 
-            key={category.categoryno} 
-            href={`/board/list_category/${category.categoryno}`} 
-            className="badge bg-secondary me-2"
+      <form onSubmit={handleUpdate} className="board-create-form" encType="multipart/form-data">
+        {/* ✅ 카테고리 수정 */}
+        <div className="form-row">
+          <label className="form-label">게시판</label>
+          <select
+            className="board-create-select"
+            value={categoryno}
+            onChange={(e) => setCategoryno(e.target.value)}
+            required
           >
-            {category.name}
-          </a>
-        ))}
-      </div>
+            <option value="">게시판을 선택해주세요</option>
+            {categoryGroup.map((categoryVO) => (
+              <option key={categoryVO.categoryno} value={categoryVO.categoryno}>
+                {categoryVO.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <form onSubmit={handleUpdate} encType="multipart/form-data">
-        <div className="mb-3">
+        <div className="form-row">
           <label className="form-label">제목</label>
           <input
             type="text"
+            className="board-create-title-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            autoFocus
-            className="form-control"
             placeholder="제목을 입력하세요"
           />
         </div>
 
-        <div className="mb-3">
+        <div className="form-row form-full">
           <label className="form-label">내용</label>
-          <textarea
+          <ReactQuill
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            className="form-control"
-            rows="10"
-            placeholder="내용을 입력하세요"
+            onChange={setContent}
+            className="board-create-editor"
+            placeholder="내용을 입력하세요 (텍스트, 사진, 링크 등)"
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">이미지 업로드</label>
-          <input
-            type="file"
-            className="form-control"
-            id="file1MF"
-            name="file1MF"
-            onChange={(e) => setFile1MF(e.target.files[0])}
-            accept="image/*"
-          />
-          
-          {/* 기존 이미지 표시 */}
-          {boardVO.file1 && isImage(boardVO.file1) && (
-            <div className="mt-2">
-              <label className="form-label">현재 이미지</label>
-              <div>
-                <img 
-                  src={`/storage/${boardVO.file1}`} 
-                  alt="현재 게시글 이미지" 
-                  className="img-thumbnail"
-                  style={{ maxWidth: '200px' }}
-                />
-                <p className="small text-muted mt-1">{boardVO.file1}</p>
-              </div>
-            </div>
-          )}
+        <div className="form-row">
+          <label className="form-label">사진 첨부</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} className="form-input" />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">패스워드</label>
+        {boardVO.file1 && isImage(boardVO.file1) && (
+          <div className="form-row form-full">
+            <label className="form-label">현재 이미지</label>
+            <img
+              src={`/contents/storage/${boardVO.file1saved}`}
+              alt="현재 이미지"
+              className="board-create-preview"
+            />
+          </div>
+        )}
+
+        {imagePreview && (
+          <div className="form-row form-full">
+            <label className="form-label">새 이미지</label>
+            <img src={imagePreview} alt="미리보기" className="board-create-preview" />
+          </div>
+        )}
+
+        <div className="form-row">
+          <label className="form-label">비밀번호</label>
           <input
             type="password"
+            className="board-create-pass-input"
             value={passwd}
             onChange={(e) => setPasswd(e.target.value)}
+            placeholder="비밀번호 입력"
             required
-            className="form-control"
-            placeholder="패스워드를 입력하세요"
           />
-          <div className="form-text">게시글 수정을 위해 패스워드가 필요합니다</div>
-        </div>
-
-        <div className="d-flex gap-2 mt-4">
-          <button type="submit" className="btn btn-primary">수정</button>
-          <button 
-            type="button" 
-            className="btn btn-secondary"
-            onClick={() => navigate(`/board/read/${boardno}`)}
-          >
-            취소
-          </button>
-          <button 
-            type="button" 
-            className="btn btn-outline-secondary"
-            onClick={() => navigate(`/board/list_category/${boardVO.categoryno}`)}
-          >
-            목록
-          </button>
+          <button type="submit" className="board-create-submit-btn">수정하기</button>
         </div>
       </form>
     </div>

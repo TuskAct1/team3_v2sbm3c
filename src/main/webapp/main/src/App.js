@@ -13,7 +13,7 @@ import SeniorTest from './pages/personality_test/SeniorTest';
 import SeniorTestResult from './pages/personality_test/SeniorTestResult';
 import MBTITest from './pages/personality_test/MBTITest';
 import MBTIResult from './pages/personality_test/MBTIResult';
-import TwoweekQuestionnaire from './pages/personality_test/TwoweekQuestionnaire';
+import TwoweekTest from './pages/personality_test/TwoweekTest';
 import TwoweekResult from './pages/personality_test/TwoweekResult';
 import SeniorTestList from './pages/personality_test/SeniorTestList';
 import TwoweekResultList from './pages/personality_test/TwoweekResultList';
@@ -25,7 +25,6 @@ import LifestyleResult from './pages/personality_test/LifestyleResult';
 import LifestyleResultList from './pages/personality_test/LifestyleResultList';
 
 // 기타 페이지
-import SelfCheckPage from './pages/SelfCheckPage';
 import CalendarPage from './pages/calendar/CalendarPage';
 import BoardPage from './pages/board/BoardPage';
 import NBoardCreatePage from './pages/board/NBoardCreatePage';
@@ -42,7 +41,6 @@ import LoginPage from './pages/member/LoginPage';
 import SignUpPageAdmin from './pages/member/SignUpPageAdmin';
 import LoginPageAdmin from './pages/member/LoginPageAdmin';
 import MemberListPage from './pages/member/MemberListPage';
-import AdminPage from './pages/member/AdminPage';
 import MyPage from './pages/member/MyPage';
 import AdminMyPage from './pages/member/AdminMyPage';
 
@@ -69,6 +67,7 @@ import PlantMain from './pages/plant/PlantMain';
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
+
 import DiaryCreate from './pages/diary/DiaryCreate';
 import DiaryUpdate from './pages/diary/DiaryUpdate';
 import DiaryRead from './pages/diary/DiaryRead';
@@ -77,91 +76,89 @@ import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
 
+import FaqPage from './pages/faq/FaqPage';
+import FaqCreatePage from './pages/faq/FaqCreatePage';
+
+
+
 function App() {
   return (
     <BrowserRouter>
-
 
       <Routes>
           <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
           <Route path="/todaki" element={<TodakiPage />} />
 
-        <Route path="/" element={<MainPage />} />
-        <Route path="/todaki" element={<TodakiPage />} />
 
-        <Route path="/personality_test" element={<PersonalityTest />} />
-        <Route path="/senior_test" element={<SeniorTest />} /> 
-        <Route path="/senior_test/result" element={<SeniorTestResult />} /> 
-        <Route path="/mbti" element={<MBTITest />} />
-        <Route path="/mbti-result" element={<MBTIResult />} />
-        <Route path="/twoweek_test" element={<TwoweekQuestionnaire />} />
-        <Route path="/twoweek_test/result" element={<TwoweekResult />} />
-        <Route path="/senior_test/testlist" element={<SeniorTestList />} />
-        <Route path="/twoweek_test/testlist" element={<TwoweekResultList />} />
-        <Route path="/hobby_test" element={<HobbyTest />} />
-        <Route path="/memory_test" element={<MemoryTest />} />
-        <Route path="/memory_test/result" element={<MemoryResult />} />
-        <Route path="/lifestyle_test" element={<LifestyleTest />} />
-        <Route path="/lifestyle_test/result" element={<LifestyleResult />} />
-        <Route path="/lifestyle_test/list" element={<LifestyleResultList />} />
-        <Route path="/calendar" element={<CalendarPage />} />
+          {/* 심리테스트 */}
+          <Route path="/personality_test" element={<PersonalityTest />} />
+          <Route path="/senior_test" element={<SeniorTest />} />
+          <Route path="/senior_test/result" element={<SeniorTestResult />} />
+          <Route path="/mbti" element={<MBTITest />} />
+          <Route path="/mbti-result" element={<MBTIResult />} />
+          <Route path="/twoweek_test" element={<TwoweekTest />} />
+          <Route path="/twoweek_test/result" element={<TwoweekResult />} />
+          <Route path="/senior_test/testlist" element={<SeniorTestList />} />
+          <Route path="/twoweek_test/testlist" element={<TwoweekResultList />} />
+          <Route path="/hobby_test" element={<HobbyTest />} />
+          <Route path="/memory_test" element={<MemoryTest />} />
+          <Route path="/memory_test/result" element={<MemoryResult />} />
+          <Route path="/lifestyle_test" element={<LifestyleTest />} />
+          <Route path="/lifestyle_test/result" element={<LifestyleResult />} />
+          <Route path="/lifestyle_test/list" element={<LifestyleResultList />} />
 
-        <Route path="/emotion_report" element={<EmotionReportPage />} />
+          {/* 기타 */}
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/emotion_report" element={<EmotionReportPage />} />
 
-        <Route path="/self-check" element={<SelfCheckPage />} />
+          {/* 게시판 */}
+          <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
+          <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
+          <Route path="/board/read/:boardno" element={<BoardReadPage />} />
+          <Route path="/board/update/:boardno" element={<BoardUpdatePage />} />
+          <Route path="/board/list_category/:categoryno/:word/:now_page" element={<BoardByCategoryPage />} />
 
+          {/* 공지사항 */}
+          <Route path="/notice/list" element={<NoticeList />} />
+          <Route path="/notice/read/:noticeno" element={<NoticeRead />} />
+          <Route path="/notice/create" element={<NoticeCreate />} />
+          <Route path="/notice/update/:noticeno" element={<NoticeUpdate />} />
 
-        <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
-        <Route path="/board/create/:categoryno" element={<NBoardCreatePage />} />
-        <Route path="/board/read/:boardno" element={<BoardReadPage />} />
-        <Route path="/board/update/:boardno" element={<BoardUpdatePage />} />
-        <Route path="/board/list_category/:categoryno/:word/:now_page" element={<BoardByCategoryPage />} />
+          {/* 회원 */}
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin_signup" element={<SignUpPageAdmin />} />
+          <Route path="/admin_login" element={<LoginPageAdmin />} />
+          <Route path="/admin/member-list" element={<MemberListPage />} />
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/admin/mypage" element={<AdminMyPage />} />
 
-        <Route path="/board" element={<BoardPage />} />
-        <Route path="/notice/list" element={<NoticeList />} />
-        <Route path="/notice/read/:noticeno" element={<NoticeRead />} />
-        <Route path="/notice/create" element={<NoticeCreate />} />
-        <Route path="/notice/update/:noticeno" element={<NoticeUpdate />} />
-        {/* <Route path="/notice/delete/:noticeno" element={<NoticeDelete />} /> */}
+          {/* 감정 플레이리스트 */}
+          <Route path="/playlist/list" element={<PlaylistList />} />
+          <Route path="/playlist/form" element={<PlaylistForm />} />
+          <Route path="/playlist/emotionform" element={<EmotionForm />} />
+          <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
 
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-
-        <Route path="/playlist/list" element={<PlaylistList />} />
-        <Route path="/playlist/form" element={<PlaylistForm />} />
-        <Route path="/playlist/emotionform" element={<EmotionForm />} />
-        <Route path="/playlist_song/list/:playlistno" element={<PlaylistSongList />} />
           
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/admin_login" element={<LoginPageAdmin />} />
-        <Route path="/admin_signup" element={<SignUpPageAdmin  />} />
-        <Route path="/admin/member-list" element={<MemberListPage />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/admin/mypage" element={<AdminMyPage />} />
-        {/* <Route path="/" element={<HomePage />} /> */}
-        <Route path="/login" element={<LoginPage />} />
-        {/* ✅ 반려식물 기능은 PlantProvider로 감싸줌 */}
-        {/* <Route path="/plant" element={<PlantProvider><PlantPage /></PlantProvider>}/> */}
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
+          {/* 1:1 문의 */}
+          <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry/create" element={<InquiryCreatePage />} />
+          
 
-        <Route path="/diary" element={<DiaryPage/>} />
-        <Route path="/diary/create" element={<DiaryCreate/>} />
-        <Route path="/diary/update/:id" element={<DiaryUpdate/>} />
-        <Route path="/diary/read/:id" element={<DiaryRead/>} />
+          {/* 1:1 문의 */}
+          <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry/create" element={<InquiryCreatePage />} />
 
-        <Route path="/product" element={<ProductPage/>} />
+          {/* 자주 묻는 질문 */}
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/faq/create" element={<FaqCreatePage />} />
 
-        {/* plant 관련 설정 */}
-        <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
-        <Route path="/plant/create" element={<PlantCreatePage />} />
-        <Route path="/plant" element={<PlantPage />} />
-        <Route path="/plant/game" element={<GameSelect />} />
-        
-        {/* 1:1 문의 */}
-        <Route path="/inquiry" element={<InquiryPage />} />
-        <Route path="/inquiry/create" element={<InquiryCreatePage />} />
+          {/* plant 관련 설정 */}
+          <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
+          <Route path="/plant/create" element={<PlantCreatePage />} />
+          <Route path="/plant" element={<PlantPage />} />
+          <Route path="/plant/game" element={<GameSelect />} />
           
           {/* 반려식물 */}
           <Route path="/plant" element={<PlantPage />} />
@@ -180,6 +177,7 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
+
         </Route>
       </Routes>
 

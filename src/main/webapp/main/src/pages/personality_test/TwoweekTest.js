@@ -114,7 +114,10 @@ const TwoweekQuestionnaire = () => {
 
               <div className="twq-radio-group">
                 {[0, 1, 2, 3].map(val => (
-                  <label key={val} className="twq-radio-option">
+                  <label
+                    key={val}
+                    className={`twq-radio-option ${answers[i] === val ? 'selected' : ''}`}
+                  >
                     <input
                       type="radio"
                       name={`q${i}`}

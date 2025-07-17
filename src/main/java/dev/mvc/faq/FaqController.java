@@ -1,6 +1,5 @@
 package dev.mvc.faq;
 
-import dev.mvc.faq_file.FaqFileVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,6 +34,7 @@ public class FaqController {
         faqVO.setAdminno(adminno);
         faqProc.createFaq(faqVO); // faqno 생성 (시퀀스/키반환)
         int faqno = faqVO.getFaqno();
+        System.out.println(faqno);
 
         // 2. 파일 저장
         if (files != null && !files.isEmpty()) {
@@ -63,9 +64,30 @@ public class FaqController {
     public List<FaqVO> faqList() {
         List<FaqVO> faqList = faqProc.allFaqList();
         for (FaqVO faqVO : faqList) {
+            System.out.println(faqVO);
             faqVO.setFiles(faqProc.selectFaqFiles(faqVO.getFaqno()));
         }
         return faqList;
+    }
+
+    /** FAQ 단건 + 파일 목록 */
+    @GetMapping("/{faqno}")
+    public ResponseEntity<?> getFaq(@PathVariable int faqno) {
+        FaqVO faqVO = faqProc.selectFaq(faqno);
+        List<FaqFileVO> fileList = faqProc.selectFaqFiles(faqno);
+        Map<String, Object> res = new HashMap<>();
+        res.put("faq", faqVO);
+        res.put("files", fileList);
+        return ResponseEntity.ok(res);
+    }
+
+    /** FAQ 삭제 */
+    @DeleteMapping("/{faqno}")
+    public ResponseEntity<?> deleteFaq(@PathVariable int faqno) {
+        faqProc.deleteFiles(faqno);
+        faqProc.deleteFaq(faqno);
+
+        return ResponseEntity.ok("삭제 성공");
     }
 
 }

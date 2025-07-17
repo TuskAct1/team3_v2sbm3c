@@ -68,6 +68,17 @@ public class MemberController {
 
         // 1. 프로필 이미지 저장
         if (file != null && !file.isEmpty()) {
+            String osName = System.getProperty("os.name").toLowerCase();
+            String path = "";
+
+            if (osName.contains("win")) { // Windows
+                path = "C:\\kd\\deploy\\resort\\profile\\storage\\";
+            } else if (osName.contains("mac")) { // MacOS
+                path = "/Users/imgwanghwan/kd/deploy/team3/profile/storage";
+            } else { // Linux
+                path = "/home/ubuntu/deploy/team3/profile/storage/";
+            }
+
             String uploadDir = "C:/upload/profile/";  // 실서버 경로에 맞게 조정
             String originalFilename = file.getOriginalFilename();
             String uuid = java.util.UUID.randomUUID().toString();
@@ -94,9 +105,10 @@ public class MemberController {
         int cnt = memberProc.create(memberVO);
         if (cnt == 1) {
 
+            int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
+
             // 2단계: 기본 식물 생성
 
-            int memberno = memberVO.getMemberno();
 
             // 5. 기본 식물 생성
 
@@ -121,8 +133,6 @@ public class MemberController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
-
 
     /** 로그인 */
     @PostMapping("/login")
@@ -193,7 +203,7 @@ public class MemberController {
         }
     }
 
-
+    
 
     /** 회원 조회 */
     @GetMapping("/{memberno}")
@@ -242,7 +252,7 @@ public class MemberController {
     /** 회원 삭제 */
     @Transactional
     @DeleteMapping("/{memberno}")
-    public ResponseEntity<?> delete(@PathVariable int memberno) {
+    public ResponseEntity<?> delete(@PathVariable ("memberno") int memberno) {
         try {
             //  자식 테이블 삭제
             plantProc.deleteByMemberno(memberno);

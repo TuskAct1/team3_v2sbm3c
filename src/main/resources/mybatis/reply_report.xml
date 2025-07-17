@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
+
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- 
+
 <mapper namespace="dev.mvc.replyReport.ReplyReportDAOInter">
   <!-- 등록 -->
   <insert id="create" parameterType="dev.mvc.replyReport.ReplyReportVO">
     INSERT INTO replyReport(replyReportno, replyno ,rdate,  memberno, reason)
     VALUES (replyReport_seq.nextval,  #{replyno}, sysdate, #{memberno}, #{reason})
   </insert>
-  
+
   <!-- 전체 목록 -->
   <select id="list_all" resultType="dev.mvc.replyReport.ReplyReportVO">
     SELECT replyReportno, rdate, replyno, memberno, reason
     FROM replyReport
     ORDER BY replyReportno DESC
   </select>
-  
+
   <!-- 일반적인 조회 -->
   <select id="read" resultType="dev.mvc.replyReport.ReplyReportVO" parameterType="int">
     SELECT replyReportno, rdate, replyno, memberno, reason
     FROM replyReport
     WHERE replyReportno = #{replyReportno}
-  </select>  
-  
+  </select>
+
   <!-- 특정 컨텐츠의 특정 회원 추천 갯수 산출 -->
   <select id="reportCnt" resultType="int" parameterType='HashMap'>
     SELECT COUNT(*) as cnt
     FROM replyReport
     WHERE replyno=#{replyno} AND memberno=#{memberno}
   </select>
-  
+
   <!-- 삭제 -->
   <delete id="delete" parameterType="int">
     DELETE FROM replyReport

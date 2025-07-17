@@ -1,0 +1,303 @@
+/* ✅ 전체 페이지 컨테이너 */
+.board-page-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Pretendard', sans-serif;
+  background-color: #ffffff;
+}
+
+/* ✅ 제목 및 설명 */
+.board-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #66bb6a;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.board-subtitle {
+  font-size: 1.3rem;
+  text-align: center;
+  color: #7a6f63;
+  margin-bottom: 24px;
+}
+
+/* ✅ 구분선 */
+.board-divider {
+  border: none;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 20px 0;
+}
+
+/* ✅ 검색창 wrapper */
+.board-search-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+/* ✅ 검색 폼 내부 */
+.board-search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-search-form select,
+.board-search-form input {
+  height: 38px;
+  padding: 0 14px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: #f7f7f7;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.board-search-form select:hover,
+.board-search-form input:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.board-search-form select:focus,
+.board-search-form input:focus {
+  outline: none;
+  border-color: #888;
+  background-color: #fdfdfd;
+}
+
+.board-search-form button {
+  height: 38px;
+  padding: 0 14px;
+  font-size: 1rem;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.board-search-form button:hover {
+  background-color: #d5d5d5;
+  color: #111;
+}
+
+.board-search-form input {
+  width: 400px;
+}
+
+/* ✅ 글쓰기 버튼 */
+.board-register-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.yellow-btn {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 1.05rem;
+  border-radius: 999px;
+  background-color: #fef3c7;
+  color: #b26a00;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.yellow-btn:hover {
+  background-color: #fde68a;
+  color: #4e3b00;
+}
+
+/* ✅ 게시판 테이블 */
+.board-table {
+  width: 100%;
+  font-size: 1.05rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: none;
+}
+
+.board-table th,
+.board-table td {
+  border: none;
+  border-bottom: 1px solid #eeeeee;
+  box-shadow: none;
+  outline: none;
+}
+
+.board-table thead {
+  background-color: #f1f8e9;
+}
+
+.board-table thead th {
+  padding: 14px 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #5d4037;
+  text-align: center;
+}
+
+/* ✅ 열 너비 고정 */
+.board-table thead th:nth-child(1),
+.board-table tbody td:nth-child(1) { width: 60px; }
+
+.board-table thead th:nth-child(2),
+.board-table tbody td:nth-child(2) { width: 90px; }
+
+.board-table thead th:nth-child(3),
+.board-table tbody td:nth-child(3) { width: 400px; }
+
+.board-table thead th:nth-child(4),
+.board-table tbody td:nth-child(4) { width: 110px; }
+
+.board-table thead th:nth-child(5),
+.board-table tbody td:nth-child(5) { width: 70px; }
+
+.board-table thead th:nth-child(6),
+.board-table tbody td:nth-child(6) { width: 70px; }
+
+.board-table thead th:nth-child(7),
+.board-table tbody td:nth-child(7) { width: 120px; }
+
+.board-table tbody tr {
+  height: 60px;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.board-table tbody tr:hover {
+  background-color: #f9fbe7;
+}
+
+.board-table td {
+  padding: 14px 10px;
+  font-size: 1.05rem;
+  text-align: center;
+  color: #444;
+}
+
+/* ✅ 제목 셀 */
+.board-table td:nth-child(3) {
+  text-align: left;
+}
+
+.board-title-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.board-title-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #539c57;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* ✅ 첨부파일 아이콘 */
+.file-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ✅ 카테고리 뱃지 */
+.board-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background-color: #fef3c7;
+  color: #b26a00;
+  font-weight: 600;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+/* ✅ 페이지네이션 영역 */
+.board-pagination {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ✅ 숫자 버튼 묶음 */
+.pagination-numbers {
+  display: flex;
+  gap: 1px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ✅ 페이징 숫자 버튼 */
+.page-btn {
+  background-color: #f1f8e9;
+  color: #3e8e41;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+  background-color: #dcedc8;
+}
+
+.page-btn.active {
+  background-color: #66bb6a;
+  color: white;
+  font-weight: bold;
+}
+
+/* ✅ ◀ 이전 / 다음 ▶ 텍스트 링크 스타일 */
+.pagination-arrows-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; 
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 4px;
+  margin-left: -10px; /* ✅ 전체 블록 왼쪽으로 밀기 */
+}
+
+.page-arrow {
+  color: #5a5a5a;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ✅ 비활성 상태 */
+.page-arrow.disabled {
+  color: #ccc;
+  cursor: default;
+  pointer-events: none;
+}

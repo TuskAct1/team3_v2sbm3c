@@ -8,6 +8,15 @@
   margin: 0 auto;
 }
 
+/* ✅ 감정 플레이리스트 타이틀용 h2 스타일 */
+.list-container h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #66bb6a;
+  margin: 32px 0 20px;
+  line-height: 1.4;
+}
+
 /* ✅ 감정 버튼 영역 */
 .emotion-buttons {
   display: flex;

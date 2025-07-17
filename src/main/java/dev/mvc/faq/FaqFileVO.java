@@ -1,4 +1,4 @@
-package dev.mvc.faq_file;
+package dev.mvc.faq;
 
 import lombok.Getter;
 import lombok.Setter;

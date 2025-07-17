@@ -20,9 +20,9 @@ public class EmotionReportController {
      */
     @GetMapping("/get")
     public EmotionReportVO getReport(
-            @RequestParam int memberno,
-            @RequestParam String reportType,
-            @RequestParam String reportPeriod
+            @RequestParam ("memberno")  int memberno,
+            @RequestParam ("reportType") String reportType,
+            @RequestParam ("reportPeriod") String reportPeriod
     ) {
         return emotionReportProc.getReport(memberno, reportType, reportPeriod);
     }
@@ -33,9 +33,9 @@ public class EmotionReportController {
      */
     @GetMapping("/diary")
     public Map<String, Integer> getDiaryCounts(
-            @RequestParam int memberno,
-            @RequestParam String reportType,
-            @RequestParam String reportPeriod
+          @RequestParam ("memberno")  int memberno,
+          @RequestParam ("reportType") String reportType,
+          @RequestParam ("reportPeriod") String reportPeriod
     ) {
         return emotionReportProc.getDiaryCounts(memberno, reportType, reportPeriod);
     }
@@ -56,7 +56,7 @@ public class EmotionReportController {
      * 예) http://localhost:9093/emotion_report/test/result?memberno=1
      */
     @GetMapping("/test/result")
-    public List<TestResultDTO> getTestResults(@RequestParam int memberno) {
+    public List<TestResultDTO> getTestResults(@RequestParam ("memberno") int memberno) {
         return emotionReportProc.getTestResults(memberno);
     }
 }

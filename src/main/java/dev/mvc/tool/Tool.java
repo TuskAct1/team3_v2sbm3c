@@ -477,14 +477,11 @@ public class Tool {
         String path = "";
 
         if (osName.contains("win")) { // Windows
-            path = "C:\\kd\\deploy\\team3\\";
-            // System.out.println("Windows: " + path);
+            path = "C:\\kd\\deploy\\deploy\\team3\\board";
         } else if (osName.contains("mac")) { // MacOS
             path = "/Users/imgwanghwan/kd/deploy/team3/board";
-            // System.out.println("MacOS: " + path);
         } else { // Linux
-            path = "/home/ubuntu/deploy/team3/";
-            // System.out.println("Linux: " + path);
+            path = "/home/ubuntu/deploy/deploy/team3/board";
         }
 
         return path;
