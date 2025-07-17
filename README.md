@@ -33,3 +33,5 @@ npm install react-icons
 
 캘린더 할 때 씀 :)
 npm install @fullcalendar/timegrid
+
+npm install react-slick slick-carousel lucide-react
