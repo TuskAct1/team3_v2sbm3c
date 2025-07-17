@@ -52,7 +52,7 @@ function NoticeRead() {
     switch (category) {
       case '이벤트':
         return 'badge-event';
-      case '시스템 점검':
+      case '점검':
         return 'badge-system';
       default:
         return 'badge-default';
@@ -62,18 +62,20 @@ function NoticeRead() {
   return (
     <div className="notice-page-bg">
       <div className="read-header">
-        <h2>📌 공지사항 상세보기</h2>
+        <h2>📌 공지사항 </h2>
 
         {/* ✅ 버튼 오른쪽 상단 정렬 */}
         <div className="notice-action-buttons">
           {isAdmin && (
-            <>
-              <button className="small-btn" onClick={() => navigate(`/notice/create`)}>등록</button>
-              <button className="small-btn" onClick={() => navigate(`/notice/update/${noticeno}`)}>수정</button>
-              <button className="small-btn" onClick={handleDelete}>삭제</button>
-            </>
+            <div className="text-link-group">
+              <span className="text-link" onClick={() => navigate(`/notice/create`)}>등록</span>
+              <span className="link-divider">|</span>
+              <span className="text-link" onClick={() => navigate(`/notice/update/${noticeno}`)}>수정</span>
+              <span className="link-divider">|</span>
+              <span className="text-link" onClick={handleDelete}>삭제</span>
+            </div>
           )}
-          <button className="small-btn" onClick={() => navigate('/notice/list')}>목록</button>
+          <button className="pretty-back-button" onClick={() => navigate('/notice/list')}>목록</button>
         </div>
       </div>
 

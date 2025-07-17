@@ -1,4 +1,4 @@
-/* ✅ 전체 페이지 배경 */
+/* ✅ 전체 배경 */
 .notice-page-bg {
   background-color: #ffffff;
   max-width: 960px;
@@ -6,9 +6,10 @@
   padding: 60px 20px;
   font-family: 'Pretendard', sans-serif;
   color: #222;
+  font-size: 18px;
 }
 
-/* ✅ 상단 영역: 제목 + 버튼 */
+/* ✅ 상단: 제목 + 버튼 */
 .read-header {
   display: flex;
   justify-content: space-between;
@@ -18,42 +19,70 @@
   margin-bottom: 40px;
 }
 
-/* ✅ 제목 스타일 */
 .read-header h2 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
-  color: #2e7d32;
+  color: #66bb6a;
   margin: 0;
 }
 
-/* ✅ 버튼 묶음 (오른쪽 정렬) */
-.notice-action-buttons {
+/* ✅ 텍스트 링크 그룹 */
+.text-link-group {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
 }
 
-/* ✅ 버튼 공통 스타일 */
-.small-btn {
-  padding: 10px 20px;
+/* ✅ 텍스트 링크 */
+.text-link {
+  color: #66bb6a;
   font-size: 15px;
   font-weight: 600;
-  background-color: #66bb6a;
-  color: #ffffff;
-  border: none;
-  border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.15s ease;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.text-link:hover {
+  color: #388e3c;
+  text-decoration: underline;
+}
+
+/* ✅ 구분선 */
+.link-divider {
+  color: #ccc;
+  margin: 0 6px;
+  user-select: none;
+}
+
+/* ✅ 목록 버튼 */
+.pretty-back-button {
+  background-color: #66bb6a;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
   box-shadow: 0 4px 10px rgba(102, 187, 106, 0.25);
 }
 
-.small-btn:hover {
+.pretty-back-button:hover {
   background-color: #4caf50;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(76, 175, 80, 0.3);
+  transform: translateY(-1px);
 }
 
-/* ✅ 콘텐츠 영역 */
+/* ✅ 버튼 영역 정렬 */
+.notice-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ✅ 본문 카드 */
 .notice-read-content {
   background-color: #fafafa;
   padding: 28px 24px;
@@ -63,15 +92,15 @@
 
 /* ✅ 제목 */
 .notice-read-content h3 {
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 600;
   margin: 12px 0 16px;
   color: #111;
 }
 
-/* ✅ 메타 정보 */
+/* ✅ 작성일, 조회수 */
 .notice-meta {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   display: flex;
   gap: 24px;
@@ -80,10 +109,11 @@
 
 /* ✅ 본문 내용 */
 .notice-body {
-  font-size: 16px;
+  font-size: 19px;
   line-height: 1.8;
   white-space: pre-wrap;
   color: #333;
+  min-height: 300px; /* ✅ 최소 높이 추가 */
 }
 
 /* ✅ 카테고리 뱃지 */
@@ -103,7 +133,7 @@
   top: 1px;
 }
 
-/* ✅ 카테고리 색상 */
+/* ✅ 카테고리별 색상 */
 .badge-event {
   background-color: #e8f5e9;
   color: #2e7d32;
@@ -119,7 +149,7 @@
   color: #1565c0;
 }
 
-/* ✅ 로딩 메시지 */
+/* ✅ 로딩 중 */
 .empty-message {
   text-align: center;
   padding: 40px 0;

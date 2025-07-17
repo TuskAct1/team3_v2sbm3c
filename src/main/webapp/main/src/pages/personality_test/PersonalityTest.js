@@ -49,11 +49,11 @@ function PersonalityTest() {
     fetchLatestDate();
   }, []);
 
-  // ✅ 테스트 리스트
+  // ✅ 자가진단 테스트 리스트 (시니어 친화적 설명 버전)
   const testList = [
     {
       title: '🗓️ 2주 주기 우울증 자가진단',
-      desc: '최근 2주간의 기분 상태를 체크할 수 있어요. 2주마다 해보시는 것을 권장드립니다.',
+      desc: '최근 2주 동안의 감정과 생활을 돌아보며 지금 내 마음 상태를 체크할 수 있어요. 정기적으로 해보면 우울감의 변화를 더 잘 알 수 있답니다.',
       path: '/twoweek_test',
       recordPath: '/twoweek_test/testlist',
       showDate: true,
@@ -61,33 +61,33 @@ function PersonalityTest() {
     },
     {
       title: '🧓 노인 우울증 자가진단',
-      desc: '총 15문항으로 간단하게 우울증 여부를 확인할 수 있어요.',
+      desc: '노년기에 자주 나타나는 피로감이나 무기력함, 우울감 등을 간단한 문항으로 확인해보세요. 내 감정을 돌아보는 데 큰 도움이 됩니다.',
       path: '/senior_test',
       recordPath: '/senior_test/testlist',
       img: '/images/test-senior.png'
     },
     {
       title: '🛋️ 생활 루틴 맞춤 추천',
-      desc: '당신의 생활 스타일을 바탕으로 GPT가 나만의 루틴을 제안해줘요!',
+      desc: '불규칙한 생활이 걱정된다면, 지금의 습관을 바탕으로 GPT가 나만의 건강한 일상을 제안해드려요. 활기찬 하루를 위한 작은 시작이에요.',
       path: '/lifestyle_test',
       recordPath: '/lifestyle_test/list',
       img: '/images/test-lifestyle.png'
     },
     {
       title: '🧠 기억력 자가진단 테스트',
-      desc: '최근 기억력 상태를 점검해보세요! 치매 예방에 도움이 됩니다.',
+      desc: '요즘 자주 깜빡하신다면, 지금 기억력 상태를 점검해보세요. 간단한 체크로 내 인지 건강을 미리 살펴볼 수 있어요.',
       path: '/memory_test',
       img: '/images/test-memory.png'
     },
     {
       title: '🧩 MBTI 성격유형 테스트',
-      desc: '간단한 질문으로 나의 성격유형을 알아보아요!',
+      desc: '나는 어떤 성격일까요? 나의 성향과 사람들과의 관계 스타일을 알아보며 나 자신을 더 잘 이해할 수 있어요.',
       path: '/mbti',
       img: '/images/test-mbti.png'
     },
     {
       title: '🎯 나에게 어울리는 취미 찾기',
-      desc: '간단한 문답으로 나와 잘 맞는 취미를 추천받아보세요!',
+      desc: '나에게 잘 맞는 취미가 뭘까 고민될 때, 이 테스트가 도와드려요. 성향에 맞는 활동을 추천해드려요!',
       path: '/hobby_test',
       img: '/images/test-hobby.png'
     },
@@ -95,8 +95,8 @@ function PersonalityTest() {
 
   return (
     <div className="home-container">
-      <h1 className="home-title">심리테스트 센터</h1>
-      <p className="home-description">원하시는 심리테스트를 선택해보세요.</p>
+      <h1 className="home-title">자가진단 센터</h1>
+      <p className="home-description">원하시는 자가진단을 선택해보세요.</p>
 
       <div className="test-card-wrapper">
         {testList.map((test, index) => (

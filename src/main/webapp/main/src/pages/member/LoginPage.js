@@ -29,8 +29,6 @@ const LoginPage = () => {
       passwd_save: !!savedPasswd,
     }));
 
-    // ✅ 로그인 페이지 진입 시 맨 위로 스크롤 이동
-    window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
 
   const handleChange = (e) => {

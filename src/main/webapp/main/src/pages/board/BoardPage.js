@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import CategoryGroupBar from './CategoryGroupBar';
+import './BoardPage.css';
 
 function BoardPage() {
   const [categoryGroup, setCategoryGroup] = useState([]);
@@ -9,16 +10,14 @@ function BoardPage() {
   const [word, setWord] = useState('');
   const [now_page, setNowPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1);
-  const [searchType, setSearchType] = useState('all'); // all: 제목+내용, title: 제목, reply: 댓글
-
-  const { categoryno } = useParams(); // categoryno는 문자열 (예: '3')
+  const [searchType, setSearchType] = useState('all');
+  const { categoryno } = useParams();
   const [selectedCategory, setSelectedCategory] = useState(categoryno || 'all');
-
   const navigate = useNavigate();
 
-  // 게시글 불러오기 (검색, 페이징)
+  // 전체 게시글 조회
   const fetchBoardList = async (page = 1, searchWord = '', searchTypeParam = searchType) => {
-    const queryWord = searchWord && searchWord.trim() !== '' ? searchWord : 'all';
+    const queryWord = searchWord.trim() !== '' ? searchWord : 'all';
     try {
       const res = await axios.get(`/board/list_all?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`);
       setCategoryGroup(res.data.categoryGroup);
@@ -26,180 +25,195 @@ function BoardPage() {
       setTotalPage(res.data.totalPage || 1);
       setNowPage(res.data.now_page || page);
       setWord(res.data.word === 'all' ? '' : res.data.word);
-    } catch (err) {
-      alert('전체글을 불러오지 못했습니다.fetchBoardList-BP');
+    } catch {
+      alert('전체글을 불러오지 못했습니다.');
     }
   };
 
-  // 카테고리별 목록 불러오기
+  // 카테고리별 게시글 조회
   const fetchBoardListByCategory = async (categoryno, page = 1, searchWord = '') => {
-    const queryWord = searchWord && searchWord.trim() !== '' ? searchWord : 'all';
-    const res = await axios.get(`/board/list_category/${categoryno}?word=${queryWord}&now_page=${page}`);
-    setCategoryGroup(res.data.categoryGroup);
-    setBoardList(res.data.listByCategoryBoard);
-    setTotalPage(res.data.totalPage || 1);
-    setNowPage(res.data.now_page || page);
-    setWord(res.data.word === 'all' ? '' : res.data.word);
+    const queryWord = searchWord.trim() !== '' ? searchWord : 'all';
+    try {
+      const res = await axios.get(`/board/list_category/${categoryno}?word=${queryWord}&now_page=${page}`);
+      setCategoryGroup(res.data.categoryGroup);
+      setBoardList(res.data.listByCategoryBoard);
+      setTotalPage(res.data.totalPage || 1);
+      setNowPage(res.data.now_page || page);
+      setWord(res.data.word === 'all' ? '' : res.data.word);
+    } catch {
+      alert('카테고리별 게시글을 불러오지 못했습니다.');
+    }
   };
 
-  // 검색어 즉각적으로 검색 가능하게 하고싶으면 word를 []에 추가
+  // mount 또는 category 변경 시
   useEffect(() => {
     if (!categoryno || categoryno === 'all') {
-      fetchBoardList(now_page || 1, word || '');
+      fetchBoardList(now_page, word);
       setSelectedCategory('all');
     } else {
-      fetchBoardListByCategory(categoryno, now_page || 1, word || '');
+      fetchBoardListByCategory(categoryno, now_page, word);
       setSelectedCategory(categoryno);
     }
   }, [categoryno, now_page]);
 
-  // 검색
   const handleSearch = e => {
     e.preventDefault();
     fetchBoardList(1, word, searchType);
   };
 
-  // 페이지 이동
   const handlePageChange = page => {
-    fetchBoardList(page, word);
+    if (!categoryno || categoryno === 'all') {
+      fetchBoardList(page, word);
+    } else {
+      fetchBoardListByCategory(categoryno, page, word);
+    }
   };
 
-  // 상세보기 이동
   const handleRowClick = boardno => {
     navigate(`/board/read/${boardno}`);
   };
 
-  // 내용 일부만 표시
-  const truncateContent = content => {
-    if (!content) return '';
-    return content.length > 160 ? `${content.substring(0, 160)}...` : content;
-  };
-  function stripHtml(html) {
-    if (!html) return '';
-    return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
-  }
-  const isImage = filename => {
-    if (!filename) return false;
-    const lower = filename.toLowerCase();
-    return lower.endsWith('jpg') || lower.endsWith('jpeg') || lower.endsWith('png') || lower.endsWith('gif');
-  };
-
-  // 카테고리 선택 시 게시글 목록 불러오기
   const handleCategoryChange = async (categoryno) => {
     setSelectedCategory(categoryno);
-    setWord(''); // 검색어 리셋
-
-    try {
-      if (categoryno === 'all') {
-        const res = await axios.get(`/board/list_all`);
-        navigate(`/board/list_all/all/1`);
-        setSelectedCategory(res.data.categoryno);
-        setBoardList(res.data.boardList);
-      } else {
-        const res = await axios.get(`/board/list_category/${categoryno}?word=all&now_page=1`);
-        navigate(`/board/list_category/${categoryno}/all/1`);
-        setSelectedCategory(res.data.categoryno);
-        setBoardList(res.data.listByCategoryBoard);
-      }
-    } catch (err) {
-      alert('게시글 목록을 불러오지 못했습니다.');
+    setWord('');
+    if (categoryno === 'all') {
+      await fetchBoardList(1, '');
+      navigate(`/board/list_all/all/1`);
+    } else {
+      await fetchBoardListByCategory(categoryno, 1, '');
+      navigate(`/board/list_category/${categoryno}/all/1`);
     }
-    // categoryno로 목록+검색+1페이지 조회
-    fetchBoardList(1, '');
-    // navigate(`/board/list_category/${categoryno}/all/1`);
+  };
+
+  const hasAttachment = (file1, size1) => {
+    return file1 && size1 > 0;
   };
 
   return (
-    <div>
-      <h1>전체 게시판 목록</h1>
-      <a href={`/board/create/${categoryno}`}>등록</a>
+    <div className="board-page-container">
+      <h1 className="board-title">도란도란</h1>
+      <p className="board-subtitle">
+        소소한 일상부터 속마음까지, <br />
+        어르신들끼리 도란도란 이야기를 나눌 수 있는 공간입니다.
+      </p>
 
-      {/* 카테고리 그룹 버튼바 */}
       <CategoryGroupBar
         categoryGroup={categoryGroup}
         selected={selectedCategory}
         onChange={handleCategoryChange}
       />
-      <hr />
 
-      {/* 검색 폼 */}
-      <form onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-        <select
-          value={searchType}
-          onChange={e => setSearchType(e.target.value)}
-          style={{ marginRight: 8, padding: '8px', fontSize: '16px' }}
-        >
-          <option value="all">제목+내용</option>
-          <option value="title">제목</option>
-          <option value="reply">댓글</option>
-        </select>
-        <input
-          type="text"
-          placeholder="검색어 입력"
-          value={word}
-          onChange={e => setWord(e.target.value)}
-          style={{ padding: '8px', fontSize: '16px', width: 220, marginRight: 10 }}
-        />
-        <button type="submit">검색</button>
-      </form>
-      <table className="table table-striped" style={{ width: '100%' }}>
-        <colgroup>
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '80%' }} />
-          <col style={{ width: '10%' }} />
-        </colgroup>
+      <hr className="board-divider" />
+
+      {/* 검색 */}
+      <div className="board-search-wrapper">
+        <form onSubmit={handleSearch} className="board-search-form">
+          <select value={searchType} onChange={e => setSearchType(e.target.value)}>
+            <option value="all">제목+내용</option>
+            <option value="title">제목</option>
+            <option value="reply">댓글</option>
+          </select>
+          <input
+            type="text"
+            placeholder="검색어 입력"
+            value={word}
+            onChange={e => setWord(e.target.value)}
+          />
+          <button type="submit" className="green-btn">검색</button>
+        </form>
+      </div>
+
+      {/* 글쓰기 버튼 */}
+      <div className="board-register-btn-wrapper">
+        <a href={`/board/create/${categoryno}`} className="yellow-btn">글 쓰기</a>
+      </div>
+
+      {/* 게시판 테이블 */}
+      <table className="board-table styled-table">
         <thead>
           <tr>
-            <th>파일</th>
+            <th>번호</th>
+            <th>카테고리</th>
             <th>제목</th>
-            <th>조회수</th>
+            <th>글쓴이</th>
+            <th>조회</th>
+            <th>추천</th>
+            <th>등록일</th>
           </tr>
         </thead>
         <tbody>
-          {boardList.map(boardVO => (
-            <tr key={boardVO.boardno} onClick={() => handleRowClick(boardVO.boardno)} style={{ cursor: 'pointer' }}>
+          {boardList.map((boardVO, index) => (
+            <tr key={boardVO.boardno} onClick={() => handleRowClick(boardVO.boardno)}>
+              <td>{boardList.length - index + (now_page - 1) * 10}</td>
+              <td><span className="board-badge">{boardVO.categoryname}</span></td>
               <td>
-                {isImage(boardVO.file1) && boardVO.size1 > 0 ? (
-                  <img src={`/board/storage/${boardVO.thumb1}`} alt={boardVO.title} style={{ width: '120px', height: '90px', objectFit: 'cover' }} />
-                ) : boardVO.size1 > 0 ? (
-                  <div className="file-name">
-                    <span>{boardVO.file1}</span>
-                  </div>
-                ) : (
-                  <img src="/board/storage/none1.png" alt="No file" style={{ width: '120px', height: '90px' }} />
-                )}
+                <div className="board-title-cell">
+                  <span className="board-title-text">{boardVO.title}</span>
+                  {hasAttachment(boardVO.file1, boardVO.size1) && (
+                    <img src="/images/image_icon.png" alt="첨부" className="file-icon" />
+                  )}
+                </div>
               </td>
-              <td>
-                <div>{boardVO.title}</div>
-                <div>{stripHtml(truncateContent(boardVO.content))}</div>
-              </td>
+              <td>{boardVO.nickname}</td>
               <td>{boardVO.cnt}</td>
+              <td>{boardVO.recom}</td>
+              <td>{boardVO.rdate?.substring(0, 10)}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      {/* 페이지네이션 */}
-      <div style={{ margin: '16px 0' }}>
-        {Array.from({ length: totalPage }, (_, i) => i + 1).map(pageNum => (
-          <button
-            key={pageNum}
-            onClick={() => handlePageChange(pageNum)}
-            disabled={now_page === pageNum}
-            style={{
-              margin: '0 2px',
-              padding: '6px 12px',
-              borderRadius: 4,
-              background: now_page === pageNum ? '#4662e1' : '#fff',
-              color: now_page === pageNum ? '#fff' : '#4662e1',
-              border: '1px solid #4662e1',
-              fontWeight: now_page === pageNum ? 700 : 500,
-              cursor: now_page === pageNum ? 'default' : 'pointer',
-            }}
+
+      {/* ✅ 페이징 */}
+      {/* ✅ 페이징 전체 */}
+      <div className="board-pagination">
+        <div className="pagination-numbers">
+          {(() => {
+            const pageSize = 5;
+            const currentGroup = Math.floor((now_page - 1) / pageSize);
+            const startPage = currentGroup * pageSize + 1;
+            const endPage = Math.min(startPage + pageSize - 1, totalPage);
+
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+              const pageNum = startPage + i;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  disabled={now_page === pageNum}
+                  className={now_page === pageNum ? 'page-btn active' : 'page-btn'}
+                >
+                  {pageNum}
+                </button>
+              );
+            });
+          })()}
+        </div>
+
+        {/* ✅ 이전/다음 텍스트 형태로 출력 */}
+        <div className="pagination-arrows-text">
+          <span
+            className={`page-arrow ${now_page <= 5 ? 'disabled' : ''}`}
+            onClick={() =>
+              now_page > 5 &&
+              handlePageChange(Math.floor((now_page - 1) / 5) * 5)
+            }
           >
-            {pageNum}
-          </button>
-        ))}
+            ‹ 이전 
+          </span>
+
+          <span
+            className={`page-arrow ${now_page > Math.floor((totalPage - 1) / 5) * 5 ? 'disabled' : ''}`}
+            onClick={() =>
+              now_page <= Math.floor((totalPage - 1) / 5) * 5 &&
+              handlePageChange(Math.floor((now_page - 1) / 5) * 5 + 6)
+            }
+          >
+            다음 ›
+          </span>
+        </div>
       </div>
+
+
     </div>
   );
 }

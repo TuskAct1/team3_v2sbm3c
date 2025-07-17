@@ -1,66 +1,68 @@
-/* ✅ MemoryResult.css */
-
+/* ✅ MemoryResult.css - 더 큰 글씨, 더 부드러운 스타일 */
 .memoryresult-container {
   min-height: 100vh;
   background-color: #ffffff;
   padding: 3rem 1rem;
   text-align: center;
   font-family: 'Pretendard', sans-serif;
+  color: #222;
 }
 
 .memoryresult-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 2rem;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #43a047;
+  margin-bottom: 2.5rem;
 }
 
 .memoryresult-card {
   background-color: #f1f8e9;
-  padding: 2.5rem;
+  padding: 3rem 2rem;
   margin: 0 auto;
-  border-radius: 20px;
-  max-width: 720px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  max-width: 780px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   text-align: left;
 }
 
 .memoryresult-score {
-  font-size: 1.6rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #2e7d32;
 }
 
 .memoryresult-main-message {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #388e3c;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
 }
 
 .memoryresult-detail {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #444;
-  line-height: 1.7;
-  margin-bottom: 2rem;
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+  white-space: pre-line; /* ✅ 줄바꿈 문장 대응 */
 }
 
 .memoryresult-tip-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
   color: #33691e;
 }
 
 .memoryresult-tip-list {
   list-style: none;
   padding-left: 0;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .memoryresult-tip-list li {
-  font-size: 1.05rem;
-  padding: 0.6rem 0;
+  font-size: 1.15rem;
+  padding: 0.8rem 0;
   color: #2e7d32;
   border-bottom: 1px solid #dcedc8;
 }
@@ -68,28 +70,30 @@
 .memoryresult-buttons {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.2rem;
   flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
 .memoryresult-btn {
-  font-size: 1.1rem;
-  padding: 0.8rem 1.8rem;
+  font-size: 1.15rem;
+  padding: 0.9rem 2.2rem;
   border-radius: 999px;
   border: none;
   cursor: pointer;
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
 }
 
 .memoryresult-btn.green {
-  background-color: #66bb6a;
+  background-color: #81c784;
   color: white;
 }
 
 .memoryresult-btn.green:hover {
-  background-color: #43a047;
+  background-color: #66bb6a;
+  transform: scale(1.04);
 }
 
 .memoryresult-btn.gray {
@@ -99,4 +103,5 @@
 
 .memoryresult-btn.gray:hover {
   background-color: #bdbdbd;
+  transform: scale(1.04);
 }

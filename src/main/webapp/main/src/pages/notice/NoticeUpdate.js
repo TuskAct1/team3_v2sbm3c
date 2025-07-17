@@ -60,9 +60,13 @@ function NoticeEdit() {
         <h2>🛠️ 공지사항 수정</h2>
 
         <div className="notice-action-buttons">
-          <button className="small-btn" onClick={() => navigate(`/notice/create`)}>등록</button>
-          <button className="small-btn" onClick={handleDelete}>삭제</button>
-          <button className="small-btn" onClick={() => navigate('/notice/list')}>목록</button>
+          <div className="text-link-group">
+            <span className="text-link" onClick={() => navigate(`/notice/create`)}>등록</span>
+            <span className="link-divider">|</span>
+            <span className="text-link" onClick={handleDelete}>삭제</span>
+          </div>
+
+          <button className="pretty-back-button" onClick={() => navigate('/notice/list')}>목록</button>
         </div>
       </div>
 
@@ -79,7 +83,7 @@ function NoticeEdit() {
         >
           <option value="공지">공지</option>
           <option value="이벤트">이벤트</option>
-          <option value="시스템 점검">시스템 점검</option>
+          <option value="점검">점검</option>
         </select>
 
         {/* 제목 입력 */}

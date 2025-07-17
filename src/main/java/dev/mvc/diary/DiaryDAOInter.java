@@ -29,9 +29,19 @@ public interface DiaryDAOInter {
             @Param("endDate") String endDate
     );
 
-    public int countByMember(int memberno, int year, int month);
-
-    public List<DiaryVO> findByMemberPaged(int memberno, int offset, int size, int year, int month);
+//    public int countByMember(int memberno, int year, int month);
+    public int countByMember(
+        @Param("memberno") int memberno,
+        @Param("year") int year,
+        @Param("month") int month);
+    
+//    public List<DiaryVO> findByMemberPaged(int memberno, int offset, int size, int year, int month);
+    public List<DiaryVO> findByMemberPaged(
+        @Param("memberno") int memberno,
+        @Param("offset") int offset,
+        @Param("size") int size,
+        @Param("year") int year,
+        @Param("month") int month);
 
     public List<DiaryVO> searchByKeyword(Map<String, Object> params);
 

@@ -233,11 +233,11 @@ public class DiaryController {
 
     @GetMapping("/list")
     public ResponseEntity<?> list(
-            @RequestParam int memberno,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam("year") int year,
-            @RequestParam("month") int month
+        @RequestParam("memberno") int memberno,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size,
+        @RequestParam("year") int year,
+        @RequestParam("month") int month
     ) {
         Map<String, Object> result = diaryProc.listByPage(memberno, page, size, year, month);
         return ResponseEntity.ok(result);
