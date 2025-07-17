@@ -12,11 +12,6 @@ function MainPage() {
   const [isPaused, setIsPaused] = useState(false);
   const noticeRef = useRef(null);
 
-  // ✅ 페이지 진입 시 최상단으로 이동
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   // ✅ 소셜 로그인 정보 저장
   useEffect(() => {
     const email = searchParams.get("email");
@@ -40,43 +35,44 @@ function MainPage() {
 
   // ✅ 슬라이드 데이터
   const slides = [
-    {
-      title: '토닥에 오신 걸 환영합니다 🤗',
-      subtitle: `하루하루 쌓인 마음의 짐,\nAI 친구 ‘토닥이’와 함께 가볍게 털어놔보세요.\n언제나 따뜻하게 들어줄게요.`,
-      buttonText: '토닥이랑 대화하기',
-      route: '/todaki',
-    },
-    {
-      title: '나를 알아가는 심리테스트 📋',
-      subtitle: `요즘 나는 어떤 상태일까요?\n간단한 테스트로 나의 감정과 마음을 살펴보세요.\n재미있고 쉬운 문항으로 부담 없이 시작할 수 있어요.`,
-      buttonText: '심리테스트 바로가기',
-      route: '/personality_test',
-    },
-    {
-      title: '감정 리포트로 마음 돌아보기 📊',
-      subtitle: `일기나 대화 기록을 바탕으로\n지난 감정을 한눈에 볼 수 있어요.\n감정의 흐름을 살펴보며 정서적 자립에 가까워져 보세요.`,
-      buttonText: '감정분석 리포트 보러가기',
-      route: '/emotion_report',
-    },
-    {
-      title: '반려식물과 마음 돌봄의 시간 🌿',
-      subtitle: `매일 작은 관심과 정성으로\n당신의 식물도, 마음도 조금씩 자라납니다.\n반려식물과 함께하는 하루가 큰 위로가 될 거예요.`,
-      buttonText: '반려식물 키우러 가기',
-      route: '/plant',
-    },
-    {
-      title: '음악으로 토닥토닥, 마음을 쉬어요 🎵',
-      subtitle: `지친 하루, 마음이 무거운 날엔\n토닥이와 함께 감정에 어울리는 음악을 들어보세요.\n소리로 전하는 위로가 당신을 부드럽게 안아줄 거예요.`,
-      buttonText: '감정별 플레이리스트 들으러 가기',
-      route: '/playlist/list',
-    },
-    {
-      title: '내 하루를 채우는 캘린더 📅',
-      subtitle: `복지 일정부터 병원 방문, 개인 스케줄까지\n필요한 정보를 한눈에 확인하고 기록해보세요.\n토닥 캘린더가 당신의 하루를 정리해드릴게요.`,
-      buttonText: '캘린더 바로가기',
-      route: '/calendar',
-    }
-  ];
+  {
+    title: '조용히 마음을 털어놓고 싶을 때',
+    subtitle: `말로 표현하기 어려운 감정이 쌓일 때,\nAI 친구 ‘토닥이’가 조용히 당신의 이야기를 들어드립니다.\n부담 없이, 편안하게 이야기 나눠보세요.`,
+    buttonText: '토닥이와 대화하기',
+    route: '/todaki',
+  },
+  {
+    title: '지금 내 마음은 어떤 모습일까요?',
+    subtitle: `간단한 질문을 통해\n현재의 감정과 마음 상태를 살펴볼 수 있습니다.\n천천히, 나를 돌아보는 시간을 가져보세요.`,
+    buttonText: '자가진단 하러가기',
+    route: '/personality_test',
+  },
+  {
+    title: '내 감정의 흐름을 살펴보는 시간',
+    subtitle: `일기나 대화 기록을 바탕으로\n지난 감정들을 차분히 돌아볼 수 있습니다.\n마음을 이해하고 정리하는 데 도움이 될 거예요.`,
+    buttonText: '감정 리포트 보러가기',
+    route: '/emotion_report',
+  },
+  {
+    title: '반려식물과 함께하는 작은 돌봄',
+    subtitle: `매일 식물을 돌보며\n내 마음도 함께 다듬어지는 시간을 느껴보세요.\n작은 정성이 쌓이면 큰 위로가 됩니다.`,
+    buttonText: '반려식물 키우기',
+    route: '/plant',
+  },
+  {
+    title: '감정에 어울리는 음악으로 쉬어가기',
+    subtitle: `지치고 마음이 복잡한 날,\n당신의 감정에 어울리는 음악을 들어보세요.\n조용한 위로가 소리로 전해질 거예요.`,
+    buttonText: '음악 들으러 가기',
+    route: '/playlist/list',
+  },
+  {
+    title: '하루를 정리하는 작은 습관',
+    subtitle: `복지 일정, 병원 예약, 개인 일정까지\n꼭 필요한 정보들을 한눈에 확인하고 기록해보세요.\n토닥 캘린더가 하루를 차분하게 정리해드립니다.`,
+    buttonText: '캘린더 보러가기',
+    route: '/calendar',
+  }
+];
+
 
   // ✅ 슬라이드 자동 전환
   useEffect(() => {
@@ -92,10 +88,23 @@ function MainPage() {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
+        const userStr = localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : null;
+        const isAdmin = user?.adminno !== undefined;
+
         const res = await axios.get("http://localhost:9093/notice/search", {
           params: { keyword: "" },
         });
-        setNotices(res.data.slice(0, 4));
+
+        const allNotices = res.data;
+
+        // ✅ status 필터링: 관리자면 전체, 아니면 공개만
+        const filtered = isAdmin
+          ? allNotices
+          : allNotices.filter((notice) => notice.status === "공개");
+
+        // ✅ 상위 4개만 저장
+        setNotices(filtered.slice(0, 4));
       } catch (err) {
         console.error("❌ 공지사항 불러오기 실패", err);
       }
@@ -116,7 +125,7 @@ function MainPage() {
   const getBadgeClass = (category) => {
     if (category === "공지") return "badge badge-default";
     if (category === "이벤트") return "badge badge-event";
-    if (category === "시스템 점검") return "badge badge-system";
+    if (category === "점검") return "badge badge-system";
     return "badge";
   };
 
@@ -142,19 +151,23 @@ function MainPage() {
 
       {/* 🔄 인디케이터 */}
       <div className="main-pagination">
-        <button className="arrow" onClick={goToPrev}>❮</button>
-        {slides.map((_, idx) => (
-          <span
-            key={idx}
-            className={`dot ${idx === currentSlide ? 'active' : ''}`}
-            onClick={() => {
-              setCurrentSlide(idx);
-              setIsPaused(true);
-              setTimeout(() => setIsPaused(false), 5000);
-            }}
-          />
-        ))}
-        <button className="arrow" onClick={goToNext}>❯</button>
+        <div className="pagination-inner">
+          <button className="arrow" onClick={goToPrev}>‹</button>
+          <div className="dots">
+            {slides.map((_, idx) => (
+              <span
+                key={idx}
+                className={`dot ${idx === currentSlide ? 'active' : ''}`}
+                onClick={() => {
+                  setCurrentSlide(idx);
+                  setIsPaused(true);
+                  setTimeout(() => setIsPaused(false), 5000);
+                }}
+              />
+            ))}
+          </div>
+          <button className="arrow" onClick={goToNext}>›</button>
+        </div>
       </div>
 
       {/* 👇 스크롤 버튼 */}

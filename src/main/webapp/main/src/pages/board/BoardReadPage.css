@@ -1,0 +1,232 @@
+/* ✅ 전체 페이지 컨테이너 */
+.board-read {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* ✅ 카테고리 바 */
+.board-category-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* 🔼 버튼 사이 간격 유지 */
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  font-size: 1.05rem; /* 🔼 전체 폰트 크기 살짝 키움 */
+}
+
+/* ✅ 카테고리 버튼 스타일 */
+.board-category-links a {
+  padding: 10px 22px; /* 🔼 버튼 사이즈 키움 */
+  background-color: #e8f5e9;
+  color: #388e3c;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.05rem; /* 🔼 폰트 사이즈도 키움 */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* ✅ hover 시 더 진한 초록 + 살짝 확대 */
+.board-category-links a:hover {
+  background-color: #c8e6c9;
+  transform: scale(1.03); /* 🔼 시각적으로 눌리는 효과 */
+}
+
+/* ✅ 선택된 버튼(active) */
+.board-category-links a.active {
+  background-color: #66bb6a;
+  color: white;
+  box-shadow: 0 0 0 3px #e8f5e9;
+}
+
+/* ✅ 제목 */
+.board-read-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #000000;
+  text-align: start;
+}
+
+/* ✅ 메타 정보 + 버튼 한 줄 정렬 */
+.board-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.board-meta {
+  font-size: 1.05rem;
+  color: #666;
+}
+
+/* ✅ 오른쪽 버튼들 */
+.board-buttons-right {
+  display: flex;
+  gap: 8px;
+}
+
+.board-buttons-right .board-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background-color: #e0e0e0;
+  transition: background-color 0.2s;
+  color: #000;
+}
+
+.board-buttons-right .board-btn.delete {
+  background-color: #ef5350;
+  color: white;
+}
+
+.board-buttons-right .board-btn.update {
+  background-color: #42a5f5;
+  color: white;
+}
+
+.board-buttons-right .board-btn.list {
+  background-color: #81c784;
+  color: white;
+}
+
+.board-buttons-right .board-btn:hover {
+  opacity: 0.9;
+}
+
+/* ✅ 첨부 이미지 */
+.board-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin: 0 auto 24px;
+  display: block;
+}
+
+/* ✅ 본문 텍스트 */
+.board-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 36px;
+  white-space: pre-wrap;
+  text-align: left;
+  min-height: 200px;
+}
+
+/* ✅ 추천/신고 버튼 묶음 */
+.action-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 24px 0 36px;
+}
+
+.action-button {
+  cursor: pointer;
+  text-align: center;
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 추천 버튼 색상 */
+.action-button.recommend .icon-circle {
+  background-color: #eeeeee;
+}
+.action-button.recommend.active .icon-circle {
+  background-color: #ffeb3b;
+}
+
+/* 신고 버튼 색상 */
+.action-button.report .icon-circle {
+  background-color: #eeeeee;
+}
+.action-button.report.active .icon-circle {
+  background-color: #f5bbb6;
+}
+
+.icon {
+  font-size: 2.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  text-align: center;
+}
+
+.count {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #f57c00;
+}
+
+/* ✅ 댓글 섹션 */
+.board-reply-section {
+  margin-top: 40px;
+}
+
+/* ✅ 구분선 */
+.board-divider-green {
+  height: 1.5px;
+  background-color: #a5d6a7;
+  border-radius: 2px;
+  margin: 20px 0;
+  width: 100%;
+}
+
+/* ✅ 아래 목록 버튼 */
+.board-bottom-buttons {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.board-bottom-buttons .board-btn {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.board-bottom-buttons .board-btn:hover {
+  background-color: #c8e6c9;
+}

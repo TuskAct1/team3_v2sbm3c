@@ -1,7 +1,8 @@
-// ✅ SeniorHobbyTest.js - 진행률 바 + 클래스명 전체 변경
+// ✅ SeniorHobbyTest.js - 질문 한 장씩 / 수동 제출 / 카드 외부 결과보기 버튼 (질문 없이)
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './HobbyTest.css'; // 새로 만든 전용 CSS 파일
+import './HobbyTest.css';
+import './LifestyleTest.css'; // 진행률/버튼 스타일
 
 const questions = [
   "혼자 있는 시간이 편하고 좋다.",
@@ -74,61 +75,89 @@ function SeniorHobbyTest() {
   const [answers, setAnswers] = useState([]);
   const [current, setCurrent] = useState(0);
   const [result, setResult] = useState(null);
+  const [isDone, setIsDone] = useState(false); // ✅ 제출 준비 상태
 
   const handleSelect = (value) => {
     const newAnswers = [...answers];
     newAnswers[current] = value;
     setAnswers(newAnswers);
 
-    setTimeout(() => {
-      if (current + 1 < questions.length) {
-        setCurrent(current + 1);
-      } else {
-        setResult(calculateResult(newAnswers));
-      }
-    }, 300);
+    if (current + 1 < questions.length) {
+      setCurrent(current + 1);
+    } else {
+      setIsDone(true); // 마지막 문항까지 응답 → 질문 숨기고 버튼만
+    }
   };
 
-  const progressPercent = Math.round(((current + 1) / questions.length) * 100);
+  const handleSubmit = () => {
+    const res = calculateResult(answers);
+    setResult(res);
+  };
+
+  // ✅ 진행률 계산 - 마지막일 경우 100%로 표시
+  const displayQ = isDone ? questions.length : current + 1;
+  const progressPercent = isDone
+    ? 100
+    : Math.round((current / questions.length) * 100);
 
   return (
     <div className="senior-hobby-container">
       <h1 className="senior-hobby-title">🎯 나에게 어울리는 취미 찾기</h1>
 
+      {/* ✅ 진행률 표시 */}
       {!result && (
         <>
-          <div className="senior-hobby-progress-bar">
-            <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }}></div>
+          <p className="lifestyle-test-progress">
+            문항 {displayQ} / {questions.length}
+          </p>
+          <div className="lifestyle-test-progress-bar">
+            <div
+              className="lifestyle-test-progress-fill"
+              style={{ width: `${progressPercent}%` }}
+            />
           </div>
-          <div className="senior-hobby-progress-text">{current + 1} / {questions.length}</div>
         </>
       )}
 
+      {/* ✅ 질문 카드 or 결과버튼 */}
       {!result ? (
-        <div className="senior-hobby-question-card">
-          <p className="senior-hobby-question-text">{current + 1}. {questions[current]}</p>
+        !isDone ? (
+          <div className="senior-hobby-question-card">
+            <p className="senior-hobby-question-text">
+              {displayQ}. {questions[current]}
+            </p>
 
-          <div className="senior-hobby-option-label-row">
-            {options.map((opt) => (
-              <div key={opt.value} className="senior-hobby-option-label">{opt.label}</div>
-            ))}
-          </div>
+            <div className="senior-hobby-option-label-row">
+              {options.map((opt) => (
+                <div key={opt.value} className="senior-hobby-option-label">{opt.label}</div>
+              ))}
+            </div>
 
-          <div className="senior-hobby-circle-row">
-            {options.map((opt) => (
-              <label key={opt.value} className="senior-hobby-circle-option">
-                <input
-                  type="radio"
-                  name={`q${current}`}
-                  value={opt.value}
-                  checked={answers[current] === opt.value}
-                  onChange={() => handleSelect(opt.value)}
-                />
-                <div className="senior-hobby-circle">{opt.value}</div>
-              </label>
-            ))}
+            <div className="senior-hobby-circle-row">
+              {options.map((opt) => (
+                <label key={opt.value} className="senior-hobby-circle-option">
+                  <input
+                    type="radio"
+                    name={`q${current}`}
+                    value={opt.value}
+                    checked={answers[current] === opt.value}
+                    onChange={() => handleSelect(opt.value)}
+                  />
+                  <div className="senior-hobby-circle">{opt.value}</div>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="lifestyle-test-loading-box">
+            <button
+              className="lifestyle-test-option-button"
+              onClick={handleSubmit}
+            >
+              결과 보기
+            </button>
+          </div>
+        )
       ) : (
         <div className="senior-hobby-result-box">
           <h2>✅ 당신은 <span className="text-green-700">{result.title}</span>입니다!</h2>
@@ -144,11 +173,22 @@ function SeniorHobbyTest() {
           </div>
 
           <div className="senior-hobby-result-button-group">
-            <button onClick={() => { setResult(null); setAnswers([]); setCurrent(0); }} className="reset-btn">
+            <button
+              onClick={() => {
+                setResult(null);
+                setAnswers([]);
+                setCurrent(0);
+                setIsDone(false); // 상태 초기화
+              }}
+              className="reset-btn"
+            >
               다시 하기
             </button>
-            <button onClick={() => navigate('/personality_test')} className="back-btn">
-              심리테스트로 돌아가기
+            <button
+              onClick={() => navigate('/personality_test')}
+              className="back-btn"
+            >
+              자가진단 홈
             </button>
           </div>
         </div>
