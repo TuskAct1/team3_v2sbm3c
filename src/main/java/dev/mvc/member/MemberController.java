@@ -351,7 +351,7 @@ public class MemberController {
             // 비밀번호 암호화 후 저장
             memberProc.updatePassword(memberVO.getMemberno(), encrypted);
             // 임시 비밀번호 이메일 전송(예시)
-            mailService.send("ghlim1000@gmail.com", id, "[서비스명] 임시 비밀번호 안내",
+            mailService.send("ghlim1000@gmail.com", id, "[토닥] 임시 비밀번호 안내",
                     "임시 비밀번호: " + tempPw + "\n로그인 후 꼭 변경해주세요.");
             return ResponseEntity.ok(Map.of("msg", "임시 비밀번호가 이메일로 전송되었습니다."));
         }
