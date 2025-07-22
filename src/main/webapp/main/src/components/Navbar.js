@@ -49,6 +49,8 @@ function Navbar() {
     localStorage.removeItem("user");
     setUser(null);
 
+    
+
     // 2️⃣ 네이버 로그아웃 처리
     if (provider === 'naver') {
       // 네이버 로그아웃 전용 팝업

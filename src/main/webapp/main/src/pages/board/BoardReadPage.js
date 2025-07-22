@@ -1,9 +1,10 @@
 // 📁 BoardReadPage.js
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import axios from 'axios';
 import ReplySection from '../reply/ReplySection';
 import BoardReportModal from './BoardReportModal';
+import Breadcrumb from '../../components/Breadcrumb';
 import './BoardReadPage.css';
 
 function BoardReadPage() {
@@ -13,6 +14,8 @@ function BoardReadPage() {
   const [recom, setRecom] = useState();
   const [showReport, setShowReport] = useState(false);
   const [isReported, setIsReported] = useState(false); // ✅ 신고 상태 추가
+  // const [categoryno, setCategoryno] = useState(null); // 추가
+   const { setCategoryno } = useOutletContext(); 
 
   const { boardno } = useParams();
   const navigate = useNavigate();
@@ -88,6 +91,7 @@ function BoardReadPage() {
       .then((res) => {
         setCategoryGroup(res.data.categoryGroup);
         setBoardVO(res.data.boardVO);
+        setCategoryno(res.data.boardVO.categoryno);
       });
       console.log(boardVO.boardno);
     fetchRecommendStatus();

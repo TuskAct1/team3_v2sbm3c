@@ -43,6 +43,7 @@ import LoginPageAdmin from './pages/member/LoginPageAdmin';
 import MemberListPage from './pages/member/MemberListPage';
 import MyPage from './pages/member/MyPage';
 import AdminMyPage from './pages/member/AdminMyPage';
+import ContentsMoaPage from './pages/contents/ContentsMoaPage';
 
 
 // import { PlantProvider } from './pages/plant/PlantContext';
@@ -110,6 +111,7 @@ function App() {
           {/* 기타 */}
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/emotion_report" element={<EmotionReportPage />} />
+          <Route path="/content" element={<ContentsMoaPage />} />
 
           {/* 게시판 */}
           <Route path="/board/list_all/:word/:now_page" element={<BoardPage />} />
