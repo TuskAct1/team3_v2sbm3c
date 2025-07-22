@@ -100,4 +100,5 @@ public class ReplyProc implements ReplyProcInter {
   public List<ReplyVO> list_by_boardno_tree(int boardno) {
     return replyDAO.list_by_boardno_tree(boardno);
   }
+
 }

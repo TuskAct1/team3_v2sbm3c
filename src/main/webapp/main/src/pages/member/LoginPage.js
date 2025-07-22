@@ -274,6 +274,10 @@ const LoginPage = () => {
         passwd: form.passwd,
       });
 
+      // ✅ 여기에서 user 변수 선언
+      const user = response.data.user;
+
+      localStorage.setItem("memberno", user.memberno); // 이 줄이 필요해!!!
       localStorage.setItem("user", JSON.stringify(response.data.user));
       alert("로그인 성공!");
       window.location.href = "/";

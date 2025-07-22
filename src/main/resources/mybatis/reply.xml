@@ -110,40 +110,45 @@
           parameterType="map"
           resultMap="ReplyMemberMap">
     SELECT
-    t.lvl,
-    t.replyno,
-    t.boardno,
-    t.memberno,
-    t.parent_replyno,
-    t.content,
-    t.blind,
-    t.rdate,
-    t.id,
-    t.nickname,
-    t.profile
+      t.lvl,
+      t.replyno,
+      t.boardno,
+      t.memberno,
+      t.parent_replyno,
+      t.content,
+      t.blind,
+      t.rdate,
+      t.id,
+      t.nickname,
+      t.profile
     FROM (
-    SELECT
-    LEVEL                         AS lvl,
-    r.replyno                     AS replyno,
-    r.boardno                     AS boardno,
-    r.memberno                    AS memberno,
-    r.parent_replyno              AS parent_replyno,
-    r.content                     AS content,
-    r.blind                       AS blind,
-    TO_CHAR(r.rdate,'YYYY-MM-DD HH24:MI:SS') AS rdate,
-    m.id                          AS id,
-    m.nickname                    AS nickname,
-    m.profile                     AS profile,
-    ROWNUM                        AS rnum
-    FROM reply r
-    INNER JOIN member m ON r.memberno = m.memberno
-    WHERE r.boardno = #{boardno}
-    START WITH r.parent_replyno IS NULL
-    CONNECT BY PRIOR r.replyno = r.parent_replyno
-    ORDER SIBLINGS BY r.rdate DESC
+      SELECT
+        LEVEL                         AS lvl,
+        r.replyno                     AS replyno,
+        r.boardno                     AS boardno,
+        r.memberno                    AS memberno,
+        r.parent_replyno              AS parent_replyno,
+        r.content                     AS content,
+        r.blind                       AS blind,
+        TO_CHAR(r.rdate,'YYYY-MM-DD HH24:MI:SS') AS rdate,
+        m.id                          AS id,
+        m.nickname                    AS nickname,
+        m.profile                     AS profile,
+        ROWNUM                        AS rnum
+      FROM reply r
+      INNER JOIN member m ON r.memberno = m.memberno
+      WHERE r.boardno = #{boardno}
+      START WITH r.parent_replyno IS NULL
+      CONNECT BY PRIOR r.replyno = r.parent_replyno
+      ORDER SIBLINGS BY
+        CASE
+          WHEN r.parent_replyno IS NULL THEN r.rdate END DESC,
+        CASE
+          WHEN r.parent_replyno IS NOT NULL THEN r.rdate END ASC
     ) t
     WHERE t.rnum BETWEEN #{startRow} AND #{endRow}
   </select>
+
 
   <!-- 전체 댓글 수 -->
   <select id="count_by_boardno" resultType="int" parameterType="int">
@@ -173,4 +178,84 @@
     ORDER SIBLINGS BY rdate ASC
   </select>
 
+  <!--  level=1만 페이징해서 가져오기 -->
+  <select id="list_level1_by_boardno_paging"
+          parameterType="map"
+          resultMap="ReplyMemberMap">
+    SELECT
+      1 AS lvl,
+      r.replyno,
+      r.boardno,
+      r.memberno,
+      r.parent_replyno,
+      r.content,
+      r.blind,
+      TO_CHAR(r.rdate,'YYYY-MM-DD HH24:MI:SS') AS rdate,
+      m.id,
+      m.nickname,
+      m.profile
+    FROM (
+      SELECT r.*, ROWNUM AS rn
+      FROM (
+        SELECT * FROM reply
+        WHERE boardno = #{boardno}
+          AND parent_replyno IS NULL
+        ORDER BY rdate ASC
+      ) r
+    ) r
+    INNER JOIN member m ON r.memberno = m.memberno
+    WHERE r.rn BETWEEN #{start} AND #{end}
+  </select>
+  
+  <!-- 답글 전체 조회 -->
+  <select id="list_reply_children_by_boardno"
+          parameterType="int"
+          resultMap="ReplyMemberMap">
+    SELECT
+      2 AS lvl,
+      r.replyno,
+      r.boardno,
+      r.memberno,
+      r.parent_replyno,
+      r.content,
+      r.blind,
+      TO_CHAR(r.rdate,'YYYY-MM-DD HH24:MI:SS') AS rdate,
+      m.id,
+      m.nickname,
+      m.profile
+    FROM reply r
+    INNER JOIN member m ON r.memberno = m.memberno
+    WHERE r.boardno = #{boardno}
+      AND r.parent_replyno IS NOT NULL
+    ORDER BY r.parent_replyno ASC, r.rdate ASC
+  </select>
+  
+  <!-- 특정 댓글(replyno)의 자식 답글 목록 -->
+  <select id="list_replies_by_parent" parameterType="int" resultMap="ReplyMemberMap">
+    SELECT
+      LEVEL AS lvl,
+      r.replyno,
+      r.boardno,
+      r.memberno,
+      r.parent_replyno,
+      r.content,
+      r.blind,
+      TO_CHAR(r.rdate,'YYYY-MM-DD HH24:MI:SS') AS rdate,
+      m.id,
+      m.nickname,
+      m.profile
+    FROM reply r
+    JOIN member m ON r.memberno = m.memberno
+    START WITH r.parent_replyno = #{replyno}
+    CONNECT BY PRIOR r.replyno = r.parent_replyno
+    ORDER SIBLINGS BY r.rdate ASC
+  </select>
+  
+  <!-- level=1 댓글 수 조회 -->
+  <select id="count_level1_by_boardno" parameterType="int" resultType="int">
+    SELECT COUNT(*) FROM reply
+    WHERE boardno = #{boardno} AND parent_replyno IS NULL
+  </select>
+
+  
 </mapper>

@@ -8,7 +8,7 @@
   font-size: 1.1rem;
 }
 
-/* ✅ 댓글 입력 영역 */
+/* ✅ 기본 댓글 작성 폼 (가로 정렬) */
 .reply-form-wrap {
   display: flex;
   align-items: stretch;
@@ -16,6 +16,7 @@
   margin-bottom: 24px;
 }
 
+/* ✅ 댓글 입력창 */
 .reply-input {
   flex: 1;
   padding: 16px 20px;
@@ -26,19 +27,19 @@
   resize: none;
   line-height: 1.6;
   color: #333;
-  font-family: inherit;
-  min-height: 80px;
   background-color: #f9f9f9;
 }
 
+/* ✅ 입력창 placeholder */
 .reply-input::placeholder {
   color: #999;
   font-size: 1.05rem;
 }
 
+/* ✅ 등록 버튼 (기본 댓글용) */
 .reply-submit {
   background-color: #66bb6a;
-  color: #fff;
+  color: white;
   font-weight: bold;
   border: none;
   border-radius: 0 12px 12px 0;
@@ -52,27 +53,30 @@
   background-color: #4caf50;
 }
 
-/* ✅ 댓글 리스트 */
+/* ✅ 댓글 리스트 전체 */
 .reply-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
+/* ✅ 댓글 항목 */
 .reply-item {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ddd; /* 더 진한 회색으로 강조 */
   padding: 16px 0;
 }
 
+/* ✅ 왼쪽: 프로필 + 내용 */
 .reply-left {
   display: flex;
   gap: 24px;
   flex: 1;
 }
 
+/* ✅ 프로필 이미지 */
 .reply-profile {
   width: 52px;
   height: 52px;
@@ -80,10 +84,12 @@
   object-fit: cover;
 }
 
+/* ✅ 댓글 본문 */
 .reply-body {
   flex: 1;
 }
 
+/* ✅ 닉네임 + 날짜 */
 .reply-header {
   display: flex;
   align-items: center;
@@ -104,6 +110,7 @@
   color: #999;
 }
 
+/* ✅ 댓글 내용 */
 .reply-content {
   font-size: 1rem;
   line-height: 1.9;
@@ -111,13 +118,14 @@
   white-space: pre-line;
 }
 
+/* ✅ 블라인드 처리된 댓글 */
 .reply-blind {
   font-style: italic;
   color: #aaa;
   font-size: 1.1rem;
 }
 
-/* ✅ 댓글 수정창 */
+/* ✅ 수정 모드 입력창 */
 .reply-edit {
   width: 100%;
   padding: 16px 20px;
@@ -128,9 +136,8 @@
   font-family: inherit;
   margin-bottom: 12px;
   line-height: 1.6;
-  background-color: #f9f9f9; /* 댓글작성창과 동일 */
+  background-color: #f9f9f9;
   color: #333;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 /* ✅ 수정/취소 버튼 묶음 */
@@ -139,7 +146,6 @@
   gap: 8px;
 }
 
-/* ✅ 수정 버튼 (댓글 작성폼과 통일) */
 .reply-actions button {
   padding: 10px 24px;
   font-size: 1rem;
@@ -147,10 +153,8 @@
   border-radius: 999px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.2s ease;
 }
 
-/* ✅ 저장 버튼 (연초록) */
 .reply-actions button:first-child {
   background-color: #66bb6a;
   color: #fff;
@@ -160,7 +164,6 @@
   background-color: #4caf50;
 }
 
-/* ✅ 취소 버튼 (연회색) */
 .reply-actions button:last-child {
   background-color: #e0e0e0;
   color: #555;
@@ -170,7 +173,7 @@
   background-color: #c8c8c8;
 }
 
-/* ✅ 우측 액션 버튼들 */
+/* ✅ 오른쪽 액션 버튼 영역 */
 .reply-actions-right {
   display: flex;
   flex-direction: row;
@@ -183,31 +186,23 @@
   border: none;
   color: #999;
   font-size: 0.9rem;
-  padding: 0px 2px;
   cursor: pointer;
+  padding: 0 4px;
 }
 
-.reply-actions-right i {
-  margin-right: 4px;
-}
-
-/* ✅ 하트 추천 버튼 */
+/* ✅ 좋아요 버튼 */
 .reply-like-btn {
   display: flex;
   align-items: center;
   gap: 4px;
-  border: none;
-  background: none;
   font-size: 0.9rem;
   color: #999;
   cursor: pointer;
   padding: 2px 4px;
-  transition: color 0.2s ease;
 }
 
 .reply-like-btn .fa-heart {
   font-size: 1.1rem;
-  transition: color 0.2s ease;
 }
 
 .reply-like-btn:hover .fa-heart {
@@ -218,55 +213,106 @@
   color: #e53935;
 }
 
-.reply-like-btn.active .fa-heart {
-  color: #e53935;
-}
-
 .reply-like-count {
   font-size: 0.9rem;
 }
 
-/* ✅ 신고 버튼 스타일 */
+/* ✅ 신고 버튼 */
 .reply-report-btn {
   color: #999;
-  font-size: 1rem;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0px 4px;
-  transition: color 0.2s ease;
+  font-size: 1rem;
+  padding: 0 4px;
 }
 
 .reply-report-btn:hover {
   color: #e53935;
 }
 
-/* ✅ 댓글 페이징 영역 */
+/* ✅ 답글 작성 폼 (답글용) */
+.reply-form-wrap.reply-reply {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* ✅ 답글 입력창 */
+.reply-form-wrap.reply-reply .reply-input {
+  flex: 1;
+  min-height: 80px;
+  padding: 16px 20px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  resize: none;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* ✅ 답글용 버튼 그룹 */
+.reply-button-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ✅ 답글용 등록 버튼 */
+.reply-button-group .reply-submit {
+  background-color: #66bb6a;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.reply-button-group .reply-submit:hover {
+  background-color: #4caf50;
+}
+
+/* ✅ 답글용 취소 버튼 */
+.reply-button-group .reply-cancel {
+  background-color: #e0e0e0;
+  color: #555;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.reply-button-group .reply-cancel:hover {
+  background-color: #c8c8c8;
+}
+
+/* ✅ 댓글 페이징 */
 .reply-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 16px;
   margin-top: 32px;
-  font-family: 'Pretendard', sans-serif;
   flex-wrap: wrap;
-  margin-left: -15px;
 }
 
-/* ✅ 텍스트형 링크 스타일 */
 .reply-page-arrow {
   color: #5a5a5a;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: color 0.2s ease;
 }
 
 .reply-page-arrow.disabled {
   color: #ccc;
   cursor: default;
   pointer-events: none;
-  text-decoration: none;
 }
 
 .reply-page-info {
@@ -288,3 +334,43 @@
   font-style: italic;
   margin-top: 20px;
 }
+
+/* ✅ 답글달기 버튼 */
+.reply-btn-small {
+  background: none;
+  border: none;
+  color: #5aab6a;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 12px;
+  transition: color 0.2s ease;
+}
+
+.reply-btn-small:hover {
+  color: #2e7d32; 
+}
+
+/* ✅ 댓글: 흰색 배경 */
+.reply-item.level-1 {
+  background-color: #ffffff;
+  padding: 6px 0;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+}
+
+/* ✅ 답글: 연회색 배경 + 왼쪽 선만 */
+.reply-item.level-2 {
+  background-color: #f5f5f5;
+  padding: 4px 0 4px 16px;
+  border: none;
+  border-left: 3px solid #bdbdbd;
+  border-bottom: 1px solid #ddd;
+  border-radius: 0;
+  margin: 0 0 0 32px;
+}
+
+

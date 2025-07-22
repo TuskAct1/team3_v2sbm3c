@@ -8,10 +8,10 @@ public interface CalendarAlarmProcInter {
     public int create(CalendarAlarmVO calendarAlarmVO);
 
     /** 특정 캘린더 일정에 속한 알람 삭제 (캘린더 삭제 시 사용) */
-    public int deleteByCalendarno(int calendarno);
+    public int deleteByCalendar(int calendarno);
 
     /** 특정 회원의 알람 일괄 삭제 (회원 탈퇴 시 사용) */
-    public int deleteByMemberno(int memberno);
+    public int deleteByMember(int memberno);
 
     /** 전송 대기 중인(alarm_dt ≤ now + 5분, sent_flag = 'N') 알람 목록 조회 */
     public List<CalendarAlarmVO> listPending();
