@@ -103,6 +103,7 @@ const DiaryUpdate = () => {
   };
 
   const handleQuillChange = (value) => {
+    console.log("ReactQuill:", ReactQuill);
     setState(prev => ({ ...prev, content: value }));
   };
 

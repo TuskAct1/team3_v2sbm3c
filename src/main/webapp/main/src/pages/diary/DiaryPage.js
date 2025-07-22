@@ -1,10 +1,8 @@
-// EmotionDiary.jsx
 import React, { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import DiaryReadModal from './DiaryReadModal';  
-
-const dummyData = [];
+import DiaryReadModal from './DiaryReadModal';
+import { FaChevronDown } from 'react-icons/fa';
 
 const emotionIcons = [
   { score: 1, icon: "😃", label: "긍정" },
@@ -24,142 +22,43 @@ function reducer(state, action) {
   }
 }
 
-function MyHeader({ headText, leftChild, rightChild }) {
-  return (
-    <header
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center', // 수직 가운데 정렬 추가
-        marginBottom: '20px',
-      }}
-    >
-      <div>{leftChild}</div>
-      <h2 style={{ margin: 0, textAlign: 'center', flex: 1 }}>{headText}</h2>
-      <div>{rightChild}</div>
-    </header>
-  );
-}
-
-
-function MyButton({ text, onClick }) {
-  return (
-    <button onClick={onClick} style={{ padding: '8px 16px', backgroundColor: '#0077cc', color: 'white', border: 'none', borderRadius: '5px' }}>
-      {text}
-    </button>
-  );
-}
-
 function DiaryItem({ id, emotion, content, rdate, title, onClick }) {
-  const navigate = useNavigate();
-
-  const handleDelete = async (e) => {
-    e.stopPropagation(); // 카드 클릭 방지
-    try {
-      await axios.delete(`/diary/delete/${id}`);
-      alert('삭제되었습니다.');
-      window.location.reload();
-    } catch (e) {
-      alert('삭제 실패');
-    }
-  };
-
-  const handleUpdate = (e) => {
-    e.stopPropagation(); // 카드 클릭 방지
-    navigate(`/diary/update/${id}`);
-  };
-
-  const handleRead = () => {
-    onClick(id);
-  };
-
   const emotionIcon = emotionIcons.find(e => e.score === emotion)?.icon || "😐";
-  const emotionColor = emotion <= 3 ? '#4CAF50' : '#F44336';
 
   return (
     <div
-      onClick={handleRead} // ✅ 카드 클릭 시 read 이동
+      onClick={() => onClick(id)}
       style={{
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '12px',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+        border: '1px solid #eee',
+        borderRadius: '16px',
+        padding: '20px',
         backgroundColor: '#fff',
-        cursor: 'pointer', // ✅ 마우스 포인터 변경
+        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+        cursor: 'pointer',
+        transition: 'transform 0.2s',
       }}
     >
-      <h3 style={{ marginBottom: '8px' }}>{title}</h3>
-      <div style={{ fontSize: '14px', color: '#888', marginBottom: '8px' }}>{rdate}</div>
-      <div style={{ marginBottom: '8px', fontWeight: 400 }}>{content.slice(0, 50)}...</div>
-      <div style={{ marginBottom: '12px', fontWeight: 'bold', color: emotionColor, fontSize: '1.5rem' }}>
-        오늘의 감정 {emotionIcon}
-      </div>
-      <div>
-        {/* 읽기 버튼 제거됨 */}
-        <button onClick={handleUpdate} className="btn" style={{ marginRight: '8px' }}>
-          수정
-        </button>
-        <button onClick={handleDelete} className="btn red">
-          삭제
-        </button>
+      <div style={{ fontSize: '14px', color: '#888', marginBottom: '4px' }}>작성 날짜 {rdate}</div>
+      <h3 style={{ margin: '4px 0', fontSize: '18px', fontWeight: '600' }}>{title}</h3>
+      <div style={{ marginBottom: '10px', fontSize: '14px', color: '#555' }}>{content.slice(0, 40)}...</div>
+      <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+        오늘의 감정 : <span style={{ fontSize: '1.4rem' }}>{emotionIcon}</span>
       </div>
     </div>
   );
 }
 
-function DiaryList({ diaryList, onDiaryClick, onCreateClick }) {
-  const [sortType, setSortType] = useState('latest');
-  const [filter, setFilter] = useState('all');
-  const navigate = useNavigate();
-
-  const sortOptionList = [
-    { value: 'latest', name: '최신순' },
-    { value: 'oldest', name: '오래된순' },
-  ];
-
-  const filterOptionList = [
-    { value: 'all', name: '전체' },
-    { value: 'good', name: '좋은감정만' },
-    { value: 'bad', name: '나쁜감정만' },
-  ];
-
-  const getProcessedDiaryList = () => {
-    const filtered = diaryList.filter((it) => {
-      if (filter === 'good') return it.emotion <= 3;
-      if (filter === 'bad') return it.emotion > 3;
-      return true;
-    });
-
-    const sorted = [...filtered].sort((a, b) => {
-      const dateA = new Date(a.rdate).getTime();
-      const dateB = new Date(b.rdate).getTime();
-      return sortType === 'latest' ? dateB - dateA : dateA - dateB;
-    });
-
-    return sorted;
-  };
-
+function DiaryList({ diaryList, onDiaryClick }) {
   return (
-    <div>
-      <div style={{ marginBottom: '10px' }}>
-        <select value={sortType} onChange={(e) => setSortType(e.target.value)}>
-          {sortOptionList.map((it) => (
-            <option key={it.value} value={it.value}>{it.name}</option>
-          ))}
-        </select>
-
-        <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ marginLeft: '10px' }}>
-          {filterOptionList.map((it) => (
-            <option key={it.value} value={it.value}>{it.name}</option>
-          ))}
-        </select>
-
-        <button onClick={onCreateClick}>새 일기쓰기</button>
-      </div>
-
-      {getProcessedDiaryList().map((it) => (
-        <DiaryItem key={it.id} {...it} onClick={onDiaryClick}/>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '20px',
+      }}
+    >
+      {diaryList.map((it) => (
+        <DiaryItem key={it.id} {...it} onClick={onDiaryClick} />
       ))}
     </div>
   );
@@ -167,28 +66,20 @@ function DiaryList({ diaryList, onDiaryClick, onCreateClick }) {
 
 function DiaryPage() {
   const navigate = useNavigate();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
   const [selectedDiaryId, setSelectedDiaryId] = useState(null);
-
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
-  const [isSearchMode, setIsSearchMode] = useState(false);
-
-  // 페이지 정보
+  const [sortType, setSortType] = useState("latest");
+  const [filter, setFilter] = useState("all");
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get('page')) || 0;
   const [page, setPage] = useState(pageParam);
-  const size = 10;
-
-  // 서버 응답 데이터
-  const [data, setData] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
-
+  const size = 6;
   const [curDate, setCurDate] = useState(new Date());
-
   const user = JSON.parse(localStorage.getItem("user"));
   const memberno = user?.memberno;
+  const [data, dispatch] = useReducer(reducer, []);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (!memberno) {
@@ -197,75 +88,14 @@ function DiaryPage() {
       return;
     }
     fetchDiaries();
-  }, [navigate, memberno, page, curDate]); // ✅ curDate 추가
+  }, [navigate, memberno, page, curDate]);
 
   const fetchDiaries = async () => {
-      try {
-        const year = curDate.getFullYear();
-        const month = curDate.getMonth() + 1;
-        const res = await axios.get('/diary/list', {
-          params: { memberno, page, size, year, month }
-        });
-
-        const list = res.data.content || [];
-
-        // const list = Array.isArray(res.data) ? res.data : res.data.list || [];
-        console.log(res.data);
-
-        const mapped = list.map((item) => ({
-          id: item.diaryno,
-          emotion: item.risk_flag,
-          content: item.content,
-          rdate: item.rdate,
-          title: item.title,
-        }));
-
-        setData(mapped);
-        setTotalPages(res.data.totalPages);
-      } catch (err) {
-        console.error('일기 목록 불러오기 실패:', err);
-        setData([]);
-        setTotalPages(0); // ✅ 서버 요청 실패하면 페이지 버튼 초기화
-      }
-    };
-
-
-  // 월 필터
-  const filteredByMonth = data.filter((item) => {
-    const itemDate = new Date(item.rdate);
-    return (
-      itemDate.getFullYear() === curDate.getFullYear() &&
-      itemDate.getMonth() === curDate.getMonth()
-    );
-  });
-
-  const increaseMonth = () => {
-    setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() + 1));
-    setPage(0);               // ✅ 페이지 리셋
-    setSearchParams({ page: 0 });
-  };
-
-  const decreaseMonth = () => {
-    setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() - 1));
-    setPage(0);               // ✅ 페이지 리셋
-    setSearchParams({ page: 0 });
-  };
-
-  const handleSearch = async () => {
-    if (!keyword.trim()) {
-      alert("검색어를 입력해주세요!");
-      return;
-    }
-
     try {
-      const res = await axios.get('/diary/search', {
-        params: {
-          memberno,
-          keyword,
-          type: searchType,
-          page: 0,
-          size
-        }
+      const year = curDate.getFullYear();
+      const month = curDate.getMonth() + 1;
+      const res = await axios.get('/diary/list', {
+        params: { memberno, page, size, year, month },
       });
 
       const list = res.data.content || [];
@@ -277,9 +107,42 @@ function DiaryPage() {
         title: item.title,
       }));
 
-      setData(mapped);
+      dispatch({ type: 'SET', data: mapped });
       setTotalPages(res.data.totalPages);
-      setIsSearchMode(true);
+    } catch (err) {
+      console.error('일기 목록 불러오기 실패:', err);
+      dispatch({ type: 'SET', data: [] });
+      setTotalPages(0);
+    }
+  };
+
+  const filteredList = data.filter((item) => {
+    const itemDate = new Date(item.rdate);
+    const inMonth = itemDate.getFullYear() === curDate.getFullYear() && itemDate.getMonth() === curDate.getMonth();
+    const emotionFilter = filter === 'good' ? item.emotion <= 3 : filter === 'bad' ? item.emotion > 3 : true;
+    return inMonth && emotionFilter;
+  }).sort((a, b) => {
+    const dateA = new Date(a.rdate).getTime();
+    const dateB = new Date(b.rdate).getTime();
+    return sortType === 'latest' ? dateB - dateA : dateA - dateB;
+  });
+
+  const handleSearch = async () => {
+    if (!keyword.trim()) return alert("검색어를 입력해주세요!");
+    try {
+      const res = await axios.get('/diary/search', {
+        params: { memberno, keyword, type: searchType, page: 0, size },
+      });
+      const list = res.data.content || [];
+      const mapped = list.map((item) => ({
+        id: item.diaryno,
+        emotion: item.risk_flag,
+        content: item.content,
+        rdate: item.rdate,
+        title: item.title,
+      }));
+      dispatch({ type: 'SET', data: mapped });
+      setTotalPages(res.data.totalPages);
       setPage(0);
     } catch (err) {
       console.error('검색 실패:', err);
@@ -289,116 +152,248 @@ function DiaryPage() {
 
   const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
 
+  const buttonStyle = {
+    padding: '8px 16px',
+    backgroundColor: '#6DBD5F',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    cursor: 'pointer',
+  };
+
+  const selectStyle = {
+    padding: '8px',
+    borderRadius: '8px',
+    border: '1px solid #ccc',
+    fontSize: '14px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 12px center', // 🔥 오른쪽에서 12px 들여쓰기
+    backgroundSize: '12px',
+    paddingRight: '32px', // 🔥 화살표 공간 확보
+  };
+
+  const diaryCardStyle = {
+    border: '1px solid #eee',
+    borderRadius: '16px',
+    padding: '20px',
+    backgroundColor: '#fff',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    transition: '0.3s',
+  };
+
+  const paginationStyle = (active) => ({
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    backgroundColor: active ? '#4CAF50' : '#eee',
+    color: active ? '#fff' : '#333',
+    fontWeight: 'bold',
+    border: 'none',
+    cursor: 'pointer',
+    margin: '0 5px',
+  });
+
+  const minimalSelectStyle = {
+    backgroundColor: 'transparent',
+    border: 'none',
+    fontSize: '16px',
+    fontWeight: '500',
+    color: '#333',
+    paddingRight: '18px',    // ▼ 공간 확보
+    backgroundImage: 'url("data:image/svg+xml;utf8,<svg fill=\'%23333\' height=\'12\' viewBox=\'0 0 24 24\' width=\'12\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>")',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right center',
+    borderRadius: '6px',
+    padding: '6px 12px',
+  };
+
   return (
-    <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto', background: '#FFFFFF' }}>
-      <MyHeader
-        headText={headText}
-        leftChild={<MyButton text="<" onClick={decreaseMonth} />}
-        rightChild={<MyButton text=">" onClick={increaseMonth} />}
-      />
+    <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        <h1 style={{ fontSize: '36px' }}>일기</h1>
+        <p style={{ fontSize: '16px', color: '#555' }}>
+          ✍️ 오늘 하루, 마음은 어땠나요?<br />
+          생각이나 기분을 짧게 적어보는 것만으로도<br />
+          마음이 조금 가벼워질 수 있어요!
+        </p>
+      </div>
 
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', padding: '0 8px', marginRight: '10px' }}>
-          <input
-            type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="검색어 입력 (제목/내용)"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSearch();
-              }
-            }}
-            style={{
-              padding: '8px',
-              border: 'none',
-              outline: 'none',
-              width: '180px',
-              backgroundColor: 'transparent'
-            }}
-          />
-          {isSearchMode && (
-            <button
-              onClick={() => {
-                // ✅ 검색 취소 동작
-                setIsSearchMode(false);
-                setKeyword("");
-                setSearchType("all");
-                window.location.reload();
-              }}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '16px',
-                color: '#888',
-              }}
-            >
-              ✕
-            </button>
-          )}
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+        <button onClick={() => setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() - 1))} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+          <img src="/diary/images/left.png" alt="이전 달" style={{ width: '18px', height: '18px' }} />
+        </button>
+        <h2 style={{ margin: 0 }}>{headText}</h2>
+        <button onClick={() => setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() + 1))} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+          <img src="/diary/images/right.png" alt="다음 달" style={{ width: '18px', height: '18px' }} />
+        </button>
+      </div>
 
-
-        <select
-          value={searchType}
-          onChange={(e) => setSearchType(e.target.value)}
-          style={{ padding: '8px', marginRight: '10px' }}
-        >
+      <div style={{ display: 'flex', gap: '10px', margin: '0 auto 20px', width: '80%'}}>
+        <select style={selectStyle} value={searchType} onChange={(e) => setSearchType(e.target.value)}>
           <option value="all">제목+내용</option>
           <option value="title">제목</option>
           <option value="content">내용</option>
         </select>
-        <button onClick={handleSearch} style={{ padding: '8px 16px' }}>검색</button>
+        <input
+          type="text"
+          placeholder="검색어를 입력해주세요"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc', flex: 1 }}
+        />
+        <button onClick={handleSearch} style={buttonStyle}>검색</button>
       </div>
 
-      <DiaryList diaryList={filteredByMonth} onDiaryClick={(id) => setSelectedDiaryId(id)} onCreateClick={() => setIsCreateModalOpen(true)}/>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <select
+            value={sortType}
+            onChange={(e) => setSortType(e.target.value)}
+            style={minimalSelectStyle}
+          >
+            <option value="latest">최신순</option>
+            <option value="oldest">오래된순</option>
+          </select>
+
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            style={minimalSelectStyle}
+          >
+            <option value="all">전체</option>
+            <option value="good">좋은 감정만</option>
+            <option value="bad">나쁜 감정만</option>
+          </select>
+        </div>
+
+        <button onClick={() => setSelectedDiaryId('create')} style={buttonStyle}>새 일기쓰기</button>
+      </div>
+
+      <hr style={{
+        border: 'none',
+        borderTop: '1px solid #e0e0e0',
+        marginBottom: '30px'
+      }} />
+
+      <DiaryList diaryList={filteredList} onDiaryClick={(id) => setSelectedDiaryId(id)} />
 
       {selectedDiaryId && (
         <DiaryReadModal
-          id={selectedDiaryId}
+          id={selectedDiaryId === 'create' ? null : selectedDiaryId}
+          createMode={selectedDiaryId === 'create'}
           onClose={() => setSelectedDiaryId(null)}
-          onSuccess={(newId) => {setSelectedDiaryId(newId);}}
-        />
-      )}
-      {isCreateModalOpen && (
-        <DiaryReadModal
-          createMode
-          onClose={() => setIsCreateModalOpen(false)}
-          onSuccess={(newId) => {
-            setIsCreateModalOpen(false);
-            setSelectedDiaryId(newId);
-            fetchDiaries();
+          onSuccess={(result) => {
+            if (selectedDiaryId === 'create') {
+              // 새 일기 작성
+              dispatch({
+                type: 'CREATE',
+                data: {
+                  id: result.diaryno,
+                  title: result.title,
+                  content: result.content,
+                  rdate: result.rdate,
+                  emotion: result.risk_flag,
+                }
+              });
+              setSelectedDiaryId(result.diaryno);
+            } else if (typeof result === 'number') {
+              // ✅ 삭제된 경우: result는 삭제된 diary id
+              dispatch({
+                type: 'REMOVE',
+                targetId: result
+              });
+              setSelectedDiaryId(null);
+            } else {
+              // 수정된 경우
+              dispatch({
+                type: 'EDIT',
+                data: {
+                  id: result.diaryno,
+                  title: result.title,
+                  content: result.content,
+                  rdate: result.rdate,
+                  emotion: result.risk_flag,
+                }
+              });
+              setSelectedDiaryId(result.diaryno);
+            }
           }}
         />
       )}
 
-      
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        {Array.from({ length: totalPages }, (_, i) => i).map((p) => (
+      <div style={{ marginTop: '40px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+        {/* ◀️ 이전 페이지 */}
+        <button
+          onClick={() => {
+            if (page > 0) {
+              setPage(page - 1);
+              setSearchParams({ page: page - 1 });
+            }
+          }}
+          disabled={page === 0}
+          style={{
+            ...paginationStyle(false),
+            opacity: page === 0 ? 0.4 : 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0', 
+            background: 'none',      // 🔥 배경 제거
+            border: 'none',          // 🔥 테두리 제거
+            cursor: 'pointer',
+          }}
+        >
+          <img src="/diary/images/left.png" alt="이전 페이지" style={{ width: '16px', height: '16px', margin: '0px' }} />
+        </button>
+
+        {/* 페이지 번호 */}
+        {Array.from({ length: totalPages }, (_, i) => (
           <button
-            key={p}
+            key={i}
             onClick={() => {
-              setPage(p);
-              setSearchParams({ page: p });
+              setPage(i);
+              setSearchParams({ page: i });
             }}
             style={{
-              margin: '0 5px',
-              padding: '6px 12px',
-              backgroundColor: p === page ? '#0077cc' : '#eee',
-              color: p === page ? '#fff' : '#333',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
+              ...paginationStyle(i === page),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            {p + 1}
+            {i + 1}
           </button>
         ))}
+
+        {/* ▶️ 다음 페이지 */}
+        <button
+          onClick={() => {
+            if (page < totalPages - 1) {
+              setPage(page + 1);
+              setSearchParams({ page: page + 1 });
+            }
+          }}
+          disabled={page === totalPages - 1}
+          style={{
+            ...paginationStyle(false),
+            opacity: page === totalPages - 1 ? 0.4 : 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0',
+            background: 'none',      // 🔥 배경 제거
+            border: 'none',          // 🔥 테두리 제거
+            cursor: 'pointer',
+          }}
+        >
+          <img src="/diary/images/right.png" alt="다음 페이지" style={{ width: '16px', height: '16px', margin: '0px'}} />
+        </button>
       </div>
     </div>
   );
+  
 }
-
 
 export default DiaryPage;

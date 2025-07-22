@@ -8,9 +8,9 @@
 
     <!-- 일기 등록 -->
     <insert id="create" parameterType="dev.mvc.diary.DiaryVO">
-        INSERT INTO diary (diaryno, memberno, title, content, password, rdate, file1, file1saved, thumb1, size1, risk_flag )
+        INSERT INTO diary (diaryno, memberno, title, content, password, rdate, file1, file1saved, thumb1, size1, risk_flag, default_image )
         VALUES ( diary_seq.nextval, #{memberno}, #{title}, #{content}, #{password}, SYSDATE, #{file1, jdbcType=VARCHAR},
-        #{file1saved, jdbcType=VARCHAR}, #{thumb1, jdbcType=VARCHAR}, #{size1, jdbcType=NUMERIC}, #{risk_flag})
+        #{file1saved, jdbcType=VARCHAR}, #{thumb1, jdbcType=VARCHAR}, #{size1, jdbcType=NUMERIC}, #{risk_flag}, #{default_image, jdbcType=VARCHAR})
     </insert>
 
 
@@ -21,7 +21,7 @@
 
     <!-- 일기 단일 조회 -->
     <select id="read" resultType="dev.mvc.diary.DiaryVO" parameterType="int">
-        SELECT diaryno, memberno, title, content, password, rdate, file1, file1saved, thumb1, size1, risk_flag
+        SELECT diaryno, memberno, title, content, password, rdate, file1, file1saved, thumb1, size1, risk_flag, default_image
         FROM diary
         WHERE diaryno = #{diaryno}
     </select>
@@ -30,11 +30,10 @@
     <update id="update" parameterType="dev.mvc.diary.DiaryVO">
         UPDATE diary
         SET title = #{title}, content = #{content}, rdate = sysdate, risk_flag = #{risk_flag},
-        file1 = #{file1, jdbcType=VARCHAR}, file1saved = #{file1saved, jdbcType=VARCHAR}, thumb1 = #{thumb1, jdbcType=VARCHAR}, size1 = #{size1, jdbcType=NUMERIC}
+        file1 = #{file1, jdbcType=VARCHAR}, file1saved = #{file1saved, jdbcType=VARCHAR}, thumb1 = #{thumb1, jdbcType=VARCHAR},
+        size1 = #{size1, jdbcType=NUMERIC}, default_image = #{default_image, jdbcType=VARCHAR}
         WHERE diaryno = #{diaryno}
     </update>
-
-
 
     <!-- 일기 삭제 -->
     <delete id="delete" parameterType="int">

@@ -486,6 +486,21 @@ public class Tool {
 
         return path;
     }
+
+    public static String getDiaryUploadDir() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String path = "";
+
+        if (osName.contains("win")) {
+            path = "C:\\kd\\deploy\\team3\\diary\\storage";
+        } else if (osName.contains("mac")) {
+            path = "/Users/imgwanghwan/kd/deploy/team3/diary/storage";
+        } else {
+            path = "/home/ubuntu/deploy/team3/diary/storage";
+        }
+
+        return path;
+    }
     
     /***
      * 가비아 sms 호스팅

@@ -178,13 +178,9 @@ function BoardReadPage() {
 
       <BoardReportModal
         boardno={boardVO.boardno}
-        memberno={memberno} // ✅ 이 줄은 필수!
         show={showReport}
         onClose={() => setShowReport(false)}
-        onReported={() => {
-          setIsReported(true);
-          setShowReport(false);
-        }}
+        onReported={() => setIsReported(true)} // ✅ 신고 완료시 상태 변경
       />
 
       <div className="board-reply-section">
