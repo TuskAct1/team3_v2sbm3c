@@ -219,8 +219,8 @@ function BoardByCategoryPage() {
               handlePageChange(Math.floor((nowPage - 1) / 5) * 5 + 6)
             }
           >
-            onClick={() => nowPage > 5 && handlePageChange(Math.floor((nowPage - 1) / 5) * 5)}
-          >
+            {/* onClick={() => nowPage > 5 && handlePageChange(Math.floor((nowPage - 1) / 5) * 5)} */}
+          
             ‹ 이전
           </span>
 
