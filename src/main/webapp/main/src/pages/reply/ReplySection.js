@@ -300,18 +300,30 @@ function ReplySection({ boardno }) {
                       </div>
 
                       {editingReplyNo === child.replyno ? (
-                        <>
+                        <form
+                          className="reply-form-wrap reply-reply"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleEditSave(child);
+                          }}
+                        >
                           <textarea
-                            className="reply-edit"
+                            className="reply-input"
                             value={editingContent}
                             onChange={e => setEditingContent(e.target.value)}
-                            rows="2"
+                            placeholder="답글을 수정하세요"
                           />
-                          <div className="reply-actions">
-                            <button onClick={() => handleEditSave(child)}>저장</button>
-                            <button onClick={handleEditCancel}>취소</button>
+                          <div className="reply-button-group">
+                            <button type="submit" className="reply-submit">저장</button>
+                            <button
+                              type="button"
+                              className="reply-cancel"
+                              onClick={handleEditCancel}
+                            >
+                              취소
+                            </button>
                           </div>
-                        </>
+                        </form>
                       ) : (
                         <div className={`reply-content ${child.blind === 1 ? 'reply-blind' : ''}`}>
                           {child.blind === 1
@@ -319,6 +331,7 @@ function ReplySection({ boardno }) {
                             : stripHtml(child.content)}
                         </div>
                       )}
+
                     </div>
                   </div>
 

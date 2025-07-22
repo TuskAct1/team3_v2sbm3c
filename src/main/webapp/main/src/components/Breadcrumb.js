@@ -99,8 +99,14 @@ function Breadcrumb({ categoryno }) {
 
   // ✅ 전체 경로 기준 라벨 우선
   // ✅ 우선순위: 전체 경로 매핑
+
+  // ✅ 메인 페이지에서는 BreadCrumb 표시 안 함
+  if (location.pathname === '/') return null;
+
+  // ✅ 전체 경로 기준 라벨 우선
   if (fullPathMap[fullPath]) {
     const items = fullPathMap[fullPath];
+
 
     return (
       <nav className="breadcrumb">

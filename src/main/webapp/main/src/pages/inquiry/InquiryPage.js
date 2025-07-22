@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import './InquiryPage.css'; // 고유 CSS
 
 function InquiryPage() {
   const [list, setList] = useState([]);
@@ -9,29 +10,24 @@ function InquiryPage() {
 
   const userObj = JSON.parse(localStorage.getItem('user') || '{}');
   let memberno = userObj.memberno;
-  const isAdmin = !memberno || memberno === "undefined"; // 관리자 여부
-  if (isAdmin) memberno = 0; // 관리자일 때는 0을 사용
+  const isAdmin = !memberno || memberno === "undefined";
+  if (isAdmin) memberno = 0;
 
-  // 문의 전체 목록 가져오기
   const fetchList = async () => {
-    const res = await fetch(`/inquiry/list_all/${memberno}`); // Spring: @GetMapping("/inquiry/list/memberno")
-    console.log(res);
+    const res = await fetch(`/inquiry/list_all/${memberno}`);
     const data = await res.json();
-    console.log(data)
     setList(data);
   };
 
   useEffect(() => { fetchList(); }, []);
 
-  // 문의 상세
   const handleSelect = async (inquiryno) => {
     const res = await fetch(`/inquiry/${memberno}/${inquiryno}`);
     const data = await res.json();
     setSelected(data);
-    setAnswerInput(data.answer || ""); // 이전 답변 있으면, 입력창에 보여주기
+    setAnswerInput(data.answer || "");
   };
 
-  // 관리자 답변 등록
   const handleAnswer = async () => {
     if (!answerInput.trim()) return alert("답변을 입력해주세요.");
     setAnswerLoading(true);
@@ -45,7 +41,7 @@ function InquiryPage() {
       if (result.success) {
         alert("답변이 등록되었습니다.");
         fetchList();
-        handleSelect(selected.inquiryno); // 새로고침
+        handleSelect(selected.inquiryno);
       } else {
         alert("답변 등록 실패");
       }
@@ -54,56 +50,55 @@ function InquiryPage() {
     }
   };
 
-
   return (
-    <div className="max-w-3xl mx-auto mt-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">1:1 문의 내역</h1>
-        <Link to="/inquiry/create" className="bg-blue-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-600">문의 작성</Link>
+    <div className="inquiry-wrap">
+      <div className="inquiry-topbar">
+        <h1 className="inquiry-title">1:1 문의 내역</h1>
+        <Link to="/inquiry/create" className="inquiry-create-btn">문의 작성</Link>
       </div>
-      <table className="w-full border">
+
+      <table className="inquiry-table">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="py-2">번호</th>
-            <th className="py-2">제목</th>
-            <th className="py-2">상태</th>
-            <th className="py-2">작성일</th>
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>상태</th>
+            <th>작성일</th>
           </tr>
         </thead>
         <tbody>
           {list.map(inquiry => (
-            <tr key={inquiry.inquiryno} className="hover:bg-blue-50 cursor-pointer" onClick={() => handleSelect(inquiry.inquiryno)}>
-              <td className="text-center">{inquiry.inquiryno}</td>
+            <tr key={inquiry.inquiryno} onClick={() => handleSelect(inquiry.inquiryno)}>
+              <td>{inquiry.inquiryno}</td>
               <td>{inquiry.title}</td>
-              <td className="text-center">
+              <td>
                 {inquiry.status === "Y" ? (
-                  <span className="text-green-600 font-bold">답변완료</span>
+                  <span className="inquiry-status-done">답변완료</span>
                 ) : (
-                  <span className="text-gray-500">대기</span>
+                  <span className="inquiry-status-wait">대기</span>
                 )}
               </td>
-              <td className="text-center">{inquiry.create_date?.substring(0, 10)}</td>
+              <td>{inquiry.create_date?.substring(0, 10)}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* 상세보기 */}
       {selected && (
-        <div className="mt-10 border rounded-lg bg-white shadow-md p-6">
-          <div className="mb-3 flex justify-between">
-            <div className="font-bold text-lg">{selected.title}</div>
-            <button className="text-gray-400 hover:text-black" onClick={() => setSelected(null)}>닫기</button>
+        <div className="inquiry-detail-card">
+          <div className="inquiry-detail-header">
+            <div className="inquiry-detail-title">{selected.title}</div>
+            <button className="inquiry-close-btn" onClick={() => setSelected(null)}>닫기</button>
           </div>
-          <div className="mb-2 text-sm text-gray-600">작성일: {selected.create_date?.substring(0, 10)}</div>
-          <div className="mb-5 whitespace-pre-line">{selected.content}</div>
-          <div className="border-t pt-4 mt-4">
-            <div className="font-semibold text-blue-700 mb-2">관리자 답변</div>
-            {/* 관리자만 답변 입력 가능 */}
+          <div className="inquiry-detail-date">작성일: {selected.create_date?.substring(0, 10)}</div>
+          <div className="inquiry-detail-content">{selected.content}</div>
+
+          <div className="inquiry-answer-box">
+            <div className="inquiry-answer-label">관리자 답변</div>
             {isAdmin ? (
               <div>
                 <textarea
-                  className="w-full border p-2 rounded mb-2"
+                  className="inquiry-answer-input"
                   rows={3}
                   value={answerInput}
                   onChange={e => setAnswerInput(e.target.value)}
@@ -112,16 +107,16 @@ function InquiryPage() {
                 />
                 <button
                   onClick={handleAnswer}
-                  className="bg-green-600 text-white px-4 py-2 rounded"
+                  className="inquiry-answer-btn"
                   disabled={answerLoading}
                 >답변 등록</button>
               </div>
             ) : (
               <>
                 {selected.answer ? (
-                  <div className="text-gray-800 whitespace-pre-line">{selected.answer}</div>
+                  <div className="inquiry-answer-view">{selected.answer}</div>
                 ) : (
-                  <div className="text-gray-400">아직 답변이 등록되지 않았습니다.</div>
+                  <div className="inquiry-answer-empty">아직 답변이 등록되지 않았습니다.</div>
                 )}
               </>
             )}
