@@ -13,8 +13,7 @@
       memberno, mname, id, passwd, passwd2, nickname, profile, birthdate, gender, 
       zipcode, address1, address2, tel,
       guardian_name, guardian_relationship, guardian_email, guardian_phone,
-      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone, 
-      point,sticker, provider
+      guardian2_name, guardian2_relationship, guardian2_email, guardian2_phone
     )
     VALUES (
       #{memberno}, 
@@ -30,10 +29,7 @@
       #{guardian2_name, jdbcType=VARCHAR},
       #{guardian2_relationship, jdbcType=VARCHAR},
       #{guardian2_email, jdbcType=VARCHAR},
-      #{guardian2_phone, jdbcType=VARCHAR},
-      #{point, jdbcType=NUMERIC},
-      #{sticker, jdbcType=NUMERIC},
-      #{provider, jdbcType=VARCHAR}
+      #{guardian2_phone, jdbcType=VARCHAR}
     )
   </insert>
 
