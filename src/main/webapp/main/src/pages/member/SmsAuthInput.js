@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import './SignupForm.css';
 
 const SmsAuthInput = ({ value, onChange, verified, onVerified }) => {
   const [sent, setSent] = useState(false);
@@ -31,26 +32,29 @@ const SmsAuthInput = ({ value, onChange, verified, onVerified }) => {
   };
 
   return (
-    <div style={{ display: "flex", gap: 8 }}>
-      <input
-        type="text"
-        name="tel"
-        value={value}
-        placeholder="예) 01012345678"
-        className="form-control form-control-sm"
-        style={{ width: "70%" }}
-        onChange={onChange}
-        disabled={verified}
-      />
-      <button
-        type="button"
-        onClick={handleSendCode}
-        className="btn btn-outline-primary btn-sm"
-        disabled={verified || waiting}
-        style={{ minWidth: 90 }}
-      >
-        {waiting ? "전송중..." : "인증번호 요청"}
-      </button>
+    <div className="form-group">
+      <label>전화번호 <span style={{ color: "red" }}>*</span></label>
+      
+      <div className="form-row">
+        <input
+          type="text"
+          name="tel"
+          value={value}
+          placeholder="예) 01012345678"
+          className="form-control form-control-sm"
+          onChange={onChange}
+          disabled={verified}
+        />
+        <button
+          type="button"
+          onClick={handleSendCode}
+          className="cert-btn"
+          disabled={verified || waiting}
+        >
+          {waiting ? "전송중..." : "인증번호 요청"}
+        </button>
+      </div>
+
       {sent && !verified && (
         <>
           <input
@@ -59,21 +63,16 @@ const SmsAuthInput = ({ value, onChange, verified, onVerified }) => {
             value={codeInput}
             onChange={e => setCodeInput(e.target.value)}
             placeholder="6자리 인증번호"
-            className="form-control form-control-sm"
-            style={{ width: 120 }}
           />
           <button
             type="button"
             onClick={handleVerify}
-            className="btn btn-outline-success btn-sm"
-            style={{ minWidth: 80 }}
+            className="verify-btn"
           >확인</button>
         </>
       )}
       {verified && (
-        <span className="text-success" style={{ fontWeight: "bold", marginLeft: 6 }}>
-          인증완료
-        </span>
+        <p style={{ color: "green" }}>✅ 인증이 완료되었습니다!</p>
       )}
     </div>
   );

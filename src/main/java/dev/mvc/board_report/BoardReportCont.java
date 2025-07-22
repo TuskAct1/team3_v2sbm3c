@@ -22,6 +22,7 @@ public class BoardReportCont {
 //        int memberno = 1; // 실제 구현시 로그인 사용자 번호 사용
 
         boardReportVO.setMemberno(memberno);
+        boardReportVO.setBoardno(boardno);
         System.out.println("boardno -> " + boardno);
         System.out.println("boardReportVO -> " + boardReportVO);
 

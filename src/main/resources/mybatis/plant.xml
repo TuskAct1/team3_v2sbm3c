@@ -6,7 +6,7 @@
 <mapper namespace="dev.mvc.plant.PlantDAOInter">
 
   <!-- 식물 생성 -->
-<insert id="create" parameterType="dev.mvc.plant.PlantVO">
+  <insert id="create" parameterType="dev.mvc.plant.PlantVO">
     INSERT INTO plant (
       plantno, memberno, plant_name, plant_type, growth, last_access, plant_status
     ) VALUES (
