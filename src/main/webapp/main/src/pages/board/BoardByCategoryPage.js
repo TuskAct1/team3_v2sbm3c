@@ -165,18 +165,58 @@ function BoardByCategoryPage() {
         </tbody>
       </table>
 
+      {/* ✅ 페이징 영역 */}
       <div className="board-pagination">
-        {Array.from({ length: totalPage }, (_, i) => i + 1).map(pageNum => (
-          <button
-            key={pageNum}
-            onClick={() => handlePageChange(pageNum)}
-            disabled={nowPage === pageNum}
-            className={nowPage === pageNum ? 'page-btn active' : 'page-btn'}
+        <div className="pagination-numbers">
+          {(() => {
+            const pageSize = 5;
+            const currentGroup = Math.floor((nowPage - 1) / pageSize);
+            const startPage = currentGroup * pageSize + 1;
+            const endPage = Math.min(startPage + pageSize - 1, totalPage);
+
+            return Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+              const pageNum = startPage + i;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  disabled={nowPage === pageNum}
+                  className={nowPage === pageNum ? 'page-btn active' : 'page-btn'}
+                >
+                  {pageNum}
+                </button>
+              );
+            });
+          })()}
+        </div>
+
+        <div className="pagination-arrows-text">
+          <span
+            className={`page-arrow ${nowPage <= 5 ? 'disabled' : ''}`}
+            onClick={() =>
+              nowPage > 5 &&
+              handlePageChange(Math.floor((nowPage - 1) / 5) * 5)
+            }
           >
-            {pageNum}
-          </button>
-        ))}
+            ‹ 이전
+          </span>
+
+          <span
+            className={`page-arrow ${
+              nowPage > Math.floor((totalPage - 1) / 5) * 5 ? 'disabled' : ''
+            }`}
+            onClick={() =>
+              nowPage <= Math.floor((totalPage - 1) / 5) * 5 &&
+              handlePageChange(Math.floor((nowPage - 1) / 5) * 5 + 6)
+            }
+          >
+            다음 ›
+          </span>
+        </div>
       </div>
+
+
+      
     </div>
   );
 

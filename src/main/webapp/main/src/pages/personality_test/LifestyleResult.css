@@ -85,7 +85,7 @@
 
 /* ✅ 버튼 공통 */
 .retry-btn,
-.save-btn,
+.test-save-btn,
 .back-btn {
   padding: 1rem 2.2rem;
   font-size: 1.15rem;
@@ -108,11 +108,11 @@
 }
 
 /* 노랑 버튼 */
-.save-btn {
+.test-save-btn {
   background-color: #fff59d;
   color: #4e4e4e;
 }
-.save-btn:hover {
+.test-save-btn:hover {
   background-color: #fdd835;
   transform: scale(1.04);
 }

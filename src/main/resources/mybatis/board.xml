@@ -78,50 +78,51 @@
 
     <!-- 카테고리별 검색 + 페이징 목록 -->
     <select id="list_by_categoryno_search_paging" resultType="dev.mvc.board.BoardVO" parameterType="HashMap">
-        SELECT * FROM (
-            SELECT boardno, categoryno, memberno, title, content, passwd, word, rdate, visible, cnt,
-                    file1, file1saved, thumb1, size1, recom, nickname, categoryname, r
-            FROM (
-                SELECT b.boardno, b.categoryno, b.memberno, b.title, b.content AS content, b.passwd, b.word, b.rdate, b.visible,
-                        b.cnt, b.file1, b.file1saved, b.thumb1, b.size1, b.recom, m.nickname, c.name AS categoryname, rownum AS r
-                FROM ( SELECT * FROM board ) b
-                JOIN member m ON b.memberno = m.memberno
-                JOIN category c ON b.categoryno = c.categoryno
-                <where>
-                    <if test="categoryno != null">
-                        b.categoryno = #{categoryno}
-                    </if>
-                    <if test="word != null and word != '' and word != 'all'">
-                        <choose>
-                            <when test="searchType == 'all'">
-                                AND (UPPER(b.title) LIKE '%' || UPPER(#{word}) || '%'
-                                OR UPPER(TO_CHAR(b.content)) LIKE '%' || UPPER(#{word}) || '%'
-                                OR UPPER(b.word) LIKE '%' || UPPER(#{word}) || '%')
-                            </when>
-                            <when test="searchType == 'title'">
-                                AND UPPER(b.title) LIKE '%' || UPPER(#{word}) || '%'
-                            </when>
-                            <when test="searchType == 'reply'">
-                                AND EXISTS (
-                                SELECT 1 FROM reply r
-                                WHERE r.boardno = b.boardno
-                                AND UPPER(r.content) LIKE '%' || UPPER(#{word}) || '%'
-                                AND r.blind = 0
-                                )
-                            </when>
-                            <otherwise>
-                                AND (UPPER(b.title) LIKE '%' || UPPER(#{word}) || '%'
-                                OR UPPER(TO_CHAR(b.content)) LIKE '%' || UPPER(#{word}) || '%'
-                                OR UPPER(b.word) LIKE '%' || UPPER(#{word}) || '%')
-                            </otherwise>
-                        </choose>
-                    </if>
-                </where>
-                ORDER BY b.boardno DESC
-                )
-            )
-        WHERE r <![CDATA[ >= ]]> #{start_num} AND r <![CDATA[ <= ]]> #{end_num}
+      SELECT * FROM (
+        SELECT inner_query.*, ROWNUM AS r
+        FROM (
+          SELECT b.boardno, b.categoryno, b.memberno, b.title, b.content, b.passwd, b.word, b.rdate, b.visible,
+                 b.cnt, b.file1, b.file1saved, b.thumb1, b.size1, b.recom,
+                 m.nickname, c.name AS categoryname
+          FROM board b
+          JOIN member m ON b.memberno = m.memberno
+          JOIN category c ON b.categoryno = c.categoryno
+          <where>
+            <if test="categoryno != null">
+              b.categoryno = #{categoryno}
+            </if>
+            <if test="word != null and word != '' and word != 'all'">
+              <choose>
+                <when test="searchType == 'all'">
+                  AND (UPPER(b.title) LIKE '%' || UPPER(#{word}) || '%'
+                       OR UPPER(TO_CHAR(b.content)) LIKE '%' || UPPER(#{word}) || '%'
+                       OR UPPER(b.word) LIKE '%' || UPPER(#{word}) || '%')
+                </when>
+                <when test="searchType == 'title'">
+                  AND UPPER(b.title) LIKE '%' || UPPER(#{word}) || '%'
+                </when>
+                <when test="searchType == 'reply'">
+                  AND EXISTS (
+                    SELECT 1 FROM reply r
+                    WHERE r.boardno = b.boardno
+                      AND UPPER(r.content) LIKE '%' || UPPER(#{word}) || '%'
+                      AND r.blind = 0
+                  )
+                </when>
+                <otherwise>
+                  AND (UPPER(b.title) LIKE '%' || UPPER(#{word}) || '%'
+                       OR UPPER(TO_CHAR(b.content)) LIKE '%' || UPPER(#{word}) || '%'
+                       OR UPPER(b.word) LIKE '%' || UPPER(#{word}) || '%')
+                </otherwise>
+              </choose>
+            </if>
+          </where>
+          ORDER BY b.rdate DESC
+        ) inner_query
+      )
+      WHERE r BETWEEN #{start_num} AND #{end_num}
     </select>
+
 
 
     <!-- 카테고리별 검색 레코드 갯수 -->
