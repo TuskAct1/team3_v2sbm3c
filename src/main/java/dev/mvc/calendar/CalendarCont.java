@@ -313,7 +313,8 @@ public class CalendarCont {
             @RequestParam("end_time") String end_time,
             @RequestParam(value = "memberno", required = false) Integer memberno,
             @RequestParam(value = "adminno", required = false) Integer adminno,
-            @RequestPart(value = "image", required = false) MultipartFile image
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            HttpSession session
     ) {
         CalendarVO calendarVO = new CalendarVO();
         calendarVO.setCalendarno(calendarno);
@@ -327,6 +328,9 @@ public class CalendarCont {
         calendarVO.setEnd_time(end_time);
         calendarVO.setMemberno(memberno);
         calendarVO.setAdminno(adminno);
+
+        Integer sessionMemberno = (Integer) session.getAttribute("memberno");
+        Integer sessionAdminno = (Integer) session.getAttribute("adminno");
 
         // 기존 데이터 조회
         CalendarVO oldVO = calendarProc.read(calendarno);
@@ -358,11 +362,11 @@ public class CalendarCont {
                 calendarVO.setImage(oldVO.getImage());
                 calendarVO.setThumbnail(oldVO.getThumbnail());
             }
-
+            System.out.println(oldVO.getMemberno());
             // DB 업데이트
             int cnt = calendarProc.update(calendarVO);
             if (cnt > 0) {
-
+                System.out.println(memberno);
                 // ✅ 알람 ON/OFF 처리
                 if ("Y".equals(alarm_yn)) {
                     CalendarAlarmVO existingAlarm = calendarAlarmProc.readByCalendarno(calendarno);
@@ -370,13 +374,17 @@ public class CalendarCont {
                         // 알람 새로 생성
                         CalendarAlarmVO newAlarm = new CalendarAlarmVO();
                         newAlarm.setCalendarno(calendarno);
-                        newAlarm.setMemberno(memberno); // admin이라면 null
+                        newAlarm.setMemberno(oldVO.getMemberno()); // admin이라면 null
                         newAlarm.setAlarm_dt(Timestamp.valueOf(start_date + " " + start_time + ":00"));
+                        newAlarm.setAlarm_type("SMS");
+                        newAlarm.setSent_flag("N");
+                        newAlarm.setRetry_count(0);
+
                         calendarAlarmProc.create(newAlarm);
                     }
                 } else {
                     // 알람 꺼짐 상태 → 삭제
-                    calendarAlarmProc.deleteByCalendarno(calendarno);
+                    calendarAlarmProc.deleteByCalendar(calendarno);
                 }
 
                 return ResponseEntity.ok("수정 성공");

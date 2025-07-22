@@ -54,10 +54,15 @@ function CalendarPage() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   const year = new Date().getFullYear();
+  //   fetchHolidays(year);
+  //   fetchUserEvents();
+  // }, []);
+
   useEffect(() => {
     const year = new Date().getFullYear();
-    fetchHolidays(year);
-    fetchUserEvents();
+    fetchAllEvents(year);
   }, []);
 
   useEffect(() => {
@@ -74,6 +79,65 @@ function CalendarPage() {
       return updated;
     });
   }, [events]);
+
+
+
+const fetchAllEvents = async (year) => {
+  try {
+    // 병렬 요청
+    const [holidayRes, userRes] = await Promise.all([
+      axios.get('/calendar/holidays', { params: { year } }),
+      axios.get('/calendar/list_all')
+    ]);
+
+    const holidays = holidayRes.data?.response?.body?.items?.item || [];
+    const holidayEvents = holidays.map(item => {
+      const locdate = item.locdate.toString();
+      const dateStr = `${locdate.substring(0, 4)}-${locdate.substring(4, 6)}-${locdate.substring(6, 8)}`;
+      return {
+        title: item.dateName,
+        start: dateStr,
+        color: '#ff3333',
+        textColor: '#fff',
+        category: '공휴일',
+      };
+    });
+
+    const userEvents = userRes.data.map(item => {
+      const isAdmin = item.adminno !== null;
+      const isAllDay = (!item.start_time || item.start_time === '00:00') &&
+                       (!item.end_time || item.end_time === '00:00');
+      return {
+        ...item,
+        id: item.calendarno?.toString(),
+        title: item.title,
+        start: moment.tz(`${item.start_date} ${item.start_time || '00:00'}`, 'YYYY-MM-DD HH:mm', 'Asia/Seoul').toDate(),
+        end: moment.tz(`${item.end_date} ${item.end_time || '00:00'}`, 'YYYY-MM-DD HH:mm', 'Asia/Seoul').toDate(),
+        image: item.image ? `${item.image}` : null,
+        thumbnail: item.thumbnail ? `${item.thumbnail}` : null,
+        color: isAdmin ? '#28a745' : '#3788d8',
+        allDay: isAllDay,
+      };
+    });
+
+    // 우선순위대로 정렬
+    const allEvents = [...holidayEvents, ...userEvents].sort((a, b) => {
+      const priority = color => {
+        if (color === '#ff3333') return 0;
+        if (color === '#28a745') return 1;
+        return 2;
+      };
+      return priority(a.color) - priority(b.color);
+    });
+
+    setEvents(allEvents);
+
+  } catch (err) {
+    console.error('일정 불러오기 실패:', err);
+  }
+};
+
+
 
 const fetchHolidays = async (year) => {
   try {
