@@ -286,7 +286,7 @@ const handleTermsChange = (e) => {
   }
 
   try {
-    const res = await axios.post("/api/members/send-code", null, {
+    const res = await axios.post("/api/members/send", null, {
       params: { tel: form.tel },
     });
     setServerCode(res.data.code);

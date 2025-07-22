@@ -50,7 +50,7 @@ agent = initialize_agent(
     verbose=True
 )
 
-storage_dir = "./storage"
+storage_dir = "./chatbot/storage"
 
 # 기존 방식으로 하면 계속 임베딩이 일어나기 때문에 비용이 계속 추가됨. 
 if not os.path.exists(storage_dir):
@@ -70,8 +70,6 @@ load_dotenv()
 
 mongo_client = MongoClient(f"mongodb://{os.environ['MONGO_USER']}:{os.environ['MONGO_PW']}@121.78.128.139:27017/admin")
 db = mongo_client["mentalcare"]   # DB 이름
-# mongo_client = MongoClient("mongodb://localhost:27017/")
-# db = mongo_client["mentalcare"]   # DB 이름
 chat_collection = db["chats"]     # 저장되는 폴더 이름
 chat_rooms_collection = db["chat_rooms"]
 memory_collection = db["chatbot_memories"]  # MongoDB 컬렉션 예시
