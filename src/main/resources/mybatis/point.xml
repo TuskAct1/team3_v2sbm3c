@@ -1,0 +1,30 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.point.PointDAOInter">
+
+  <select id="readByMemberno" resultType="dev.mvc.point.PointVO" parameterType="int">
+    SELECT * FROM point WHERE memberno = #{memberno}
+  </select>
+
+  <update id="updateAmount" parameterType="map">
+    UPDATE point SET amount = amount + #{amount}
+    WHERE memberno = #{memberno}
+  </update>
+
+  <insert id="insertLog" parameterType="map">
+    INSERT INTO point_log(logno, memberno, amount, reason)
+    VALUES (point_log_seq.NEXTVAL, #{memberno}, #{amount}, #{reason})
+  </insert>
+  
+  <update id="add" parameterType="map">
+    UPDATE point
+    SET amount = amount + #{amount}
+    WHERE memberno = #{memberno}
+  </update>
+
+  <update id="adjustPoint" parameterType="map">
+    UPDATE point
+    SET amount = amount + #{pointChange}
+    WHERE memberno = #{memberno}
+  </update>
+
+</mapper>

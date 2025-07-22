@@ -136,8 +136,8 @@ public class MemberController {
             plant.setPlant_name("나의 첫 식물");
             plant.setPlant_type("딸기");
             plant.setGrowth(0);
-            plant.setPlant_status("정상");
-            plant.setLast_access(null); // ✅ 날짜 에러 방지
+//            plant.setPlant_status("정상");
+//            plant.setLast_access(null); // ✅ 날짜 에러 방지
 
             plantProc.create(plant);
 
@@ -174,6 +174,7 @@ public class MemberController {
             }
 
             // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
+            // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
             if ("admin".equals(member.getGrade())) {
                 session.setAttribute("role", "admin");
                 session.setAttribute("adminno", admin.getAdminno());
@@ -192,24 +193,24 @@ public class MemberController {
             System.out.println("Session adminno: " + session.getAttribute("adminno"));
             System.out.println("Session user: " + session.getAttribute("user"));
 
-            // ✅ 식물 존재 여부 확인
-            boolean hasPlant = plantProc.hasPlant(member.getMemberno());
-
-            if (!hasPlant) {
-                // 기본 식물 생성
-                PlantVO plant = new PlantVO();
-                plant.setMemberno(member.getMemberno());
-                plant.setPlant_name("새싹이");
-                plant.setPlant_type("딸기");
-                plant.setGrowth(0);
-                plant.setPlant_status("정상");
-                plant.setLast_access(LocalDate.now().toString());
-                plantProc.create(plant);
-
-                // 출석 초기화 및 포인트 지급
-                attendanceProc.initAttendance(member.getMemberno());
-                memberProc.updatePoint(member.getMemberno(), 100);
-            }
+//            // ✅ 식물 존재 여부 확인
+//            boolean hasPlant = plantProc.hasPlant(member.getMemberno());
+//
+//            if (!hasPlant) {
+//                // 기본 식물 생성
+//                PlantVO plant = new PlantVO();
+//                plant.setMemberno(member.getMemberno());
+//                plant.setPlant_name("새싹이");
+//                plant.setPlant_type("딸기");
+//                plant.setGrowth(0);
+////                plant.setPlant_status("정상");
+////                plant.setLast_access(LocalDate.now().toString());
+//                plantProc.create(plant);
+//
+//                // 출석 초기화 및 포인트 지급
+//                attendanceProc.initAttendance(member.getMemberno());
+//                memberProc.updatePoint(member.getMemberno(), 100);
+//            }
 
             // ✅ 프론트에 사용자 정보 전달 (React localStorage용)
             return ResponseEntity.ok(Map.of(
@@ -274,8 +275,8 @@ public class MemberController {
     @DeleteMapping("/{memberno}")
     public ResponseEntity<?> delete(@PathVariable ("memberno") int memberno) {
         try {
-            //  자식 테이블 삭제
-            plantProc.deleteByMemberno(memberno);
+//            //  자식 테이블 삭제
+//            plantProc.deleteByMemberno(memberno);
 
             //  그 다음 member 삭제
             int cnt = memberProc.delete(memberno);
