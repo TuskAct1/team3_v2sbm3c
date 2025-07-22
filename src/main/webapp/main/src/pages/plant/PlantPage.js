@@ -1,63 +1,139 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import PlantCreatePage from "./PlantCreatePage";
-import PlantMain from "./PlantMain";
-import PlantIntro from "./PlantIntro";
-import { useNavigate } from "react-router-dom";
+// // ✅ PlantPage.js 전체 수정 코드
+// import React, { useEffect, useState } from 'react';
+// import IntroScreen from './IntroScreen';
+// import LoadingScreen from './LoadingScreen';
+// import SeedSelect from './SeedSelect';
+// import MainPage from './MainPage';
+// import GuideOverlay from './GuideOverlay';
 
+// function PlantPage() {
+//   const [step, setStep] = useState(0); // 0: 초기, 1: Intro, 2: Loading, 3: Seed, 4: Main
+//   const [showGuide, setShowGuide] = useState(false);
+//   const [hasSeenGuide, setHasSeenGuide] = useState(false);
 
+//   useEffect(() => {
+//     const seen = localStorage.getItem('hasSeenPlantFeature');
+//     const selectedSeed = localStorage.getItem('selectedSeed');
 
-const PlantPage = () => {
-  const [plants, setPlants] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [showIntro, setShowIntro] = useState(false);
+//     // ✅ 반려식물 기능을 처음 사용하는 경우에는 Intro부터 시작
+//     if (!seen || !selectedSeed) {
+//       setStep(1); // Intro 시작
+//     } else {
+//       setStep(4); // Main 바로 진입
+//       setHasSeenGuide(true); // 안내 스킵
+//     }
+//   }, []);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const navigate = useNavigate();
+//   // ✅ Intro → Loading 전환
+//   const handleIntroDone = () => {
+//     setStep(2);
+//     setTimeout(() => {
+//       setStep(3); // 씨앗 선택 화면
+//     }, 3000); // 3초 로딩
+//   };
+
+//   // ✅ 씨앗 선택 완료 후 Main 진입
+//   const handleSeedSelected = () => {
+//     setStep(4);
+//     setTimeout(() => {
+//       if (!localStorage.getItem('hasSeenPlantFeature')) {
+//         setShowGuide(true); // 안내 시작
+//       }
+//     }, 3000); // Main이 잠깐 보인 뒤 안내
+//   };
+
+//   // ✅ 안내 종료 후 localStorage 설정
+//   const handleGuideEnd = () => {
+//     setShowGuide(false);
+//     localStorage.setItem('hasSeenPlantFeature', 'true');
+//   };
+
+//   return (
+//     <div>
+//       {step === 1 && <IntroScreen onNext={handleIntroDone} />}
+//       {step === 2 && <LoadingScreen />}
+//       {step === 3 && <SeedSelect onComplete={handleSeedSelected} />}
+//       {step === 4 && (
+//         <>
+//           <MainPage />
+//           {!hasSeenGuide && showGuide && <GuideOverlay onFinish={handleGuideEnd} />}
+//         </>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default PlantPage;
+// src/pages/plant/PointContext.js
+
+// PointContext.js
+// ✅ 예시 (PlantPage.js)
+import React, { useEffect, useState } from 'react';
+import IntroScreen from './IntroScreen';
+import LoadingScreen from './LoadingScreen';
+import SeedSelect from './SeedSelect';
+import SeedNamePage from './SeedNamePage';
+import MainPage from './MainPage';
+import GuideOverlay from './GuideOverlay';
+import { PointProvider } from './PointContext';
+
+function PlantPage() {
+  const [step, setStep] = useState(0);
+  const [showGuide, setShowGuide] = useState(false);
+  const [hasSeenGuide, setHasSeenGuide] = useState(false);
 
   useEffect(() => {
-    // ❗️처음 접속한 사용자라면 Intro 보여주기
-    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-    if (!hasSeenIntro) {
-      setShowIntro(true);
-      return; // 여기서 중단. 이후 요청은 Intro에서 navigate로 이동.
-    }
+    const seen = localStorage.getItem('hasSeenPlantFeature');
+    const selectedSeed = localStorage.getItem('selectedSeed');
+    const plantName = localStorage.getItem('plantName');
 
-    if (user?.memberno) {
-      axios
-        .get(`/api/plants/list?memberno=${user.memberno}`)
-        .then((res) => {
-          setPlants(res.data);
-        })
-        .catch((err) => {
-          console.error("🌱 식물 목록 조회 실패:", err);
-          setPlants([]);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!seen || !selectedSeed || !plantName || plantName.trim() === '') {
+      setStep(1);
     } else {
-      setLoading(false);
+      setStep(5);
+      setHasSeenGuide(true);
     }
-  }, [user?.memberno]);
+  }, []);
 
-  if (!user) {
-    return <p>로그인이 필요합니다.</p>;
-  }
+  const handleIntroDone = () => {
+    setStep(2);
+    setTimeout(() => setStep(3), 3000);
+  };
 
-  if (showIntro) {
-    return <PlantIntro />;
-  }
+  const handleSeedSelected = () => {
+    setStep(4);
+  };
 
-  if (loading || plants === null) {
-    return <p>로딩 중입니다...</p>;
-  }
+  const handleNameCompleted = () => {
+    setStep(5);
+    setTimeout(() => {
+      if (!localStorage.getItem('hasSeenPlantFeature')) {
+        setShowGuide(true);
+      }
+    }, 3000);
+  };
 
-  if (plants.length === 0) {
-    return <PlantCreatePage />;
-  }
+  const handleGuideEnd = () => {
+    setShowGuide(false);
+    localStorage.setItem('hasSeenPlantFeature', 'true');
+  };
 
-  return <PlantMain plant={plants[0]} />;
-};
+  return (
+    <div>
+      {step === 1 && <IntroScreen onNext={handleIntroDone} />}
+      {step === 2 && <LoadingScreen />}
+      {step === 3 && <SeedSelect onComplete={handleSeedSelected} />}
+      {step === 4 && <SeedNamePage onComplete={handleNameCompleted} />}
+      {step === 5 && (
+      <>
+        <PointProvider memberno={localStorage.getItem('memberno')}>
+          <MainPage />
+        </PointProvider>
+        {!hasSeenGuide && showGuide && <GuideOverlay onFinish={handleGuideEnd} />}
+      </>
+    )}
+    </div>
+  );
+}
 
-export default PlantPage;
+export default PlantPage; // ✅ 반드시 이 줄 있어야 함

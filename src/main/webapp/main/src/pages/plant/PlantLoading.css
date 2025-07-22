@@ -1,0 +1,26 @@
+.plant-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f2f6fa;
+}
+
+.plant-loading p {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.plant-loading img {
+  width: 100px;
+  height: 100px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}

@@ -178,9 +178,9 @@
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 10px;
-
+}
 /* 보호자 입력 폼 */
-
+.guardian-box {
   border: 1px solid #ddd;
 }
 

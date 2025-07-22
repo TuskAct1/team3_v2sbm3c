@@ -1,4 +1,10 @@
 /* ✅ MemberListPage.css 전체 */
+body {
+  background-color: #ffffff;
+  font-family: 'Pretendard', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
 .member-page {
   max-width: 1200px;
