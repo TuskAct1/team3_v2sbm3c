@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import './InquiryCreatePage.css'; // 고유 스타일 추가
 
 function InquiryCreatePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  // 예: 로그인한 회원 아이디(localStorage 등)
-  // const userId = localStorage.getItem("user") || "";
   const memberno = String(JSON.parse(localStorage.getItem('user') || '{}').memberno);
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,12 +28,12 @@ function InquiryCreatePage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-16 bg-white shadow-lg rounded-lg p-8">
-      <h2 className="text-xl font-bold mb-6">1:1 문의 작성</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+    <div className="inquiry-create-wrap">
+      <h2 className="inquiry-create-title">1:1 문의 작성</h2>
+      <form className="inquiry-create-form" onSubmit={handleSubmit}>
+        <div className="inquiry-form-group">
           <input
-            className="border rounded-md w-full px-3 py-2"
+            className="inquiry-input"
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -44,9 +42,9 @@ function InquiryCreatePage() {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="inquiry-form-group">
           <textarea
-            className="border rounded-md w-full px-3 py-2 h-36 resize-none"
+            className="inquiry-textarea"
             value={content}
             onChange={e => setContent(e.target.value)}
             placeholder="문의 내용을 입력하세요"
@@ -55,7 +53,7 @@ function InquiryCreatePage() {
           />
         </div>
         <button
-          className="bg-blue-600 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-700"
+          className="inquiry-submit-btn"
           type="submit"
         >
           문의 등록

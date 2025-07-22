@@ -90,6 +90,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         // ✅ 회원번호 가져오기
         MemberVO member = memberProc.readById(email);
         int memberno = member.getMemberno();
+        
+        // ✅ 세션에 저장
+        request.getSession().setAttribute("memberno", memberno);
+        request.getSession().setAttribute("user", member); // 선택 사항
 
         // ✅ 프론트로 필요한 정보 전달
         String redirectUrl = "http://localhost:3000/?email=" + URLEncoder.encode(email, "UTF-8")
