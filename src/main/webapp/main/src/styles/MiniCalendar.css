@@ -1,22 +1,101 @@
 /* MiniCalendar.css */
+/* 전체 캘린더 */
+.mini-calendar-container {
+  width: 100%;
+  background-color: white;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px 0px 8px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.calendar-title {
+  flex: 1;
+  text-align: left; /* ✅ 왼쪽 정렬 */
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #444;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
 .react-calendar {
   width: 100%;
-  background: #fff;
   border: none;
+  background-color: white;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
 }
 
-.react-calendar__tile--active {
-  background: #007bff;
-  color: white;
+/* 상단 네비게이션 숨길 경우에도 안전 */
+.react-calendar__navigation {
+  display: none; /* 또는 사용한다면 커스텀 가능 */
 }
 
+/* 요일 표시 영역 */
+.react-calendar__month-view__weekdays {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #666;
+  padding: 0 6px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  flex: 1;
+  padding: 8px 0;
+  white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 날짜 셀 기본 스타일 */
+.react-calendar__tile {
+  width: 36px !important;     /* 👈 강제 적용 */
+  height: 36px !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 50%;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+/* 오늘 날짜 */
 .react-calendar__tile--now {
-  background: #f0f8ff;
+  background: #d32f2f !important;
+  color: white !important;
+  font-weight: bold !important;
+  border-radius: 50% !important;
+  padding: 0px 5px!important; /* ✅ 상하 padding 줄이기 */
+}
+
+/* 선택된 날짜 */
+.react-calendar__tile--active {
+  background: #d32f2f;
+  color: white;
   font-weight: bold;
 }
 
-.react-calendar__tile {
-  padding: 8px 4px;
+/* hover 시 */
+.react-calendar__tile:enabled:hover {
+  background: #eee;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* 주말 색상 (일요일 빨간색, 토요일 파란색 등은 상황에 따라 직접 스타일링도 가능) */
+.react-calendar__month-view__days__day--weekend {
+  color: #d32f2f;
 }

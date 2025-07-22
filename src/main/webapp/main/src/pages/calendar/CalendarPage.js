@@ -468,6 +468,38 @@ const fetchHolidays = async (year) => {
               )}
               dateClick={handleDateClick}
               eventClick={handleEventClick}
+
+              dayCellContent={(args) => {
+              const dateStr = args.date.toISOString().split('T')[0]; // yyyy-mm-dd
+
+              return (
+                <div style={{ position: 'relative' }}>
+                  {/* 날짜 숫자 */}
+                  <div>{args.dayNumberText}</div>
+
+                  {/* + 버튼 */}
+                  <button
+                    onClick={() => handleDateClick({ dateStr })}
+                    style={{
+                      position: 'absolute',
+                      top: '2px',
+                      right: '4px',
+                      border: '1px solid #aaa',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      fontSize: '14px',
+                      lineHeight: '16px',
+                      backgroundColor: 'white',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              );
+            }}
+
             />
         )}
 
