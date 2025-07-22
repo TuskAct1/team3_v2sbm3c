@@ -1,23 +1,12 @@
 package dev.mvc.plant;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PlantProcInter {
-    public int create(PlantVO plantVO);
-
-    public List<PlantVO> list(int memberno);
-
-    public PlantVO read(int plantno);
-
-    public int updateGrowth(PlantVO plantVO);
-    
-    /** 수확 처리 */
-    public int harvest(int plantno);
-
-    public boolean hasPlant(int memberno);    
-    
-//    public int increaseGrowth(int plantno, int growthAmount);
-    public int increaseGrowth(int memberno, int amount);
-    
-    public int deleteByMemberno(int memberno);
+  public int create(PlantVO plantVO);
+  public PlantVO read(int plantno);
+  public PlantVO readByMemberno(int memberno);
+  public int update(PlantVO plantVO);
+  public int delete(int plantno);
 }

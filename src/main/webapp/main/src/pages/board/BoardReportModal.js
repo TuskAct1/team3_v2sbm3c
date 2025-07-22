@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function BoardReportModal({ boardno, show, onClose }) {
+function BoardReportModal({ boardno, show, onClose, onReported }) {
   const [reason, setReason] = useState('');
   const [resultMsg, setResultMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setResultMsg('');
     try {
       await axios.post(`/boardReport/report/${boardno}`, {
-        boardno: boardno,
-        // memberno 추가
         reason: reason
       });
-      handleClose();
+      setResultMsg("신고가 접수되었습니다.");
+      if (onReported) onReported();
     } catch (error) {
-      console.error(error);
+      // 이미 신고한 경우
+      if (error.response?.status === 400 && error.response.data === "이미 신고하셨습니다.") {
+        setResultMsg("이미 신고하신 게시글입니다.");
+      } else {
+        setResultMsg("신고 처리 중 오류가 발생했습니다.");
+      }
     }
+    setLoading(false);
   };
 
   // 모달이 닫힐 때 state 초기화
@@ -36,7 +44,12 @@ function BoardReportModal({ boardno, show, onClose }) {
       <div style={{ background: '#fff', padding: 32, borderRadius: 12, minWidth: 340, boxShadow: '0 8px 24px rgba(0,0,0,0.16)' }}>
         <h3>게시글 신고</h3>
         {resultMsg ? (
-          <div style={{ margin: '16px 0', color: '#4662e1' }}>{resultMsg}</div>
+          <div style={{ margin: '16px 0', color: resultMsg.includes('이미') ? '#ea4335' : '#4662e1', fontWeight: 600 }}>
+            {resultMsg}
+            <div style={{ textAlign: 'right', marginTop: 18 }}>
+              <button onClick={handleClose} style={{ padding: '7px 20px', borderRadius: 6, border: 'none', background: '#4662e1', color: '#fff' }}>닫기</button>
+            </div>
+          </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <label>
@@ -46,7 +59,9 @@ function BoardReportModal({ boardno, show, onClose }) {
             </label>
             <div style={{ textAlign: 'right' }}>
               <button type="button" onClick={handleClose} style={{ marginRight: 12 }}>취소</button>
-              <button type="submit" style={{ background: '#f23d4b', color: '#fff', padding: '7px 20px', borderRadius: 6, border: 'none' }}>신고</button>
+              <button type="submit" disabled={loading} style={{ background: '#f23d4b', color: '#fff', padding: '7px 20px', borderRadius: 6, border: 'none' }}>
+                {loading ? "신고중..." : "신고"}
+              </button>
             </div>
           </form>
         )}

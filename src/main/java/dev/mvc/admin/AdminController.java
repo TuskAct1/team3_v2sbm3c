@@ -171,7 +171,7 @@ public class AdminController {
     public ResponseEntity<?> deleteMemberByAdmin(@PathVariable int memberno) {
         try {
             // 자식 테이블부터 삭제
-            plantProc.deleteByMemberno(memberno);
+//            plantProc.deleteByMemberno(memberno);
 
             // 그 다음 member 삭제
             int cnt = memberProc.delete(memberno);

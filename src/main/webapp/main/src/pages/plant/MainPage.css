@@ -1,0 +1,135 @@
+.plant-wrapper {
+  background-color: #eaf2df; /* 더 부드러운 연녹색 배경 */
+  padding: 40px 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+.plant-guide-text {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #111;
+  line-height: 1.6;
+}
+
+.plant-image {
+  width: 110px;
+  margin-bottom: 10px;
+}
+
+.plant-floating-btns {
+  position: absolute;
+  top: 150px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.circle-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.circle-button img {
+  width: 28px;
+  margin-bottom: 4px;
+}
+
+.plant-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  width: 340px;
+  margin-top: 20px;
+}
+
+.plant-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+.plant-bar-wrapper {
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.plant-bar {
+  height: 100%;
+  background-color: #66bb6a;
+  border-radius: 10px;
+}
+
+.plant-point-box {
+  display: flex;
+  align-items: center;
+  background: #ecf8ce;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.plant-point-box img {
+  width: 20px;
+}
+
+.plant-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.plant-actions button {
+  background: #f3f7ef;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  cursor: pointer;
+}
+
+.plant-actions button span {
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.plant-actions button small {
+  font-size: 10px;
+  color: #888;
+}
+
+.plant-actions button img {
+  width: 22px;
+  margin-top: 6px;
+}
