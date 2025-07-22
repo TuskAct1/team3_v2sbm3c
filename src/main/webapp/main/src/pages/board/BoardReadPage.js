@@ -14,6 +14,7 @@ function BoardReadPage() {
   const [recom, setRecom] = useState();
   const [showReport, setShowReport] = useState(false);
   const [isReported, setIsReported] = useState(false); // ✅ 신고 상태 추가
+  const [loading, setLoading] = useState(true); // ✅ 로딩 상태
   // const [categoryno, setCategoryno] = useState(null); // 추가
    const { setCategoryno } = useOutletContext(); 
 
@@ -21,6 +22,11 @@ function BoardReadPage() {
   const navigate = useNavigate();
 
   const memberno = parseInt(localStorage.getItem("memberno"), 10);
+
+  // 위쪽에 추가해줘
+  const user = JSON.parse(localStorage.getItem('user')); // role, memberno, adminno 등 저장된 객체
+  const isAuthor = user?.role === 'member' && user?.memberno === boardVO.memberno;
+  const isAdmin = user?.role === 'admin';
 
   const isImage = (filename) => {
     if (!filename) return false;
@@ -86,19 +92,17 @@ function BoardReadPage() {
   };
 
   useEffect(() => {
-    console.log("readpage")
     axios.get(`/board/read/${boardno}`)
       .then((res) => {
         setCategoryGroup(res.data.categoryGroup);
         setBoardVO(res.data.boardVO);
+        setLoading(false); // ✅ 로딩 완료
         setCategoryno(res.data.boardVO.categoryno);
       });
-      console.log(boardVO.boardno);
     fetchRecommendStatus();
   }, [boardno]);
 
   useEffect(() => {
-    console.log("readpage2")
     axios.get(`/boardRecommend/count/${boardno}`)
       .then((res) => setRecom(res.data.recom));
   }, [boardno]);
@@ -128,10 +132,15 @@ function BoardReadPage() {
         <div className="board-meta">
           {boardVO.rdate} · 조회 {boardVO.cnt} · 추천 {boardVO.recom}
         </div>
-        <div className="board-buttons-right">
-          <button onClick={() => navigate(`/board/update/${boardno}`)} className="board-btn update">수정</button>
-          <button onClick={handleDelete} className="board-btn delete">삭제</button>
-        </div>
+
+        {/* ✅ 자신이 작성한 글일 때만 수정/삭제 버튼 표시 */}
+        {/* ✅ 자신이 작성한 글이거나 관리자일 때만 수정/삭제 버튼 표시 */}
+        {!loading && (isAuthor || isAdmin) && (
+          <div className="board-buttons-right">
+            <button onClick={() => navigate(`/board/update/${boardno}`)} className="board-btn update">수정</button>
+            <button onClick={handleDelete} className="board-btn delete">삭제</button>
+          </div>
+        )}
       </div>
 
       <div className="board-divider-green"></div>
@@ -168,15 +177,14 @@ function BoardReadPage() {
       </div>
 
       <BoardReportModal
-      
         boardno={boardVO.boardno}
-        memberno={memberno}   // ✅ 이 줄이 없다면 undefined로 무한 오류 발생 가능!
+        memberno={memberno} // ✅ 이 줄은 필수!
         show={showReport}
         onClose={() => setShowReport(false)}
         onReported={() => {
           setIsReported(true);
-          setShowReport(false); // 모달 닫기
-        }}// ✅ 신고 완료시 상태 변경
+          setShowReport(false);
+        }}
       />
 
       <div className="board-reply-section">

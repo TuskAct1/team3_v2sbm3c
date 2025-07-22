@@ -70,4 +70,5 @@ public interface ReplyDAOInter {
 
   // 리스트 트리구조
   public List<ReplyVO> list_by_boardno_tree(int boardno);
+  
 }

@@ -83,8 +83,8 @@
 }
 
 /* ✅ 등록 버튼 */
-.board-create-submit-btn {
-  padding: 14px 28px;
+.form-row .board-create-submit-btn {
+  padding: 8px 28px;
   font-size: 19px;
   background-color: #66bb6a;
   color: white;

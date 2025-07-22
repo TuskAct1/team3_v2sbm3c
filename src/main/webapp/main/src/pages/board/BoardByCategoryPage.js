@@ -175,7 +175,6 @@ function BoardByCategoryPage() {
         </tbody>
       </table>
 
-      {/* ✅ 페이징 */}
       <div className="board-pagination">
         <div className="pagination-numbers">
           {(() => {
@@ -203,6 +202,23 @@ function BoardByCategoryPage() {
         <div className="pagination-arrows-text">
           <span
             className={`page-arrow ${nowPage <= 5 ? 'disabled' : ''}`}
+            onClick={() =>
+              nowPage > 5 &&
+              handlePageChange(Math.floor((nowPage - 1) / 5) * 5)
+            }
+          >
+            ‹ 이전
+          </span>
+
+          <span
+            className={`page-arrow ${
+              nowPage > Math.floor((totalPage - 1) / 5) * 5 ? 'disabled' : ''
+            }`}
+            onClick={() =>
+              nowPage <= Math.floor((totalPage - 1) / 5) * 5 &&
+              handlePageChange(Math.floor((nowPage - 1) / 5) * 5 + 6)
+            }
+          >
             onClick={() => nowPage > 5 && handlePageChange(Math.floor((nowPage - 1) / 5) * 5)}
           >
             ‹ 이전
@@ -221,6 +237,9 @@ function BoardByCategoryPage() {
           </span>
         </div>
       </div>
+
+
+      
     </div>
   );
 }
