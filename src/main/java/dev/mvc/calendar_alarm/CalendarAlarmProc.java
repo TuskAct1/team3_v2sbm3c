@@ -24,15 +24,15 @@ public class CalendarAlarmProc implements CalendarAlarmProcInter {
     /** 특정 캘린더 일정에 속한 알람 삭제 (캘린더 삭제 시 사용) */
     @Override
     @Transactional
-    public int deleteByCalendarno(int calendarno) {
-        return calendarAlarmDAO.deleteByCalendarno(calendarno);
+    public int deleteByCalendar(int calendarno) {
+        return calendarAlarmDAO.deleteByCalendar(calendarno);
     }
 
     /** 특정 회원의 알람 일괄 삭제 (회원 탈퇴 시 사용) */
     @Override
     @Transactional
-    public int deleteByMemberno(int memberno) {
-        return calendarAlarmDAO.deleteByMemberno(memberno);
+    public int deleteByMember(int memberno) {
+        return calendarAlarmDAO.deleteByMember(memberno);
     }
 
     /** 전송 대기 중인 알람 목록 조회 */

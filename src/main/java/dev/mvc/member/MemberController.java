@@ -174,7 +174,6 @@ public class MemberController {
             }
 
             // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
-            // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
             if ("admin".equals(member.getGrade())) {
                 session.setAttribute("role", "admin");
                 session.setAttribute("adminno", admin.getAdminno());
