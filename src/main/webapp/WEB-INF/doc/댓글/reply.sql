@@ -1,14 +1,17 @@
 DROP TABLE reply;
 
-CREATE TABLE reply(
-        replyno                     NUMBER(10)                  NOT NULL  PRIMARY KEY,
-        boardno                     NUMBER(10)                  NOT NULL, 
-        memberno                    NUMBER(10)                  NOT NULL,
-        content                     VARCHAR2(1000)              NOT NULL,
-        blind                       NUMBER(1)         DEFAULT 0 NOT NULL,
-        rdate                       DATE                        NOT NULL,
-  FOREIGN KEY (boardno) REFERENCES board (boardno),
-  FOREIGN KEY (memberno) REFERENCES member (memberno)
+CREATE TABLE reply (
+  replyno           NUMBER(10) PRIMARY KEY,          -- 댓글 고유 번호 (PK)
+  boardno           NUMBER(10) NOT NULL,             -- 어떤 게시글의 댓글인지
+  memberno          NUMBER(10) NOT NULL,             -- 작성자
+  parent_replyno    NUMBER(10),                      -- 부모 댓글 번호 (NULL이면 일반 댓글)
+  content           VARCHAR2(1000) NOT NULL,
+  blind             NUMBER(1) DEFAULT 0 NOT NULL,    -- 블라인드 처리 여부
+  rdate             DATE DEFAULT SYSDATE NOT NULL,
+
+  FOREIGN KEY (boardno) REFERENCES board(boardno) ON DELETE CASCADE,
+  FOREIGN KEY (memberno) REFERENCES member(memberno),
+  FOREIGN KEY (parent_replyno) REFERENCES reply(replyno) ON DELETE CASCADE
 );
 
 COMMENT ON TABLE reply is '댓글';

@@ -10,6 +10,8 @@ import SearchToggleBar from './SearchToggleBar';
 import MiniCalendar from './MiniCalendar'; // 위에서 만든 컴포넌트
 // import './CalendarPage.css'; // 스타일 따로 구성 가능
 
+import moment from 'moment-timezone';
+
 axios.defaults.withCredentials = true;
 
 function CalendarPage() {
@@ -118,8 +120,14 @@ const fetchHolidays = async (year) => {
           ...item,
           id: item.calendarno?.toString(),
           title: item.title,
-          start: `${item.start_date}T${item.start_time || '00:00'}`,
-          end: `${item.end_date}T${item.end_time || '00:00'}`,
+          // start: `${item.start_date}T${item.start_time || '00:00'}`,
+          // end: `${item.end_date}T${item.end_time || '00:00'}`,
+
+
+          start: moment.tz(`${item.start_date} ${item.start_time || '00:00'}`, 'YYYY-MM-DD HH:mm', 'Asia/Seoul').toDate(),
+          end: moment.tz(`${item.end_date} ${item.end_time || '00:00'}`, 'YYYY-MM-DD HH:mm', 'Asia/Seoul').toDate(),
+
+
           image: item.image ? `${item.image}` : null,
           thumbnail: item.thumbnail ? `${item.thumbnail}` : null,
           color: isAdmin ? '#28a745' : '#3788d8',

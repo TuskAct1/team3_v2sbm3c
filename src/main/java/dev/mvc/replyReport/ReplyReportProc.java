@@ -75,27 +75,66 @@ public class ReplyReportProc implements ReplyReportProcInter{
   }
 
   @Override
-  public List<Map<String, Object>> groupedReports() {
-    List<Map<String, Object>> groups = new ArrayList<>();
+  public List<GroupedReplyReportDTO> groupedReports() {
+    List<GroupedReplyReportDTO> groups = new ArrayList<>();
     List<Integer> replynos = replyReportDAO.findReportedReplynos();
 
     for (Integer replyno : replynos) {
-      Map<String, Object> group = new HashMap<>();
-      ReplyMemberVO replyInfo = replyReportDAO.getReplyInfo(replyno); // 댓글 + 작성자 정보
-      List<Map<String, Object>> reports = replyReportDAO.listByReplynoWithMember(replyno);
+      ReplyMemberVO replyInfo = replyReportDAO.getReplyInfo(replyno);  // 댓글 + 작성자 정보
+      List<Map<String, Object>> reportMaps = replyReportDAO.listByReplynoWithMember(replyno);
 
-      group.put("replyno", replyInfo.getReplyno());
-      group.put("memberno", replyInfo.getMemberno());
-      group.put("nickname", replyInfo.getNickname());
-      group.put("id", replyInfo.getId());
-      group.put("content", replyInfo.getContent());
-      group.put("reportCount", reports.size());
-      group.put("reports", reports);
+      // 1. 신고 리스트 가공
+      List<ReplyReportDetailDTO> reports = new ArrayList<>();
+      for (Map<String, Object> map : reportMaps) {
+        ReplyReportDetailDTO dto = new ReplyReportDetailDTO();
+
+//        System.out.println("⚠ map 내용: " + map);
+//        System.out.println("⚠ map 키 목록: " + map.keySet());
+
+        // ✅ replyReportno null 방어 처리
+        Object replyReportnoObj = map.get("replyReportno");
+        if (replyReportnoObj instanceof Number) {
+          dto.setReplyReportno(((Number) replyReportnoObj).intValue());
+        } else {
+          System.out.println("❌ replyReportno is null or not a number: " + map);
+          continue;
+        }
+
+        // ✅ memberno null 방어 처리
+        Object membernoObj = map.get("memberno");
+        if (membernoObj instanceof Number) {
+          dto.setMemberno(((Number) membernoObj).intValue());
+        } else {
+          System.out.println("❌ memberno is null or not a number: " + map);
+          dto.setMemberno(0); // 또는 continue;
+        }
+
+        dto.setReplyReportno(((Number) map.get("replyReportno")).intValue());
+        dto.setMemberno(((Number) map.get("memberno")).intValue());
+        dto.setReporter_id((String) map.get("reporter_id"));
+        dto.setReporter_nickname((String) map.get("reporter_nickname"));
+        dto.setReason((String) map.get("reason"));
+        dto.setReport_date((String) map.get("report_date"));
+
+
+        reports.add(dto);
+      }
+
+      // 2. 전체 그룹 생성
+      GroupedReplyReportDTO group = new GroupedReplyReportDTO();
+      group.setReplyno(replyInfo.getReplyno());
+      group.setMemberno(replyInfo.getMemberno());
+      group.setId(replyInfo.getId());
+      group.setNickname(replyInfo.getNickname());
+      group.setContent(replyInfo.getContent());
+      group.setReportCount(reports.size());
+      group.setReports(reports);
 
       groups.add(group);
     }
 
+
+
     return groups;
   }
-
 }

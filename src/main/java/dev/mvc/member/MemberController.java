@@ -62,15 +62,11 @@ public class MemberController {
     ) {
         Map<String, Object> response = new HashMap<>();
 
-<<<<<<< HEAD
+
         // 1. 비밀번호 암호화
         String encrypted = bcryptUtil.encode(memberVO.getPasswd());
         memberVO.setPasswd(encrypted);
 
-        // 2. 프로필 이미지 저장
-        if (file != null && !file.isEmpty()) {
-            String uploadDir = "C:/kd/deploy/team3/member/storage/"; // ✅ 실제 저장 경로
-=======
         // 1. 프로필 이미지 저장
         if (file != null && !file.isEmpty()) {
             String osName = System.getProperty("os.name").toLowerCase();
@@ -85,7 +81,6 @@ public class MemberController {
             }
 
             String uploadDir = "C:/upload/profile/";  // 실서버 경로에 맞게 조정
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
             String originalFilename = file.getOriginalFilename();
             String uuid = UUID.randomUUID().toString();
             String savedFilename = uuid + "_" + originalFilename;
@@ -113,27 +108,29 @@ public class MemberController {
             // ✅ 기본 이미지 파일명 저장 (정적 자원 경로에 있어야 함)
             memberVO.setProfile("default_profile.png");
         }
-<<<<<<< HEAD
+
+
+        // 3. 포인트 기본값
+
+
 
         // 3. 기본 포인트
-=======
+
         
         // 3. 포인트 기본값
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
+
         memberVO.setPoint(50);
 
         // 4. 회원 DB 저장
         int cnt = memberProc.create(memberVO);
         if (cnt == 1) {
-<<<<<<< HEAD
-            int memberno = memberVO.getMemberno();
-=======
-            int memberno = memberVO.getMemberno(); // MyBatis가 PK를 세팅해주면
 
-            // 2단계: 기본 식물 생성
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
+            int memberno = memberVO.getMemberno();
+
+
 
             // 5. 기본 식물 생성
+
             PlantVO plant = new PlantVO();
             plant.setMemberno(memberno);
             plant.setPlant_name("나의 첫 식물");
@@ -157,10 +154,7 @@ public class MemberController {
         }
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
     /** 로그인 */
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpSession session, @RequestBody HashMap<String, Object> loginMap) {
@@ -179,7 +173,7 @@ public class MemberController {
                 return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
             }
 
-
+            // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
             // ✅ 사용자 등급(관리자/회원)에 따라 세션에 저장
             if ("admin".equals(member.getGrade())) {
                 session.setAttribute("role", "admin");
@@ -229,6 +223,8 @@ public class MemberController {
             return ResponseEntity.status(500).body("서버 오류 발생: " + e.getMessage());
         }
     }
+
+    
 
     /** 회원 조회 */
     @GetMapping("/{memberno}")
@@ -385,7 +381,6 @@ public class MemberController {
 
         return ResponseEntity.ok(response);
     }
-<<<<<<< HEAD
 
     @PostMapping("/update-profile")
     public ResponseEntity<?> updateProfileImage(
@@ -415,8 +410,5 @@ public class MemberController {
 
 
 
-   
-=======
->>>>>>> 6a77bb3f46c90df7e3f11ef67a5a5576a894d339
 
 }
