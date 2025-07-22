@@ -9,9 +9,9 @@ function NoticeList() {
   const [visitedIds, setVisitedIds] = useState([]);
   const [user, setUser] = useState(null);
   const [visibleCount, setVisibleCount] = useState(10);
+  const [selectedCategory, setSelectedCategory] = useState('전체');
   const navigate = useNavigate();
 
-  // ✅ 로그인 유저 정보 로드
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -23,7 +23,6 @@ function NoticeList() {
     }
   }, []);
 
-  // ✅ 방문한 공지 불러오기
   useEffect(() => {
     const stored = localStorage.getItem('visitedNoticeIds');
     if (stored) {
@@ -35,15 +34,12 @@ function NoticeList() {
     }
   }, []);
 
-  // ✅ 검색어 바뀔 때마다 공지 다시 로드
   useEffect(() => {
     fetchSearchResults();
   }, [searchKeyword]);
 
-  // ✅ 관리자 여부 판단
   const isAdmin = user?.adminno !== undefined;
 
-  // ✅ 공지사항 목록 요청
   const fetchSearchResults = async () => {
     try {
       const res = await axios.get('http://localhost:9093/notice/search', {
@@ -56,7 +52,6 @@ function NoticeList() {
     }
   };
 
-  // ✅ 공지 클릭 시 방문기록 저장 후 이동
   const handleTitleClick = (noticeno) => {
     const updated = [...new Set([...visitedIds, noticeno])];
     setVisitedIds(updated);
@@ -64,13 +59,11 @@ function NoticeList() {
     navigate(`/notice/read/${noticeno}`);
   };
 
-  // ✅ 방문기록 초기화
   const handleResetVisited = () => {
     localStorage.removeItem('visitedNoticeIds');
     setVisitedIds([]);
   };
 
-  // ✅ 카테고리 배지 색상 지정
   const getCategoryClass = (category) => {
     switch (category) {
       case '이벤트':
@@ -82,25 +75,24 @@ function NoticeList() {
     }
   };
 
-  // ✅ 더보기 버튼
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 10);
   };
 
-  // ✅ 사용자 권한에 따라 공지 필터링
-  const filteredNotices = notices.filter(
-    (notice) => isAdmin || notice.status === '공개'
-  );
+  const filteredNotices = notices.filter((notice) => {
+    const matchStatus = isAdmin || notice.status === '공개';
+    const matchCategory = selectedCategory === '전체' || notice.category === selectedCategory;
+    return matchStatus && matchCategory;
+  });
 
   return (
     <div className="notice-page-bg">
-      {/* ✅ 상단 영역 */}
       <div className="notice-header">
         <h2>공지사항</h2>
         <div className="title-main">토닥의 다양한 소식을 안내해 드립니다.</div>
       </div>
 
-      {/* ✅ 검색창 + 총 개수 */}
+      {/* ✅ 검색창 + 개수 */}
       <div className="notice-top-row">
         <div className="notice-count">총 {filteredNotices.length}건</div>
         <div className="notice-search-bar">
@@ -113,7 +105,20 @@ function NoticeList() {
         </div>
       </div>
 
-      {/* ✅ 관리자만 등록 버튼 보이게 */}
+      {/* ✅ 카테고리 필터 버튼 */}
+      <div className="notice-category-filter">
+        {['전체', '공지', '이벤트', '점검'].map((cat) => (
+          <button
+            key={cat}
+            className={`category-filter-btn ${selectedCategory === cat ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* ✅ 관리자만 등록 가능 */}
       {isAdmin && (
         <div className="create-button-container">
           <button className="pretty-back-button" onClick={() => navigate('/notice/create')}>
@@ -142,7 +147,6 @@ function NoticeList() {
                 <span className={`notice-title-text ${
                   visitedIds.includes(notice.noticeno) ? 'visited' : ''
                 }`}>
-                  {/* ✅ 비공개일 경우 🔒 표시 */}
                   {isAdmin && notice.status === '비공개' && (
                     <i
                       className="fas fa-lock private-lock-icon"
@@ -158,7 +162,6 @@ function NoticeList() {
                 {new Date(notice.rdate).toLocaleDateString('ko-KR')}
               </div>
 
-              {/* ✅ 관리자만 수정/삭제 가능 */}
               {isAdmin && (
                 <div className="notice-td actions" onClick={(e) => e.stopPropagation()}>
                   <div className="action-links">

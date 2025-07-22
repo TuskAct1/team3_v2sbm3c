@@ -13,7 +13,7 @@
         #{calendarno},
         #{memberno},
         #{alarm_dt,jdbcType=TIMESTAMP},
-        #{alarm_type},
+        #{alarm_type, jdbcType=VARCHAR},
         #{sent_flag},
         #{retry_count},
         SYSTIMESTAMP)
@@ -25,7 +25,7 @@
         WHERE alarmno = #{alarmno}
     </select>
 
-    <!-- 2. 발송 대기 중인 알람 조회 (5분 이내) -->
+    <!-- 2. 발송 대기 중인 알람 조회 (10분 이내) -->
     <select id="listPending" resultType="dev.mvc.calendar_alarm.CalendarAlarmVO">
         SELECT
         a.alarmno,
@@ -39,8 +39,9 @@
         JOIN Calendar c ON a.calendarno = c.calendarno
         WHERE a.sent_flag = 'N'
         <![CDATA[
-      AND a.alarm_dt <= SYSTIMESTAMP + INTERVAL '10' MINUTE
-    ]]>
+            AND a.alarm_dt > SYSTIMESTAMP
+            AND a.alarm_dt <= SYSTIMESTAMP + INTERVAL '10' MINUTE
+        ]]>
     </select>
 
     <!-- 3. 발송 완료 표시 -->

@@ -49,6 +49,8 @@ function Navbar() {
     localStorage.removeItem("user");
     setUser(null);
 
+    
+
     // 2️⃣ 네이버 로그아웃 처리
     if (provider === 'naver') {
       // 네이버 로그아웃 전용 팝업
@@ -416,7 +418,7 @@ function Navbar() {
                   </div>
                   <div className="dropdown-right">
                     <div className="content-card">
-                      <h4>📋 게시판 모아보기</h4>
+                      <h4>💬 게시판 모아보기</h4>
                       <p>
                         도란도란은 <strong>다양한 주제에 맞춰 나누어진 소통 공간</strong>이에요. <br />
                         <strong>관심 있는 주제</strong>를 골라 다른 분들과 생각을 나누거나, <strong>정보도 공유하고 이야기</strong>할 수 있어요. <br />

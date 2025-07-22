@@ -48,7 +48,7 @@ public class CalendarAlarmController {
     /** 4. 일정 삭제 시 관련 알람 일괄 삭제 */
     @DeleteMapping("/by-calendar/{calendarno}")
     public ResponseEntity<Map<String, Object>> deleteByCalendar(@PathVariable("calendarno") int calendarno) {
-        int cnt = this.calendarAlarmProc.deleteByCalendarno(calendarno);
+        int cnt = this.calendarAlarmProc.deleteByCalendar(calendarno);
         Map<String, Object> result = new HashMap<>();
         result.put("deletedByCalendar", cnt);
         return ResponseEntity.ok(result);
@@ -57,7 +57,7 @@ public class CalendarAlarmController {
     /** 5. 회원 탈퇴 시 관련 알람 일괄 삭제 */
     @DeleteMapping("/by-member/{memberno}")
     public ResponseEntity<Map<String, Object>> deleteByMember(@PathVariable("memberno") int memberno) {
-        int cnt = this.calendarAlarmProc.deleteByMemberno(memberno);
+        int cnt = this.calendarAlarmProc.deleteByMember(memberno);
         Map<String, Object> result = new HashMap<>();
         result.put("deletedByMember", cnt);
         return ResponseEntity.ok(result);

@@ -28,7 +28,10 @@ function MainPage() {
       };
       if (adminno) user.adminno = parseInt(adminno, 10);
       else user.memberno = parseInt(memberno, 10);
+
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("memberno", memberno);  // ✅ 요 줄만 추가!
+      
       window.location.replace("/");
     }
   }, []);
@@ -60,10 +63,10 @@ function MainPage() {
     route: '/plant',
   },
   {
-    title: '감정에 어울리는 음악으로 쉬어가기',
-    subtitle: `지치고 마음이 복잡한 날,\n당신의 감정에 어울리는 음악을 들어보세요.\n조용한 위로가 소리로 전해질 거예요.`,
-    buttonText: '음악 들으러 가기',
-    route: '/playlist/list',
+    title: '도란도란, 마음을 나누는 공간',
+    subtitle: `하루의 이야기, 소소한 고민, 따뜻한 응원의 말들.\n함께 나누며 서로를 토닥이는 시간,\n지금 도란도란에서 시작해보세요.`,
+    buttonText: '커뮤니티 바로가기',
+    route: '/board/list_all/all/1',
   },
   {
     title: '하루를 정리하는 작은 습관',
