@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import Slider from "react-slick";
 
 const emotions = [
   { score: 1, icon: "😃", label: "긍정" },
@@ -12,29 +9,6 @@ const emotions = [
   { score: 4, icon: "😰", label: "불안" },
   { score: 5, icon: "😢", label: "우울" },
 ];
-
-const sliderSettings = {
-  dots: true,
-  infinite: false,
-  speed: 500,
-  slidesToShow: 4,
-  slidesToScroll: 1,
-  arrows: true,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: { slidesToShow: 3 },
-    },
-    {
-      breakpoint: 768,
-      settings: { slidesToShow: 2 },
-    },
-    {
-      breakpoint: 480,
-      settings: { slidesToShow: 1 },
-    },
-  ],
-};
 
 function EmotionSelector({ selectedScore, onChange }) {
   return (
@@ -76,41 +50,16 @@ const DiaryCreate = () => {
     risk_flag: 3,
   });
 
-  const [files, setFiles] = useState([]);
-  const [hoverIndex, setHoverIndex] = useState(null);
+  const [images, setImages] = useState([null, null, null, null]);
+  const [defaultImageUsed, setDefaultImageUsed] = useState(false);
 
   const titleInput = useRef();
   const contentInput = useRef();
-  const fileInputRef = useRef();
-  const sliderRef = useRef();
+  const fileInputRefs = useRef([React.createRef(), React.createRef(), React.createRef(), React.createRef()]);
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const memberno = user?.memberno;
-
-  // Wheel 지원
-  useEffect(() => {
-    if (!sliderRef.current) return;
-
-    const track = sliderRef.current.innerSlider?.list;
-    if (!track) return;
-
-    const handleWheel = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (e.deltaY > 0) {
-        sliderRef.current?.slickNext();
-      } else {
-        sliderRef.current?.slickPrev();
-      }
-    };
-
-    track.addEventListener('wheel', handleWheel, { passive: false });
-
-    return () => {
-      track.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
 
   useEffect(() => {
     if (!memberno) {
@@ -131,13 +80,20 @@ const DiaryCreate = () => {
     setState((prev) => ({ ...prev, risk_flag: score }));
   };
 
-  const handleFileChange = (e) => {
-    const newFiles = Array.from(e.target.files);
-    setFiles((prev) => [...prev, ...newFiles]);
+  const handleFileChange = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const updatedImages = [...images];
+      updatedImages[index] = file;
+      setImages(updatedImages);
+      setDefaultImageUsed(false);
+    }
   };
 
   const handleRemoveImage = (index) => {
-    setFiles((prev) => prev.filter((_, idx) => idx !== index));
+    const updatedImages = [...images];
+    updatedImages[index] = null;
+    setImages(updatedImages);
   };
 
   const handleSubmit = async (e) => {
@@ -166,8 +122,8 @@ const DiaryCreate = () => {
     formData.append("content", state.content);
     formData.append("password", "1234");
     formData.append("risk_flag", state.risk_flag);
-    files.forEach((f) => {
-      formData.append("files", f);
+    images.forEach((file) => {
+      if (file) formData.append("files", file);
     });
 
     try {
@@ -184,14 +140,9 @@ const DiaryCreate = () => {
     }
   };
 
-  const allThumbnails = [
-    ...files.map((file, idx) => ({
-      type: 'new',
-      src: URL.createObjectURL(file),
-      index: idx
-    })),
-    { type: 'addButton' }
-  ];
+  const handleUseDefaultImage = () => {
+    setDefaultImageUsed(true);
+  };
 
   return (
     <div className="DiaryCreate" style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
@@ -220,98 +171,73 @@ const DiaryCreate = () => {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <strong style={{ fontSize: '1.1rem' }}>이미지 선택</strong>
-          <div style={{ marginTop: 8 }}>
-            <Slider ref={sliderRef} {...sliderSettings}>
-              {allThumbnails.map((item, idx) => {
-                if (item.type === 'new') {
-                  return (
-                    <div key={`new-${item.index}`}>
-                      <div
-                        style={{
-                          position: 'relative',
-                          width: '100px',
-                          height: '100px',
-                          borderRadius: '8px',
-                          overflow: 'hidden',
-                          margin: 'auto',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => handleRemoveImage(item.index)}
-                        onMouseEnter={() => setHoverIndex(item.index)}
-                        onMouseLeave={() => setHoverIndex(null)}
-                      >
-                        <img
-                          src={item.src}
-                          alt=""
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover'
-                          }}
-                        />
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            backgroundColor: 'rgba(0,0,0,0.5)',
-                            color: '#fff',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '2rem',
-                            opacity: hoverIndex === item.index ? 1 : 0,
-                            transition: 'opacity 0.2s'
-                          }}
-                        >
-                          -
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-                if (item.type === 'addButton') {
-                  return (
-                    <div key="add-button">
-                      <div
-                        onClick={() => fileInputRef.current.click()}
-                        style={{
-                          width: '100px',
-                          height: '100px',
-                          border: '2px dashed #0077cc',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '2rem',
-                          color: '#0077cc',
-                          margin: 'auto'
-                        }}
-                      >
-                        +
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              })}
-            </Slider>
-            <input
-              ref={fileInputRef}
-              type="file"
-              onChange={handleFileChange}
-              accept="image/*"
-              multiple
-              style={{ display: 'none' }}
-            />
+          <strong>이미지 선택 (최대 4개)</strong>
+          <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+            {images.map((img, idx) => (
+              <div key={idx} style={{ position: "relative" }}>
+                <div onClick={() => fileInputRefs.current[idx].current.click()} style={{
+                  width: 80,
+                  height: 80,
+                  border: "2px dashed #0077cc",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}>
+                  {img ? (
+                    <img src={URL.createObjectURL(img)} alt="preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <span style={{ fontSize: 24, color: "#0077cc" }}>+</span>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRefs.current[idx]}
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFileChange(e, idx)}
+                  />
+                </div>
+                {img && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(idx)}
+                    style={{
+                      position: "absolute",
+                      top: -8,
+                      right: -8,
+                      background: "#ff5c5c",
+                      border: "none",
+                      borderRadius: "50%",
+                      color: "#fff",
+                      width: 20,
+                      height: 20,
+                      fontSize: 12,
+                      cursor: "pointer"
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        <div>
+        {images.every(img => img === null) && !defaultImageUsed && (
+          <button type="button" onClick={handleUseDefaultImage} style={{ marginTop: 10 }}>
+            기본 이미지 사용
+          </button>
+        )}
+
+        {defaultImageUsed && (
+          <div style={{ marginTop: 16 }}>
+            <img src="/images/default_nature.jpg" alt="기본 이미지" style={{ width: "100%", borderRadius: 12 }} />
+          </div>
+        )}
+
+        <div style={{ marginTop: 20 }}>
           <span>오늘의 감정점수 : </span>
           <EmotionSelector selectedScore={state.risk_flag} onChange={handleEmotionChange} />
         </div>

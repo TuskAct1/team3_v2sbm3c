@@ -63,4 +63,6 @@ public class DiaryVO {
     /** 클라이언트에서 '서버에 남기고 싶은 저장된 파일명들' 전달용 */
     private List<String> remainFilesSaved;
 
+    private String default_image;
+
 }

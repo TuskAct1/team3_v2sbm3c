@@ -17,8 +17,6 @@ function BoardReadPage() {
   const { boardno } = useParams();
   const navigate = useNavigate();
 
-  const memberno = parseInt(localStorage.getItem("memberno"), 10);
-
   const isImage = (filename) => {
     if (!filename) return false;
     const lower = filename.toLowerCase();
@@ -83,18 +81,15 @@ function BoardReadPage() {
   };
 
   useEffect(() => {
-    console.log("readpage")
     axios.get(`/board/read/${boardno}`)
       .then((res) => {
         setCategoryGroup(res.data.categoryGroup);
         setBoardVO(res.data.boardVO);
       });
-      console.log(boardVO.boardno);
     fetchRecommendStatus();
   }, [boardno]);
 
   useEffect(() => {
-    console.log("readpage2")
     axios.get(`/boardRecommend/count/${boardno}`)
       .then((res) => setRecom(res.data.recom));
   }, [boardno]);
@@ -164,15 +159,10 @@ function BoardReadPage() {
       </div>
 
       <BoardReportModal
-      
         boardno={boardVO.boardno}
-        memberno={memberno}   // ✅ 이 줄이 없다면 undefined로 무한 오류 발생 가능!
         show={showReport}
         onClose={() => setShowReport(false)}
-        onReported={() => {
-          setIsReported(true);
-          setShowReport(false); // 모달 닫기
-        }}// ✅ 신고 완료시 상태 변경
+        onReported={() => setIsReported(true)} // ✅ 신고 완료시 상태 변경
       />
 
       <div className="board-reply-section">

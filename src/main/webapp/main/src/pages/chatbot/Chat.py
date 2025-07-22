@@ -6,6 +6,7 @@ import requests
 from dotenv import load_dotenv
 
 from fastapi import FastAPI
+import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -68,7 +69,8 @@ else:
 
 load_dotenv()
 
-mongo_client = MongoClient(f"mongodb://{os.environ['MONGO_USER']}:{os.environ['MONGO_PW']}@121.78.128.139:27017/admin")
+# mongo_client = MongoClient(f"mongodb://{os.environ['MONGO_USER']}:{os.environ['MONGO_PW']}@121.78.128.139:27017/admin")
+mongo_client = MongoClient("mongodb://team3:0514@121.78.128.139:27017/admin")
 db = mongo_client["mentalcare"]   # DB 이름
 # mongo_client = MongoClient("mongodb://localhost:27017/")
 # db = mongo_client["mentalcare"]   # DB 이름
