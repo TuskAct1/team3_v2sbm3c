@@ -40,5 +40,17 @@
     SET last_check = #{date}
     WHERE memberno = #{memberno}
   </update>
+  
+  <insert id="initAttendance" parameterType="int">
+    INSERT INTO attendance (
+      attendanceno, memberno, total_days, last_check
+    ) VALUES (
+      attendance_seq.NEXTVAL,
+      #{memberno},
+      1,
+      SYSDATE
+    )
+  </insert>
+
 
 </mapper>

@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dev.mvc.point.PointVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import dev.mvc.point.PointDAOInter;
 
 @Service("memberProc")
 @Primary
@@ -15,18 +18,34 @@ public class MemberProc implements MemberProcInter {
     @Autowired
     private MemberDAOInter memberDAO;
     
+    @Autowired
+    private dev.mvc.point.PointProcInter pointProc;
+    
+    @Autowired
+    private PointDAOInter pointDAO;
+    
     /** 회원 정보 조회 (by id) */
     @Override
     public MemberVO readById(String id) {
         return memberDAO.readById(id);
     }
 
-    /** 회원 생성 */
     @Override
     public int create(MemberVO vo) {
-        return memberDAO.create(vo);
-    }
+        int result = memberDAO.create(vo);
 
+        if (result > 0) {
+            int memberno = vo.getMemberno();
+//            pointProc.add(memberno, 50); // ✅ 초기 포인트 지급
+            PointVO pointVO = new PointVO();
+            pointVO.setMemberno(memberno);
+            pointDAO.create(pointVO);
+            pointDAO.insertLog(memberno, 50, "회원가입 초기 포인트 지급"); // ✅ 로그도 남기기
+        }
+
+        return result;
+    }
+    
     /** 아이디 중복 확인 */
     @Override
     public int checkID(String id) {

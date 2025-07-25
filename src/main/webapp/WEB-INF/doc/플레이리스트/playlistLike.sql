@@ -1,10 +1,10 @@
 DROP TABLE playlist_like;
 
 CREATE TABLE playlist_like (
-  playlist_likeno         NUMBER PRIMARY KEY,
-  playlistno     NUMBER NOT NULL,       -- 어떤 플레이리스트에 좋아요를 눌렀는지
-  memberno       NUMBER NOT NULL,       -- 누가 좋아요를 눌렀는지 (회원)
-  rdate          DATE DEFAULT SYSDATE,
+  playlist_likeno   NUMBER(10) PRIMARY KEY,
+  playlistno        NUMBER(10) NOT NULL,       -- 어떤 플레이리스트에 좋아요를 눌렀는지
+  memberno          NUMBER(10) NOT NULL,       -- 누가 좋아요를 눌렀는지 (회원)
+  rdate             DATE DEFAULT SYSDATE,
   FOREIGN KEY (playlistno) REFERENCES playlist(playlistno),
   FOREIGN KEY (memberno) REFERENCES member(memberno)
 );

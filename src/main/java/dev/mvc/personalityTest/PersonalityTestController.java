@@ -20,7 +20,7 @@ public class PersonalityTestController {
 
         int cnt = personalityTestProc.create(personalitytestvo);
         return (cnt == 1)
-            ? ResponseEntity.ok("등록 성공!")  // → 여기서 HTTP 200 반환됨!
+            ? ResponseEntity.ok("등록 성공!")  // → 여기서 HTTP 200 반z환됨!
             : ResponseEntity.status(500).body("등록 실패");
     }
 

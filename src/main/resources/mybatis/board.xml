@@ -252,4 +252,23 @@
         WHERE b.boardno = #{boardno}
     </select>
 
+  <!-- ✅ 내가 쓴 글 페이징 목록 -->
+  <select id="list_by_memberno_paging" resultType="dev.mvc.board.BoardVO" parameterType="hashmap">
+    SELECT B.*,
+           (SELECT name FROM category C WHERE C.categoryno = B.categoryno) AS categoryname,
+           (SELECT nickname FROM member M WHERE M.memberno = B.memberno) AS nickname
+    FROM (
+      SELECT boardno, title, memberno, categoryno, cnt, recom, rdate, file1, file1saved, thumb1, size1,
+             ROW_NUMBER() OVER (ORDER BY boardno DESC) AS r
+      FROM board
+      WHERE memberno = #{memberno}
+    ) B
+    WHERE r BETWEEN #{start_num} AND #{end_num}
+  </select>
+  
+  <!-- ✅ 내가 쓴 글 총 개수 -->
+  <select id="count_by_memberno" resultType="int" parameterType="int">
+    SELECT COUNT(*) FROM board WHERE memberno = #{memberno}
+  </select>
+
 </mapper>

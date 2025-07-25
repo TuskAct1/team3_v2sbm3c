@@ -64,7 +64,7 @@ const LoginPageAdmin = () => {
       : localStorage.removeItem("admin_saved_passwd");
 
     try {
-      const response = await fetch("http://localhost:3000/api/admin/login", {
+      const response = await fetch("api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: form.id, passwd: form.passwd }),
@@ -93,7 +93,7 @@ const LoginPageAdmin = () => {
     <div className="signup-wrapper">
       <h2 className="signup-title">관리자 로그인</h2>
       <p className="signup-subtitle">
-        오른손케어 관리자 페이지에 접속합니다.<br />
+        토닥 관리자 페이지에 접속합니다.<br />
         등록된 계정으로 로그인해주세요.
       </p>
 
@@ -151,7 +151,7 @@ const LoginPageAdmin = () => {
           </div>
         </div>
 
-        <button type="submit" ref={btnSendRef} className="submit-btn">
+        <button type="submit" ref={btnSendRef} className="sign-submit-btn">
           로그인
         </button>
 

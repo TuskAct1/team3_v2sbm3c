@@ -49,10 +49,10 @@ function PersonalityTest() {
     fetchLatestDate();
   }, []);
 
-  // ✅ 자가진단 테스트 리스트 (시니어 친화적 설명 버전)
+  // ✅ 자가진단 테스트 리스트 
   const testList = [
     {
-      title: '🗓️ 2주 주기 우울증 자가진단',
+      title: '🗓️ 2주 주기 우울증 검사',
       desc: '최근 2주 동안의 감정과 생활을 돌아보며 지금 내 마음 상태를 체크할 수 있어요. 정기적으로 해보면 우울감의 변화를 더 잘 알 수 있답니다.',
       path: '/twoweek_test',
       recordPath: '/twoweek_test/testlist',
@@ -60,7 +60,7 @@ function PersonalityTest() {
       img: '/images/test-depression.png'
     },
     {
-      title: '🧓 노인 우울증 자가진단',
+      title: '🧓 노인 우울증 검사',
       desc: '노년기에 자주 나타나는 피로감이나 무기력함, 우울감 등을 간단한 문항으로 확인해보세요. 내 감정을 돌아보는 데 큰 도움이 됩니다.',
       path: '/senior_test',
       recordPath: '/senior_test/testlist',

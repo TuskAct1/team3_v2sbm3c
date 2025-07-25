@@ -1,26 +1,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dev.mvc.point.PointDAOInter">
 
-  <select id="readByMemberno" resultType="dev.mvc.point.PointVO" parameterType="int">
-    SELECT * FROM point WHERE memberno = #{memberno}
+
+  <insert id="create" parameterType="dev.mvc.point.PointVO">
+    INSERT INTO point (pointno, memberno, amount)
+    VALUES (point_seq.NEXTVAL, #{memberno}, #{amount})
+  </insert>
+
+  <select id="read" parameterType="int" resultType="dev.mvc.point.PointVO">
+    SELECT pointno, memberno, amount, point
+    FROM point
+    WHERE memberno = #{memberno}
   </select>
 
-  <update id="updateAmount" parameterType="map">
-    UPDATE point SET amount = amount + #{amount}
-    WHERE memberno = #{memberno}
-  </update>
 
-  <insert id="insertLog" parameterType="map">
-    INSERT INTO point_log(logno, memberno, amount, reason)
-    VALUES (point_log_seq.NEXTVAL, #{memberno}, #{amount}, #{reason})
-  </insert>
-  
+
   <update id="add" parameterType="map">
     UPDATE point
     SET amount = amount + #{amount}
     WHERE memberno = #{memberno}
   </update>
+  
+  <insert id="insertLog" parameterType="map">
+    INSERT INTO point_log(logno, memberno, amount, reason)
+    VALUES (point_log_seq.NEXTVAL, #{memberno}, #{amount}, #{reason})
+  </insert>
 
+  <update id="updateAmount" parameterType="map">
+    UPDATE point
+    SET amount = #{amount}
+    WHERE memberno = #{memberno}
+  </update>
+  
+  <update id="subtract" parameterType="map">
+    UPDATE point
+    SET amount = amount - #{amount}
+    WHERE memberno = #{memberno} AND amount >= #{amount}
+  </update>
+  
+    <!-- 포인트 조회 -->
+  <select id="readByMemberno" parameterType="int" resultType="dev.mvc.point.PointVO">
+    SELECT * FROM point WHERE memberno = #{memberno}
+  </select>
+
+  <!-- 포인트 조정 -->
   <update id="adjustPoint" parameterType="map">
     UPDATE point
     SET amount = amount + #{pointChange}

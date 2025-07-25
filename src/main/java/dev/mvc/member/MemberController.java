@@ -110,38 +110,16 @@ public class MemberController {
             // ✅ 기본 이미지 파일명 저장 (정적 자원 경로에 있어야 함)
             memberVO.setProfile("default_profile.png");
         }
-
-
-        // 3. 포인트 기본값
-
-
-
-        // 3. 기본 포인트
-
         
         // 3. 포인트 기본값
-
         memberVO.setPoint(50);
 
+        System.out.println(memberVO);
         // 4. 회원 DB 저장
         int cnt = memberProc.create(memberVO);
         if (cnt == 1) {
 
             int memberno = memberVO.getMemberno();
-
-
-
-            // 5. 기본 식물 생성
-
-            PlantVO plant = new PlantVO();
-            plant.setMemberno(memberno);
-            plant.setPlant_name("나의 첫 식물");
-            plant.setPlant_type("딸기");
-            plant.setGrowth(0);
-//            plant.setPlant_status("정상");
-//            plant.setLast_access(null); // ✅ 날짜 에러 방지
-
-            plantProc.create(plant);
 
             // 6. 출석 초기화
             attendanceProc.initAttendance(memberno);
@@ -194,6 +172,9 @@ public class MemberController {
             System.out.println("Session memberno: " + session.getAttribute("memberno"));
             System.out.println("Session adminno: " + session.getAttribute("adminno"));
             System.out.println("Session user: " + session.getAttribute("user"));
+
+            // Member의 포인트만 50증가? 출석
+
 
 //            // ✅ 식물 존재 여부 확인
 //            boolean hasPlant = plantProc.hasPlant(member.getMemberno());
