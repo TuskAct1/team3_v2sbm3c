@@ -21,14 +21,14 @@
 .emotion-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 1px;
+  gap: 10px;
   margin-bottom: 28px;
   justify-content: flex-start;
 }
 
 .emotion-buttons button {
-  padding: 8px 20px;
-  font-size: 17.5px;
+  padding: 5px 17px;
+  font-size: 16px;
   border: 2px solid #66bb6a;
   background-color: white;
   color: #66bb6a;

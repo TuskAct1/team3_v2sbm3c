@@ -7,7 +7,7 @@ CREATE TABLE notice (
     title        VARCHAR2(200)                  NOT NULL,                   -- 제목
     content      CLOB                           NOT NULL,                   -- 내용 (긴 글 지원)
     rdate        DATE DEFAULT SYSDATE           NOT NULL,                   -- 작성일
-    views        NUMBER DEFAULT 0               NOT NULL,                   -- 조회수
+    views        NUMBER(10) DEFAULT 0               NOT NULL,                   -- 조회수
     status       VARCHAR2(20) DEFAULT '공개'     NOT NULL,                  -- 상태: 공개/비공개
     FOREIGN KEY (adminno) REFERENCES admin(adminno)                         -- 관리자 테이블 참조
 );

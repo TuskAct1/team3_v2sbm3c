@@ -117,7 +117,7 @@
 .dots {
   display: flex;
   gap: 10px; /* 도트 간격 */
-  margin-left: -10px; /* 원하는 만큼 왼쪽으로 이동 */
+  /* margin-left: -10px; 원하는 만큼 왼쪽으로 이동 */
 }
 
 /* ✅ 도트 */

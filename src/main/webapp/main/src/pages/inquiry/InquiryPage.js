@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import './InquiryPage.css'; // 고유 CSS
+import './InquiryPage.css';
 
 function InquiryPage() {
   const [list, setList] = useState([]);
@@ -8,32 +8,41 @@ function InquiryPage() {
   const [answerInput, setAnswerInput] = useState("");
   const [answerLoading, setAnswerLoading] = useState(false);
 
+  // ✅ 로그인 정보 (memberno, adminno)
   const userObj = JSON.parse(localStorage.getItem('user') || '{}');
-  let memberno = userObj.memberno;
-  const isAdmin = !memberno || memberno === "undefined";
-  if (isAdmin) memberno = 0;
+  const memberno = userObj.memberno;
+  const adminno = userObj.adminno;
+  const isAdmin = !!adminno;
 
+  // ✅ 전체 문의 목록 불러오기
   const fetchList = async () => {
-    const res = await fetch(`/inquiry/list_all/${memberno}`);
+    const res = await fetch(`/inquiry/list_all?memberno=${memberno || ''}&adminno=${adminno || ''}`);
     const data = await res.json();
     setList(data);
   };
 
   useEffect(() => { fetchList(); }, []);
 
+  // ✅ 선택한 문의 디테일 불러오기
   const handleSelect = async (inquiryno) => {
-    const res = await fetch(`/inquiry/${memberno}/${inquiryno}`);
+    if (selected?.inquiryno === inquiryno) {
+      setSelected(null);
+      return;
+    }
+
+    const res = await fetch(`/inquiry/${inquiryno}?memberno=${memberno || ''}&adminno=${adminno || ''}`);
     const data = await res.json();
     setSelected(data);
     setAnswerInput(data.answer || "");
   };
 
+  // ✅ 관리자 답변 등록
   const handleAnswer = async () => {
     if (!answerInput.trim()) return alert("답변을 입력해주세요.");
     setAnswerLoading(true);
     try {
       const res = await fetch(`/inquiry/answer/${selected.inquiryno}`, {
-        method: "POST", 
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answer: answerInput }),
       });
@@ -68,61 +77,77 @@ function InquiryPage() {
         </thead>
         <tbody>
           {list.map(inquiry => (
-            <tr key={inquiry.inquiryno} onClick={() => handleSelect(inquiry.inquiryno)}>
-              <td>{inquiry.inquiryno}</td>
-              <td>{inquiry.title}</td>
-              <td>
-                {inquiry.status === "Y" ? (
-                  <span className="inquiry-status-done">답변완료</span>
-                ) : (
-                  <span className="inquiry-status-wait">대기</span>
-                )}
-              </td>
-              <td>{inquiry.create_date?.substring(0, 10)}</td>
-            </tr>
+            <React.Fragment key={inquiry.inquiryno}>
+              <tr onClick={() => handleSelect(inquiry.inquiryno)}>
+                <td>{inquiry.inquiryno}</td>
+                <td>{inquiry.title}</td>
+                <td>
+                  {inquiry.status === "Y" ? (
+                    <span className="inquiry-status-done">답변완료</span>
+                  ) : (
+                    <span className="inquiry-status-wait">대기</span>
+                  )}
+                </td>
+                <td>{inquiry.create_date?.substring(0, 10)}</td>
+              </tr>
+
+              {selected?.inquiryno === inquiry.inquiryno && (
+                <tr className="inquiry-detail-row">
+                  <td colSpan="4">
+                    <div className="inquiry-detail-card">
+                      <div className="inquiry-detail-header">
+                        <div className="inquiry-title-wrap">
+                          <div className="inquiry-detail-title">{selected.title}</div>
+                          <div className="inquiry-detail-date">작성일: {selected.create_date?.substring(0, 10)}</div>
+                        </div>
+                        <button className="inquiry-close-btn" onClick={() => setSelected(null)}>닫기</button>
+                      </div>
+
+                      <div className="inquiry-section">
+                        <div className="inquiry-section-label">문의내용</div>
+                        <div className="inquiry-section-content">{selected.content}</div>
+                      </div>
+
+                      <div className="inquiry-section">
+                        <div className="inquiry-section-label">관리자 답변</div>
+                        {isAdmin ? (
+                          <>
+                            <textarea
+                              className="inquiry-answer-input"
+                              rows={3}
+                              value={answerInput}
+                              onChange={e => setAnswerInput(e.target.value)}
+                              placeholder="답변을 입력하세요"
+                              disabled={answerLoading}
+                            />
+                            <div className="inquiry-answer-button-wrap">
+                              <button
+                                onClick={handleAnswer}
+                                className="inquiry-answer-btn"
+                                disabled={answerLoading}
+                              >
+                                답변 등록
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {selected.answer ? (
+                              <div className="inquiry-answer-view">{selected.answer}</div>
+                            ) : (
+                              <div className="inquiry-answer-empty">아직 답변이 등록되지 않았습니다.</div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
-
-      {selected && (
-        <div className="inquiry-detail-card">
-          <div className="inquiry-detail-header">
-            <div className="inquiry-detail-title">{selected.title}</div>
-            <button className="inquiry-close-btn" onClick={() => setSelected(null)}>닫기</button>
-          </div>
-          <div className="inquiry-detail-date">작성일: {selected.create_date?.substring(0, 10)}</div>
-          <div className="inquiry-detail-content">{selected.content}</div>
-
-          <div className="inquiry-answer-box">
-            <div className="inquiry-answer-label">관리자 답변</div>
-            {isAdmin ? (
-              <div>
-                <textarea
-                  className="inquiry-answer-input"
-                  rows={3}
-                  value={answerInput}
-                  onChange={e => setAnswerInput(e.target.value)}
-                  placeholder="답변을 입력하세요"
-                  disabled={answerLoading}
-                />
-                <button
-                  onClick={handleAnswer}
-                  className="inquiry-answer-btn"
-                  disabled={answerLoading}
-                >답변 등록</button>
-              </div>
-            ) : (
-              <>
-                {selected.answer ? (
-                  <div className="inquiry-answer-view">{selected.answer}</div>
-                ) : (
-                  <div className="inquiry-answer-empty">아직 답변이 등록되지 않았습니다.</div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

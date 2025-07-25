@@ -240,7 +240,6 @@ const LoginPage = () => {
                   </span>
                 </a>
               </div>
-
             </div>
           </div>
         </div>

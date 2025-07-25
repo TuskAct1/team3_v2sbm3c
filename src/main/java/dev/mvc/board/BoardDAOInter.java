@@ -3,6 +3,7 @@ package dev.mvc.board;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface BoardDAOInter {
   /** 게시글 등록 */
@@ -47,5 +48,12 @@ public interface BoardDAOInter {
 
   /** 게시글 번호 리스트로 게시글 정보 + 작성자 정보 가져오기 */
   public BoardAuthorVO getBoardInfo(int boardno);
+  
+  //목록
+  public List<BoardVO> list_by_memberno_paging(HashMap<String, Object> map);
+  
+  //카운트
+  public int count_by_memberno(int memberno);
 }
+
 

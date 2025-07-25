@@ -138,7 +138,7 @@ function NoticeList() {
               className="notice-table-row"
               onClick={() => handleTitleClick(notice.noticeno)}
             >
-              <div className="notice-td title">
+              <div className="notice-td notice-title">
                 <div className="notice-title-badge">
                   <span className={`notice-list-badge ${getCategoryClass(notice.category)}`}>
                     {notice.category}
