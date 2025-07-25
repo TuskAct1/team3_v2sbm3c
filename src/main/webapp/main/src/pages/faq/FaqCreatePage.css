@@ -1,0 +1,80 @@
+.faq-create-form {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+
+.faq-create-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.faq-create-field {
+  margin-bottom: 20px;
+}
+
+.faq-create-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.faq-create-input,
+.faq-create-textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.faq-create-input:focus,
+.faq-create-textarea:focus {
+  border-color: #66bb6a;
+  outline: none;
+}
+
+.faq-create-preview {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.faq-create-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.faq-createform-btn {
+  display: block;                /* inline-block → block 으로 바꿔서 줄 차지 */
+  width: 300px;                  /* 너비를 지정해 길게 */
+  margin: 30px auto 0;           /* 가운데 정렬 (auto) + 위 여백 */
+  background-color: #4caf50;
+  color: white;
+  padding: 14px 0;               /* 위아래 크게, 좌우는 줄임 */
+  font-size: 17px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;           /* 텍스트 가운데 정렬 */
+}
+
+.faq-createform-btn:hover {
+  background-color: #388e3c;
+}

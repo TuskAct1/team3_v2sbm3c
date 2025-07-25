@@ -164,55 +164,43 @@ function BoardPage() {
       </table>
 
       {/* ✅ 페이징 */}
-      {/* ✅ 페이징 전체 */}
-      <div className="board-pagination">
-        <div className="pagination-numbers">
-          {(() => {
-            const pageSize = 5;
-            const currentGroup = Math.floor((now_page - 1) / pageSize);
-            const startPage = currentGroup * pageSize + 1;
-            const endPage = Math.min(startPage + pageSize - 1, totalPage);
+      <div className="board-pagination-circles">
+        <button
+          className="arrow-btn"
+          onClick={() => now_page > 1 && handlePageChange(now_page - 1)}
+          disabled={now_page === 1}
+        >
+          &#8249;
+        </button>
 
-            return Array.from({ length: endPage - startPage + 1 }, (_, i) => {
-              const pageNum = startPage + i;
-              return (
-                <button
-                  key={pageNum}
-                  onClick={() => handlePageChange(pageNum)}
-                  disabled={now_page === pageNum}
-                  className={now_page === pageNum ? 'page-btn active' : 'page-btn'}
-                >
-                  {pageNum}
-                </button>
-              );
-            });
-          })()}
-        </div>
+        {(() => {
+          const pageSize = 5;
+          const currentGroup = Math.floor((now_page - 1) / pageSize);
+          const startPage = currentGroup * pageSize + 1;
+          const endPage = Math.min(startPage + pageSize - 1, totalPage);
 
-        {/* ✅ 이전/다음 텍스트 형태로 출력 */}
-        <div className="pagination-arrows-text">
-          <span
-            className={`page-arrow ${now_page <= 5 ? 'disabled' : ''}`}
-            onClick={() =>
-              now_page > 5 &&
-              handlePageChange(Math.floor((now_page - 1) / 5) * 5)
-            }
-          >
-            ‹ 이전 
-          </span>
+          return Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+            const pageNum = startPage + i;
+            return (
+              <button
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                className={`circle-page-btn ${now_page === pageNum ? 'active' : ''}`}
+              >
+                {pageNum}
+              </button>
+            );
+          });
+        })()}
 
-          <span
-            className={`page-arrow ${now_page > Math.floor((totalPage - 1) / 5) * 5 ? 'disabled' : ''}`}
-            onClick={() =>
-              now_page <= Math.floor((totalPage - 1) / 5) * 5 &&
-              handlePageChange(Math.floor((now_page - 1) / 5) * 5 + 6)
-            }
-          >
-            다음 ›
-          </span>
-        </div>
+        <button
+          className="arrow-btn"
+          onClick={() => now_page < totalPage && handlePageChange(now_page + 1)}
+          disabled={now_page === totalPage}
+        >
+          &#8250;
+        </button>
       </div>
-
 
     </div>
   );
