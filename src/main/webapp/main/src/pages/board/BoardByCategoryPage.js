@@ -175,8 +175,15 @@ function BoardByCategoryPage() {
         </tbody>
       </table>
 
-      <div className="board-pagination">
-        <div className="pagination-numbers">
+        <div className="board-pagination-circles">
+          <button
+            className="arrow-btn"
+            onClick={() => nowPage > 1 && handlePageChange(nowPage - 1)}
+            disabled={nowPage === 1}
+          >
+            &#8249;
+          </button>
+
           {(() => {
             const pageSize = 5;
             const currentGroup = Math.floor((nowPage - 1) / pageSize);
@@ -189,54 +196,23 @@ function BoardByCategoryPage() {
                 <button
                   key={pageNum}
                   onClick={() => handlePageChange(pageNum)}
-                  disabled={nowPage === pageNum}
-                  className={nowPage === pageNum ? 'page-btn active' : 'page-btn'}
+                  className={`circle-page-btn ${nowPage === pageNum ? 'active' : ''}`}
                 >
                   {pageNum}
                 </button>
               );
             });
           })()}
+
+          <button
+            className="arrow-btn"
+            onClick={() => nowPage < totalPage && handlePageChange(nowPage + 1)}
+            disabled={nowPage === totalPage}
+          >
+            &#8250;
+          </button>
         </div>
 
-        <div className="pagination-arrows-text">
-          <span
-            className={`page-arrow ${nowPage <= 5 ? 'disabled' : ''}`}
-            onClick={() =>
-              nowPage > 5 &&
-              handlePageChange(Math.floor((nowPage - 1) / 5) * 5)
-            }
-          >
-            ‹ 이전
-          </span>
-
-          <span
-            className={`page-arrow ${
-              nowPage > Math.floor((totalPage - 1) / 5) * 5 ? 'disabled' : ''
-            }`}
-            onClick={() =>
-              nowPage <= Math.floor((totalPage - 1) / 5) * 5 &&
-              handlePageChange(Math.floor((nowPage - 1) / 5) * 5 + 6)
-            }
-          >
-            {/* onClick={() => nowPage > 5 && handlePageChange(Math.floor((nowPage - 1) / 5) * 5)} */}
-          
-            ‹ 이전
-          </span>
-
-          <span
-            className={`page-arrow ${
-              nowPage > Math.floor((totalPage - 1) / 5) * 5 ? 'disabled' : ''
-            }`}
-            onClick={() =>
-              nowPage <= Math.floor((totalPage - 1) / 5) * 5 &&
-              handlePageChange(Math.floor((nowPage - 1) / 5) * 5 + 6)
-            }
-          >
-            다음 ›
-          </span>
-        </div>
-      </div>
 
 
       

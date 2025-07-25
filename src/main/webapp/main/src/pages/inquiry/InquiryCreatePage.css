@@ -1,0 +1,65 @@
+.inquiry-create-wrap {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 32px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+
+.inquiry-create-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #2e7d32;
+  text-align: center;
+}
+
+.inquiry-create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inquiry-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.inquiry-input,
+.inquiry-textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.inquiry-input:focus,
+.inquiry-textarea:focus {
+  border-color: #66bb6a;
+  outline: none;
+}
+
+.inquiry-textarea {
+  height: 140px;
+  resize: none;
+}
+
+.inquiry-submit-btn {
+  align-self: center;
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.inquiry-submit-btn:hover {
+  background-color: #388e3c;
+}

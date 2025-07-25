@@ -13,20 +13,14 @@ function BoardReadPage() {
   const [isRecommended, setIsRecommended] = useState(false);
   const [recom, setRecom] = useState();
   const [showReport, setShowReport] = useState(false);
-  const [isReported, setIsReported] = useState(false); // ✅ 신고 상태 추가
-  const [loading, setLoading] = useState(true); // ✅ 로딩 상태
-  // const [categoryno, setCategoryno] = useState(null); // 추가
-   const { setCategoryno } = useOutletContext(); 
+  const [isReported, setIsReported] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { setCategoryno } = useOutletContext();
 
   const { boardno } = useParams();
   const navigate = useNavigate();
-
+  const user = JSON.parse(localStorage.getItem('user')); // 로그인 사용자 정보
   const memberno = parseInt(localStorage.getItem("memberno"), 10);
-
-  // 위쪽에 추가해줘
-  const user = JSON.parse(localStorage.getItem('user')); // role, memberno, adminno 등 저장된 객체
-  const isAuthor = user?.role === 'member' && user?.memberno === boardVO.memberno;
-  const isAdmin = user?.role === 'admin';
 
   const isImage = (filename) => {
     if (!filename) return false;
@@ -92,19 +86,17 @@ function BoardReadPage() {
   };
 
   useEffect(() => {
-    axios.get(`/board/read/${boardno}`)
-      .then((res) => {
-        setCategoryGroup(res.data.categoryGroup);
-        setBoardVO(res.data.boardVO);
-        setLoading(false); // ✅ 로딩 완료
-        setCategoryno(res.data.boardVO.categoryno);
-      });
+    axios.get(`/board/read/${boardno}`).then((res) => {
+      setCategoryGroup(res.data.categoryGroup);
+      setBoardVO(res.data.boardVO);
+      setLoading(false);
+      setCategoryno(res.data.boardVO.categoryno);
+    });
     fetchRecommendStatus();
   }, [boardno]);
 
   useEffect(() => {
-    axios.get(`/boardRecommend/count/${boardno}`)
-      .then((res) => setRecom(res.data.recom));
+    axios.get(`/boardRecommend/count/${boardno}`).then((res) => setRecom(res.data.recom));
   }, [boardno]);
 
   return (
@@ -128,14 +120,14 @@ function BoardReadPage() {
       </div>
 
       <h1 className="board-read-title">{boardVO.title}</h1>
+
       <div className="board-meta-row">
         <div className="board-meta">
           {boardVO.rdate} · 조회 {boardVO.cnt} · 추천 {boardVO.recom}
         </div>
 
-        {/* ✅ 자신이 작성한 글일 때만 수정/삭제 버튼 표시 */}
-        {/* ✅ 자신이 작성한 글이거나 관리자일 때만 수정/삭제 버튼 표시 */}
-        {!loading && (isAuthor || isAdmin) && (
+        {/* ✅ 작성자 본인일 때만 수정/삭제 버튼 보이기 */}
+        {!loading && user?.memberno === boardVO.memberno && (
           <div className="board-buttons-right">
             <button onClick={() => navigate(`/board/update/${boardno}`)} className="board-btn update">수정</button>
             <button onClick={handleDelete} className="board-btn delete">삭제</button>
@@ -157,7 +149,6 @@ function BoardReadPage() {
 
       <div className="board-actions">
         <div className="action-button-group">
-          {/* 추천 */}
           <div className={`action-button recommend ${isRecommended ? 'active' : ''}`} onClick={handleRecommend}>
             <div className="icon-circle">
               <span className="icon">👍</span>
@@ -166,7 +157,6 @@ function BoardReadPage() {
             <div className="count">{boardVO.recom}</div>
           </div>
 
-          {/* 신고 */}
           <div className={`action-button report ${isReported ? 'active' : ''}`} onClick={() => setShowReport(true)}>
             <div className="icon-circle">
               <span className="icon">🚨</span>
@@ -180,7 +170,7 @@ function BoardReadPage() {
         boardno={boardVO.boardno}
         show={showReport}
         onClose={() => setShowReport(false)}
-        onReported={() => setIsReported(true)} // ✅ 신고 완료시 상태 변경
+        onReported={() => setIsReported(true)}
       />
 
       <div className="board-reply-section">

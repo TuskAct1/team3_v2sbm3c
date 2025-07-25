@@ -298,11 +298,11 @@ function Navbar() {
             onMouseEnter={() => handleMouseEnterDropdown('content')}
             onMouseLeave={handleMouseLeaveDropdown}
           >
-            <span className="dropbtn">콘텐츠</span>
+            <span className="dropbtn" onClick={() => handleClickAndClose('/content')}>콘텐츠</span>
             {activeDropdown === 'content' && (
               <div
                 className="dropdown-full-menu"
-                onMouseEnter={() => handleMouseEnterDropdown('content')}
+                onMouseEnter={() => handleMouseEnterDropdown('content') }
                 onMouseLeave={handleMouseLeaveDropdown}
               >
                 <div className="dropdown-columns">

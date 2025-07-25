@@ -8,6 +8,7 @@ import Select from 'react-select';
 import SmsAuthInput from './SmsAuthInput'
 import { FaTrashAlt } from 'react-icons/fa';
 
+
 const SignupForm = () => {
   const [form, setForm] = useState({
     id: "",
@@ -46,6 +47,7 @@ const SignupForm = () => {
     terms2: false,
     terms3: false,
   });
+  const [telVerified, setTelVerified] = useState(false);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -154,6 +156,11 @@ const handleTermsChange = (e) => {
     if (form.password !== form.password2) {
       setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
       passwdRef.current?.focus();
+      return;
+    }
+
+    if (!telVerified) {
+      alert("휴대폰 인증을 완료해주세요!");
       return;
     }
 
@@ -321,7 +328,6 @@ const handleTermsChange = (e) => {
       alert("서버 오류: 인증 실패");
     }
   };
-    const [telVerified, setTelVerified] = useState(false);
 
     const [guardianFormOpen, setGuardianFormOpen] = useState(false);
     // ✅ 수정: 초기엔 빈 배열로
@@ -557,6 +563,7 @@ const handleTermsChange = (e) => {
         verified={telVerified}
         onVerified={() => setTelVerified(true)}
       />
+
 
         <div className="form-group">
           <label>우편번호</label>

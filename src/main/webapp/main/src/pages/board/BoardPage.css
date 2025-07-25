@@ -129,6 +129,7 @@
   table-layout: fixed;
   border-collapse: collapse;
   border: none;
+  margin-bottom: 20px;
 }
 
 .board-table th,
@@ -233,72 +234,64 @@
   white-space: nowrap;
 }
 
-/* ✅ 페이지네이션 영역 */
+/* ✅ 전체 페이징 영역 */
 .board-pagination {
-  margin-top: 32px;
+  margin-top: 48px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 14px;
 }
 
-/* ✅ 숫자 버튼 묶음 */
-.pagination-numbers {
+/* ✅ 버튼 묶음 */
+.board-pagination-circles {
   display: flex;
-  gap: 1px;
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px; 
 }
 
 /* ✅ 페이징 숫자 버튼 */
-.page-btn {
-  background-color: #f1f8e9;
-  color: #3e8e41;
+.circle-page-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #f5f7f3;
+  color: #4a4a4a;
+  font-weight: 600;
   border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 1rem;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 16px;
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
-.page-btn:hover {
-  background-color: #dcedc8;
+.circle-page-btn:hover {
+  background-color: #e1f3e1; 
+  color: #2e7d32;
 }
 
-.page-btn.active {
-  background-color: #66bb6a;
+.circle-page-btn.active {
+  background-color: #66bb6a; 
   color: white;
-  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 
-/* ✅ ◀ 이전 / 다음 ▶ 텍스트 링크 스타일 */
-.pagination-arrows-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px; 
-  font-size: 0.9rem;
-  font-weight: bold;
-  margin-top: 4px;
-  margin-left: -10px; /* ✅ 전체 블록 왼쪽으로 밀기 */
-}
-
-.page-arrow {
-  color: #5a5a5a;
+/* ✅ 이전/다음 화살표 버튼 */
+.arrow-btn {
+  font-size: 20px;
+  background: none;
+  border: none;
   cursor: pointer;
+  color: #666;
+  padding: 4px 8px;
   transition: color 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
 }
 
-/* ✅ 비활성 상태 */
-.page-arrow.disabled {
+.arrow-btn:hover {
+  color: #388e3c;
+}
+
+.arrow-btn:disabled {
   color: #ccc;
   cursor: default;
-  pointer-events: none;
 }
-

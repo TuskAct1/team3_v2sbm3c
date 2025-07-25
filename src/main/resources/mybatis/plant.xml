@@ -4,10 +4,8 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- resources/mapper/plant.xml -->
 <mapper namespace="dev.mvc.plant.PlantDAOInter">
-
   <!-- 식물 등록 -->
-
-
+  
   <insert id="create" parameterType="dev.mvc.plant.PlantVO">
     INSERT INTO plant (
     plantno,
