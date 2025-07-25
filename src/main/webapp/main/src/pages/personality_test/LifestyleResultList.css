@@ -57,7 +57,7 @@
   align-items: center;
   gap: 30px;
   margin-bottom: 1.8rem;
-  transform: translateX(-12px);
+  /* transform: translateX(-12px); */
 }
 
 /* ✅ 날짜 텍스트 */
@@ -174,7 +174,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   padding: 0;
-  transform: translateX(7px);
+  /* transform: translateX(7px); */
 }
 
 .slide-arrow.small:hover {

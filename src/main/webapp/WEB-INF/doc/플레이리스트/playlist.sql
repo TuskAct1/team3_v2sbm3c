@@ -1,8 +1,8 @@
 DROP TABLE playlist;
 
 CREATE TABLE playlist (  -- 감정별 플레이리스트 정보 (대표 믹스 영상 기반)
-  playlistno            NUMBER PRIMARY KEY,
-  playlistemotionno     NUMBER NOT NULL,                    -- 감정 번호로 연결 (FK)
+  playlistno            NUMBER(10) PRIMARY KEY,
+  playlistemotionno     NUMBER(10) NOT NULL,                    -- 감정 번호로 연결 (FK)
   title                 VARCHAR2(200),                      -- 플레이리스트 제목
   description           VARCHAR2(2000),                     -- 플레이리스트 타임라인(VARCHAR2대신 CLOB 사용 가능)
   youtubeurl            VARCHAR2(300),                      -- 믹스 영상 주소

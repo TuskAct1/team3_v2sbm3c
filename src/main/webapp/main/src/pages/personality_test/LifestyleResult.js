@@ -8,32 +8,30 @@ import axios from 'axios';
 function LifestyleResult() {
   const location = useLocation();
   const navigate = useNavigate();
-  const result = location.state?.result;
+  const result = location.state?.result; // GPT에서 받은 결과
 
-  // ✅ 문자열 또는 객체 안의 result 필드에서 텍스트 추출
   const resultText = typeof result === 'string'
-    ? result
-    : result?.result ?? '';
+    ? result // result가 문자열이면 그대로 씀 
+    : result?.result ?? ''; // result.result 형태면 그 안에서 꺼냄 (예외 처리용)
 
-  // ✅ 줄 단위로 나눈 결과 배열 (공백 제거)
+  // 줄 단위로 나눈 결과 배열 
   const resultLines = resultText
     .split('\n')  // 줄 단위로 나눔
     .map(line => line.trim())  // 앞뒤 공백 제거
     .filter(line => line !== '');  // 빈 줄 제거
 
-  // ✅ 마지막 줄이 응원 메시지인지 판단 (시간 패턴이 아니면 응원 메시지로 간주)
+  // 마지막 줄이 응원 메시지인지 판단 (시간 패턴이 아니면 응원 메시지로 간주)
   const lastLine = resultLines[resultLines.length - 1];
   const hasCheerMessage = lastLine && !/^\d{1,2}:\d{2}/.test(lastLine);
 
-  // ✅ 응원 메시지 제외한 루틴 항목 추출
-  const routineItems = resultLines
+  const routineItems = resultLines // 응원 문장 빼고 루틴만 가져옴
     .slice(0, hasCheerMessage ? -1 : undefined)
     .map(line => {
-      const [time, ...activity] = line.split(' ');
+      const [time, ...activity] = line.split(' '); // 시간과 활동을 분리해서 객체로 저장. 예: { time: '07:00', activity: '기상 및 스트레칭' }
       return { time, activity: activity.join(' ') };
     });
 
-  // 🧾 결과 저장 함수 (로그인 연동)
+  // 결과 저장 함수 (로그인 연동)
   const handleSave = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -56,12 +54,12 @@ function LifestyleResult() {
     }
   };
 
-  // 🔁 다시 검사하기
+  // 다시 검사하기
   const handleRetry = () => {
     navigate('/lifestyle_test');
   };
 
-  // 🔙 심리테스트 메인으로 이동
+  // 심리테스트 메인으로 이동
   const handleBack = () => {
     navigate('/personality_test');
   };

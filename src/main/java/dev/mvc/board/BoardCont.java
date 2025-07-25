@@ -413,4 +413,54 @@ public class BoardCont {
         return ResponseEntity.ok(categoryGroup);
     }
 
+    /**
+     * 내가 쓴 글 목록 조회 (로그인한 사용자만)
+     * http://localhost:9093/board/my_list/3?now_page=1
+     */
+    @GetMapping("/my_list/{memberno}")
+    public ResponseEntity<Map<String, Object>> myBoardList(
+            @PathVariable(name = "memberno") int memberno,
+            @RequestParam(name = "now_page", defaultValue = "1") int now_page,
+            HttpSession session) {
+
+        // 세션에서 로그인 사용자와 일치하는지 확인 (보안용)
+        Integer sessionMemberno = (Integer) session.getAttribute("memberno");
+        Integer adminno = (Integer) session.getAttribute("adminno"); // 관리자도 허용
+
+        if (sessionMemberno == null && adminno == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "로그인이 필요합니다."));
+        }
+
+        // 관리자이거나 본인만 조회 가능
+        if (adminno == null && !membernoEquals(sessionMemberno, memberno)) {
+            return ResponseEntity.status(403).body(Map.of("error", "다른 사용자의 글은 볼 수 없습니다."));
+        }
+
+        // 카테고리 그룹 (상단 바 용도)
+        List<CategoryVO> categoryGroup = categoryProc.list_all();
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("memberno", memberno);
+        map.put("now_page", now_page);
+
+        List<BoardVO> boardList = boardProc.list_by_memberno_paging(map);
+        int totalCount = boardProc.count_by_memberno(memberno);
+        int pageSize = Contents.RECORD_PER_PAGE;
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("categoryGroup", categoryGroup);
+        response.put("boardList", boardList);
+        response.put("totalCount", totalCount);
+        response.put("totalPage", totalPage);
+        response.put("now_page", now_page);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 편의 메서드: null 안전 비교
+    private boolean membernoEquals(Integer a, int b) {
+        return a != null && a == b;
+    }
+
 }

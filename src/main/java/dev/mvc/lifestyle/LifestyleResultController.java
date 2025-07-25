@@ -20,17 +20,17 @@ public class LifestyleResultController {
    * ✅ GPT에게 전달할 프롬프트 구성 메서드
    * 사용자의 응답(answers)을 바탕으로 GPT가 아침~밤까지 루틴을 작성하도록 유도하는 프롬프트 생성
    */
-  private String buildPrompt(Map<String, String> answers) {
+  private String buildPrompt(Map<String, String> answers) {  // 사용자가 보낸 응답(Map)을 기반으로 GPT에게 줄 지시문을 만드는 메서드
     StringBuilder sb = new StringBuilder();
 
     // 🟩 GPT 역할 지정 + 요청 목적 설명
-    sb.append("당신은 건강한 시니어 라이프스타일 전문가입니다.\n");
+    sb.append("당신은 시니어 멘탈케어 전문가 및 라이프스타일 전문가입니다.\n");
     sb.append("아래의 사용자 응답을 바탕으로, 하루 전체(아침~밤) 루틴을 시간대별로 세세하게 구체적으로 작성해주세요.\n");
     sb.append("각 시간대는 1~2줄 이내로 간결하고 따뜻하게 존댓말로 작성해주세요.\n");
     sb.append("각 활동은 시니어가 따라하기 쉽고 실천 가능한 내용으로 루틴을 자세하게 구성해주세요.\n\n");
     sb.append("혼자서도 외로움을 달랠 수 있는 활동들을 가능한 많이 추천해주세요.n\n");
 
-    // 🟩 사용자 응답 삽입
+    // 🟩 사용자 응답 삽입. answers Map의 내용을 프롬프트에 붙여줌
     sb.append("🔽 사용자 응답:\n");
     for (int i = 1; i <= answers.size(); i++) {
       sb.append("Q").append(i).append(": ").append(answers.get(String.valueOf(i))).append("\n");
@@ -44,7 +44,6 @@ public class LifestyleResultController {
     sb.append("10:00 신문 읽기나 음악 감상\n");
     sb.append("...\n");
     sb.append("21:00 세안 후 휴식하며 하루 마무리\n\n");
-
     // 🟩 응원 문구 요청
     sb.append("마지막에는 시니어에게 힘이 되는 따뜻한 응원 문장을 한 줄 포함해주세요.\n");
 

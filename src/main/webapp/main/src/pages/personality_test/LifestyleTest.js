@@ -5,16 +5,16 @@ import axios from 'axios';
 
 function LifestyleTest() {
   const navigate = useNavigate();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [isDone, setIsDone] = useState(false); // ✅ 결과보기 버튼 표시 여부
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 현재 문항 번호
+  const [answers, setAnswers] = useState({}); // 사용자 응답 저장 객체
+  const [loading, setLoading] = useState(false); // 결과 가져오는 중 상태
+  const [isDone, setIsDone] = useState(false); // 마지막 문항까지 완료 여부
 
   const questions = [
     {
       id: 1,
       text: '아침에 일어나면 가장 먼저 하는 일은 무엇인가요?',
-      options: ['물 마시기', 'TV/라디오 켜기', '스트레칭이나 산책', '다시 눕거나 멍 때리기'],
+      options: ['물 마시기', 'TV/스마트폰 켜기', '스트레칭이나 산책', '다시 눕거나 멍 때리기'],
     },
     {
       id: 2,
@@ -49,7 +49,7 @@ function LifestyleTest() {
     {
       id: 8,
       text: '가장 자주 하는 여가 활동은 무엇인가요?',
-      options: ['TV 시청', '산책이나 운동', '책, 라디오, 음악 감상', '가족이나 친구와 연락'],
+      options: ['TV 시청/스마트폰', '산책이나 운동', '책, 라디오, 음악 감상', '가족이나 친구와 연락'],
     },
     {
       id: 9,
@@ -79,7 +79,7 @@ function LifestyleTest() {
     {
       id: 14,
       text: '잠들기 전 보통 무엇을 하시나요?',
-      options: ['TV, 스마트폰 보기', '책이나 라디오', '가족과 통화', '바로 잠든다'],
+      options: ['TV/스마트폰 보기', '책이나 라디오', '가족과 통화', '바로 잠든다'],
     },
     {
       id: 15,
@@ -113,7 +113,7 @@ function LifestyleTest() {
     try {
       const res = await axios.post('http://localhost:9093/lifestyle_test/submit', answers);
       navigate('/lifestyle_test/result', {
-        state: { result: res.data }
+        state: { result: res.data } // GPT 결과를 다음 페이지에 넘김
       });
     } catch (err) {
       console.error('❌ 결과 전송 실패:', err);

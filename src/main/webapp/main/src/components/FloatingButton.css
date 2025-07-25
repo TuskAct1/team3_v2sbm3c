@@ -112,3 +112,17 @@
   background-color: #e8f5e9;
   transform: scale(1.1);
 }
+
+.floating-chatbot-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  animation: float 1.5s ease-in-out infinite;
+}
+
+/* 부드럽게 둥실둥실 떠오르는 느낌 */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}

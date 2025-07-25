@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaTimes, FaArrowUp } from 'react-icons/fa';
 import './FloatingButton.css';
+import todakiImg from '../assets/todaki.png'; // 상대경로에 맞게 수정
+import playlistImg from '../assets/playlist.png'; // 상대경로에 맞게 수정
+import plantImg from '../assets/plant.png'; // 상대경로에 맞게 수정
+import calendarImg from '../assets/calendar.png'; // 상대경로에 맞게 수정
 
 function FloatingMenu() {
   const [open, setOpen] = useState(false);            // 플로팅 메뉴 열림 여부
@@ -61,19 +65,43 @@ function FloatingMenu() {
         <div className="floating-menu">
           <div className="floating-item" onClick={() => handleNavigate('/playlist/list')}>
             <span className="floating-label">플레이리스트</span>
-            <div className="floating-icon-btn">🎵</div>
+            <div className="floating-icon-btn">
+              <img
+                src={playlistImg}
+                alt="플레이리스트"
+                style={{ width: '32px', height: '32px' }}
+              />
+            </div>
           </div>
           <div className="floating-item" onClick={() => handleNavigate('/plant')}>
             <span className="floating-label">반려식물</span>
-            <div className="floating-icon-btn">🌱</div>
+            <div className="floating-icon-btn">
+              <img
+                src={plantImg}
+                alt="반려식물"
+                style={{ width: '32px', height: '32px' }}
+              />
+            </div>
           </div>
           <div className="floating-item" onClick={() => handleNavigate('/calendar')}>
             <span className="floating-label">캘린더</span>
-            <div className="floating-icon-btn">📅</div>
+            <div className="floating-icon-btn">
+              <img
+                src={calendarImg}
+                alt="캘린더"
+                style={{ width: '32px', height: '32px' }}
+              />
+            </div>
           </div>
           <div className="floating-item" onClick={() => handleNavigate('/todaki')}>
-            <span className="floating-label">챗봇</span>
-            <div className="floating-icon-btn">🤖</div>
+            <span className="floating-label">토닥이</span>
+            <div className="floating-icon-btn">
+              <img
+                src={todakiImg}
+                alt="토닥이"
+                style={{ width: '32px', height: '32px' }}
+              />
+            </div>
           </div>
         </div>
       )}
