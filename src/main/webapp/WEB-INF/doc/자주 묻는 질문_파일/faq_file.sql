@@ -4,8 +4,8 @@ DROP TABLE faq_file;
 CREATE TABLE faq_file (
   fileno    NUMBER(10)  NOT NULL    PRIMARY KEY,    -- 파일 번호 - PK
   faqno     NUMBER(10)  NOT NULL,                   -- 질문 번호 - FK
-  filename  VARCHAR2(200),                          -- 파일명
-  savedname VARCHAR2(200),                          -- 저장된 이름
+  filename  VARCHAR2(50),                          -- 파일명
+  savedname VARCHAR2(100),                          -- 저장된 이름, 36자 + 파일명
   filesize  NUMBER,                                 -- 파일 크기
   rdate     DATE        DEFAULT SYSDATE             -- 파일 저장일
 );

@@ -1,5 +1,6 @@
 package dev.mvc.faq;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class FaqController {
     @Autowired
     private FaqProcInter faqProc;
 
-    // FAQ + 파일 등록
+    /** FAQ + 파일 등록 */
     @PostMapping(value="/create", consumes="multipart/form-data")
     public ResponseEntity<?> createFaq(
             @RequestParam("question") String question,
@@ -59,12 +60,11 @@ public class FaqController {
         return ResponseEntity.ok(Map.of("faqno", faqno));
     }
 
-    // FAQ 전체 목록 + 각 첨부파일 포함
+    /** FAQ 전체 목록 + 각 첨부파일 포함 */
     @GetMapping("/list")
     public List<FaqVO> faqList() {
         List<FaqVO> faqList = faqProc.allFaqList();
         for (FaqVO faqVO : faqList) {
-            System.out.println(faqVO);
             faqVO.setFiles(faqProc.selectFaqFiles(faqVO.getFaqno()));
         }
         return faqList;
@@ -88,6 +88,23 @@ public class FaqController {
         faqProc.deleteFaq(faqno);
 
         return ResponseEntity.ok("삭제 성공");
+    }
+
+    /** FAQ 답변만 수정 (관리자만) */
+    @PutMapping("/{faqno}/answer")
+    public ResponseEntity<?> updateFaqAnswer(@PathVariable int faqno,
+                                             @RequestBody Map<String, String> body,
+                                             HttpSession session) {
+        String role = (String) session.getAttribute("role");
+        if (!"admin".equals(role)) {
+            return ResponseEntity.status(403).body("관리자만 수정할 수 있습니다.");
+        }
+        String answer = body.get("answer");
+        int cnt = faqProc.updateText(faqno, answer); // 아래와 같이
+        if (cnt == 1) {
+            return ResponseEntity.ok("수정 성공");
+        }
+        return ResponseEntity.status(500).body("수정 실패");
     }
 
 }

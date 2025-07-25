@@ -10,11 +10,13 @@ import java.util.UUID;
 
 import dev.mvc.admin.AdminProcInter;
 import dev.mvc.admin.AdminVO;
+import dev.mvc.tool.Tool;
 import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -243,28 +245,57 @@ public class MemberController {
     }
     
     /** 회원 정보 수정 */
-    @PutMapping("")
-    public ResponseEntity<?> update(@RequestBody MemberVO memberVO) {
-        // ✅ 소셜 로그인 사용자인 경우 비밀번호 확인 생략
-        List<String> socialProviders = List.of("kakao", "google", "naver");
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> update(@ModelAttribute MemberVO memberVO,
+                                    @RequestPart(value = "profileFile", required = false) MultipartFile profileFile) throws IOException {
 
-        if (!socialProviders.contains(memberVO.getProvider())) {
-            // 🔐 일반 회원은 비밀번호 확인 필수
-            if (!memberVO.getPasswd().equals(memberVO.getPasswd2())) {
-                return ResponseEntity.badRequest().body("❌ 비밀번호가 일치하지 않습니다");
-            }
+        System.out.println(memberVO);
 
-            // 🔐 비밀번호 암호화
-            String encrypted = bcryptUtil.encode(memberVO.getPasswd());
-            memberVO.setPasswd(encrypted);
+        MemberVO originVO = memberProc.read(memberVO.getMemberno());
 
+        // 비밀번호가 입력되었으면 암호화해서 저장, 아니면 기존 유지
+        if (memberVO.getPasswd() != null && !memberVO.getPasswd().trim().isEmpty()) {
+            String newPasswd = bcryptUtil.encode(memberVO.getPasswd());
+            memberVO.setPasswd(newPasswd);
+            memberVO.setPasswd2(newPasswd);
         } else {
-            // ✅ 소셜 로그인 사용자는 비밀번호 무시하고 "소셜로그인"으로 세팅
-            memberVO.setPasswd("소셜로그인");
-            memberVO.setPasswd2("소셜로그인");
+            memberVO.setPasswd(originVO.getPasswd());
+            memberVO.setPasswd2(originVO.getPasswd());
         }
 
+
+        // 회원 정보 업데이트
         int cnt = memberProc.update(memberVO);
+
+        // 프로필 사진이 있으면
+        if (profileFile != null && !profileFile.isEmpty()) {
+            String osName = System.getProperty("os.name").toLowerCase();
+            String uploadDir = "";
+
+            if (osName.contains("win")) { // Windows
+                uploadDir = "C:\\kd\\deploy\\deploy\\team3\\profile\\";
+            } else if (osName.contains("mac")) { // MacOS
+                uploadDir = "/Users/imgwanghwan/kd/deploy/team3/profile/";
+            } else { // Linux
+                uploadDir = "/home/ubuntu/deploy/deploy/team3/profile/";
+            }
+
+            String originalFilename = profileFile.getOriginalFilename();
+            String uuid = UUID.randomUUID().toString();
+            String savedFilename = uuid + "_" + originalFilename;
+
+            System.out.println(savedFilename);
+
+            File dir = new File(uploadDir);
+            if (!dir.exists()){
+                dir.mkdirs();
+            }
+            File dest = new File(uploadDir + savedFilename);
+            profileFile.transferTo(dest);
+            // 프로필 사진만 업데이트
+            memberProc.updateProfile(memberVO.getMemberno(), savedFilename);
+        }
+
         return (cnt == 1)
             ? ResponseEntity.ok("✅ 수정 성공")
             : ResponseEntity.status(500).body("❌ 수정 실패");
@@ -382,6 +413,7 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    /** 프로필 사진 설정 */
     @PostMapping("/update-profile")
     public ResponseEntity<?> updateProfileImage(
             @RequestParam("memberno") int memberno,

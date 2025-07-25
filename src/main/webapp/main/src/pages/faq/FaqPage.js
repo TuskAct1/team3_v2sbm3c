@@ -12,6 +12,9 @@ function FaqPage() {
   const [openIdx, setOpenIdx] = useState(null);
   const [selectedTab, setSelectedTab] = useState("전체"); // ✅ 탭 상태 추가
 
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = user.role === "admin";
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -129,10 +132,15 @@ function FaqPage() {
                 )}
 
                 {/* 관리자만 삭제 버튼 */}
-                {1 && (
-                  <button className="faq-delete-btn" onClick={() => handleDelete(faq.faqno)}>
-                    삭제
-                  </button>
+                {isAdmin && (
+                  <div className="faq-btn-group">
+                    <button className="faq-edit-btn" onClick={() => navigate(`/faq/edit/${faq.faqno}`)}>
+                      수정
+                    </button>
+                    <button className="faq-delete-btn" onClick={() => handleDelete(faq.faqno)}>
+                      삭제
+                    </button>
+                  </div>
                 )}
               </div>
             )}
