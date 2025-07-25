@@ -6,11 +6,21 @@
 <mapper namespace="dev.mvc.plant.PlantDAOInter">
 
   <!-- 식물 등록 -->
+
+
   <insert id="create" parameterType="dev.mvc.plant.PlantVO">
     INSERT INTO plant (
-      plantno, memberno, plant_name
+    plantno,
+    memberno,
+    plant_name,
+    plant_type,
+    growth
     ) VALUES (
-      #{plantno}, #{memberno}, #{plant_name}
+    plant_seq.NEXTVAL,  <!-- 🔑 시퀀스 사용 필수 -->
+    #{memberno},
+    #{plant_name},
+    #{plant_type},
+    #{growth}
     )
   </insert>
 
@@ -20,18 +30,38 @@
   </select>
 
   <!-- 회원 번호로 식물 조회 (필요시) -->
-  <select id="readByMemberno" parameterType="int" resultType="dev.mvc.plant.PlantVO">
-    SELECT * FROM plant WHERE memberno = #{memberno}
+  <select id="readByMemberno" resultType="dev.mvc.plant.PlantVO" parameterType="int">
+    SELECT * FROM plant
+    WHERE memberno = #{memberno}
+    ORDER BY created_at DESC
+    FETCH FIRST 1 ROWS ONLY
   </select>
 
-  <!-- 식물 정보 수정 -->
+  <!-- 식물 이름 수정 -->
   <update id="update" parameterType="dev.mvc.plant.PlantVO">
-    UPDATE plant SET plant_name = #{plant_name} WHERE plantno = #{plantno}
+    UPDATE plant
+    SET plant_name = #{plant_name}, growth = #{growth}
+    WHERE plantno = #{plantno}
   </update>
 
   <!-- 식물 삭제 -->
   <delete id="delete" parameterType="int">
     DELETE FROM plant WHERE plantno = #{plantno}
   </delete>
+
+  <update id="increaseGrowth">
+    UPDATE plant
+    SET growth =
+    CASE
+    WHEN growth + #{growth} > 100 THEN 100
+    ELSE growth + #{growth}
+    END
+    WHERE memberno = #{memberno}
+  </update>
+
+  <select id="countByMemberno" resultType="int" parameterType="int">
+    SELECT COUNT(*) FROM plant WHERE memberno = #{memberno}
+  </select>
+
 
 </mapper>

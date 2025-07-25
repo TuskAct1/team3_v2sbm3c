@@ -15,10 +15,10 @@ public class AttendanceCont {
     public ResponseEntity<?> checkAttendance(@RequestParam("memberno") int memberno) {
         try {
             System.out.println("✅ 출석체크 요청 memberno: " + memberno);
-
-            if (!attendanceProc.hasAttendance(memberno)) {
-                attendanceProc.initAttendance(memberno);
-            }
+//
+////            if (!attendanceProc.hasAttendance(memberno)) {
+//                attendanceProc.initAttendance(memberno);
+//            }
 
             if (attendanceProc.hasCheckedToday(memberno)) {
                 return ResponseEntity.ok("이미 출석하셨습니다.");

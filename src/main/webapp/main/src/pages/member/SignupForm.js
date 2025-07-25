@@ -5,7 +5,8 @@ import './SignupForm.css';
 import axios from "axios"; // ✅ axios import 추가
 import { useRef } from "react"; // ✅ useRef 사용 시 추가
 import Select from 'react-select';
-
+import SmsAuthInput from './SmsAuthInput'
+import { FaTrashAlt } from 'react-icons/fa';
 
 const SignupForm = () => {
   const [form, setForm] = useState({
@@ -25,6 +26,16 @@ const SignupForm = () => {
     address2: "",
     profile: null,
     phoneCode: "",
+
+    guardian_name: "",
+    guardian_relationship: "",
+    guardian_email: "",
+    guardian_phone: "",
+
+    guardian2_name: "",
+    guardian2_relationship: "",
+    guardian2_email: "",
+    guardian2_phone: ""
   });
 
   // const [terms, setTerms] = useState({ terms1: false, terms2: false, terms3: false });
@@ -131,46 +142,6 @@ const handleTermsChange = (e) => {
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log("회원가입 시 전송되는 데이터:", form); // 이 줄을 추가
-  //   if (!idAvailable) {
-  //     alert("아이디 중복 확인을 완료해주세요");
-  //     return;
-  //   }
-
-  //   if (form.password !== form.password2) {
-  //     setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
-  //     passwdRef.current?.focus();
-  //     return;
-  //   }
-
-  //   try {
-  //     const formData = new FormData();
-  //     for (const key in form) {
-  //       formData.append(key, form[key]);
-  //     }
-  //     // if (avatarFile) formData.append("profileFile", avatarFile);
-  //     if (form.profile) formData.append("profileFile", form.profile);
-
-  //     formData.append("point", 0);
-  //     formData.append("provider", "local");
-
-  //     const res = await axios.post("/api/members/signup", formData, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-
-  //     if (res.data.success) {
-  //       alert("회원가입이 완료되었습니다!");
-  //       window.location.href = "/login"; // ✅ 로그인 페이지로 이동
-  //     } else {
-  //       alert("회원가입 실패: " + (res.data.message || ""));
-  //     }
-  //   } catch (err) {
-  //     console.error("회원가입 오류", err);
-  //     alert("서버 오류");
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -189,9 +160,9 @@ const handleTermsChange = (e) => {
     try {
       const formData = new FormData();
 
-      formData.append("id", form.id); // 또는 email 기반이라면 email도 함께
+      formData.append("id", form.id);
       formData.append("passwd", form.password);
-      formData.append("passwd2", form.password2);  // ✅ 핵심
+      formData.append("passwd2", form.password2);
       formData.append("mname", form.mname);
       formData.append("nickname", form.nickname);
       formData.append("gender", form.gender);
@@ -202,10 +173,30 @@ const handleTermsChange = (e) => {
       formData.append("address2", form.address2);
       formData.append("provider", "local");
       formData.append("point", 0);
-      if (form.profileFile) formData.append("profileFile", form.profileFile);
+      if (form.profileFile) {
+        formData.append("profileFile", form.profileFile);
+      }
+
+      // ✅ 보호자 1 정보
+      if (guardians[0]) {
+        formData.append("guardian_name", guardians[0].name);
+        formData.append("guardian_relationship", guardians[0].relationship);
+        formData.append("guardian_email", guardians[0].email);
+        formData.append("guardian_phone", guardians[0].phone);
+      }
+
+      // ✅ 보호자 2 정보
+      if (guardians[1]) {
+        formData.append("guardian2_name", guardians[1].name);
+        formData.append("guardian2_relationship", guardians[1].relationship);
+        formData.append("guardian2_email", guardians[1].email);
+        formData.append("guardian2_phone", guardians[1].phone);
+      }
 
       const res = await axios.post("/api/members/signup", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       if (res.data.success) {
@@ -219,7 +210,7 @@ const handleTermsChange = (e) => {
       alert("서버 오류");
     }
   };
-  
+
   
   const [idAvailable, setIdAvailable] = useState(false);   // 사용 가능 여부
   const [idMsg, setIdMsg] = useState("");                   // 메시지
@@ -330,15 +321,83 @@ const handleTermsChange = (e) => {
       alert("서버 오류: 인증 실패");
     }
   };
-  // const handleVerifyCode = () => {
-  //   if (form.phoneCode === serverCode) {
-  //     setPhoneVerified(true);
-  //     alert("인증에 성공했습니다.");
-  //   } else {
-  //     setPhoneVerified(false);
-  //     alert("인증번호가 일치하지 않습니다.");
-  //   }
-  // };
+    const [telVerified, setTelVerified] = useState(false);
+
+    const [guardianFormOpen, setGuardianFormOpen] = useState(false);
+    // ✅ 수정: 초기엔 빈 배열로
+    // const [guardians, setGuardians] = useState([]);
+
+    const [guardians, setGuardians] = useState([
+      { name: "", relationship: "", email: "", phone: "" }
+    ]);
+
+    const [guardianVerifiedList, setGuardianVerifiedList] = useState([false]); // 1개 또는 2개
+
+    const updateFormWithGuardian = (idx, key, value) => {
+      const formKey =
+        idx === 0
+          ? `guardian_${key}`
+          : `guardian2_${key}`;
+      setForm((prev) => ({ ...prev, [formKey]: value }));
+    };
+
+    const openGuardianForm = () => {
+      setGuardianFormOpen(true);
+      setGuardians([{ name: "", relationship: "", email: "", phone: "", code: "" }]);
+    };
+    // const handleGuardianChange = (idx, field, value) => {
+    //   setGuardians((prev) => {
+    //     const updated = [...prev];
+    //     updated[idx][field] = value;
+    //     return updated;
+    //   });
+    // };
+
+    const handleGuardianChange = (idx, key, value) => {
+      setGuardians((prev) =>
+        prev.map((g, i) => (i === idx ? { ...g, [key]: value } : g))
+      );
+    };
+
+
+    const addGuardian = () => {
+      setGuardians(prev => [...prev, { name: "", relationship: "", email: "", phone: "", code: "" }]);
+      setTelVerifiedList(prev => [...prev, false]);
+    };
+
+    const removeGuardian = (idx) => {
+      setGuardians(prev => prev.filter((_, i) => i !== idx));
+      setTelVerifiedList(prev => prev.filter((_, i) => i !== idx));
+    };
+
+
+    
+
+    // 관계 드롭다운 핸들러
+    const handleGuardianSelectChange = (idx, selectedOption) => {
+      setGuardians(prev =>
+        prev.map((g, i) =>
+          i === idx ? { ...g, relationship: selectedOption?.value || "" } : g
+        )
+      );
+    };
+
+    const relationshipOptions = [
+    { value: '부모', label: '부모' },
+    { value: '자녀', label: '자녀' },
+    { value: '형제자매', label: '형제자매' },
+    { value: '친척', label: '친척' },
+    { value: '지인', label: '지인' },
+    { value: '기타', label: '기타' },
+  ];
+
+
+  const [telVerifiedList, setTelVerifiedList] = useState(
+    guardians.map(() => false)
+  );
+
+
+
   
 
   return (
@@ -346,8 +405,8 @@ const handleTermsChange = (e) => {
     <div className="signup-wrapper">
       <h2 className="signup-title">회원가입</h2>
       <p className="signup-subtitle">
-        오른손케어의 회원으로 로그인 하시면<br />
-        오른손케어만의 특별한 서비스를 이용하실 수 있습니다.
+        토닥의 회원으로 로그인 하시면<br />
+        토닥만의 특별한 서비스를 이용하실 수 있습니다.
       </p>
 
       <form className="signup-card" onSubmit={handleSubmit}>
@@ -492,50 +551,12 @@ const handleTermsChange = (e) => {
         </div>
       </div>
 
-      <div className="form-group">
-        <label>전화번호 <span style={{ color: "red" }}>*</span></label>
-        
-        {/* 전화번호 입력 + 인증요청 */}
-        <div className="form-row">
-          <input
-            type="tel"
-            name="tel"
-            placeholder="숫자만 입력하세요."
-            value={form.tel}
-            onChange={handleChange}
-          />
-          <button
-            type="button"
-            className="cert-btn"
-            onClick={handleSendVerificationCode}
-          >
-            인증요청
-          </button>
-        </div>
-
-        {/* 인증번호 입력 + 확인 */}
-        <div className="form-row">
-          <input
-            type="text"
-            name="phoneCode"
-            placeholder="인증번호를 입력해주세요."
-            value={form.phoneCode}
-            onChange={handleChange}
-          />
-          <button
-            type="button"
-            className="verify-btn"
-            onClick={handleVerifyCode}
-          >
-            확인
-          </button>
-        </div>
-
-        {phoneVerified && (
-          <p style={{ color: "green" }}>✅ 인증이 완료되었습니다!</p>
-        )}
-      </div>
-
+      <SmsAuthInput
+        value={form.tel}
+        onChange={e => setForm(prev => ({ ...prev, tel: e.target.value }))}
+        verified={telVerified}
+        onVerified={() => setTelVerified(true)}
+      />
 
         <div className="form-group">
           <label>우편번호</label>
@@ -554,6 +575,122 @@ const handleTermsChange = (e) => {
           <label>상세주소</label>
           <input name="address2" value={form.address2} onChange={handleChange} />
         </div>
+
+        {/* 보호자 정보 입력 버튼 (보호자가 없을 경우에만 노출) */}
+        {(!guardianFormOpen || guardians.length === 0) && (
+          <div className="form-group guardian-button-wrapper">
+            <button
+              type="button"
+              className="btn btn-add-full"
+              onClick={openGuardianForm}
+              style={{ marginTop: "10px" }}
+            >
+              보호자 정보 입력하기
+            </button>
+          </div>
+        )}
+
+        {/* 보호자 입력란 */}
+        {guardianFormOpen && guardians.length > 0 && (
+          <>
+            {guardians.map((guardian, idx) => (
+          <div className="guardian-block" key={idx}>
+            {/* ✖ 삭제 아이콘 */}
+            <button
+              type="button"
+              className="guardian-close-btn"
+              onClick={() => removeGuardian(idx)}
+              aria-label="보호자 삭제"
+            >
+              ✖
+            </button>
+
+            <div className="form-group">
+              <label>이름</label>
+              <input
+                type="text"
+                name="name"
+                value={guardian.name}
+                onChange={(e) => handleGuardianChange(idx, "name", e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+            <label className="form-label">
+              보호자 관계 <span style={{ color: 'red' }}>*</span>
+            </label>
+            <div className="guardian-relationship-select">
+              <Select
+                options={relationshipOptions}
+                classNamePrefix="select"
+                value={relationshipOptions.find(opt => opt.value === guardian.relationship) || null}
+                onChange={(selectedOption) =>
+                  handleGuardianChange(idx, "relationship", selectedOption?.value)
+                }
+                placeholder="어떤 분이신가요?"
+                styles={{
+                  container: (base) => ({
+                    ...base,
+                    width: '100%',
+                  }),
+                }}
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <SmsAuthInput
+              value={guardian.phone}
+              onChange={(e) => {
+                handleGuardianChange(idx, "phone", e.target.value);
+                updateFormWithGuardian(idx, "phone", e.target.value); // form 반영
+              }}
+              verified={guardianVerifiedList[idx]}
+              onVerified={() =>
+                setGuardianVerifiedList((prev) =>
+                  prev.map((v, i) => (i === idx ? true : v))
+                )
+              }
+            />
+          </div>
+
+
+            <div className="form-group">
+              <label>이메일</label>
+              <input
+                type="email"
+                name="email"
+                className="form-control"
+                value={guardian.email}
+                onChange={(e) => handleGuardianChange(idx, "email", e.target.value)}
+                placeholder="보호자 이메일"
+              />
+            </div>
+
+            {/* 보호자 추가 버튼 */}
+            {idx === guardians.length - 1 && guardians.length < 2 && (
+              <div className="form-group">
+                <button
+                  type="button"
+                  className="btn btn-add-full"
+                  onClick={() => {
+                    setGuardians((prev) => [
+                      ...prev,
+                      { name: "", relationship: "", email: "", phone: "" }
+                    ]);
+                    setGuardianVerifiedList((prev) => [...prev, false]);
+                  }}
+                >
+                  + 보호자 추가
+                </button>
+              </div>
+                )}
+          </div>
+        ))}
+      </>
+    )}
+
+                           
+
      {/* // SignupForm.js 약관 UI 개선 */}
         <div className="terms-section">
           <div className="terms-all">
@@ -611,7 +748,7 @@ const handleTermsChange = (e) => {
             <span className="view-link" onClick={() => window.open('https://link3', '_blank')}>자세히보기</span>
           </div>
         </div>
-        <button type="submit" className="submit-btn">가입완료</button>
+        <button type="submit" className="sign-submit-btn">가입완료</button>
       </form>
     </div>
   </div>
