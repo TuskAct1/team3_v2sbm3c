@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import "./FaqSearchBar.css"; // 고유 스타일 추가
 
 const keywordList = [
-  "챗봇문의", "자가진단", "반려식물", "캘린더", "센터매칭"
+  "토닥이", "심리", "상담", "이용 요금"
 ];
 
 function FaqSearchBar({ onSearch }) {

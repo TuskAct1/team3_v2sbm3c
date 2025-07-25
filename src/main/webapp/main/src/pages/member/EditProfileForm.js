@@ -10,6 +10,8 @@ const EditProfileForm = ({ user }) => {
   const [form, setForm] = useState({
     mname: "",
     nickname: "",
+    password: "",
+    confirmPassword: "",
     gender: "",
     birthYear: "",
     birthMonth: "",
@@ -24,7 +26,7 @@ const EditProfileForm = ({ user }) => {
 
   useEffect(() => {
     if (user) {
-      const [year, month, day] = (user.birth || "2000-01-01").split("-");
+      const [year, month, day] = (user.birthdate || "2000-01-01").split("-");
       setForm({
         mname: user.mname || "",
         nickname: user.nickname || "",
@@ -84,18 +86,27 @@ const EditProfileForm = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (form.password && form.password !== form.confirmPassword) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("memberno", user.memberno);
     formData.append("mname", form.mname);
     formData.append("nickname", form.nickname);
     formData.append("gender", form.gender);
-    formData.append("birth", `${form.birthYear}-${form.birthMonth}-${form.birthDay}`);
+    formData.append("birthdate", `${form.birthYear}-${form.birthMonth}-${form.birthDay}`);
     formData.append("tel", form.tel);
     formData.append("zipcode", form.zipcode);
     formData.append("address1", form.address1);
     formData.append("address2", form.address2);
     if (form.profileFile) {
       formData.append("profileFile", form.profileFile);
+    }
+    if (form.password) {
+      formData.append("passwd", form.password);
+      formData.append("passwd2", form.confirmPassword);
     }
 
     try {
@@ -156,6 +167,28 @@ const EditProfileForm = ({ user }) => {
         <div className="form-group">
           <label>닉네임</label>
           <input name="nickname" value={form.nickname} onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>새 비밀번호</label>
+          <input
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
+            placeholder="새 비밀번호를 입력하세요"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>비밀번호 확인</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            placeholder="비밀번호를 다시 입력하세요"
+          />
         </div>
 
         <div className="form-group">

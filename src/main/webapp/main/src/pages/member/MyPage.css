@@ -139,6 +139,10 @@
   font-weight: bold;
 }
 
+.profile-nickname {
+  font-size: 14px; /* 더 작게 */
+  color: #888888;  /* 회색 */
+}
 
 .tabs-wrapper {
   display: flex;

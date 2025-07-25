@@ -31,4 +31,10 @@
         WHERE faqno = #{faqno}
     </delete>
 
+    <update id="updateText" >
+        UPDATE faq
+        SET answer = #{answer}
+        WHERE faqno = #{faqno}
+    </update>
+
 </mapper>

@@ -149,7 +149,7 @@ function MyPage() {
               onChange={(e) => handleProfileUpload(e.target.files[0])}
             />
           </div>
-          <div className="profile-name">{user.nickname || user.mname} 님</div>
+          <div className="profile-name">{user.mname} 님 <span className='profile-nickname'>({user.nickname})</span></div>
         </div>
 
         <div className="tabs-wrapper">

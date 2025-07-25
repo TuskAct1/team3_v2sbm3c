@@ -79,6 +79,7 @@ import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
 import FaqPage from './pages/faq/FaqPage';
 import FaqCreatePage from './pages/faq/FaqCreatePage';
+import FaqAnswerEditPage from './pages/faq/FaqAnswerEditPage';
 
 import MainPageWrapper from './pages/plant/MainPageWrapper';
 import SeedSelect from './pages/plant/SeedSelect';
@@ -152,6 +153,7 @@ function App() {
           {/* 자주 묻는 질문 */}
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/faq/create" element={<FaqCreatePage />} />
+          <Route path="/faq/edit/:faqno" element={<FaqAnswerEditPage />} />
 
           {/* plant 관련 설정 */}
           <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
