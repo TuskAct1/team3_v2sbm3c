@@ -3,7 +3,9 @@ package dev.mvc.faq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class FaqProc implements FaqProcInter {
@@ -44,6 +46,11 @@ public class FaqProc implements FaqProcInter {
     @Override
     public int deleteFiles(int faqno) {
         return faqDAO.deleteFiles(faqno);
+    }
+
+    @Override
+    public int updateText(int faqno, String answer) {
+        return faqDAO.updateText(faqno, answer);
     }
 
 }

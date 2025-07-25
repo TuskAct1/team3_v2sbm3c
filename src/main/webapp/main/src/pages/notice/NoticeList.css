@@ -122,7 +122,7 @@
 }
 
 /* ✅ 제목 셀 */
-.notice-td.title {
+.notice-td.notice-title {
   flex: 5;
   justify-content: flex-start;
   gap: 10px;

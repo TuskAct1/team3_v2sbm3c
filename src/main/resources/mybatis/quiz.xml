@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.quiz.QuizDAOInter">
+
+    <select id="getRandomQuestion" resultType="dev.mvc.quiz.QuizQuestionVO">
+        SELECT *
+        FROM (
+        SELECT * FROM quiz_question
+        ORDER BY DBMS_RANDOM.VALUE
+        )
+        WHERE ROWNUM = 1
+    </select>
+
+    <select id="getTodayQuizCount" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM quiz_log
+        WHERE memberno = #{memberno}
+        AND TRUNC(quiz_date) = TRUNC(SYSDATE)
+    </select>
+
+    <insert id="insertQuizLog" parameterType="int">
+        INSERT INTO quiz_log (logno, memberno)
+        VALUES (quiz_log_seq.NEXTVAL, #{memberno})
+    </insert>
+
+    <insert id="insertQuestion" parameterType="dev.mvc.quiz.QuizQuestionVO">
+        INSERT INTO quiz_question (
+        quizno, question, option1, option2, option3, option4, answer
+        ) VALUES (
+        quiz_question_seq.NEXTVAL,
+        #{question}, #{option1}, #{option2}, #{option3}, #{option4}, #{answer}
+        )
+    </insert>
+
+</mapper>

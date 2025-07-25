@@ -19,3 +19,23 @@ CREATE SEQUENCE point_seq
   MAXVALUE 9999999999
   NOCACHE
   NOCYCLE;
+
+SELECT * FROM point WHERE memberno = 169;
+
+
+INSERT INTO point (pointno, memberno, amount) 
+VALUES (point_seq.NEXTVAL, 169, 50);
+
+INSERT INTO point (pointno, memberno, amount)
+VALUES (point_seq.NEXTVAL, 174, 50);
+
+-- 중복 제거 (확인 후 안전하게!)
+DELETE FROM point 
+WHERE memberno = 179 AND pointno NOT IN (
+  SELECT MIN(pointno)
+  FROM point
+  WHERE memberno = 179
+  GROUP BY memberno
+);
+
+COMMIT;

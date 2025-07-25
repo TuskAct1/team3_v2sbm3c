@@ -126,8 +126,8 @@ function Navbar() {
                 <div className="dropdown-columns">
                   <div className="dropdown-left">
                     <span onMouseEnter={() => setHoveredTest('chat')} onClick={() => handleClickAndClose('/todaki')}>토닥이와 대화하기</span>
-                    <span onMouseEnter={() => setHoveredTest('info')} onClick={() => handleClickAndClose('/todaki/info')}>토닥이란?</span>
-                    <span onMouseEnter={() => setHoveredTest('guide')} onClick={() => handleClickAndClose('/todaki/guide')}>AI 토닥이 사용법</span>
+                    <span onMouseEnter={() => setHoveredTest('info')}>토닥이란?</span>
+                    <span onMouseEnter={() => setHoveredTest('guide')}>AI 토닥이 사용법</span>
                   </div>
                   <div className="dropdown-right">
                     <div className="content-card">
@@ -159,13 +159,12 @@ function Navbar() {
                       {hoveredTest === 'guide' && (
                         <>
                           <h4>📖 사용법 안내</h4>
-                          <p>
-                            처음 토닥이를 사용하시나요? 걱정하지 마세요. <br />
-                            <strong>누구나 쉽게 따라할 수 있도록</strong> 간단하고 친절한 사용법을 준비했어요. <br />
-                            대화를 시작하는 방법, 질문을 던지는 방법, 감정 표현하는 방법까지 <br />
-                            <strong>한 걸음씩 안내해드릴 테니</strong> 천천히 따라와 주세요. <br />
-                            <strong>처음 접하시는 시니어분들도 어렵지 않게</strong> 사용할 수 있도록 도와드립니다.
-                          </p>
+                            <p>
+                              ① 상단의 <strong>토닥이</strong>를 눌러 대화를 시작하세요.<br />
+                              ② 하고 싶은 말을 편하게 입력해보세요. <br />
+                              ③ 토닥이는 여러분의 말을 <strong>감정 분석</strong>하여 따뜻하게 반응해줍니다.<br />
+                              ④ 마음이 편해질 때까지 <strong>계속 이야기 나눠보세요</strong>.
+                            </p>
                         </>
                       )}
                     </div>
@@ -205,11 +204,12 @@ function Navbar() {
                       {hoveredTest === 'all' && (
                         <>
                           <h4>📋 자가진단 모아보기</h4>
-                          <p>
-                            마음 건강이든 생활 습관이든, 나를 알아가는 첫걸음은 <strong>스스로의 상태를 살펴보는 것</strong>이에요. <br />
-                            토닥이에서는 다양한 자가진단을 통해 <strong>지금 나의 기분, 습관, 기억력, 성향</strong> 등을 점검해볼 수 있어요. <br />
-                            하나하나 천천히 살펴보며, 지금 나에게 필요한 것이 무엇인지 함께 찾아보아요.
-                          </p>
+                            <p>
+                              마음 건강이든 생활 습관이든, 나를 돌보는 일은 아주 소중해요. <br />
+                              토닥이에서는 <strong>우울감, 생활 습관, 기억력, 성향</strong> 등을 점검할 수 있는 다양한 자가진단을 제공해요. <br />
+                              특별한 준비 없이도 간단한 체크만으로 지금의 내 상태를 알아볼 수 있어요. <br /><br />
+                              내 기분과 마음을 조심스럽게 들여다보며, 나에게 꼭 맞는 돌봄의 방법을 함께 찾아가요.
+                            </p>
                         </>
                       )}
 

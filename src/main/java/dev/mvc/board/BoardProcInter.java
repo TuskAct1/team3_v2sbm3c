@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface BoardProcInter {
@@ -47,6 +48,12 @@ public interface BoardProcInter {
   public List<BoardVO> listAllWithSearch(HashMap<String, Object> map);
 
   public int countAllWithSearch(HashMap<String, Object> map);
+  
+  //memberno로 본인이 쓴 게시글 페이징 조회
+  public List<BoardVO> list_by_memberno_paging(HashMap<String, Object> map);
+  
+  //memberno로 게시글 개수 조회
+  public int count_by_memberno(int memberno);
 
 }
 

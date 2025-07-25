@@ -79,12 +79,14 @@ import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
 import FaqPage from './pages/faq/FaqPage';
 import FaqCreatePage from './pages/faq/FaqCreatePage';
+import FaqAnswerEditPage from './pages/faq/FaqAnswerEditPage';
 
 import MainPageWrapper from './pages/plant/MainPageWrapper';
 import SeedSelect from './pages/plant/SeedSelect';
 // import SeedNamePage from './pages/plant/SeedNamePage';
 import SeedNamePage from './pages/plant/SeedNamePage'; // ✅ 반드시 import
 import PlantLoading from './pages/plant/PlantLoading';
+import QuizPage from './pages/plant/quiz/QuizPage'; // 경로가 맞는지 확인
 
 function App() {
   return (
@@ -151,6 +153,7 @@ function App() {
           {/* 자주 묻는 질문 */}
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/faq/create" element={<FaqCreatePage />} />
+          <Route path="/faq/edit/:faqno" element={<FaqAnswerEditPage />} />
 
           {/* plant 관련 설정 */}
           <Route path="/plant/intro" element={<PlantIntro />} />  {/* ⬅️ Intro 라우트 추가 */}
@@ -186,6 +189,8 @@ function App() {
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
           <Route path="/plant/main" element={<MainPageWrapper />} />
+
+          <Route path="/plant/quiz" element={<QuizPage />} />
         </Route>
       </Routes>
 

@@ -72,6 +72,9 @@ export default function GuideOverlay({ onFinish }) {
   const [targetRect, setTargetRect] = useState(null);
   const [maskStyle, setMaskStyle] = useState({});
   const [fade, setFade] = useState(true);
+  const memberno = localStorage.getItem('memberno');
+
+
 
   useEffect(() => {
     const updateRect = () => {
@@ -206,7 +209,9 @@ export default function GuideOverlay({ onFinish }) {
   };
 
   const handleSkip = () => {
-    localStorage.setItem('hasSeenGuide', 'true');
+    // localStorage.setItem('hasSeenGuide', 'true');
+    const memberno = localStorage.getItem('memberno'); // 먼저 선언
+    localStorage.setItem(`hasSeenPlantFeature_${memberno}`, 'true');
     if (onFinish) onFinish(); // ✅ 실제로 부모의 setShowGuide(false) 호출
   };
 

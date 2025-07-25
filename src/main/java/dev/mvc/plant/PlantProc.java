@@ -16,7 +16,7 @@ public class PlantProc implements PlantProcInter {
   @Autowired
   private PlantDAOInter plantDAO;
 
-  @Override
+    @Override
   public int create(PlantVO plantVO) {
       return plantDAO.create(plantVO);
   }
@@ -40,4 +40,17 @@ public class PlantProc implements PlantProcInter {
   public int delete(int plantno) {
       return plantDAO.delete(plantno);
   }
+
+    @Override
+    public int increaseGrowth(int memberno, int growth) {
+        return plantDAO.increaseGrowth(memberno, growth); // ✅ DAO 사용
+    }
+
+    @Override
+    public int countByMemberno(int memberno) {
+        return plantDAO.countByMemberno(memberno);
+    }
+
 }
+
+

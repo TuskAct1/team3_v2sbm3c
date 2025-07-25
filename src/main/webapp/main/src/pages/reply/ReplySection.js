@@ -394,8 +394,8 @@ function ReplySection({ boardno }) {
               {/* 댓글 */}
               <li className={`reply-item level-${reply.level}`} style={{ paddingLeft: '0px' }}>
                 <div className="reply-left">
-                  <img
-                    src={reply.profile ? `/member/storage/${reply.profile}` : '/images/default_profile.png'}
+                  <img 
+                    src={reply.profile ? `/profile/${reply.profile}` : '/images/default_profile.png'}
                     alt="프로필"
                     className="reply-profile"
                   />
@@ -417,16 +417,30 @@ function ReplySection({ boardno }) {
                     </div>
                     {editingReplyNo === reply.replyno ? (
                       <>
-                        <textarea
-                          className="reply-edit"
-                          value={editingContent}
-                          onChange={e => setEditingContent(e.target.value)}
-                          rows="2"
-                        />
-                        <div className="reply-actions">
-                          <button onClick={() => handleEditSave(reply)}>저장</button>
-                          <button onClick={handleEditCancel}>취소</button>
-                        </div>
+                        <form
+                          className="reply-form-wrap reply-reply"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleEditSave(reply);
+                          }}
+                        >
+                          <textarea
+                            className="reply-input"
+                            value={editingContent}
+                            onChange={(e) => setEditingContent(e.target.value)}
+                            placeholder="댓글을 수정하세요"
+                          />
+                          <div className="reply-button-group">
+                            <button type="submit" className="reply-submit">저장</button>
+                            <button
+                              type="button"
+                              className="reply-cancel"
+                              onClick={handleEditCancel}
+                            >
+                              취소
+                            </button>
+                          </div>
+                        </form>
                       </>
                     ) : (
                       <div className={`reply-content ${reply.blind === 1 ? 'reply-blind' : ''}`}>
@@ -487,8 +501,8 @@ function ReplySection({ boardno }) {
               {replyMap[reply.replyno]?.map(child => (
                 <li key={child.replyno} className="reply-item level-2" style={{ paddingLeft: '40px' }}>
                   <div className="reply-left">
-                    <img
-                      src={child.profile ? `/member/storage/${child.profile}` : '/images/default_profile.png'}
+                    <img 
+                      src={reply.profile ? `/profile/${reply.profile}` : '/images/default_profile.png'}
                       alt="프로필"
                       className="reply-profile"
                     />
@@ -503,13 +517,13 @@ function ReplySection({ boardno }) {
                           className="reply-form-wrap reply-reply"
                           onSubmit={(e) => {
                             e.preventDefault();
-                            handleEditSave(child);
+                            handleEditSave(child); // 또는 reply
                           }}
                         >
                           <textarea
                             className="reply-input"
                             value={editingContent}
-                            onChange={e => setEditingContent(e.target.value)}
+                            onChange={(e) => setEditingContent(e.target.value)}
                             placeholder="답글을 수정하세요"
                           />
                           <div className="reply-button-group">

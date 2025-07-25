@@ -201,5 +201,26 @@ public class BoardProc implements BoardProcInter {
     public int countAllWithSearch(HashMap<String, Object> map) {
         return boardDAO.countAllWithSearch(map);
     }
+    
+ // memberno로 본인이 쓴 게시글 페이징 조회
+    @Override
+    public List<BoardVO> list_by_memberno_paging(HashMap<String, Object> map) {
+        int begin_of_page = ((int)map.get("now_page") - 1) * Contents.RECORD_PER_PAGE;
+        int start_num = begin_of_page + 1;
+        int end_num = begin_of_page + Contents.RECORD_PER_PAGE;
+
+        map.put("start_num", start_num);
+        map.put("end_num", end_num);
+
+        return boardDAO.list_by_memberno_paging(map);
+    }
+
+    // memberno로 게시글 개수 조회
+    @Override
+    public int count_by_memberno(int memberno) {
+        return boardDAO.count_by_memberno(memberno);
+    }
+
+    
 }
 

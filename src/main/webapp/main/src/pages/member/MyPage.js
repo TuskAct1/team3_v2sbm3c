@@ -9,6 +9,7 @@ import { FaChevronRight } from 'react-icons/fa'; // ⬅️ 아이콘 추가
 import { useNavigate } from 'react-router-dom'; // ⬅️ useNavigate 추가
 import EditProfileForm from './EditProfileForm'; // 추가
 
+
 function MyPage() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
@@ -19,6 +20,7 @@ function MyPage() {
   const [activeTab, setActiveTab] = useState("home");
   const [previousTab, setPreviousTab] = useState("home");
   const [completedScheduleMap, setCompletedScheduleMap] = useState({});
+  
 
   // ✅ 로컬스토리지에서 불러오기
   useEffect(() => {
@@ -42,7 +44,7 @@ function MyPage() {
 
   useEffect(() => {
     if (!userId) return;
-    axios.get("http://localhost:3000/api/members/id", { params: { id: userId } })
+    axios.get("/api/members/id", { params: { id: userId } })
       .then(res => {
         setUser(res.data);
         fetchRewards(res.data.memberno);
@@ -52,7 +54,7 @@ function MyPage() {
   }, [userId]);
 
   const fetchRewards = (memberno) => {
-    axios.get("http://localhost:3000/api/rewards", { params: { memberno } })
+    axios.get("/api/rewards", { params: { memberno } })
       .then(res => setRewards(res.data))
       .catch(err => console.error("보상 정보 불러오기 실패", err));
   };
@@ -147,7 +149,7 @@ function MyPage() {
               onChange={(e) => handleProfileUpload(e.target.files[0])}
             />
           </div>
-          <div className="profile-name">{user.nickname || user.mname} 님</div>
+          <div className="profile-name">{user.mname} 님 <span className='profile-nickname'>({user.nickname})</span></div>
         </div>
 
         <div className="tabs-wrapper">

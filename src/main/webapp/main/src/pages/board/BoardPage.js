@@ -13,9 +13,12 @@ function BoardPage() {
   const [searchType, setSearchType] = useState('all');
   const { categoryno } = useParams();
   const [selectedCategory, setSelectedCategory] = useState(categoryno || 'all');
+  const [showMyPosts, setShowMyPosts] = useState(false); // ✅ 내 글만 보기 상태
   const navigate = useNavigate();
 
-  // 전체 게시글 조회
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const memberno = user?.memberno;
+
   const fetchBoardList = async (page = 1, searchWord = '', searchTypeParam = searchType) => {
     const queryWord = searchWord.trim() !== '' ? searchWord : 'all';
     try {
@@ -30,7 +33,6 @@ function BoardPage() {
     }
   };
 
-  // 카테고리별 게시글 조회
   const fetchBoardListByCategory = async (categoryno, page = 1, searchWord = '') => {
     const queryWord = searchWord.trim() !== '' ? searchWord : 'all';
     try {
@@ -45,24 +47,43 @@ function BoardPage() {
     }
   };
 
-  // mount 또는 category 변경 시
-  useEffect(() => {
-    if (!categoryno || categoryno === 'all') {
-      fetchBoardList(now_page, word);
-      setSelectedCategory('all');
-    } else {
-      fetchBoardListByCategory(categoryno, now_page, word);
-      setSelectedCategory(categoryno);
+  // ✅ 내가 쓴 글 조회
+  const fetchMyBoardList = async (page = 1) => {
+    try {
+      const res = await axios.get(`/board/my_list/${memberno}?now_page=${page}`);
+      setCategoryGroup(res.data.categoryGroup || []);
+      setBoardList(res.data.boardList || []);
+      setTotalPage(res.data.totalPage || 1);
+      setNowPage(res.data.now_page || 1);
+    } catch {
+      alert('내가 쓴 글을 불러오지 못했습니다.');
     }
-  }, [categoryno, now_page]);
+  };
+
+  useEffect(() => {
+    if (showMyPosts) {
+      fetchMyBoardList(now_page);
+    } else {
+      if (!categoryno || categoryno === 'all') {
+        fetchBoardList(now_page, word);
+        setSelectedCategory('all');
+      } else {
+        fetchBoardListByCategory(categoryno, now_page, word);
+        setSelectedCategory(categoryno);
+      }
+    }
+  }, [categoryno, now_page, showMyPosts]);
 
   const handleSearch = e => {
     e.preventDefault();
+    setShowMyPosts(false); // 검색 시 전체 보기로 변경
     fetchBoardList(1, word, searchType);
   };
 
   const handlePageChange = page => {
-    if (!categoryno || categoryno === 'all') {
+    if (showMyPosts) {
+      fetchMyBoardList(page);
+    } else if (!categoryno || categoryno === 'all') {
       fetchBoardList(page, word);
     } else {
       fetchBoardListByCategory(categoryno, page, word);
@@ -76,6 +97,7 @@ function BoardPage() {
   const handleCategoryChange = async (categoryno) => {
     setSelectedCategory(categoryno);
     setWord('');
+    setShowMyPosts(false); // 카테고리 바꾸면 전체 보기
     if (categoryno === 'all') {
       await fetchBoardList(1, '');
       navigate(`/board/list_all/all/1`);
@@ -123,8 +145,18 @@ function BoardPage() {
         </form>
       </div>
 
-      {/* 글쓰기 버튼 */}
+      {/* 글쓰기 + 내 글 보기 버튼 */}
       <div className="board-register-btn-wrapper">
+        <button
+          className={`gray-btn-outline ${showMyPosts ? 'active' : ''}`}
+          onClick={() => {
+            setShowMyPosts(prev => !prev);
+            setNowPage(1);
+          }}
+        >
+          {showMyPosts ? '전체 글 보기' : '내가 쓴 글 보기'}
+        </button>
+
         <a href={`/board/create/${categoryno}`} className="yellow-btn">글 쓰기</a>
       </div>
 
@@ -163,7 +195,7 @@ function BoardPage() {
         </tbody>
       </table>
 
-      {/* ✅ 페이징 */}
+      {/* 페이징 */}
       <div className="board-pagination-circles">
         <button
           className="arrow-btn"
@@ -201,7 +233,6 @@ function BoardPage() {
           &#8250;
         </button>
       </div>
-
     </div>
   );
 }

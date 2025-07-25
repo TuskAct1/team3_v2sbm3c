@@ -25,4 +25,7 @@ public interface FaqProcInter {
     /** FAQ 파일 삭제 */
     public int deleteFiles(int faqno);
 
+    /** FAQ 답변 수정 */
+    public int updateText(int faqno, String answer);
+
 }
