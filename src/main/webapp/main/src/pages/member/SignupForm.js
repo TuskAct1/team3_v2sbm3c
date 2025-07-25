@@ -5,6 +5,7 @@ import './SignupForm.css';
 import axios from "axios"; // ✅ axios import 추가
 import { useRef } from "react"; // ✅ useRef 사용 시 추가
 import Select from 'react-select';
+import SmsAuthInput from "./SmsAuthInput";
 
 
 const SignupForm = () => {
@@ -35,6 +36,7 @@ const SignupForm = () => {
     terms2: false,
     terms3: false,
   });
+  const [telVerified, setTelVerified] = useState(false);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -183,6 +185,11 @@ const handleTermsChange = (e) => {
     if (form.password !== form.password2) {
       setPasswd2Msg("입력된 패스워드가 일치하지 않습니다.");
       passwdRef.current?.focus();
+      return;
+    }
+
+    if (!telVerified) {
+      alert("휴대폰 인증을 완료해주세요!");
       return;
     }
 
@@ -492,49 +499,12 @@ const handleTermsChange = (e) => {
         </div>
       </div>
 
-      <div className="form-group">
-        <label>전화번호 <span style={{ color: "red" }}>*</span></label>
-        
-        {/* 전화번호 입력 + 인증요청 */}
-        <div className="form-row">
-          <input
-            type="tel"
-            name="tel"
-            placeholder="숫자만 입력하세요."
-            value={form.tel}
-            onChange={handleChange}
-          />
-          <button
-            type="button"
-            className="cert-btn"
-            onClick={handleSendVerificationCode}
-          >
-            인증요청
-          </button>
-        </div>
-
-        {/* 인증번호 입력 + 확인 */}
-        <div className="form-row">
-          <input
-            type="text"
-            name="phoneCode"
-            placeholder="인증번호를 입력해주세요."
-            value={form.phoneCode}
-            onChange={handleChange}
-          />
-          <button
-            type="button"
-            className="verify-btn"
-            onClick={handleVerifyCode}
-          >
-            확인
-          </button>
-        </div>
-
-        {phoneVerified && (
-          <p style={{ color: "green" }}>✅ 인증이 완료되었습니다!</p>
-        )}
-      </div>
+      <SmsAuthInput
+        value={form.tel}
+        onChange={e => setForm(prev => ({ ...prev, tel: e.target.value }))}
+        verified={telVerified}
+        onVerified={() => setTelVerified(true)}
+      />
 
 
         <div className="form-group">

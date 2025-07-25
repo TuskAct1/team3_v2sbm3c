@@ -64,7 +64,7 @@ import GameSelect from './pages/plant/games/GameSelect';
 import DiaryPage from './pages/diary/DiaryPage';
 import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
 import MemoryGame from './pages/plant/games/MemoryGame';
-import PlantMain from './pages/plant/PlantMain';
+// import PlantMain from './pages/plant/PlantMain';
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
@@ -80,7 +80,11 @@ import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 import FaqPage from './pages/faq/FaqPage';
 import FaqCreatePage from './pages/faq/FaqCreatePage';
 
-
+import MainPageWrapper from './pages/plant/MainPageWrapper';
+import SeedSelect from './pages/plant/SeedSelect';
+// import SeedNamePage from './pages/plant/SeedNamePage';
+import SeedNamePage from './pages/plant/SeedNamePage'; // ✅ 반드시 import
+import PlantLoading from './pages/plant/PlantLoading';
 
 function App() {
   return (
@@ -155,10 +159,20 @@ function App() {
           <Route path="/plant/game" element={<GameSelect />} />
           
           {/* 반려식물 */}
+          {/* <Route path="/plant" element={<PlantPage />} /> */}
           <Route path="/plant" element={<PlantPage />} />
           <Route path="/plant/intro" element={<PlantIntro />} />
           <Route path="/plant/create" element={<PlantCreatePage />} />
           <Route path="/plant/game" element={<GameSelect />} />
+          {/* <Route path="/plant/main" element={<MainPagePlant />} /> */}
+
+
+          <Route path="/plant/select" element={<SeedSelect />} />
+
+          <Route path="/plant/loading" element={<PlantLoading />} />
+          <Route path="/plant/seed-name" element={<SeedNamePage />} />
+          <Route path="/seed-name" element={<SeedNamePage />} /> {/* ✅ 이 줄이 반드시 필요 */}
+
 
           {/* 다이어리 */}
           <Route path="/diary" element={<DiaryPage />} />
@@ -171,7 +185,7 @@ function App() {
 
           {/* 댓글 신고 */}
           <Route path="/admin/reply-list" element={<ReplyReportListPage />} />
-        
+          <Route path="/plant/main" element={<MainPageWrapper />} />
         </Route>
       </Routes>
 

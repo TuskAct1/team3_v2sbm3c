@@ -1,0 +1,41 @@
+.plant-tutorial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #eef5f0;
+  padding: 20px;
+  text-align: center;
+}
+
+.plant-tutorial img {
+  width: 260px;
+  height: auto;
+  margin-bottom: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.plant-tutorial p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.plant-tutorial button {
+  background-color: #57b6ac;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.plant-tutorial button:hover {
+  background-color: #469c92;
+}

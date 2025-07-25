@@ -78,14 +78,14 @@
   color: white !important;
   font-weight: bold !important;
   border-radius: 50% !important;
-  padding: 0px 5px!important; /* ✅ 상하 padding 줄이기 */
+  padding: 0px 5px!important;
 }
 
-/* 선택된 날짜 */
-.react-calendar__tile--active {
-  background: #d32f2f;
-  color: white;
-  font-weight: bold;
+/* 선택된 날짜 강조 제거 (오늘 날짜는 제외) */
+.react-calendar__tile--active:not(.react-calendar__tile--now) {
+  background: none !important;
+  color: inherit !important;
+  font-weight: normal !important;
 }
 
 /* hover 시 */
@@ -95,7 +95,7 @@
   cursor: pointer;
 }
 
-/* 주말 색상 (일요일 빨간색, 토요일 파란색 등은 상황에 따라 직접 스타일링도 가능) */
+/* 주말 색상 */
 .react-calendar__month-view__days__day--weekend {
   color: #d32f2f;
 }
