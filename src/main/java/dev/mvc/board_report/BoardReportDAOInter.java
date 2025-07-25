@@ -27,6 +27,7 @@ public interface BoardReportDAOInter {
     /** 게시글 추천 삭제 (신고 누적시 삭제용) */
     public boolean delete_all(@Param("boardno") int boardno);
 
+
     List<Map<String, Object>> groupedBoardReports();
 
     List<Map<String, Object>> listByBoardnoWithMember(int boardno);

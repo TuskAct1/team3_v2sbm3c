@@ -48,6 +48,10 @@ const fullPathMap = {
   '/playlist': [
     { path: '/content', label: '토닥 콘텐츠' },
     { path: '/playlist', label: '플레이리스트' }
+  ],
+  '/admin/mypage': [
+  { path: '/admin', label: '관리자' },
+  { path: '/admin/mypage', label: '마이페이지' }
   ]
 };
 

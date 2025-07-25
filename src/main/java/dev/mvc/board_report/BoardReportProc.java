@@ -65,15 +65,15 @@ public class BoardReportProc implements BoardReportProcInter {
             List<BoardReportDetailDTO> reportList = new ArrayList<>();
 
             for (Map<String, Object> map : reportMaps) {
-//                System.out.println("🔍 신고 map 데이터: " + map);
+                System.out.println("🔍 신고 map 데이터: " + map);
 
                 BoardReportDetailDTO dto = new BoardReportDetailDTO();
-                dto.setBoard_reportno(map.get("boardReportno") != null ? ((Number) map.get("boardReportno")).intValue() : 0);
-                dto.setMemberno(map.get("memberno") != null ? ((Number) map.get("memberno")).intValue() : 0);
-                dto.setReason((String) map.get("reason"));
-                dto.setReporter_id((String) map.get("reporterId"));
-                dto.setReporter_nickname((String) map.get("reporterNickname"));
-                dto.setReport_date((String) map.get("rdate"));
+                dto.setBoard_reportno(map.get("BOARDREPORTNO") != null ? ((Number) map.get("BOARDREPORTNO")).intValue() : 0);
+                dto.setMemberno(map.get("MEMBERNO") != null ? ((Number) map.get("MEMBERNO")).intValue() : 0);
+                dto.setReason((String) map.get("REASON"));
+                dto.setReporter_id((String) map.get("REPORTERID"));
+                dto.setReporter_nickname((String) map.get("REPORTERNICKNAME"));
+                dto.setReport_date((String) map.get("RDATE"));
                 reportList.add(dto);
             }
 
