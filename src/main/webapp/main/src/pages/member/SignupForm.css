@@ -4,17 +4,17 @@
 .signup-page-full {
   width: 100vw !important;
   max-width: 100% !important;
-  padding: 60px 0 !important;
+  /* padding: 20px 0 !important; */
   display: flex !important;
   justify-content: center !important;
-  background-color: #f7f7fb !important;
+  /* background-color: #f7f7fb !important; */
   box-sizing: border-box;
 }
 
 .signup-wrapper {
   width: 100% !important;
   max-width: 960px !important;
-  padding: 40px !important;
+  /* padding: 40px !important; */
   background-color: white !important;
   box-sizing: border-box;
 }
@@ -37,7 +37,7 @@
 .signup-card {
   width: 100%;
   max-width: 960px;
-  padding: 60px;
+  /* padding: 60px; */
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -152,10 +152,10 @@
   text-decoration: underline;
 } */
 
-.submit-btn {
+.sign-submit-btn {
   width: 100%;
   padding: 16px;
-  background-color: #d2f2a9;
+  background-color: #66bb6a;
   color: white;
   height: 50px;
   font-weight: bold;
@@ -167,8 +167,8 @@
   margin-top: 20px;
 }
 
-.submit-btn:hover {
-  background-color: #bbe087;
+.sign-ssubmit-btn:hover {
+  background-color: #052000;
 }
 
 /* 프로필 사진 추가용 (선택적으로 활용) */
@@ -218,8 +218,8 @@ input:disabled, select:disabled {
 }
 
 .gender-option input[type="radio"]:checked {
-  border: 1px solid #97d85a; /* 기본 테두리 */
-  box-shadow: 0 0 0 5px #97d85a inset; /* 안쪽으로 파란색 테두리 두껍게 */
+  border: 1px solid #66bb6a; /* 기본 테두리 */
+  box-shadow: 0 0 0 5px #66bb6a inset; /* 안쪽으로 파란색 테두리 두껍게 */
 }
 
 .cert-btn {
@@ -444,7 +444,7 @@ input:disabled, select:disabled {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f7f7fb;
+  /* background-color: #f7f7fb; */
   padding: 40px 20px;
   font-family: 'Pretendard', sans-serif;
 }
@@ -551,7 +551,7 @@ input:disabled, select:disabled {
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  max-width: 820px; /* 로그인 버튼과 동일 */
+  max-width: 920px; /* 로그인 버튼과 동일 */
 }
 
 /* ✅ 개별 소셜 로그인 버튼 */
@@ -652,4 +652,53 @@ input:disabled, select:disabled {
   width: 18px;
   height: 18px;
   object-fit: contain;
+}
+.guardian-block {
+  position: relative;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.guardian-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+}
+
+.guardian-close-btn:hover {
+  color: #e76666;
+}
+
+.phone-verification {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.phone-verification input {
+  flex: 1;
+}
+
+.btn-add-full {
+  width: 100%;
+  margin-top: 15px;
+  background-color: #57b6ac;
+  color: white;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.btn-add-full:hover {
+  background-color: #479b91;
 }

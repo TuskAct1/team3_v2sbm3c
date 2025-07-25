@@ -8,18 +8,18 @@
 
 /* 타이틀 */
 .signup-title {
-  font-size: 28px;
+  font-size: 38px;
   font-weight: bold;
-  margin-bottom: 12px;
-  color: #2d3a76; /* 관리자 전용 강조색 */
+  margin-bottom: 6px;
+  color: #66bb6a; /* 관리자 전용 강조색 */
 }
 
 /* 부제목 */
 .signup-subtitle {
-  font-size: 15px;
+  font-size: 18px;
   color: #666;
   line-height: 1.6;
-  margin-bottom: 28px;
+  margin-bottom: 45px;
 }
 
 /* 카드 스타일 */
@@ -106,14 +106,14 @@
 }
 
 .login-find-links a {
-  color: #9ef557;
+  color: #66bb6a;
   text-decoration: none;
   margin: 0 6px;
 }
 
-.login-find-links span {
+/* .login-find-links span {
   color: #999;
-}
+} */
 
 .checkbox-inline-row {
   display: flex;
@@ -134,4 +134,122 @@
   margin: 0;
   white-space: nowrap;
   cursor: pointer;
+}
+
+
+
+/* ✅ 소셜 로그인 버튼 전체 wrapper - 중앙 정렬 및 너비 지정 */
+.social-login-buttons-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* ✅ 소셜 로그인 버튼 박스 */
+.social-login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 920px; /* 로그인 버튼과 동일 */
+}
+
+/* ✅ 개별 소셜 로그인 버튼 */
+.social-login-buttons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* 아이콘과 텍스트 간격 */
+  height: 50px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: background-color 0.2s ease;
+  width: 100%; /* 버튼 너비 100%로 채우기 */
+  box-sizing: border-box;
+}
+
+/* ✅ 아이콘 크기 */
+.social-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ✅ 각 소셜 플랫폼별 색상 */
+.kakao {
+  background-color: #FEE500;
+  color: #000;
+}
+.kakao:hover {
+  background-color: #e5d200;
+}
+
+.naver {
+  background-color: #03C75A;
+  color: #fff;
+}
+.naver:hover {
+  background-color: #02b250;
+}
+
+.google {
+  background-color: #fff;
+  color: #444;
+  border: 1px solid #ddd;
+}
+.google:hover {
+  background-color: #f2f2f2;
+}
+.social-login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.social-login-button {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  display: block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.social-login-button.kakao {
+  background-color: #fee500;
+  color: #000;
+}
+
+.social-login-button.naver {
+  background-color: #1ec800;
+  color: #fff;
+}
+
+.social-login-button.google {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  color: #000;
+}
+
+/* ✅ 핵심: 내부 span을 inline-flex로 정렬 */
+.social-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* 필요 시 4px로 조정 */
+}
+
+/* ✅ 아이콘 */
+.social-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }

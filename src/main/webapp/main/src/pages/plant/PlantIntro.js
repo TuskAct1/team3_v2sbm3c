@@ -52,7 +52,7 @@ import './PlantIntro.css'; // 스타일을 여기에
 const PlantIntro = ({ onNext }) => {
   return (
     <div className="plant-intro">
-      <h2>오늘부터 돈나무를 키워보세요!</h2>
+      <h2>오늘부터 반려식물를 키워보세요!</h2>
       <p>매일 물만 줘도 현금을 받아요!</p>
       <img src="/images/plant_intro.png" alt="인트로" />
       <button onClick={onNext}>지금 시작할래요!</button>

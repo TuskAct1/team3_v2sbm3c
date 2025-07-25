@@ -152,7 +152,7 @@ const LoginPage = () => {
   return (
     <div className="signup-page-full">
       <div className="signup-wrapper">
-        <h2 className="signup-title">로그인</h2>
+        <h1 className="signup-title">로그인</h1>
         <p className="signup-subtitle">토닥에 오신 것을 환영합니다 😊</p>
         <form className="signup-card" onSubmit={handleLogin}>
     
@@ -175,7 +175,6 @@ const LoginPage = () => {
           </label>
         </div>
 
-
         {/* 비밀번호 입력 */}
         <div className="form-group">
           <label>비밀번호</label>
@@ -197,7 +196,7 @@ const LoginPage = () => {
           </label>
         </div>
 
-        <button type="submit" ref={btnSendRef} className="submit-btn">
+        <button type="submit" ref={btnSendRef} className="sign-submit-btn">
           로그인
         </button>
         </form>
@@ -246,7 +245,6 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

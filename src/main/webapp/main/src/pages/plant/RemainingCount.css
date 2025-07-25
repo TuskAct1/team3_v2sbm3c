@@ -1,0 +1,18 @@
+/* 📁 src/pages/plant/RemainingCount.css */
+.remaining-count {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #7b8b8c;
+  text-align: center;
+}
+
+.remaining-count.unlimited {
+  color: #8a8a8a;
+  font-style: italic;
+}
+
+.remaining-count.used-up {
+  color: #d96d6d;
+  font-weight: bold;
+}
