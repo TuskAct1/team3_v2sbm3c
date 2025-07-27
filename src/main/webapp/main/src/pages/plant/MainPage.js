@@ -234,6 +234,7 @@ function MainPage() {
       alert('이미 완료했거나 오류가 발생했어요.');
     }
   };
+
   const handleItemPurchase = async (item_label, amount, cost) => {
     const memberno = localStorage.getItem("memberno");
     console.log('▶ handleItemPurchase start', item_label);
@@ -252,9 +253,10 @@ function MainPage() {
     try {
       // 1) 포인트 차감
       const adjustRes = await axios.post('/api/point/adjust', { memberno, pointChange: -cost });
-      if (adjustRes.data !== 'success') {
-        return alert('포인트가 부족합니다.');
-      }
+
+        if (adjustRes.data.status !== 'success') {
+          return alert('포인트가 부족합니다.');
+        }
 
       // 2) 성장 증가
       await axios.post('/api/plant/increase-growth', { memberno, value: amount });
@@ -467,15 +469,23 @@ function MainPage() {
 
 
      // ▶▶ 페이지 진입 시, 오늘 이미 출석했는지 체크
+    // useEffect(() => {
+    //   if (!memberno) return;
+    //   axios
+    //     .get(`http://localhost:9093/api/attendance/check/${memberno}`)
+    //     .then(res => {
+    //       // res.data.attended 가 true/false
+    //       setAttendanceChecked(res.data.attended);
+    //     })
+    //     .catch(err => console.error('초기 출석 체크 에러:', err));
+    // }, [memberno]);
+
     useEffect(() => {
-      if (!memberno) return;
-      axios
-        .get(`http://localhost:9093/api/attendance/check/${memberno}`)
+      axios.get(`/api/attendance/check/${memberno}`)
         .then(res => {
-          // res.data.attended 가 true/false
+          console.log('🟢 출석 여부 응답:', res.data);  // 👈 반드시 확인
           setAttendanceChecked(res.data.attended);
-        })
-        .catch(err => console.error('초기 출석 체크 에러:', err));
+        });
     }, [memberno]);
 
     
@@ -660,24 +670,24 @@ function MainPage() {
             </button>
 
             {/* 퀴즈 버튼 */}
-            <button
-              id="quiz-btn"                // ⭐ GuideOverlay의 guideSteps id 'quiz-btn' 추가
-              onClick={() => navigate('/plant/quiz')}
-              disabled={itemUsage.quiz >= itemLimits.quiz}
-            >
-              <img src={quizIcon} alt="퀴즈" /> 퀴즈
-              <RemainingCount used={quizCount} limit={3} />
-            </button>
+          <button
+            id="quiz-btn"
+            onClick={handleQuizClick}  // ✅ 이 함수 내부에서 setMode('quiz') 처리
+            disabled={quizCount >= 3}
+          >
+            <img src={quizIcon} alt="퀴즈" /> 퀴즈
+            <RemainingCount used={quizCount} limit={3} />
+          </button>
 
             {/* 게임 */}
             <button
-              id="game-btn"                // ⭐ GuideOverlay의 guideSteps id 'game-btn' 추가
-              onClick={() => navigate('/plant/game')}
-              disabled={itemUsage.game >= itemLimits.game}
-            >
-              <img src={gameIcon} alt="게임" /> 게임
-              <RemainingCount used={gameCount} limit={3} />
-            </button>
+            id="game-btn"
+            onClick={() => setMode('game')} // ✅ 내부 전환
+            disabled={itemUsage.game >= itemLimits.game}
+          >
+            <img src={gameIcon} alt="게임" /> 게임
+            <RemainingCount used={gameCount} limit={3} />
+          </button>
           </div>
 
           
