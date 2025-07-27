@@ -1,44 +1,69 @@
-.quiz-container {
-  background: #f9fdf9;
-  padding: 30px;
-  max-width: 400px;
-  margin: 60px auto;
-  border-radius: 20px;
-  box-shadow: 0 0 10px #ccc;
-  text-align: center;
+/* src/pages/plant/quiz/QuizPage.css */
+
+.quiz-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.quiz-container h2 {
-  font-size: 22px;
+.quiz-title {
+  font-size: 1.25rem;
+  color: #3B7D3A;          /* 진한 초록 */
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.quiz-question {
+  font-size: 1rem;
+  color: #4F7942;          /* 살짝 밝은 초록 */
+  text-align: center;
+  margin: 12px 0 20px;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   margin-bottom: 20px;
 }
 
-.question {
-  font-size: 18px;
-  margin-bottom: 16px;
-}
-
-.options {
-  list-style: none;
-  padding: 0;
-}
-
 .option-btn {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 12px;
+  background: #E6F4EA;     /* 연한 초록 버튼 배경 */
   border: none;
-  background: #eee;
-  font-size: 16px;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.95rem;
+  color: #333;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.2s;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: #D1EAD3;
 }
 
 .option-btn.correct {
-  background: #d4f8d4;
+  background: #A5D6A7;     /* 정답일 때 녹색 강조 */
 }
 
 .option-btn.wrong {
-  background: #fdd;
+  background: #EF9A9A;     /* 오답일 때 빨간 강조 */
+}
+
+.back-btn {
+  width: 100%;
+  padding: 12px;
+  background: #E6F4EA;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #D1EAD3;
 }

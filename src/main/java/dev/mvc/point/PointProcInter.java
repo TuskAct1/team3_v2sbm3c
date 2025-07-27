@@ -18,5 +18,8 @@ public interface PointProcInter {
     
     public PointVO readByMemberno(int memberno);
     public int adjustPoint(int memberno, int pointChange);
+
+
+    
 }
 

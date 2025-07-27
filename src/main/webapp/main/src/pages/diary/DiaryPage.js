@@ -40,7 +40,7 @@ function DiaryItem({ id, emotion, content, rdate, title, onClick }) {
     >
       <div style={{ fontSize: '14px', color: '#888', marginBottom: '4px' }}>작성 날짜 {rdate}</div>
       <h3 style={{ margin: '4px 0', fontSize: '18px', fontWeight: '600' }}>{title}</h3>
-      <div style={{ marginBottom: '10px', fontSize: '14px', color: '#555' }}>{content.slice(0, 40)}...</div>
+      <div style={{ marginBottom: '10px', fontSize: '14px', color: '#555' }}>{content.replace(/<[^>]+>/g, '').slice(0, 40)}...</div>
       <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
         오늘의 감정 : <span style={{ fontSize: '1.4rem' }}>{emotionIcon}</span>
       </div>
@@ -49,17 +49,31 @@ function DiaryItem({ id, emotion, content, rdate, title, onClick }) {
 }
 
 function DiaryList({ diaryList, onDiaryClick }) {
+  const visibleCards = diaryList.map((it) => (
+    <DiaryItem key={it.id} {...it} onClick={onDiaryClick} />
+  ));
+
+  const fillerCount = diaryList.length < 3 ? 3 - diaryList.length : 0;
+  const fillers = Array.from({ length: fillerCount }, (_, idx) => (
+    <div
+      key={`filler-${idx}`}
+      style={{
+        visibility: 'hidden',
+        height: '100%',     // DiaryItem과 높이 맞춤
+      }}
+    />
+  ));
+
   return (
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gridTemplateColumns: 'repeat(3, 1fr)', // 항상 3열
         gap: '20px',
       }}
     >
-      {diaryList.map((it) => (
-        <DiaryItem key={it.id} {...it} onClick={onDiaryClick} />
-      ))}
+      {visibleCards}
+      {fillers}
     </div>
   );
 }
@@ -69,6 +83,7 @@ function DiaryPage() {
   const [selectedDiaryId, setSelectedDiaryId] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [searchType, setSearchType] = useState("all");
+  const [isSearching, setIsSearching] = useState(false);
   const [sortType, setSortType] = useState("latest");
   const [filter, setFilter] = useState("all");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -128,7 +143,10 @@ function DiaryPage() {
   });
 
   const handleSearch = async () => {
-    if (!keyword.trim()) return alert("검색어를 입력해주세요!");
+    if (!keyword.trim()) {
+      alert('검색어를 입력해주세요!');
+      return;
+    }
     try {
       const res = await axios.get('/diary/search', {
         params: { memberno, keyword, type: searchType, page: 0, size },
@@ -144,10 +162,18 @@ function DiaryPage() {
       dispatch({ type: 'SET', data: mapped });
       setTotalPages(res.data.totalPages);
       setPage(0);
+      setIsSearching(true);  // ✅ 검색 모드 활성화
     } catch (err) {
       console.error('검색 실패:', err);
-      alert("검색 실패!");
+      alert('검색 실패!');
     }
+  };
+  const handleCancel = () => {
+    setKeyword('');
+    setIsSearching(false);
+    setPage(0);
+    // 🔄 전체 데이터 다시 불러오기
+    fetchDiaries();  // 전체 리스트 로딩 함수
   };
 
   const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
@@ -172,15 +198,6 @@ function DiaryPage() {
     backgroundPosition: 'right 12px center', // 🔥 오른쪽에서 12px 들여쓰기
     backgroundSize: '12px',
     paddingRight: '32px', // 🔥 화살표 공간 확보
-  };
-
-  const diaryCardStyle = {
-    border: '1px solid #eee',
-    borderRadius: '16px',
-    padding: '20px',
-    backgroundColor: '#fff',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-    transition: '0.3s',
   };
 
   const paginationStyle = (active) => ({
@@ -212,8 +229,8 @@ function DiaryPage() {
   return (
     <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <h1 style={{ fontSize: '36px' }}>일기</h1>
-        <p style={{ fontSize: '16px', color: '#555' }}>
+        <h1 className='diary-title'>일기</h1>
+        <p className='diary-subtitle'>
           ✍️ 오늘 하루, 마음은 어땠나요?<br />
           생각이나 기분을 짧게 적어보는 것만으로도<br />
           마음이 조금 가벼워질 수 있어요!
@@ -224,26 +241,38 @@ function DiaryPage() {
         <button onClick={() => setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() - 1))} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           <img src="/diary/images/left.png" alt="이전 달" style={{ width: '18px', height: '18px' }} />
         </button>
-        <h2 style={{ margin: 0 }}>{headText}</h2>
+        <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '500' }}>{headText}</h2>
         <button onClick={() => setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() + 1))} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           <img src="/diary/images/right.png" alt="다음 달" style={{ width: '18px', height: '18px' }} />
         </button>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', margin: '0 auto 20px', width: '80%'}}>
-        <select style={selectStyle} value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-          <option value="all">제목+내용</option>
-          <option value="title">제목</option>
-          <option value="content">내용</option>
-        </select>
-        <input
-          type="text"
-          placeholder="검색어를 입력해주세요"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc', flex: 1 }}
-        />
-        <button onClick={handleSearch} style={buttonStyle}>검색</button>
+      {/* 일기 검색 */}
+      <div className="diary-search-wrapper">
+        <div className="diary-search-form">
+          <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+            <option value="all">제목+내용</option>
+            <option value="title">제목</option>
+            <option value="content">내용</option>
+          </select>
+          <input
+            type="text"
+            placeholder="검색어 입력"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearch();
+              }
+            }}
+          />
+          {!isSearching ? (
+            <button onClick={handleSearch}>검색</button>
+          ) : (
+            <button onClick={handleCancel}>취소</button>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
@@ -268,7 +297,7 @@ function DiaryPage() {
           </select>
         </div>
 
-        <button onClick={() => setSelectedDiaryId('create')} style={buttonStyle}>새 일기쓰기</button>
+        <button onClick={() => setSelectedDiaryId('create')} className='yellow-btn'>새 일기쓰기</button>
       </div>
 
       <hr style={{
@@ -277,7 +306,13 @@ function DiaryPage() {
         marginBottom: '30px'
       }} />
 
-      <DiaryList diaryList={filteredList} onDiaryClick={(id) => setSelectedDiaryId(id)} />
+      {filteredList.length === 0 ? (
+        <div style={{ textAlign: 'center', margin: '40px 0', fontSize: '18px', color: '#777' }}>
+          작성된 일기가 없습니다.
+        </div>
+      ) : (
+        <DiaryList diaryList={filteredList} onDiaryClick={(id) => setSelectedDiaryId(id)} />
+      )}
 
       {selectedDiaryId && (
         <DiaryReadModal
@@ -304,6 +339,12 @@ function DiaryPage() {
                 type: 'REMOVE',
                 targetId: result
               });
+              if (filteredList.length === 1 && page > 0) {
+                setPage(page - 1);
+                setSearchParams({ page: page - 1 });
+              } else {
+                fetchDiaries();  // ✅ 삭제 후 다시 fetch
+              }
               setSelectedDiaryId(null);
             } else {
               // 수정된 경우
@@ -323,74 +364,51 @@ function DiaryPage() {
         />
       )}
 
-      <div style={{ marginTop: '40px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-        {/* ◀️ 이전 페이지 */}
-        <button
-          onClick={() => {
-            if (page > 0) {
-              setPage(page - 1);
-              setSearchParams({ page: page - 1 });
-            }
-          }}
-          disabled={page === 0}
-          style={{
-            ...paginationStyle(false),
-            opacity: page === 0 ? 0.4 : 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0', 
-            background: 'none',      // 🔥 배경 제거
-            border: 'none',          // 🔥 테두리 제거
-            cursor: 'pointer',
-          }}
-        >
-          <img src="/diary/images/left.png" alt="이전 페이지" style={{ width: '16px', height: '16px', margin: '0px' }} />
-        </button>
-
-        {/* 페이지 번호 */}
-        {Array.from({ length: totalPages }, (_, i) => (
+      {filteredList.length > 0 && (
+        <div className="custom-pagination-container">
+          {/* ◀️ 이전 페이지 */}
           <button
-            key={i}
             onClick={() => {
-              setPage(i);
-              setSearchParams({ page: i });
+              if (page > 0) {
+                setPage(page - 1);
+                setSearchParams({ page: page - 1 });
+              }
             }}
-            style={{
-              ...paginationStyle(i === page),
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            disabled={page === 0}
+            className={`page-arrow-btn ${page === 0 ? 'disabled' : ''}`}
           >
-            {i + 1}
+            <img src="/diary/images/left.png" alt="이전 페이지" className="arrow-icon" />
           </button>
-        ))}
 
-        {/* ▶️ 다음 페이지 */}
-        <button
-          onClick={() => {
-            if (page < totalPages - 1) {
-              setPage(page + 1);
-              setSearchParams({ page: page + 1 });
-            }
-          }}
-          disabled={page === totalPages - 1}
-          style={{
-            ...paginationStyle(false),
-            opacity: page === totalPages - 1 ? 0.4 : 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0',
-            background: 'none',      // 🔥 배경 제거
-            border: 'none',          // 🔥 테두리 제거
-            cursor: 'pointer',
-          }}
-        >
-          <img src="/diary/images/right.png" alt="다음 페이지" style={{ width: '16px', height: '16px', margin: '0px'}} />
-        </button>
-      </div>
+          {/* 페이지 번호 */}
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                setPage(i);
+                setSearchParams({ page: i });
+              }}
+              className={`page-number-btn ${i === page ? 'active' : ''}`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          {/* ▶️ 다음 페이지 */}
+          <button
+            onClick={() => {
+              if (page < totalPages - 1) {
+                setPage(page + 1);
+                setSearchParams({ page: page + 1 });
+              }
+            }}
+            disabled={page === totalPages - 1}
+            className={`page-arrow-btn ${page === totalPages - 1 ? 'disabled' : ''}`}
+          >
+            <img src="/diary/images/right.png" alt="다음 페이지" className="arrow-icon" />
+          </button>
+        </div>
+      )}
     </div>
   );
   

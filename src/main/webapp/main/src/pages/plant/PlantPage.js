@@ -176,7 +176,10 @@
 // }
 
 // export default PlantPage;
-import React, { useEffect, useState } from 'react';
+
+// src/components/PlantPage.js
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import IntroScreen from './IntroScreen';
 import LoadingScreen from './LoadingScreen';
 import SeedSelect from './SeedSelect';
@@ -184,76 +187,111 @@ import SeedNamePage from './SeedNamePage';
 import MainPage from './MainPage';
 import GuideOverlay from './GuideOverlay';
 import { PointProvider } from './PointContext';
-import axios from 'axios';
 
-function PlantPage() {
-  const [step, setStep] = useState(0);
+const PlantPage = () => {
+  const memberno = localStorage.getItem('memberno');
+  const [step, setStep] = useState('checking'); 
+  // 'checking' → 'intro' → 'loading' → 'select' → 'name' → 'main'
   const [showGuide, setShowGuide] = useState(false);
-  const [hasSeenGuide, setHasSeenGuide] = useState(false);
 
+  // ✔️ 1) 마운트 시 식물 존재 여부만 체크
   useEffect(() => {
-    const memberno = localStorage.getItem('memberno');
+  axios.get(`/api/plant/exists/${memberno}`)
+    .then(res => {
+      console.log('🌱 exists 호출 응답:', res.data);
+      // ★ res.data = { exists: true } 이므로 .exists 프로퍼티를 사용
+      const hasPlant = res.data.exists === true;
+      console.log('🌱 hasPlant 판단:', hasPlant);
+      setStep(hasPlant ? 'main' : 'intro');
+      // Guide 노출 여부도 이 시점에 한번 결정해도 좋습니다.
+      if (hasPlant) {
+        setShowGuide(!localStorage.getItem(`hasSeenPlantFeature_${memberno}`));
+      }
+    })
+    .catch(err => {
+      console.error('🌱 exists 호출 에러:', err);
+      setStep('intro');
+    });
+}, [memberno]);
 
-    const checkPlant = async () => {
+  // ✔️ 2) 인트로 완료하면 로딩 → 씨앗 선택
+  const handleIntroDone = () => setStep('loading');
+  useEffect(() => {
+    if (step === 'loading') {
+      const t = setTimeout(() => setStep('select'), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [step]);
+
+  // ✔️ 3) 씨앗 선택 완료
+  const handleSeedComplete = seed => {
+    localStorage.setItem(`selectedSeed_${memberno}`, seed);
+    setStep('name');
+  };
+
+  // ✔️ 4) 이름 부여 완료 → 생성 + 초기 포인트 → 메인
+  // PlantPage.js (handleNameComplete 부분)
+    const handleNameComplete = async (plantName) => {
+      const memberno = localStorage.getItem('memberno');
+      const seed     = localStorage.getItem(`selectedSeed_${memberno}`);
       try {
-        const res = await axios.get(`/api/plant/exists/${memberno}`);
-        const hasPlant = res.data;
+        const payload = {
+          memberno,
+          plant_name:      plantName,
+          plant_type:      seed,
+          growth:          0,
+          points:          0,
+          intro_completed: 'Y',
+        };
 
-        if (hasPlant) {
-          setStep(5); // 식물이 있으면 메인 페이지로
-          setHasSeenGuide(true);
-        } else {
-          setStep(1); // 식물이 없으면 인트로부터
+        // 1) 식물 생성
+        const createRes = await axios.post('/api/plant/create', payload);
+        console.log('🍀 createRes.status ➡', createRes.status);
+        console.log('🍀 createRes.data   ➡', createRes.data);
+
+        // 만약 createRes.data 가 1이 아니라면, 이제 정확히 무엇이 왔는지 보고 분기 수정
+        if (!createRes.data.created) {
+          // 예) 만약 { result: 1 } 이라면 createRes.data.result === 1 으로 체크
+          throw new Error(`create failed: unexpected payload`);
         }
-      } catch (err) {
-        console.error('식물 존재 여부 확인 실패', err);
+
+        // 2) 포인트 초기화
+        const initRes = await axios.post(`/api/point/init/${memberno}`);
+        console.log('✅ initRes.data ➡', initRes.data);
+
+        // 3) 메인 진입
+        setStep('main');
+        setShowGuide(!localStorage.getItem(`hasSeenPlantFeature_${memberno}`));
+      }
+      catch (err) {
+        console.error('❌ 생성 에러:', err);
+        alert('식물 생성 중 오류가 발생했습니다. 콘솔을 확인해주세요.');
       }
     };
 
-    checkPlant();
-  }, []);
-
-  const handleIntroDone = () => {
-    setStep(2);
-    setTimeout(() => setStep(3), 3000);
-  };
-
-  const handleSeedSelected = () => {
-    setStep(4);
-  };
-
-  const handleNameCompleted = () => {
-    setStep(5);
-    const memberno = localStorage.getItem('memberno');
-    setTimeout(() => {
-      if (!localStorage.getItem(`hasSeenPlantFeature_${memberno}`)) {
-        setShowGuide(true);
-      }
-    }, 3000);
-  };
-
+  // ✔️ 5) 가이드 종료
   const handleGuideEnd = () => {
-    const memberno = localStorage.getItem('memberno');
-    setShowGuide(false);
     localStorage.setItem(`hasSeenPlantFeature_${memberno}`, 'true');
+    setShowGuide(false);
   };
+
+  // --- 렌더링 분기 ---
+  if (step === 'checking') return <LoadingScreen />;
 
   return (
-    <div>
-      {step === 1 && <IntroScreen onNext={handleIntroDone} />}
-      {step === 2 && <LoadingScreen />}
-      {step === 3 && <SeedSelect onComplete={handleSeedSelected} />}
-      {step === 4 && <SeedNamePage onComplete={handleNameCompleted} />}
-      {step === 5 && (
-        <>
-          <PointProvider memberno={localStorage.getItem('memberno')}>
-            <MainPage />
-          </PointProvider>
-          {!hasSeenGuide && showGuide && <GuideOverlay onFinish={handleGuideEnd} />}
-        </>
+    <>
+      {step === 'intro'   && <IntroScreen    onNext={handleIntroDone} />}
+      {step === 'select'  && <SeedSelect     onComplete={handleSeedComplete} />}
+      {step === 'name'    && <SeedNamePage   onComplete={handleNameComplete} />}
+      {step === 'loading' && <LoadingScreen  />}
+      {step === 'main'    && (
+        <PointProvider memberno={memberno}>
+          <MainPage />
+          {showGuide && <GuideOverlay onFinish={handleGuideEnd} />}
+        </PointProvider>
       )}
-    </div>
+    </>
   );
-}
+};
 
 export default PlantPage;

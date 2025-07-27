@@ -7,17 +7,43 @@ function MyInquiryList({ memberno }) {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
     const fetchList = async () => {
-      const res = await fetch(`/inquiry/list_all/${memberno}`);
-      const data = await res.json();
-      const myInquiries = data.filter(inquiry => String(inquiry.memberno) === String(memberno));
-      setList(myInquiries);
-      setFilteredList(myInquiries);
+      try {
+        const res = await fetch(`/inquiry/list_all?memberno=${memberno}`);
+        const data = await res.json();
+
+        console.log("📦 응답 데이터:", data);
+        console.log("👤 현재 로그인 memberno:", memberno);
+
+        // 응답에서 실제 배열을 추출
+        const list = Array.isArray(data)
+          ? data
+          : Array.isArray(data.data)
+          ? data.data
+          : [];
+
+        // 🔍 내 문의만 필터링 (memberno 비교)
+        const myInquiries = list.filter(
+          (inquiry) => String(inquiry.memberno) === String(memberno)
+        );
+
+        console.log("✅ 나의 문의 리스트:", myInquiries);
+
+        setList(myInquiries);
+        setFilteredList(myInquiries);
+      } catch (err) {
+        console.error("❌ 문의 목록 불러오기 실패:", err);
+        setList([]);
+        setFilteredList([]);
+      }
     };
+
     fetchList();
   }, [memberno]);
+
 
   useEffect(() => {
     const keyword = search.toLowerCase();

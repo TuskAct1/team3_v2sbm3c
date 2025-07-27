@@ -1,23 +1,14 @@
 // DiaryReadModal.js
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import LightboxViewer from './LightboxViewer';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import './DiaryPage.css';
+import './DiaryReadModal.css';
 
-const sliderSettings = {
-  dots: true,
-  infinite: false,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  arrows: true,
-  adaptiveHeight: true,
-};
+export default function DiaryReadModal({id, onClose, onSuccess, createMode = false}) {
 
-export default function DiaryReadModal({
-  id,
-  onClose,
-  onSuccess,
-  createMode = false
-}) {
   const [isCloseHovered, setIsCloseHovered] = useState(false);
   const [diary, setDiary] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -30,18 +21,31 @@ export default function DiaryReadModal({
   const [deletedExistingImages, setDeletedExistingImages] = useState([]);
   const [newImages, setNewImages] = useState([null, null, null, null]);
   const fileInputRefs = [useRef(), useRef(), useRef(), useRef()];
-  const [sliderIndex, setSliderIndex] = useState(0);
-
-  const fileInputRef = useRef();
-  const sliderRef = useRef();
 
   const [isDefaultImage, setIsDefaultImage] = useState(false);
   const [defaultImageName, setDefaultImageName] = useState('');
-  const [defaultImagePath, setDefaultImagePath] = useState('');
   const [defaultImageBackup, setDefaultImageBackup] = useState('');
   const [isDefaultImageBackup, setIsDefaultImageBackup] = useState(false);
 
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  const [existingImagesBackup, setExistingImagesBackup] = useState([]);
+  const [newImagesBackup, setNewImagesBackup] = useState([null, null, null, null]);
+
   const isReadMode = !createMode && !isEditMode;
+
+  const hasNoImage = isReadMode && !defaultImageName && existingImages.length === 0;
+
+  const emotionIcons = [
+    { score: 1, icon: "😃", label: "긍정" },
+    { score: 2, icon: "😠", label: "부정" },
+    { score: 3, icon: "😐", label: "중립" },
+    { score: 4, icon: "😰", label: "불안" },
+    { score: 5, icon: "😢", label: "우울" },
+  ];
+  
+  const emotionObj = emotionIcons.find(e => e.score === editRiskFlag) || { icon: "😐", label: "중립" };
+
 
   const getDefaultImageName = () => {
     const now = new Date();
@@ -89,9 +93,14 @@ export default function DiaryReadModal({
         setEditContent(res.data.content);
         setEditRiskFlag(res.data.risk_flag ?? 3);
         const images = res.data.file1saved
-          ? res.data.file1saved.split(',').map(s => s.trim()).filter(Boolean)
+          ? res.data.file1saved
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean)
+          .filter(img => img !== res.data.default_image)
           : [];
         setExistingImages(images);
+        setDefaultImageName(res.data.default_image || '');
       })
       .catch(() => {
         alert('불러오기 실패');
@@ -99,26 +108,30 @@ export default function DiaryReadModal({
       });
   }, [id, onClose, createMode]);
 
-  const emotionIcons = [
-    { score: 1, icon: "😃", label: "긍정" },
-    { score: 2, icon: "😠", label: "부정" },
-    { score: 3, icon: "😐", label: "중립" },
-    { score: 4, icon: "😰", label: "불안" },
-    { score: 5, icon: "😢", label: "우울" },
-  ];
-  const emotionObj = emotionIcons.find(e => e.score === editRiskFlag) || { icon: "😐", label: "중립" };
+  useEffect(() => {
+    if (!createMode && isEditMode) {
+      setNewImages([null, null, null, null]);
+    }
+  }, [isEditMode, createMode]);
+
+  useEffect(() => {
+  if (!createMode && diary?.file1saved && existingImages.length === 0) {
+    const images = diary.file1saved
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .filter(img => img !== diary.default_image); // ✅ default 이미지 제거
+    setExistingImages(images);
+  }
+}, [diary, createMode]);
+
 
   const handleEnterEditMode = () => {
-    setIsEditMode(true);
-    setSliderIndex(0);
-    sliderRef.current?.slickGoTo(0);
 
-    // ✅ 기존 이미지 4개를 newImages에 채워 넣기
-    // const filled = [null, null, null, null];
-    // existingImages.forEach((img, i) => {
-    //   if (i < 4) filled[i] = `/diary/storage/${encodeURIComponent(img)}`;
-    // });
-    // setNewImages(filled);
+    setIsEditMode(true);
+
+    setExistingImagesBackup([...existingImages]);
+    setNewImagesBackup([...newImages]);
 
     // ✅ 기본 이미지 설정 상태 적용
     if (diary?.default_image) {
@@ -146,23 +159,22 @@ export default function DiaryReadModal({
       setIsDefaultImage(isDefaultImageBackup);
       setDefaultImageName(defaultImageBackup);
 
+      // ✅ 이미지 상태 복구
+      setExistingImages([...existingImagesBackup]);
+      setNewImages([...newImagesBackup]);
+
       setIsEditMode(false);
-      setSliderIndex(0);
-      sliderRef.current?.slickGoTo(0);
     }
   };
-
 
   const handleToggleDefaultImage = () => {
     if (isDefaultImage) {
       setIsDefaultImage(false);
       setDefaultImageName('');
-      setDefaultImagePath('');
     } else {
       const name = getDefaultImageName();
       setIsDefaultImage(true);
       setDefaultImageName(name);
-      setDefaultImagePath(`/diary/images/${name}`);
 
       // 🧹 기존 이미지 초기화
       setNewImages([null, null, null, null]);
@@ -178,20 +190,6 @@ export default function DiaryReadModal({
     const updated = [...newImages];
     updated[index] = file;
     setNewImages(updated);
-  };
-
-  const handleAddImages = (e) => {
-    const files = Array.from(e.target.files);
-    setNewImages(prev => [...prev, ...files]);
-  };
-
-  const handleRemoveExistingImage = (idx) => {
-    setDeletedExistingImages(prev => [...prev, existingImages[idx]]);
-    setExistingImages(prev => prev.filter((_, i) => i !== idx));
-  };
-
-  const handleRemoveNewImage = (idx) => {
-    setNewImages(prev => prev.filter((_, i) => i !== idx));
   };
 
   const handleDelete = async () => {
@@ -275,246 +273,194 @@ export default function DiaryReadModal({
     }
   };
 
-
-  console.log("✅ diary.default_image:", diary?.default_image);
-
-  const uploadBoxStyle = {
-    width: '100px',
-    height: '100px',
-    border: '2px dashed #ccc',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    backgroundColor: '#f9f9f9',
-  };
-
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10000
-    }}>
-      <div style={{
-        width: '60%',
-        height: '70%',
-        background: '#fff',
-        borderRadius: '12px',
-        padding: '20px',
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'row',
-      }}>
+    <div className="diary-modal-overlay">
+      <div className="diary-modal-container">
         {/* 왼쪽 - 이미지 영역 */}
-        <div style={{
-          flex: 1.25,
-          paddingRight: '20px',
-          borderRight: '1px solid #eee',
-          overflow: 'hidden',
-          textAlign: 'center'
-        }}>
-          {isEditMode ? (
-            isDefaultImage ? (
-              <div style={{ marginTop: '20px' }}>
-                <img
-                  src={`/diary/images/${defaultImageName}`}
-                  alt="기본 이미지"
-                  style={{
-                    width: '210px',
-                    height: '210px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                  }}
-                />
-              </div>
+        {!hasNoImage && (
+          <div className="diary-image-section">
+            {isEditMode ? (
+              isDefaultImage ? (
+                <div className="diary-default-image-wrapper">
+                  <img
+                    src={`/diary/images/${defaultImageName}`}
+                    alt="기본 이미지"
+                    className="diary-default-image"
+                  />
+                </div>
             ) : (
-              <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '10px',
-                justifyContent: 'center',
-                marginTop: '20px'
-              }}>
-                {existingImages.map((img, idx) => (
-                  <div
-                    key={`existing-${idx}`}
-                    style={{
-                      width: idx === 0 ? '210px' : '100px',
-                      height: idx === 0 ? '210px' : '100px',
-                      border: '2px dashed #ccc',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      backgroundColor: '#f9f9f9',
-                      position: 'relative',
-                    }}
-                  >
-                    <img
-                      src={`/diary/storage/${encodeURIComponent(img)}`}
-                      alt={`기존 이미지 ${idx + 1}`}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
-                    />
+              (() => {
+                const totalImages = [
+                  ...existingImages.filter((img) => img && img !== defaultImageName),
+                  ...newImages.filter((img) => img instanceof File),
+                ].slice(0, 4);
 
-                    {/* 삭제 버튼 */}
-                    <img
-                      src="/diary/images/remove.png"
-                      alt="삭제"
-                      onClick={() => handleRemoveExistingImage(idx)}
-                      style={{
-                        position: 'absolute',
-                        top: '4px',
-                        right: '4px',
-                        width: '20px',
-                        height: '20px',
-                        cursor: 'pointer',
-                      }}
-                    />
-                  </div>
-                ))}
-                {newImages.map((file, idx) => {
-                  const isValidFile = file instanceof File || typeof file === 'string';
+                const imageBoxList = totalImages.map((img, idx) => {
+                  const isFile = img instanceof File;
+                  const previewUrl = isFile
+                    ? URL.createObjectURL(img)
+                    : `/diary/storage/${encodeURIComponent(img)}`;
+
+                  const isNew = isFile || newImages.includes(img);
+
                   return (
                     <div
-                      key={idx}
-                      style={{
-                        width: idx === 0 ? '210px' : '100px',
-                        height: idx === 0 ? '210px' : '100px',
-                        border: '2px dashed #ccc',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        backgroundColor: '#f9f9f9',
-                        position: 'relative',
-                      }}
+                      key={`img-${idx}`}
+                      className={`diary-img-box ${idx === 0 ? 'main' : 'sub'}`}
+                      onClick={() => fileInputRefs[idx]?.current?.click()}
                     >
-                      {/* 이미지 미리보기 or 텍스트 */}
-                      {isValidFile ? (
-                        <img
-                          src={file instanceof File ? URL.createObjectURL(file) : file}
-                          alt={`preview-${idx}`}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
-                          onClick={() => fileInputRefs[idx].current.click()}  // 클릭 시 업로드
-                        />
-                      ) : (
-                        <span
-                          onClick={() => fileInputRefs[idx].current.click()}
-                          style={{ color: '#aaa', fontSize: '0.9rem' }}
-                        >
-                          {idx === 0 ? '메인 이미지' : `이미지 ${idx + 1}`}
-                        </span>
-                      )}
+                      <img
+                        src={previewUrl}
+                        alt={`이미지 ${idx}`}
+                        className="diary-img-preview"
+                      />
 
-                      {/* 삭제 버튼 */}
-                      {isValidFile && (
-                        <img
-                          src="/diary/images/remove.png"
-                          alt="삭제"
-                          onClick={(e) => {
-                            e.stopPropagation(); // 파일 선택창 방지
+                      <img
+                        src="/diary/images/remove.png"
+                        alt="삭제"
+                        className="diary-img-remove"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isNew) {
                             const updated = [...newImages];
                             updated[idx] = null;
                             setNewImages(updated);
-                          }}
-                          style={{
-                            position: 'absolute',
-                            top: '4px',
-                            right: '4px',
-                            width: '20px',
-                            height: '20px',
-                            cursor: 'pointer',
-                          }}
+                          } else {
+                            const updated = [...existingImages];
+                            updated.splice(idx, 1);
+                            setExistingImages(updated);
+                            setDeletedExistingImages((prev) => [...prev, img]);
+                          }
+                        }}
+                      />
+
+                      {isNew && (
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          ref={fileInputRefs[idx]}
+                          onChange={(e) => handleSelectImage(idx, e)}
                         />
                       )}
-
-                      <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        ref={fileInputRefs[idx]}
-                        onChange={(e) => handleSelectImage(idx, e)}
-                      />
                     </div>
                   );
-                })}
+                });
 
-              </div>
+                const emptyBox = (idx) => (
+                  <div
+                    key={`empty-${idx}`}
+                    className={`diary-img-empty-box ${idx === 0 ? 'main' : 'sub'}`}
+                    onClick={() => fileInputRefs[idx]?.current?.click()}
+                  >
+                    <span className="diary-img-empty-label">
+                      {idx === 0 ? '메인 이미지' : `이미지 ${idx}`}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      ref={fileInputRefs[idx]}
+                      onChange={(e) => handleSelectImage(idx, e)}
+                    />
+                  </div>
+                );
+
+                return (
+                  <div className="diary-img-wrapper">
+                    <div className="diary-img-group">
+                      {/* 메인 이미지 */}
+                      <div className="diary-img-main">
+                        {imageBoxList[0] || emptyBox(0)}
+                      </div>
+
+                      {/* 하단 서브 이미지 */}
+                      <div className="diary-img-sub-list">
+                        {[1, 2, 3].map((idx) => (
+                          <div key={idx} className="diary-img-sub-box">
+                            {imageBoxList[idx] || emptyBox(idx)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
             )
           ) : (
-            <div style={{ marginTop: '20px' }}>
-              {diary?.default_image ? (
-                // ✅ 기본 이미지가 있을 경우
-                <img
-                  src={`/diary/images/${diary.default_image}`}
-                  alt="기본 이미지"
-                  style={{
-                    width: '210px',
-                    height: '210px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    margin: '5px'
-                  }}
-                />
-              ) : existingImages.length === 0 ? (
-                // ✅ 업로드 이미지도 없는 경우
-                <p style={{
-                  color: '#aaa',
-                  paddingTop: '50%',
-                  transform: 'translateY(-50%)'
-                }}>이미지 없음</p>
-              ) : (
-                // ✅ 업로드 이미지가 있는 경우
-                existingImages.map((img, idx) => (
-                  <img
-                    key={idx}
-                    src={`/diary/storage/${encodeURIComponent(img)}`}
-                    alt={`이미지 ${idx + 1}`}
-                    style={{
-                      width: idx === 0 ? '210px' : '100px',
-                      height: idx === 0 ? '210px' : '100px',
-                      objectFit: 'cover',
-                      borderRadius: '8px',
-                      margin: '5px'
-                    }}
-                  />
-                ))
-              )}
-            </div>
-          )}
+            // ✅ 읽기 모드
+            (() => {
+              const totalImages = defaultImageName
+                ? [defaultImageName, ...existingImages.filter(img => img !== defaultImageName)].slice(0, 4)
+                : existingImages.slice(0, 4);
 
+              const isDefaultImage = totalImages[0] === defaultImageName;
+
+              return (
+                <div className="diary-read-wrapper">
+                  <div className="diary-read-container">
+                    <div
+                      className={`diary-read-main ${isDefaultImage ? 'default' : ''}`}
+                    >
+                      {totalImages[0] ? (
+                        <img
+                          src={isDefaultImage
+                            ? `/diary/images/${defaultImageName}`
+                            : `/diary/storage/${encodeURIComponent(totalImages[0])}`}
+                          alt="메인 이미지"
+                          className={`diary-read-main-img ${isDefaultImage ? '' : 'clickable'}`}
+                          onClick={() => {
+                            if (!isDefaultImage) setLightboxIndex(0);
+                          }}
+                        />
+                      ) : (
+                        <p className="diary-read-no-img">이미지 없음</p>
+                      )}
+                    </div>
+
+                    {!isDefaultImage && (
+                      <div className="diary-read-sub-imgs">
+                        {[1, 2, 3].map((idx) => (
+                          <div
+                            key={idx}
+                            className={`diary-read-sub-img-box ${idx === 3 ? 'last' : ''}`}
+                          >
+                            {totalImages[idx] ? (
+                              <img
+                                src={`/diary/storage/${encodeURIComponent(totalImages[idx])}`}
+                                alt={`서브 이미지 ${idx}`}
+                                className="diary-read-sub-img"
+                                onClick={() => setLightboxIndex(idx)}
+                              />
+                            ) : (
+                              <div className="diary-read-sub-img-placeholder" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {isReadMode && (
+                    <LightboxViewer
+                      fileList={totalImages.map((img) =>
+                        img === defaultImageName ? defaultImageName : encodeURIComponent(img)
+                      )}
+                      lightboxIndex={lightboxIndex}
+                      setLightboxIndex={setLightboxIndex}
+                    />
+                  )}
+                </div>
+              );
+            })()
+          )}
         </div>
+      )}
 
         {/* 오른쪽 - 내용 영역 */}
-        <div style={{
-          flex: 1.75,
-          paddingLeft: '20px',
-          position: 'relative',
-          minHeight: '400px'
-        }}>
-          {/* 상단 헤더: 제목 + 닫기버튼 */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '16px'
-          }}>
-            <h3 style={{
-              margin: 0,
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: '#333'
-            }}>
+        <div className={`diary-right-panel ${hasNoImage ? 'no-image' : ''}`}>
+          <div className="diary-header">
+            <h3 className="diary-header-title">
               {isReadMode
                 ? '📖 일기 보기'
                 : (createMode ? '✏️ 새 일기 작성' : '✏️ 수정 모드')}
@@ -523,130 +469,68 @@ export default function DiaryReadModal({
               onClick={onClose}
               onMouseEnter={() => setIsCloseHovered(true)}
               onMouseLeave={() => setIsCloseHovered(false)}
-              style={{
-                border: 'none',
-                background: 'none',
-                padding: 0,
-                cursor: 'pointer'
-              }}
+              className="diary-close-btn"
             >
               <img
                 src={isCloseHovered ? '/diary/images/close_cursor.png' : '/diary/images/close.png'}
                 alt="닫기"
-                style={{ width: '24px', height: '24px', display: 'block' }}
+                className="diary-close-icon"
               />
             </button>
           </div>
 
-                    {isReadMode ? (
+          {isReadMode ? (
             <>
-              <h3 style={{ marginBottom: '5px', fontSize: '1rem', color: '#333', fontWeight: 'bold' }}>제목</h3>
-              <div style={{
-                padding: '8px',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                backgroundColor: '#f9f9f9',
-                marginBottom: '10px',
-                minHeight: '38px'
-              }}>
-                {diary?.title}
-              </div>
+              <h3 className="diary-section-label">제목</h3>
+              <div className='title'>{diary?.title}</div>
 
-              <h3 style={{ marginBottom: '5px', fontSize: '1rem', color: '#333', fontWeight: 'bold' }}>내용</h3>
-              <div style={{
-                padding: '8px',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                backgroundColor: '#f9f9f9',
-                whiteSpace: 'pre-wrap',
-                marginBottom: '20px',
-                minHeight: '300px'
-              }}>
-                {diary?.content}
-              </div>
+              <h3 className="diary-section-label">내용</h3>
+              <div
+                className="diary-content"
+                dangerouslySetInnerHTML={{ __html: diary?.content }}
+              />
 
-              <p><strong>감정:</strong> {emotionObj.icon} {emotionObj.label}</p>
-              <p><strong>날짜:</strong> {diary?.rdate}</p>
+              <p style={{marginBottom: "10px"}}>
+                <strong>감정:</strong>{' '}
+                <span className="emotion-icon">{emotionObj.icon}</span>{' '}
+                <span className="emotion-label">{emotionObj.label}</span>
+              </p>
+              <div className="diary-bottom-row">
+                <p style={{marginBottom: "10px"}}><strong>날짜:</strong> {diary?.rdate}</p>
 
-              <div style={{
-                position: 'absolute',
-                bottom: '20px',
-                right: '20px',
-                display: 'flex',
-                gap: '12px'
-              }}>
-                <button
-                  onClick={handleEnterEditMode}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#d0f0c0',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >수정</button>
-                <button
-                  onClick={handleDelete}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#f4cccc',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >삭제</button>
+                <div className="diary-footer-buttons">
+                  <button onClick={handleEnterEditMode} className="diary-btn diary-btn-edit">수정</button>
+                  <button onClick={handleDelete} className="diary-btn diary-btn-delete">삭제</button>
+                </div>
               </div>
             </>
           ) : (
             <>
-              <h3 style={{ marginBottom: '5px', fontSize: '1rem', color: '#333', fontWeight: 'bold' }}>제목</h3>
+              <h3 className="diary-section-label">제목</h3>
               <input
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 placeholder="제목"
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  marginBottom: '10px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  backgroundColor: '#f9f9f9'
-                }}
+                className="title title-input"
               />
 
-              <h3 style={{ marginBottom: '5px', fontSize: '1rem', color: '#333', fontWeight: 'bold' }}>내용</h3>
-              <textarea
+              <h3 className="diary-section-label">내용</h3>
+              <ReactQuill
                 value={editContent}
-                onChange={(e) => setEditContent(e.target.value)}
-                placeholder="내용"
-                rows={12}
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  marginBottom: '20px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  backgroundColor: '#f9f9f9',
-                  resize: 'vertical',
-                  minHeight: '300px'
-                }}
+                onChange={setEditContent}
+                placeholder="내용을 입력하세요"
+                className="custom-quill"
               />
 
-              <div style={{ margin: '10px 0' }}>
+              <div className="diary-emotion-group">
                 <strong>감정:</strong>
-                <div style={{ display: 'flex', gap: '8px', marginTop: '5px' }}>
+                <div className="diary-emotion-icons">
                   {emotionIcons.map(({ score, icon, label }) => (
                     <div
                       key={score}
                       onClick={() => setEditRiskFlag(score)}
                       title={label}
-                      style={{
-                        cursor: 'pointer',
-                        fontSize: '1.8rem',
-                        border: editRiskFlag === score ? '2px solid #0077cc' : '2px solid transparent',
-                        borderRadius: '8px',
-                        padding: '2px'
-                      }}
+                      className={`diary-emotion-icon ${editRiskFlag === score ? 'active' : ''}`}
                     >
                       {icon}
                     </div>
@@ -654,58 +538,17 @@ export default function DiaryReadModal({
                 </div>
               </div>
 
-              <div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  ref={fileInputRef}
-                  onChange={handleAddImages}
-                  style={{ margin: '10px 0' }}
-                />
-              </div>
-
-              <div style={{
-                position: 'absolute',
-                bottom: '20px',
-                right: '20px',
-                display: 'flex',
-                gap: '12px'
-              }}>
+              <div className="diary-footer-buttons">
                 {isEditMode && (
                   <button
                     onClick={handleToggleDefaultImage}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: isDefaultImage ? '#ffdddd' : '#cce5ff',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
+                    className={`diary-btn ${isDefaultImage ? 'diary-btn-default-cancel' : 'diary-btn-default-set'}`}
                   >
                     {isDefaultImage ? '기본 이미지 취소' : '기본 이미지 설정'}
                   </button>
                 )}
-                <button
-                  onClick={handleSaveUpdate}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#d0f0c0',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >저장</button>
-                <button
-                  onClick={handleCancelEdit}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#eee',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >취소</button>
+                <button onClick={handleSaveUpdate} className="diary-btn diary-btn-edit">저장</button>
+                <button onClick={handleCancelEdit} className="diary-btn diary-btn-cancel">취소</button>
               </div>
             </>
           )}
@@ -714,4 +557,3 @@ export default function DiaryReadModal({
     </div>
   );
 }
-
