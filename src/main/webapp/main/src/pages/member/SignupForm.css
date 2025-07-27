@@ -90,16 +90,6 @@
   white-space: nowrap;
 }
 
-.gender-group {
-  display: flex;
-  gap: 16px;
-}
-
-.gender-group label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
 /* 
 .terms-section {
   background: #fff;
@@ -190,6 +180,13 @@ input:disabled, select:disabled {
   cursor: not-allowed;
 }
 
+
+.gender-group label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .gender-group {
   display: flex;
   gap: 20px;
@@ -215,11 +212,14 @@ input:disabled, select:disabled {
   position: relative;
   cursor: pointer;
   transition: border-color 0.2s ease;
+  vertical-align: middle;
 }
 
 .gender-option input[type="radio"]:checked {
   border: 1px solid #66bb6a; /* 기본 테두리 */
-  box-shadow: 0 0 0 5px #66bb6a inset; /* 안쪽으로 파란색 테두리 두껍게 */
+  box-shadow: 0 0 0 6.5px #66bb6a inset; /* 안쪽으로 파란색 테두리 두껍게 */
+    /* ✅ 추가 */
+  
 }
 
 .cert-btn {
@@ -410,7 +410,7 @@ input:disabled, select:disabled {
   height: 140px;
   border-radius: 50%;
   overflow: visible; /* 핵심 */
-  border: 3px solid #57b6ac;
+  border: 3px solid #7ba86e;
   box-shadow: 0 0 8px rgba(87, 182, 172, 0.4);
 }
 

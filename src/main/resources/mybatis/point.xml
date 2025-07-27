@@ -50,4 +50,5 @@
     WHERE memberno = #{memberno}
   </update>
 
+
 </mapper>

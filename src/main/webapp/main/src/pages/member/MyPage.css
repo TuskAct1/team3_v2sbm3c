@@ -1,126 +1,137 @@
+/* ✅ 전체 배경: 연두색 */
+body {
+  background-color: #edf4e9;
+  margin: 0;
+  padding: 0;
+}
 
+/* ✅ 마이페이지 전체 컨테이너 */
 .mypage-container {
-  max-width: 900px;
+  max-width: 1540px;
   margin: 0 auto;
-  padding: 30px 40px;
   font-family: 'Pretendard', sans-serif;
 }
 
+/* ✅ 상단 경로(홈 > 마이페이지) */
 .breadcrumb {
   font-size: 14px;
   color: #888;
-  margin-bottom: 20px;
+  margin: 20px 40px 0;
 }
 
-.tabs {
-  display: flex;
-  gap: 24px;
-  margin-top: 15px;
-  padding-bottom: 10px;
-  font-size: 15px;
+/* ✅ 마이페이지 헤더 카드 */
+.mypage-header-section {
+  background-color: #ffffff;
+  padding: 60px 250px 0px;
+  margin-bottom: 0px;
 }
 
-.tab {
-  cursor: pointer;
-  padding-bottom: 6px;
-  color: #444;
-}
-
-.tab.active {
-  color: #000;
-  font-weight: bold;
-  border-bottom: 3px solid #6eb269;
-}
-
-.check-icon {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  color: #6eb269;
-}
-
-/* 보상 신청 */
-.reward-section {
-  margin-top: 40px;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.reward-empty-box {
-  background-color: #e8f1e7;
+/* ✅ 콘텐츠 섹션 (전체 배경 영역) */
+.mypage-content-section {
+  background-color: #f3f8f1;
+  padding: 20px 200px;
   border-radius: 12px;
+}
+
+/* ✅ 보상/일정 섹션 공통 배경 */
+.mypage-reward-section,
+.mypage-schedule-section {
+  background-color: #e9f3e4;
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  margin-top: 30px;
+}
+
+/* ✅ 보상/일정 상단 헤더 */
+.mypage-reward-header,
+.mypage-schedule-header-row {
+  background-color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+/* ✅ 보상 타이틀/화살표 */
+.mypage-reward-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.mypage-reward-arrow {
+  font-size: 16px;
+  color: #666;
+}
+
+/* ✅ 보상 없음 안내 */
+.mypage-reward-empty-box {
   padding: 40px 20px;
   text-align: center;
+  color: #444;
 }
-
-.reward-empty-box .emoji {
+.mypage-reward-empty-box .emoji {
   font-size: 36px;
+  margin-bottom: 10px;
 }
-
-.reward-empty-box .text-bold {
-  margin-top: 10px;
+.mypage-reward-empty-box .text-bold {
   font-weight: bold;
   font-size: 16px;
+  margin-bottom: 6px;
 }
-
-.reward-empty-box .text-sub {
+.mypage-reward-empty-box .text-sub {
   font-size: 14px;
   color: #666;
-  margin: 10px 0;
+  margin-bottom: 16px;
 }
 
-.reward-button {
-  padding: 10px 18px;
+/* ✅ 보상 버튼 */
+.mypage-reward-button {
+  padding: 10px 20px;
   background-color: #6eb269;
   border-radius: 8px;
   color: white;
   text-decoration: none;
   font-size: 14px;
+  font-weight: bold;
   display: inline-block;
-  margin-top: 10px;
 }
 
-.reward-list {
+/* ✅ 보상 리스트 */
+.mypage-reward-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 20px;
 }
-
-.reward-item {
+.mypage-reward-item {
   background-color: #f2f2f2;
   padding: 12px 16px;
   border-radius: 8px;
 }
-.profile-section {
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 20px;
-}
 
+/* ✅ 프로필 영역 */
 .profile-box {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 15px;
+  margin-left: 30px;
+  margin-bottom: 50px;
 }
-
 .profile-img-wrapper {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
 }
-
 .profile-img {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #cfe0b9;
+  border: 2px solid #7ba86e;
 }
-
 .camera-icon {
   position: absolute;
   right: -6px;
@@ -133,133 +144,151 @@
   cursor: pointer;
   color: #6eb269;
 }
-
 .profile-name {
-  font-size: 18px;
+  font-size: 23px;
   font-weight: bold;
 }
-
 .profile-nickname {
-  font-size: 14px; /* 더 작게 */
-  color: #888888;  /* 회색 */
+  font-size: 20px;
+  color: #888;
 }
 
-.tabs-wrapper {
+/* ✅ 탭 스타일 */
+.mypage-tabs-wrapper {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 24px;
+  justify-content: center; /* 중앙 정렬 */
+  gap: 0px;                /* 탭 간 여백 */
+  border-bottom: 4px solid #eee;
+  margin-top: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 0;
 }
-
-.tab-item {
+.mypage-tab-item {
   position: relative;
+  width: 300px;               /* 🔥 탭 너비 고정 */
+  text-align: center;         /* 글자 가운데 정렬 */
+  font-weight: bold;
   font-size: 16px;
-  font-weight: 500;
-  color: #bbb;
+  color: #999;
+  padding: 8px 16px 10px;
+  /* padding: 8px 16px 0 16px; */
   cursor: pointer;
-  padding: 12px 0 8px;
-  transition: color 0.3s ease;
+  transition: background-color 0.2s ease;
+   line-height: 1.2;
+   border-radius: 8px 8px 0px 0px;
 }
 
-.tab-item::after {
+.mypage-tab-item:hover {
+  background-color: #f0f0f0; /* hover 시 회색 배경 */
+}
+
+.mypage-tab-item.active {
+  color: #222;
+  background-color: transparent;
+}
+
+.mypage-tab-item.active::after {
   content: "";
   position: absolute;
-  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #e0e0e0;
-  border-radius: 1px;
-  transition: background-color 0.3s ease;
+  bottom: -3px;
+  /* bottom: 0; ✅ 아래에 딱 붙도록 */
+  width: 100%; /* 탭 아이템 텍스트 + padding 너비만큼 */
+  height: 3px;
+  background-color: #7ba86e;
+  border-radius: 4px;
 }
 
-.tab-item.active {
-  font-weight: bold;
-  color: #222;
-}
-
-.tab-item.active::after {
-  background-color: #92ff4e;
-}
-
-/* 애니메이션 및 높이 자동 반영 */
-.tab-content-wrapper {
+/* ✅ 탭 콘텐츠 */
+.mypage-tab-content-wrapper {
   position: relative;
   overflow: hidden;
   min-height: 400px;
   padding-bottom: 40px;
 }
 
-.tab-motion-content {
-  width: 100%;
+/* ✅ 하루 일정 타이틀/화살표 */
+.mypage-schedule-title-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.mypage-schedule-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 6px;
+}
+.mypage-schedule-more-arrow {
+  font-size: 16px;
+  color: #666;
+  transition: color 0.2s ease;
+}
+.mypage-schedule-title-wrapper:hover .mypage-schedule-more-arrow {
+  color: #4b6b2c;
+}
+
+/* ✅ 오전/오후 스위치 */
+.toggle-switch {
+  display: flex;
+  align-items: center;
+}
+.switch {
+  background-color: #7ba86e;
+  border-radius: 25px;
+  padding: 3px;
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
   position: relative;
 }
-
-
-
-/* ✅ 하루 일정 박스 제목 (박스 바깥) */
-.schedule-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 30px 10px 10px;
-}
-
-.schedule-title-row h3.schedule-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0;
-}
-
-.schedule-more-arrow {
-  font-size: 20px;
-  cursor: pointer;
-  color: #666;
-  margin-right: 10px;
-}
-
-/* ✅ 전체 배경 박스 */
-.schedule-section {
-  background-color: #e9f3e4;
-  border-radius: 20px;
-  padding: 20px;
-  margin-top: 0; /* 제목과 간격 유지용 */
-}
-
-/* ✅ 오전/오후 버튼 영역 */
-.schedule-toggle {
-  display: flex;
-  gap: 6px; /* 간격 좁힘 */
-  margin-bottom: 16px;
-  justify-content: flex-start;
-}
-
-.schedule-toggle button {
-  padding: 8px 20px;
-  border-radius: 20px;
-  border: 1px solid #8aad8a;
-  background: white;
-  color: #5c815c;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.schedule-toggle button.active {
-  background: #8aad8a;
+.switch button {
+  flex: 1;
+  border: none;
+  border-radius: 25px;
+  background: transparent;
   color: white;
+  /* font-weight: bold; */
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+.switch button.active {
+  background-color: white;
+  color: #5c815c;
+  z-index: 2;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ✅ 스케줄 카드 리스트 (가로 스크롤) */
-.schedule-list {
+/* ✅ 일정 비어있을 때 */
+.mypage-schedule-empty-box {
+  padding: 20px 10px;
+  text-align: center;
+  color: #444;
+}
+.mypage-schedule-empty-box .emoji {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+.mypage-schedule-empty-box .text-bold {
+  font-weight: bold;
+  font-size: 14px;
+}
+.mypage-schedule-empty-box .text-sub {
+  font-size: 13px;
+  color: #777;
+}
+
+/* ✅ 일정 카드 리스트 */
+.mypage-schedule-list {
   display: flex;
   overflow-x: auto;
   gap: 16px;
-  padding-bottom: 10px;
+  padding: 25px 25px 25px 25px;
 }
 
-/* ✅ 개별 스케줄 카드 */
-.schedule-card {
+/* ✅ 개별 카드 */
+.mypage-schedule-card {
   min-width: 180px;
   background: white;
   border-radius: 16px;
@@ -270,82 +299,49 @@
   align-items: center;
   flex-shrink: 0;
 }
-
-/* ✅ 일정 정보 텍스트 */
-.schedule-info {
+.mypage-schedule-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
-.schedule-info .title {
+.schedule-card-title {
   font-weight: bold;
   font-size: 14px;
   color: #222;
 }
-
-.schedule-info .title.completed {
+.schedule-card-title.completed {
   text-decoration: line-through;
   color: #999;
 }
-
-.schedule-info .desc {
+.schedule-card-desc {
   font-size: 12px;
   color: #aaa;
 }
 
 /* ✅ 체크 아이콘 */
 .schedule-check-icon {
-  font-size: 20px;
+  font-size: 30px;
   cursor: pointer;
   transition: transform 0.2s ease, color 0.2s ease;
 }
-
 .schedule-check-icon.completed {
   color: #7ba86e;
 }
-
 .schedule-check-icon.not-completed {
   color: #ccc;
 }
-
 .schedule-check-icon:hover {
   transform: scale(1.05);
 }
-
 .schedule-check-icon.completed:hover {
   color: #4b6b2c;
 }
-
 .schedule-check-icon.not-completed:hover {
   color: #999;
 }
 
-/* ✅ 체크 아이콘 감싸는 래퍼 */
 .check-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.schedule-title-row {
-  display: flex;
-  align-items: center;
-  margin: 30px 10px 10px;
-  cursor: pointer;
-}
-
-.schedule-title-row:hover .schedule-more-arrow {
-  color: #4b6b2c; /* 호버 시 색상 변경 */
-}
-
-.schedule-title-row h3.schedule-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0;
-  margin-right: 6px; /* 제목과 > 아이콘 간격 */
-}
-
-.schedule-more-arrow {
-  font-size: 16px;
-  color: #666;
 }

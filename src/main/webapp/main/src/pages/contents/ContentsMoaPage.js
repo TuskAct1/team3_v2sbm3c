@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './contentsMoaPage.css';
 
-function PersonalityTest() {
+function ContentsMoaPage() {
   const navigate = useNavigate();
   const testList = [
     {
@@ -43,44 +43,46 @@ function PersonalityTest() {
   ];
 
   return (
-    <div className="contents-container">
-      <div className="contents-header">
-        <img src="/images/logo-icon_black.png" alt="토닥 로고" className="logo-icon" />
-        <p>토닥에서 만날 수 있는<br />다양한 콘텐츠를 소개합니다</p>
-      </div>
-
-      <div className="contents-grid">
-        <div className="grid-row large-row">
-          {testList.filter(test => test.size === 'large').map((test, index) => (
-            <div key={index} className="contents-card large" onClick={() => navigate(test.path)}>
-              <div className="card-left top-left">
-                <h2>{test.title}</h2>
-                <p>{test.desc}</p>
-                <span className="go-link">바로가기 &gt;</span>
-              </div>
-              <div className="card-right bottom-right">
-                <img src={test.img} alt={`${test.title} 이미지`} className="card-img" />
-              </div>
-            </div>
-          ))}
+    <div className="contents-layout">
+      <div className="contents-container">
+        <div className="contents-header">
+          <img src="/images/logo-icon_black.png" alt="토닥 로고" className="logo-icon" />
+          <p>토닥에서 만날 수 있는<br />다양한 콘텐츠를 소개합니다</p>
         </div>
-        <div className="grid-row small-row">
-          {testList.filter(test => test.size === 'small').map((test, index) => (
-            <div key={index} className="contents-card small" onClick={() => navigate(test.path)}>
-              <div className="card-left top-left">
-                <h2>{test.title}</h2>
-                <p>{test.desc}</p>
-                <span className="go-link">바로가기 &gt;</span>
+
+        <div className="contents-grid">
+          <div className="grid-row large-row">
+            {testList.filter(test => test.size === 'large').map((test, index) => (
+              <div key={index} className="contents-card large" onClick={() => navigate(test.path)}>
+                <div className="card-left top-left">
+                  <h2>{test.title}</h2>
+                  <p>{test.desc}</p>
+                  <span className="go-link">바로가기 &gt;</span>
+                </div>
+                <div className="card-right bottom-right">
+                  <img src={test.img} alt={`${test.title} 이미지`} className="card-img" />
+                </div>
               </div>
-              <div className="card-right bottom-right">
-                <img src={test.img} alt={`${test.title} 이미지`} className="card-img" />
+            ))}
+          </div>
+          <div className="grid-row small-row">
+            {testList.filter(test => test.size === 'small').map((test, index) => (
+              <div key={index} className="contents-card small" onClick={() => navigate(test.path)}>
+                <div className="card-left top-left">
+                  <h2>{test.title}</h2>
+                  <p>{test.desc}</p>
+                  <span className="go-link">바로가기 &gt;</span>
+                </div>
+                <div className="card-right bottom-right">
+                  <img src={test.img} alt={`${test.title} 이미지`} className="card-img" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default PersonalityTest;
+export default ContentsMoaPage;

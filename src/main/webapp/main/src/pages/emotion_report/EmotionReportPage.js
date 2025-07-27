@@ -4,23 +4,23 @@ import PieChart from '../emotion_report/PieChart';
 import LineChart from '../emotion_report/LineChart';
 import './EmotionReportPage.css';
 
-// const korToEng = {
-//   긍정: 'positive',
-//   부정: 'negative',
-//   중립: 'neutral',
-//   불안: 'anxious',
-//   우울: 'depressed'
-// };
+function convertWeekLabelToKoreanFormat(weekLabel) {
+  const [year, weekStr] = weekLabel.split("-W");
+  const week = parseInt(weekStr, 10);
+  const weekIndex = ((week - 1) % 4) + 1; // 1~4주차까지만 표현
 
-// function convertTrendDataToEnglish(data) {
-//   return data.map(item => {
-//     const converted = { reportPeriod: item.reportPeriod };
-//     Object.keys(korToEng).forEach(kor => {
-//       converted[korToEng[kor]] = item[kor] ?? 0;
-//     });
-//     return converted;
-//   });
-// }
+  const weekStart = getStartDateOfWeek(year, week);
+  const month = weekStart.getMonth() + 1;
+  return `${year}-${month.toString().padStart(2, "0")}-${weekIndex}주차`;
+}
+
+// 주차 시작 날짜 계산 (월 정보 뽑기용)
+function getStartDateOfWeek(year, week) {
+  const firstDay = new Date(year, 0, 1);
+  const dayOffset = (firstDay.getDay() <= 4 ? firstDay.getDay() - 1 : firstDay.getDay() - 8);
+  const firstMonday = new Date(firstDay.setDate(firstDay.getDate() - dayOffset));
+  return new Date(firstMonday.setDate(firstMonday.getDate() + (week - 1) * 7));
+}
 
 const EmotionReportPage = () => {
   // 탭
@@ -142,9 +142,13 @@ const EmotionReportPage = () => {
   async function fetchData(reportType, reportPeriod, setAverage) {
     try {
       const { startDate, endDate } = getPeriodRange(reportType, reportPeriod);
+      console.log(`🗓️ ${reportType} 기간: ${startDate.toISOString()} ~ ${endDate.toISOString()}`);
+
       const diaryRes = await axios.get("http://localhost:9093/emotion_report/diary", {
         params: { memberno, reportType, reportPeriod }
       });
+
+      console.log("diaryres", diaryRes);
       const chatbotRes = await axios.get("http://localhost:8000/emotion_report/summary", {
         params: { memberno, period_type: reportType, since: startDate.toISOString(), until: endDate.toISOString() }
       });
@@ -158,6 +162,7 @@ const EmotionReportPage = () => {
       });
 
       const mergedPercent = convertCountsToPercent(mergedCounts);
+
       setAverage(mergedPercent);
 
       await saveReportToSpring(reportType, reportPeriod, mergedPercent);
@@ -222,10 +227,12 @@ const EmotionReportPage = () => {
 
   function getCurrentWeek() {
     const now = new Date();
-    const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-    const pastDaysOfYear = (now - firstDayOfYear) / 86400000;
-    const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-    return `${now.getFullYear()}-W${weekNumber.toString().padStart(2, "0")}`;
+    const target = new Date(now.valueOf());
+    const dayNumber = (now.getUTCDay() + 6) % 7; // Monday=0
+    target.setUTCDate(target.getUTCDate() - dayNumber + 3);
+    const firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
+    const weekNumber = 1 + Math.round(((target - firstThursday) / 86400000 - 3 + ((firstThursday.getUTCDay() + 6) % 7)) / 7);
+    return `${target.getUTCFullYear()}-W${weekNumber.toString().padStart(2, "0")}`;
   }
 
   function getCurrentMonth() {
@@ -236,9 +243,9 @@ const EmotionReportPage = () => {
   function renderComparisonTable(data) {
     if (!data) return null;
     return (
-      <table cellPadding="8" style={{ borderCollapse: "collapse", width: "100%", fontSize: "18px" }}>
+      <table className="comparison-table">
         <thead>
-          <tr style={{ backgroundColor: "#f5f5f5" }}>
+          <tr>
             <th>구분</th>
             <th>긍정</th>
             <th>부정</th>
@@ -264,9 +271,9 @@ const EmotionReportPage = () => {
   function renderTestResultsTable(data) {
     if (!data || data.length === 0) return <p>데이터가 없습니다.</p>;
     return (
-      <table cellPadding="8" style={{ borderCollapse: "collapse", width: "100%", fontSize: "18px" }}>
+      <table className="test-results-table">
         <thead>
-          <tr style={{ backgroundColor: "#f5f5f5" }}>
+          <tr>
             <th>실행일</th>
             <th>결과 내용</th>
             <th>점수</th>
@@ -285,9 +292,16 @@ const EmotionReportPage = () => {
     );
   }
 
+
   if (!memberno) {
     return <div>로그인 후 이용해주세요!</div>;
   }
+
+  const convertedWeeklyTrendData = weeklyTrendData.map(item => ({
+    ...item,
+    reportPeriod: convertWeekLabelToKoreanFormat(item.reportPeriod)
+  }));
+
 
   return (
     <div className="page-container">
@@ -333,7 +347,7 @@ const EmotionReportPage = () => {
             <h3 className="chart-title">주간 감정 변화 보기</h3>
             <div className="chart-card">
               <div className="chart-container">
-                <LineChart data={weeklyTrendData} mode="WEEKLY" />
+                <LineChart data={convertedWeeklyTrendData} mode="WEEKLY" />
               </div>
             </div>
           </div>
@@ -353,7 +367,7 @@ const EmotionReportPage = () => {
             {/* ✅ 주간 표 + 심리테스트 결과 묶음 */}
             <div className="side-area">
               <div className="section card weekly-table-card">
-                <h3 style={{ marginBottom: '50px' }}>주간 표</h3>
+                <h3 style={{ marginBottom: '50px' }}>월간 표</h3>
                 {renderComparisonTable(monthlyAverage)}
               </div>
 
@@ -365,7 +379,7 @@ const EmotionReportPage = () => {
           </div>
 
           <div className="emotion-bottom">
-            <h3 className="chart-title">주간 감정 변화 보기</h3>
+            <h3 className="chart-title">월간 감정 변화 보기</h3>
             <div className="chart-card">
               <div className="chart-container">
                 <LineChart data={monthlyTrendData} mode="MONTHLY" />

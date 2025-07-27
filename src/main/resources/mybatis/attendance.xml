@@ -1,56 +1,43 @@
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="dev.mvc.attendance.AttendanceDAOInter">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="attendance">
 
-  <insert id="create" parameterType="dev.mvc.attendance.AttendanceVO">
-    INSERT INTO attendance (
-      attendanceno, memberno, total_days, last_check
-    ) VALUES (
-      attendance_seq.nextval,
-      #{memberno},
-      #{total_days},
-      #{last_check, jdbcType=VARCHAR}
-    )
-  </insert>
-  
-  <select id="readByMemberno" resultType="dev.mvc.attendance.AttendanceVO" parameterType="int">
-    SELECT * FROM attendance WHERE memberno = #{memberno}
+  <!-- 오늘 출석 여부 확인 -->
+  <select id="checkToday" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM attendance
+    WHERE memberno      = #{memberno}
+    AND TRUNC(last_check) = TRUNC(SYSDATE)
   </select>
-  
-  <update id="updateForToday" parameterType="int">
-    UPDATE attendance
-    SET total_days = total_days + 1,
-        last_check = TO_CHAR(SYSDATE, 'YYYY-MM-DD')
-    WHERE memberno = #{memberno}
-  </update>
-  
-  <!-- ✅ 중복 제거 & 패키지명 명시 -->
-  <select id="findByMemberno" parameterType="int" resultType="dev.mvc.attendance.AttendanceVO">
-    SELECT * FROM attendance
+
+  <!-- 멤버 총 출석일수 (attendance.total_days 사용) -->
+  <select id="countByMemberno" parameterType="int" resultType="int">
+    SELECT total_days
+    FROM attendance
     WHERE memberno = #{memberno}
   </select>
 
-  <!-- ✅ 파라미터 타입 명확히 지정 -->
-  <insert id="insert" parameterType="map">
-    INSERT INTO attendance (memberno, last_check)
-    VALUES (#{memberno}, #{date})
-  </insert>
-
-  <update id="update" parameterType="map">
-    UPDATE attendance
-    SET last_check = #{date}
+  <!-- 연속 출석 일수 반환 -->
+  <select id="getTotalDays" parameterType="int" resultType="int">
+    SELECT total_days
+    FROM attendance
     WHERE memberno = #{memberno}
-  </update>
-  
+  </select>
+
   <insert id="initAttendance" parameterType="int">
     INSERT INTO attendance (
-      attendanceno, memberno, total_days, last_check
+    attendanceno, memberno, total_days, last_check
     ) VALUES (
-      attendance_seq.NEXTVAL,
-      #{memberno},
-      1,
-      SYSDATE
+    attendance_seq.NEXTVAL,
+    #{memberno}, 1, SYSDATE
     )
   </insert>
 
-
+  <update id="markAttendance" parameterType="int">
+    UPDATE attendance
+    SET total_days = total_days + 1,
+    last_check = SYSDATE
+    WHERE memberno = #{memberno}
+  </update>
 </mapper>

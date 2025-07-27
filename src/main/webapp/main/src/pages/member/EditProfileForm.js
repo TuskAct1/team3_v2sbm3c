@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
-import "./SignupForm.css"; // ✅ 기존 스타일 재사용4
 import './EditProfileForm.css'; // ✅ 꼭 import 되어야 함
 import { useNavigate } from "react-router-dom"; // 상단에 추가
 
@@ -138,7 +137,7 @@ const EditProfileForm = ({ user }) => {
 
 
   return (
-    <div className="signup-wrapper">
+    <div className="edit-signup-wrapper">
       <form className="signup-card" onSubmit={handleSubmit}>
         <h3 style={{ marginBottom: "24px", fontWeight: "bold" }}>내 정보 수정</h3>
 
@@ -210,8 +209,8 @@ const EditProfileForm = ({ user }) => {
                 value="남자"
                 checked={form.gender === "남자"}
                 onChange={handleChange}
-              />
-              남자
+              />&nbsp;
+                 남자
             </label>
             <label className="gender-option">
               <input
@@ -220,8 +219,8 @@ const EditProfileForm = ({ user }) => {
                 value="여자"
                 checked={form.gender === "여자"}
                 onChange={handleChange}
-              />
-              여자
+              />&nbsp; 
+                 여자
             </label>
           </div>
         </div>
@@ -250,7 +249,7 @@ const EditProfileForm = ({ user }) => {
         </div>
         <div className="form-buttons">
         <button type="button" className="cancel-btn" onClick={handleCancel}>취소</button>
-        <button type="submit" className="submit-btn">수정완료</button>
+        <button type="submit" className="edit-submit-btn">수정완료</button>
         </div>
       </form>
     </div>

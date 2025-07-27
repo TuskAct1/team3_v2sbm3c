@@ -1,8 +1,8 @@
 package dev.mvc.board_recommend;
 
 import dev.mvc.board.BoardProc;
-import dev.mvc.board.BoardProcInter;
 import dev.mvc.board.BoardVO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +38,9 @@ public class BoardRecommendCont {
 
     // 2. 추천 여부(내가 이미 추천했는지) 조회
     @GetMapping("/check/{boardno}")
-    public ResponseEntity<Map<String, Object>> checkRecommend(@PathVariable("boardno") int boardno) {
-        int memberno = 1;
+    public ResponseEntity<Map<String, Object>> checkRecommend(@PathVariable("boardno") int boardno, HttpSession session) {
+        int memberno = (int) session.getAttribute("memberno");
+
         boolean recommended = boardRecommendProc.exist(boardno, memberno);
 
         Map<String, Object> result = new HashMap<>();
@@ -50,8 +51,9 @@ public class BoardRecommendCont {
 
     // 3. 추천 등록 (추천 버튼 클릭)
     @PostMapping("/{boardno}")
-    public ResponseEntity<?> addRecommend(@PathVariable("boardno") int boardno) {
-        int memberno = 1;
+    public ResponseEntity<?> addRecommend(@PathVariable("boardno") int boardno, HttpSession session) {
+        int memberno = (int) session.getAttribute("memberno");
+
         boolean success = boardRecommendProc.create(boardno, memberno);
         boardProc.increaseRecommend(boardno);
 
@@ -61,8 +63,8 @@ public class BoardRecommendCont {
 
     // 4. 추천 취소 (추천 취소 버튼 클릭)
     @DeleteMapping("/{boardno}")
-    public ResponseEntity<?> removeRecommend(@PathVariable("boardno") int boardno) {
-        int memberno = 1;
+    public ResponseEntity<?> removeRecommend(@PathVariable("boardno") int boardno, HttpSession session) {
+        int memberno = (int) session.getAttribute("memberno");
         boolean success = boardRecommendProc.delete(boardno, memberno);
         boardProc.decreaseRecommend(boardno);
 
