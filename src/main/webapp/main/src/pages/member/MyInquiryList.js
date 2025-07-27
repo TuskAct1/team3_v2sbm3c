@@ -58,7 +58,7 @@ function MyInquiryList({ memberno }) {
   const handleSelect = async (inquiryno) => {
     setLoading(true);
     try {
-      const res = await fetch(`/inquiry/${memberno}/${inquiryno}`);
+      const res = await fetch(`/inquiry/${inquiryno}?memberno=${memberno}`);
       const data = await res.json();
       setSelected(data);
     } catch (err) {

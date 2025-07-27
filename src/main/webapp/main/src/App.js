@@ -175,7 +175,6 @@ function App() {
 
           {/* 다이어리 */}
           <Route path="/diary" element={<DiaryPage />} />
- 
 
           {/* 제품 */}
           <Route path="/product" element={<ProductPage />} />

@@ -25,6 +25,15 @@
         WHERE alarmno = #{alarmno}
     </select>
 
+    <update id="update" parameterType="dev.mvc.calendar_alarm.CalendarAlarmVO">
+        UPDATE calendar_alarm
+        SET
+        alarm_dt = #{alarm_dt, jdbcType=TIMESTAMP},
+        sent_flag = #{sent_flag},
+        retry_count = #{retry_count}
+        WHERE calendarno = #{calendarno}
+    </update>
+
     <!-- 2. 발송 대기 중인 알람 조회 (10분 이내) -->
     <select id="listPending" resultType="dev.mvc.calendar_alarm.CalendarAlarmVO">
         SELECT
