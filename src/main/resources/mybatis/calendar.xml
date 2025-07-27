@@ -20,6 +20,7 @@
         start_time,
         end_time,
         alarm_yn,
+        image,
         rdate
         ) VALUES (
         #{calendarno},
@@ -33,6 +34,7 @@
         #{start_time},
         #{end_time},
         #{alarm_yn},
+        #{image, jdbcType=VARCHAR},
         SYSTIMESTAMP
         )
     </insert>
