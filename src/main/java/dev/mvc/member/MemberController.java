@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import dev.mvc.admin.AdminProcInter;
 import dev.mvc.admin.AdminVO;
+import dev.mvc.point.PointProcInter;
 import dev.mvc.tool.Tool;
 import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -55,6 +56,9 @@ public class MemberController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired private PointProcInter pointProc;
+
     /** 회원 가입 */
     @PostMapping("/signup")
     @Transactional
@@ -121,8 +125,8 @@ public class MemberController {
 
             int memberno = memberVO.getMemberno();
 
-            // 6. 출석 초기화
-            attendanceProc.initAttendance(memberno);
+//            // 6. 출석 초기화
+//            attendanceProc.initAttendance(memberno);
 
             response.put("success", true);
             response.put("message", "회원가입 + 초기 설정 완료");
@@ -282,24 +286,28 @@ public class MemberController {
             : ResponseEntity.status(500).body("❌ 수정 실패");
     }
 
-    /** 회원 삭제 */
-    @Transactional
-    @DeleteMapping("/{memberno}")
-    public ResponseEntity<?> delete(@PathVariable ("memberno") int memberno) {
-        try {
-//            //  자식 테이블 삭제
-//            plantProc.deleteByMemberno(memberno);
 
-            //  그 다음 member 삭제
-            int cnt = memberProc.delete(memberno);
 
-            return (cnt == 1)
-                ? ResponseEntity.ok("삭제 성공")
-                : ResponseEntity.status(500).body("삭제 실패");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("삭제 중 오류: " + e.getMessage());
-        }
-    }
+
+
+///** 회원 삭제 */
+//    @GetMapping("/{memberno}")
+//    public PlantVO getPlant(@PathVariable int memberno) {
+//        if (plantProc.countByMemberno(memberno) == 0) {
+//            // 신규 사용자
+//            PlantVO vo = new PlantVO();
+//            vo.setMemberno(memberno);
+//            plantProc.create(vo);
+//
+//            // 출석체크 +10p, DB에도 반영
+//            attendanceProc.initAttendance(memberno);
+//            pointProc.adjustPoint(memberno, 10);
+//
+//            // 이미 VO에 points=50 이므로, 여기선 10p만 추가
+//            return vo;
+//        }
+//        return plantProc.readByMemberno(memberno);
+//    }
 
  // 아이디 중복 확인
     @GetMapping("/check-id")

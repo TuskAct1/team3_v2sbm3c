@@ -1,17 +1,12 @@
-// AttendanceVO.java
 package dev.mvc.attendance;
 
+import lombok.Data;
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-@Getter @Setter @ToString
+@Data
 public class AttendanceVO {
-    private int attendanceno;
-    private int memberno;
-    private Date att_date;
-
-    // Getter/Setter
+    private int    attendanceno;
+    private int    memberno;
+    private int    total_days;
+    private Date   last_check;
 }

@@ -18,7 +18,7 @@ public class SmsService {
     public static final String SMS_SEND_URL = "https://sms.gabia.com/api/send/sms"; // SMS 발송 API URL 입니다.
 
     public void sendSMS(String phoneNum, String msg) throws IOException {
-        String smsId = "ghlim1000sms"; // SMS ID 를 입력해 주세요.
+        String smsId = "johm0902sms"; // SMS ID 를 입력해 주세요.
         String accessToken = Tool.getSMSToken(); // ACCESS TOKEN 을 입력해 주세요.
         String authValue =
                 Base64.getEncoder().encodeToString(String.format("%s:%s", smsId,
@@ -29,7 +29,7 @@ public class SmsService {
 
         RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("phone", phoneNum) // 수신번호를 입력해 주세요. (수신번호가 두 개 이상인 경우 ',' 를 이용하여 입력합니다. ex) 01011112222,01033334444)
-                .addFormDataPart("callback", "01062287201") // 발신번호를 입력해 주세요.
+                .addFormDataPart("callback", "01075727086") // 발신번호를 입력해 주세요.
                 .addFormDataPart("message", msg) // SMS 내용을 입력해 주세요.
                 .addFormDataPart("refkey", "YOUR_REF_KEY") // 발송 결과 조회를 위한 임의의 랜덤 키 값을 입력해 주세요.
                 .build();

@@ -21,15 +21,17 @@ public class AdminController {
     @Autowired
     @Qualifier("dev.mvc.admin.AdminProc")
     private AdminProcInter adminProc;
+
+    @Autowired
+    @Qualifier("dev.mvc.plant.plantProc") // 정확한 Bean 이름
+    private PlantProcInter plantProc;
     
     @Autowired
     private MemberProcInter memberProc;
     
     @Autowired
     private BCryptUtil bcryptUtil;  // 유틸 클래스 주입
-    
-    @Autowired
-    private PlantProcInter plantProc;
+
 
     /** 관리자 회원가입 */
     @PostMapping("/signup")
