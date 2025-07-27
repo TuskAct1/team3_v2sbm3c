@@ -1,199 +1,3 @@
-/* DiaryUpdate 전체 폼 */
-.DiaryUpdate {
-  width: 42.5%;
-  margin: auto;
-  padding: 20px;
-}
-
-.DiaryUpdate h2 {
-  margin-bottom: 12px;
-}
-
-/* 제목 입력 */
-.DiaryUpdate-input {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;            /* ✅ 테두리 추가 */
-  border-radius: 4px;                 /* ✅ 모서리 둥글게 */
-  box-sizing: border-box;            /* ✅ padding 포함한 너비 계산 */
-}
-
-/* 내용 입력 */
-/* .DiaryUpdate-textarea {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  resize: vertical;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;           
-  border-radius: 4px;                
-  box-sizing: border-box;            
-} */
-
-
-/* 섹션 헤더 */
-.DiaryUpdate-section {
-  margin-top: 60px;
-  margin-bottom: 20px;
-}
-
-.DiaryUpdate-sectionTitle {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 8px;
-  margin-top: 8px;
-}
-
-/* ✅ 큰 카드 박스 컨테이너 */
-.DiaryUpdate-carouselContainer {
-  width: 100%;
-  height: 200px;  
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  padding: 0px;
-  margin: 12px auto 0 auto;
-  gap: 16px;
-}
-
-/* 좌우 화살표 버튼 동일 크기 */
-.DiaryUpdate-carouselArrow {
-  width: 5%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: #0077cc;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  border-radius: 8px;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-  flex-shrink: 0;
-}
-
-.DiaryUpdate-carouselArrow.right:hover {
-  background: linear-gradient(to left, #dbeed4, transparent);
-  box-shadow: 0 4px 12px rgba(180, 220, 180, 0.4);
-  border-radius: 0 8px 8px 0;
-}
-
-.DiaryUpdate-carouselArrow.left:hover {
-  background: linear-gradient(to left, transparent, #dbeed4);
-  box-shadow: 0 4px 12px rgba(180, 220, 180, 0.4);
-  border-radius: 8px 0 0 8px;
-}
-
-/* 좌측 화살표만 */
-.DiaryUpdate-carouselArrow.left {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-
-/* 우측 화살표만 */
-.DiaryUpdate-carouselArrow.right {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-.DiaryUpdate-carouselArrow:disabled {
-  color: #999;
-  background-color: #eee;
-  cursor: not-allowed;
-}
-
-/* 이미지들 나열 줄 */
-.DiaryUpdate-carouselImages {
-  display: flex;
-  gap: 20px;
-  flex: 1;
-  justify-content: start;
-  align-items: center;
-  overflow: hidden;
-}
-
-/* 개별 이미지 카드 (고정 크기) */
-.DiaryUpdate-carouselImageCard {
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #f5f5f5;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.DiaryUpdate-carouselImageCard:hover {
-  transform: scale(1.03);
-}
-
-.DiaryUpdate-carouselImageCard img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 추가 버튼 (폼 아래 따로) */
-.DiaryUpdate-addImageButton {
-  margin-top: 16px;
-  padding: 10px 20px;
-  background-color: #0077cc;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-.DiaryUpdate-addImageButton:hover {
-  background-color: #005fa3;
-}
-
-/* 저장/뒤로가기 버튼 그룹 */
-.DiaryUpdate-buttons {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.DiaryUpdate-button {
-  flex: 1;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.DiaryUpdate-button.save {
-  background-color: #0077cc;
-  color: #fff;
-}
-
-.DiaryUpdate-button.back {
-  background-color: #6c757d;
-  color: #fff;
-}
-
 /* EmotionSelector 영역 */
 .EmotionSelector {
   display: flex;
@@ -217,4 +21,221 @@
   filter: none;
   transform: scale(1.3);
   border-color: #0077cc;
+}
+
+/* 전체 박스 스타일 */
+.custom-quill {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  min-height: 55%;
+  margin-bottom: 20px;
+}
+
+/* 툴바 */
+.custom-quill .ql-toolbar {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 8px 8px 0 0;
+  background-color: #f0f0f0;
+  padding: 10px;
+}
+
+/* 에디터 영역 */
+.custom-quill .ql-container {
+  border: none;
+  border-radius: 0 0 8px 8px;
+}
+
+/* 에디터 내부 입력창 */
+.custom-quill .ql-editor {
+  min-height: 200px;
+  padding: 16px;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* placeholder 회색 */
+.custom-quill .ql-editor.ql-blank::before {
+  color: #aaa;
+  font-style: italic;
+}
+
+.title {
+  font-size: 1rem;
+  line-height: 24px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  min-height: 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* input 전용 - div와 높이/정렬을 통일하기 위한 보정 */
+.title-input {
+  height: auto; /* min-height로 대체 */
+  border: 1px solid #ddd;
+  outline: none;
+  margin: 0;
+}
+
+.diary-content p {
+  margin-top: 0;
+  margin-left: 5px;
+}
+
+.diary-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #66bb6a;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.diary-subtitle {
+  font-size: 1.3rem;
+  text-align: center;
+  color: #7a6f63;
+  margin-bottom: 24px;
+}
+
+.yellow-btn {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 1.05rem;
+  border-radius: 999px;
+  background-color: #fef3c7;
+  color: #b26a00;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+ /* 전체 컨테이너 */
+.custom-pagination-container {
+  margin-top: 40px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 좌우 화살표 버튼 */
+.page-arrow-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+}
+
+/* 비활성화 상태 */
+.page-arrow-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* 화살표 이미지 */
+.arrow-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 숫자 버튼 */
+.page-number-btn {
+  background-color: #f1f8e9;
+  color: #3e8e41;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-number-btn:hover {
+  background-color: #dcedc8;
+}
+
+.page-number-btn.active {
+  background-color: #66bb6a;
+  color: white;
+  font-weight: bold;
+}
+
+.diary-search-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.diary-search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.diary-search-form select,
+.diary-search-form input {
+  height: 38px;
+  padding: 0 14px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: #f7f7f7;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.diary-search-form select:hover,
+.diary-search-form input:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.diary-search-form select:focus,
+.diary-search-form input:focus {
+  outline: none;
+  border-color: #888;
+  background-color: #fdfdfd;
+}
+
+.diary-search-form button {
+  height: 38px;
+  padding: 0 14px;
+  font-size: 1rem;
+  background-color: #66bb6a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.diary-search-form button:hover {
+  background-color: #388e3c;
+  color: #ffffff;
+}
+
+.diary-search-form input {
+  width: 400px;
 }

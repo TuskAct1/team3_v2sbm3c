@@ -9,6 +9,6 @@
 /* ✅ 본문 영역: 남은 높이만큼 차지 */
 .layout-container {
   flex: 1; /* 푸터 아래로 밀어내기 */
-  padding: 5px 20px 32px 20px; /* 위, 좌우, 아래 */
+  padding: 0px; /* 위, 좌우, 아래 */
   min-height: calc(130vh - 72px - 220px);  /* Outlet이 들어갈 영역을 최소 높이 확보 (예: 화면 높이 - 헤더 - 푸터) */
 }

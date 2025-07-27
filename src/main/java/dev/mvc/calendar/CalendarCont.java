@@ -25,6 +25,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/calendar")
@@ -42,67 +43,6 @@ public class CalendarCont {
     public String calendar_main() {
         return "calendar/calendar_main";  // .html 생략
     }
-
-//    @PostMapping("/create")
-//    @ResponseBody
-//    public ResponseEntity<String> create(@RequestBody CalendarVO calendarVO) {
-//        System.out.println("title: " + calendarVO.getTitle());  // <-- 여기 메서드 호출
-//        calendarProc.create(calendarVO);
-//        return ResponseEntity.ok("일정 등록 완료");
-//    }
-
-
-
-
-//    @PostMapping("/create")
-//    public ResponseEntity<String> create(
-//            @ModelAttribute CalendarVO calendarVO,
-//            @RequestParam(value = "file", required = false) MultipartFile file,
-//            HttpSession session
-//    ) {
-//        try {
-//            if (file != null && !file.isEmpty()) {
-//                // 업로드 디렉터리 설정
-//                String uploadDir = Tool.getUploadDir() + "/calendar/storage/";
-//                String originalName = file.getOriginalFilename();
-//                String ext = originalName.substring(originalName.lastIndexOf("."));
-//                String saveName = Tool.getDate_rnd("calendar") + ext;
-//
-//                File target = new File(uploadDir + saveName);
-//                file.transferTo(target);
-//
-//                // 썸네일 생성
-//                String thumb = Tool.preview(uploadDir, saveName, 200, 150);
-//
-//                calendarVO.setImage(saveName);
-//                calendarVO.setThumbnail(thumb);
-//            }
-//
-//            // ✅ 세션이 우선, 없으면 프론트에서 온 값 사용
-//            Integer sessionMemberno = (Integer) session.getAttribute("memberno");
-//            Integer sessionAdminno = (Integer) session.getAttribute("adminno");
-//
-//            if (sessionMemberno != null) {
-//                calendarVO.setMemberno(sessionMemberno);
-//            } else if (sessionAdminno != null) {
-//                calendarVO.setAdminno(sessionAdminno);
-//            } else {
-//                // 세션이 없으면 프론트에서 온 값 사용
-//                if (calendarVO.getMemberno() != null) {
-//                    session.setAttribute("memberno", calendarVO.getMemberno()); // 선택적: 세션 갱신
-//                } else if (calendarVO.getAdminno() != null) {
-//                    session.setAttribute("adminno", calendarVO.getAdminno());
-//                }
-//            }
-//
-//            calendarProc.create(calendarVO);
-//            return ResponseEntity.ok("일정 등록 성공");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).body("일정 등록 실패: " + e.getMessage());
-//        }
-//    }
 
 
     @PostMapping("/create")
@@ -132,6 +72,39 @@ public class CalendarCont {
         System.out.println(calendarVO);
 
         try {
+
+            // ✅ 이미지 파일 업로드 처리
+            if (file != null && !file.isEmpty()) {
+                String osName = System.getProperty("os.name").toLowerCase();
+                String uploadDir = "";
+
+                if (osName.contains("win")) {
+                    uploadDir = "C:/kd/deploy/team3/calendar/storage/";
+                } else if (osName.contains("mac")) {
+                    uploadDir = "/Users/사용자이름/kd/deploy/team3/calendar/storage/";
+                } else {
+                    uploadDir = "/home/ubuntu/deploy/team3/calendar/storage/";
+                }
+
+                File dir = new File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                String originalFilename = file.getOriginalFilename();
+                String uuid = UUID.randomUUID().toString();
+                String savedFilename = uuid + "_" + originalFilename;
+                File dest = new File(uploadDir + savedFilename);
+
+                try {
+                    file.transferTo(dest);
+                    calendarVO.setImage(savedFilename);  // DB에 파일명만 저장
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.status(500).body("이미지 업로드 실패: " + e.getMessage());
+                }
+            }
+
             // ── (파일 업로드, 세션 처리 등 기존 로직) ──
             calendarProc.create(calendarVO);  // 이 시점에 calendarVO.calendarno가 채워져 있어야 합니다.
 
@@ -206,19 +179,6 @@ public class CalendarCont {
             return ResponseEntity.notFound().build();
         }
     }
-    
-//    @PutMapping("/update/{calendarno}")
-//    @ResponseBody
-//    public ResponseEntity<String> update(@PathVariable("calendarno") int calendarno, @RequestBody CalendarVO calendarVO) {
-//        calendarVO.setCalendarno(calendarno); // 경로에서 받은 번호 세팅
-//        int cnt = calendarProc.update(calendarVO);
-//
-//        if (cnt > 0) {
-//            return ResponseEntity.ok("수정 성공");
-//        } else {
-//            return ResponseEntity.status(500).body("수정 실패");
-//        }
-//    }
 
 //    @PostMapping("/update/{calendarno}")
 //    public ResponseEntity<String> update(
@@ -227,31 +187,32 @@ public class CalendarCont {
 //            @RequestParam("category") String category,
 //            @RequestParam("description") String description,
 //            @RequestParam("alarm_yn") String alarm_yn,
-//            @RequestParam("favorite_yn") String favorite_yn,
 //            @RequestParam("start_date") String start_date,
 //            @RequestParam("end_date") String end_date,
-//            @RequestParam("start_time") String start_time,       // ✅ 추가
-//            @RequestParam("end_time") String end_time,           // ✅ 추가
+//            @RequestParam("start_time") String start_time,
+//            @RequestParam("end_time") String end_time,
 //            @RequestParam(value = "memberno", required = false) Integer memberno,
 //            @RequestParam(value = "adminno", required = false) Integer adminno,
-//            @RequestPart(value = "image", required = false) MultipartFile image
+//            @RequestPart(value = "image", required = false) MultipartFile image,
+//            HttpSession session
 //    ) {
-//        // 0. VO 수동 구성 (직접 매핑)
 //        CalendarVO calendarVO = new CalendarVO();
 //        calendarVO.setCalendarno(calendarno);
 //        calendarVO.setTitle(title);
 //        calendarVO.setCategory(category);
 //        calendarVO.setDescription(description);
 //        calendarVO.setAlarm_yn(alarm_yn);
-//        calendarVO.setFavorite_yn(favorite_yn);
 //        calendarVO.setStart_date(start_date);
 //        calendarVO.setEnd_date(end_date);
-//        calendarVO.setStart_time(start_time);    // ✅ 설정
-//        calendarVO.setEnd_time(end_time);        // ✅ 설정
+//        calendarVO.setStart_time(start_time);
+//        calendarVO.setEnd_time(end_time);
 //        calendarVO.setMemberno(memberno);
 //        calendarVO.setAdminno(adminno);
 //
-//        // 1. 기존 데이터 조회
+//        Integer sessionMemberno = (Integer) session.getAttribute("memberno");
+//        Integer sessionAdminno = (Integer) session.getAttribute("adminno");
+//
+//        // 기존 데이터 조회
 //        CalendarVO oldVO = calendarProc.read(calendarno);
 //        if (oldVO == null) {
 //            return ResponseEntity.notFound().build();
@@ -260,9 +221,8 @@ public class CalendarCont {
 //        String uploadDir = Tool.getUploadDir() + "calendar/storage/";
 //
 //        try {
-//            // 2. 새 이미지가 있으면 기존 이미지 삭제 + 새 이미지 저장
+//            // 이미지 처리
 //            if (image != null && !image.isEmpty()) {
-//                // 기존 이미지 삭제
 //                if (oldVO.getImage() != null) {
 //                    Tool.deleteFile(uploadDir + oldVO.getImage());
 //                }
@@ -270,25 +230,43 @@ public class CalendarCont {
 //                    Tool.deleteFile(uploadDir + oldVO.getThumbnail());
 //                }
 //
-//                // 새 이미지 저장
 //                String savedFilename = Tool.getRandomDate() + "_" + image.getOriginalFilename();
 //                File file = new File(uploadDir + savedFilename);
 //                image.transferTo(file);
 //
-//                // 썸네일 생성
 //                String thumbnail = Tool.preview(uploadDir, savedFilename, 200, 150);
 //
 //                calendarVO.setImage(savedFilename);
 //                calendarVO.setThumbnail(thumbnail);
 //            } else {
-//                // 이미지 교체하지 않은 경우 → 기존 정보 유지
 //                calendarVO.setImage(oldVO.getImage());
 //                calendarVO.setThumbnail(oldVO.getThumbnail());
 //            }
-//
-//            // 3. DB 업데이트
+//            System.out.println(oldVO.getMemberno());
+//            // DB 업데이트
 //            int cnt = calendarProc.update(calendarVO);
 //            if (cnt > 0) {
+//                System.out.println(memberno);
+//                // ✅ 알람 ON/OFF 처리
+//                if ("Y".equals(alarm_yn)) {
+//                    CalendarAlarmVO existingAlarm = calendarAlarmProc.readByCalendarno(calendarno);
+//                    if (existingAlarm == null) {
+//                        // 알람 새로 생성
+//                        CalendarAlarmVO newAlarm = new CalendarAlarmVO();
+//                        newAlarm.setCalendarno(calendarno);
+//                        newAlarm.setMemberno(oldVO.getMemberno()); // admin이라면 null
+//                        newAlarm.setAlarm_dt(Timestamp.valueOf(start_date + " " + start_time + ":00"));
+//                        newAlarm.setAlarm_type("SMS");
+//                        newAlarm.setSent_flag("N");
+//                        newAlarm.setRetry_count(0);
+//
+//                        calendarAlarmProc.create(newAlarm);
+//                    }
+//                } else {
+//                    // 알람 꺼짐 상태 → 삭제
+//                    calendarAlarmProc.deleteByCalendar(calendarno);
+//                }
+//
 //                return ResponseEntity.ok("수정 성공");
 //            } else {
 //                return ResponseEntity.status(500).body("수정 실패");
@@ -329,74 +307,80 @@ public class CalendarCont {
         calendarVO.setMemberno(memberno);
         calendarVO.setAdminno(adminno);
 
-        Integer sessionMemberno = (Integer) session.getAttribute("memberno");
-        Integer sessionAdminno = (Integer) session.getAttribute("adminno");
-
-        // 기존 데이터 조회
         CalendarVO oldVO = calendarProc.read(calendarno);
         if (oldVO == null) {
             return ResponseEntity.notFound().build();
         }
 
-        String uploadDir = Tool.getUploadDir() + "calendar/storage/";
-
         try {
-            // 이미지 처리
-            if (image != null && !image.isEmpty()) {
-                if (oldVO.getImage() != null) {
-                    Tool.deleteFile(uploadDir + oldVO.getImage());
-                }
-                if (oldVO.getThumbnail() != null) {
-                    Tool.deleteFile(uploadDir + oldVO.getThumbnail());
-                }
+            // ✅ 운영체제별 업로드 경로 설정
+            String osName = System.getProperty("os.name").toLowerCase();
+            String uploadDir = osName.contains("win") ? "C:\\kd\\deploy\\deploy\\team3\\calendar\\storage\\"
+                    : osName.contains("mac") ? "/Users/imgwanghwan/kd/deploy/team3/calendar/storage/"
+                    : "/home/ubuntu/deploy/deploy/team3/calendar/storage/";
 
-                String savedFilename = Tool.getRandomDate() + "_" + image.getOriginalFilename();
-                File file = new File(uploadDir + savedFilename);
-                image.transferTo(file);
+            // ✅ 이미지 업로드
+            if (image != null && !image.isEmpty()) {
+                Tool.deleteFile(uploadDir + oldVO.getImage());
+                Tool.deleteFile(uploadDir + oldVO.getThumbnail());
+
+                String originalFilename = image.getOriginalFilename();
+                String uuid = UUID.randomUUID().toString();
+                String savedFilename = uuid + "_" + originalFilename;
+
+                File dir = new File(uploadDir);
+                if (!dir.exists()) dir.mkdirs();
+
+                File dest = new File(uploadDir + savedFilename);
+                image.transferTo(dest);
 
                 String thumbnail = Tool.preview(uploadDir, savedFilename, 200, 150);
-
                 calendarVO.setImage(savedFilename);
                 calendarVO.setThumbnail(thumbnail);
             } else {
                 calendarVO.setImage(oldVO.getImage());
                 calendarVO.setThumbnail(oldVO.getThumbnail());
             }
-            System.out.println(oldVO.getMemberno());
-            // DB 업데이트
+
             int cnt = calendarProc.update(calendarVO);
             if (cnt > 0) {
-                System.out.println(memberno);
-                // ✅ 알람 ON/OFF 처리
+                // ✅ 알람 처리
                 if ("Y".equals(alarm_yn)) {
+                    Timestamp alarmTime = Timestamp.valueOf(start_date + " " + start_time + ":00");
                     CalendarAlarmVO existingAlarm = calendarAlarmProc.readByCalendarno(calendarno);
+
                     if (existingAlarm == null) {
-                        // 알람 새로 생성
                         CalendarAlarmVO newAlarm = new CalendarAlarmVO();
                         newAlarm.setCalendarno(calendarno);
-                        newAlarm.setMemberno(oldVO.getMemberno()); // admin이라면 null
-                        newAlarm.setAlarm_dt(Timestamp.valueOf(start_date + " " + start_time + ":00"));
+                        newAlarm.setMemberno(oldVO.getMemberno());
+                        newAlarm.setAlarm_dt(alarmTime);
                         newAlarm.setAlarm_type("SMS");
                         newAlarm.setSent_flag("N");
                         newAlarm.setRetry_count(0);
-
                         calendarAlarmProc.create(newAlarm);
+                    } else {
+                        existingAlarm.setAlarm_dt(alarmTime);
+                        existingAlarm.setSent_flag("N");
+                        existingAlarm.setRetry_count(0);
+                        calendarAlarmProc.update(existingAlarm); // 💡 MyBatis에 update 쿼리 추가 필요
                     }
+
                 } else {
-                    // 알람 꺼짐 상태 → 삭제
                     calendarAlarmProc.deleteByCalendar(calendarno);
                 }
 
                 return ResponseEntity.ok("수정 성공");
             } else {
-                return ResponseEntity.status(500).body("수정 실패");
+                return ResponseEntity.status(500).body("DB 수정 실패");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("이미지 수정 중 오류 발생");
+            return ResponseEntity.status(500).body("오류 발생: " + e.getMessage());
         }
     }
+
+
 
     @DeleteMapping("/delete/{calendarno}")
     @ResponseBody

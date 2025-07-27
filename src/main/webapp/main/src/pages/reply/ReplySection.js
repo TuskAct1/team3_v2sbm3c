@@ -177,190 +177,6 @@ function ReplySection({ boardno }) {
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="도란도란 나누는 말 한마디가 오늘을 웃게 합니다. 댓글로 따뜻한 마음을 전해보세요!"
         />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={e => setReplyImage(e.target.files[0])}
-          style={{ marginBottom: '10px' }}
-        />
-        <button type="submit" className="btn btn-primary btn-sm">댓글 등록</button>
-      </form>
-    </div>
-          
-
-      {/* 댓글 리스트 */}
-      <ul style={{ padding: 0, listStyle: 'none' }}>
-        {replies.map(reply => {
-          const indent = (reply.level - 1) * 40;
-
-          return (
-            <li
-              key={reply.replyno}
-              style={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'flex-start',
-                marginBottom: '15px',
-                borderBottom: '1px solid #ddd',
-                paddingBottom: '10px',
-                paddingLeft: `${indent}px`,       // 기본 들여쓰기
-                boxSizing: 'border-box'
-              }}
-            >
-              {/* level>1 일 때 ㄴ 마커 표시 */}
-              {reply.level > 1 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    left: `${indent - 10}px`,    // 들여쓰기 바로 왼쪽
-                    top: '1.2em',                 // 프로필 이미지 옆 텍스트 줄 맞춤
-                    color: '#777',
-                    fontSize: '1em',
-                    userSelect: 'none'
-                  }}
-                >
-                  ㄴ
-                </span>
-              )}
-            <img 
-              src={reply.profile ? `/profile/${reply.profile}` : '/images/default_profile.png'}
-              alt="프로필"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                marginRight: '10px'
-              }}
-            />
-
-            {/* flex:1 컨테이너 안에 모아두면 레이아웃이 깨지지 않습니다 */}
-            <div style={{ flex: 1 }}>
-              {/* 1) 작성자 / 날짜 / 내용 */}
-              <div style={{ fontWeight: 'bold' }}>
-                {reply.nickname} ({reply.id})
-              </div>
-              <div style={{ fontSize: '0.9em', color: '#777' }}>
-                {reply.rdate}
-              </div>
-              <div style={{ marginTop: '5px', whiteSpace: 'pre-wrap' }}>
-                {reply.blind === 1
-                  ? <i style={{ color: '#999' }}>🚫 신고 누적으로 블라인드 처리된 댓글입니다.</i>
-                  : stripHtml(reply.content)
-                }
-              </div>
-
-              {/* 2) 답글 버튼 (계층 제한) */}
-              {reply.level <= 2 && (
-                <button
-                  className="btn btn-outline-info btn-sm"
-                  onClick={() => handleReplyButtonClick(reply.replyno, reply.level + 1)}
-                  style={{ marginTop: '5px' }}
-                >
-                  ↪ 답글
-                </button>
-              )}
-
-              {/* 3) 수정 · 삭제 · 추천 · 신고 버튼 그룹 */}
-              <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center' }}>
-                <button
-                  className="btn btn-outline-primary btn-sm"
-                  onClick={() => handleEdit(reply)}
-                  style={{ marginRight: '5px' }}
-                >
-                  수정
-                </button>
-                <button
-                  className="btn btn-outline-danger btn-sm"
-                  onClick={() => handleDelete(reply)}
-                  style={{ marginRight: '5px' }}
-                >
-                  삭제
-                </button>
-                <button
-                  className="btn btn-outline-success btn-sm"
-                  onClick={() => handleRecommend(reply)}
-                  style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}
-                >
-                  <span
-                    style={{
-                      color: reply.isRecommended ? 'red' : 'gray',
-                      marginRight: '5px',
-                      fontSize: '16px',
-                      userSelect: 'none'
-                    }}
-                  >
-                    ❤
-                  </span>
-                  {reply.recommendCount || 0}
-                </button>
-                <button
-                  className="btn btn-outline-warning btn-sm"
-                  onClick={() => handleReport(reply)}
-                >
-                  🚩 신고
-                </button>
-              </div>
-
-              {/* 4) 버튼 그룹 바로 아래에 답글 폼 */}
-              {reply.replyno === replyTo && reply.level < 3 && (
-                <form
-                  onSubmit={(e) => handleReplySubmit(e, true, reply.replyno, reply.level + 1)}
-                  style={{
-                    marginTop: '10px',
-                    paddingLeft: `${reply.level * 20}px`
-                  }}
-                >
-                  <textarea
-                    value={replyContents[reply.replyno] || ''}
-                    onChange={e =>
-                      setReplyContents({
-                        ...replyContents,
-                        [reply.replyno]: e.target.value
-                      })
-                    }
-                    rows="2"
-                    placeholder="답글을 입력하세요"
-                    style={{ width: '100%', marginBottom: '10px' }}
-                  />
-                  <div>
-                    <button type="submit" className="btn btn-sm btn-success" style={{ marginRight: '10px' }}>
-                      답글 등록
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-secondary"
-                      onClick={() => {
-                        setReplyTo(null);
-                        setReplyLevel(1);
-                        // 답글 작성 취소할 때 replyContents도 초기화
-                        setReplyContents(prev => ({ ...prev, [reply.replyno]: '' }));
-                      }}
-                    >
-                      취소
-                    </button>
-                  </div>
-                </form>
-              )}
-
-            </div>
-          </li>
-          );
-        })}
-      </ul>
-
-
-
-
-      {/* 페이징 컨트롤 */}
-      <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <button onClick={() => fetchReplies(1)} disabled={page === 1}>« 처음</button>
-        <button onClick={() => fetchReplies(page - 1)} disabled={page === 1}>‹ 이전</button>
-        <span style={{ margin: '0 8px' }}>{page} / {totalPages}</span>
-        <button onClick={() => fetchReplies(page + 1)} disabled={page === totalPages}>다음 ›</button>
-        <button onClick={() => fetchReplies(totalPages)} disabled={page === totalPages}>끝 »</button>
-
         <button
           type="button"
           className="reply-submit"
@@ -375,20 +191,6 @@ function ReplySection({ boardno }) {
         {pagedComments.length === 0 ? (
           <div className="reply-empty">💬 아직 댓글이 없습니다.</div>
         ) : (
-
-          replies.map(reply => (
-            <li key={reply.replyno} className="reply-item">
-              <div className="reply-left">
-                <img
-                  src={reply.profile ? `/profile/${reply.profile}` : '/images/default_profile.png'}
-                  alt="프로필"
-                  className="reply-profile"
-                />
-                <div className="reply-body">
-                  <div className="reply-header">
-                    <span className="reply-nickname">{reply.nickname}</span>
-                    <span className="reply-date">{reply.rdate}</span>
-
           pagedComments.map(reply => (
             <React.Fragment key={reply.replyno}>
               {/* 댓글 */}
@@ -477,7 +279,6 @@ function ReplySection({ boardno }) {
                         </div>
                       </form>
                     )}
-
                   </div>
                 </div>
                 <div className="reply-actions-right">
@@ -502,7 +303,7 @@ function ReplySection({ boardno }) {
                 <li key={child.replyno} className="reply-item level-2" style={{ paddingLeft: '40px' }}>
                   <div className="reply-left">
                     <img 
-                      src={reply.profile ? `/profile/${reply.profile}` : '/images/default_profile.png'}
+                      src={child.profile ? `/profile/${child.profile}` : '/images/default_profile.png'}
                       alt="프로필"
                       className="reply-profile"
                     />
@@ -596,3 +397,4 @@ function ReplySection({ boardno }) {
 }
 
 export default ReplySection;
+

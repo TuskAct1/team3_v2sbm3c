@@ -69,10 +69,6 @@ import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
 
-import DiaryCreate from './pages/diary/DiaryCreate';
-import DiaryUpdate from './pages/diary/DiaryUpdate';
-import DiaryRead from './pages/diary/DiaryRead';
-
 import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
@@ -179,9 +175,6 @@ function App() {
 
           {/* 다이어리 */}
           <Route path="/diary" element={<DiaryPage />} />
-          <Route path="/diary/create" element={<DiaryCreate />} />
-          <Route path="/diary/update/:id" element={<DiaryUpdate />} />
-          <Route path="/diary/read/:id" element={<DiaryRead />} />
 
           {/* 제품 */}
           <Route path="/product" element={<ProductPage />} />
