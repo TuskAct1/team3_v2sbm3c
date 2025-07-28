@@ -11,6 +11,7 @@ function MyInquiryList({ memberno }) {
 
   useEffect(() => {
     const fetchList = async () => {
+      
     const res = await fetch(`/inquiry/list_all?memberno=${memberno}`);
     const data = await res.json();
 
@@ -21,8 +22,10 @@ function MyInquiryList({ memberno }) {
     setList(myInquiries);
     setFilteredList(myInquiries);
   };
+
     fetchList();
   }, [memberno]);
+
 
   useEffect(() => {
     const keyword = search.toLowerCase();

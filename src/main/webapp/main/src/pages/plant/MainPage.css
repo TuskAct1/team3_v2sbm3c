@@ -86,11 +86,11 @@
   display: flex;
   align-items: center;
   background: #ecf8ce;
-  padding: 10px 14px;
+  padding: 18px 93px;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
-  gap: 10px;
+  gap: 14px;
   margin-bottom: 20px;
 }
 
@@ -165,25 +165,26 @@
   align-items: center;
   justify-content: center;
   background: #e3f2dc;
-  padding: 8px 14px;
+  padding: 18px 73px;
   border-radius: 12px;
   margin: 16px auto;
   width: fit-content;
-  gap: 6px;
+  gap: 12px;
 }
 
 .point-icon {
-  width: 20px;
-  height: 20px;
+  width: 38px;
+  height: 38px;
 }
 
 .point-label {
   font-weight: bold;
+  font-size: 18px;
   color: #4d774e;
 }
 
 .point-value {
-  font-size: 14px;
+  font-size: 18px;
   color: #777;
 }
 
@@ -231,4 +232,86 @@
   10% { opacity: 1; transform: scale(1); }
   90% { opacity: 1; }
   100% { opacity: 0; transform: scale(0.95); }
+}
+
+/* 버튼 회색 처리 */
+.quiz-btn.disabled {
+  background-color: #ccc;     /* 또는 원하는 그레이 색 */
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 제한 메시지 스타일 */
+.quiz-limit-msg {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fff8e1;
+  border: 1px solid #ffd54f;
+  border-radius: 8px;
+  color: #795548;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+
+/* 기본 버튼 스타일 */
+.attendance-btn {
+  background-color: #57b6ac;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 👉 출석 완료 시 바뀔 스타일 */
+.attendance-btn.checked {
+  background-color: #999;    /* 완료된 버튼은 회색으로 변경 */
+  cursor: default;           /* 클릭 커서 비활성화 */
+}
+
+/* disabled 상태에서도 스타일 유지 */
+.attendance-btn:disabled {
+  opacity: 0.6;
+}
+
+.attendance-btn.checked {
+  background-color: #cfe3ba;   /* 연한 초록 배경 */
+}
+
+.attendance-complete-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.complete-text {
+  color: #3399ff;              /* 파란 텍스트 */
+  font-weight: bold;
+}
+
+.check-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #57b6ac;   /* 진한 초록 원 */
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+}
+
+.limit-banner {
+  background-color: #ffdede; /* 옅은 빨간 배경 */
+  color: #b00000;            /* 진한 빨강 글씨 */
+  font-size: 1.25rem;        /* 기본보다 크게 */
+  font-weight: bold;
+  text-align: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid #b00000;
+  border-radius: 8px;
 }

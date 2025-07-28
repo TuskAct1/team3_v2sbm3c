@@ -7,11 +7,14 @@ CREATE TABLE plant (
   memberno      NUMBER NOT NULL,              -- 회원 번호 (FK)
   plant_name    VARCHAR2(100),                -- 식물 이름
   plant_type    VARCHAR2(50),                 -- 식물 종류 (딸기/토마토)
-  growth        NUMBER DEFAULT 0,             -- 성장도 (0~100)
+  growth        NUMBER DEFAULT 0  ,             -- 성장도 (0~100)
   last_access   DATE DEFAULT SYSDATE,         -- 마지막 접속일
   plant_status  VARCHAR2(20) DEFAULT '정상',  -- 식물 상태
-  created_at    DATE DEFAULT SYSDATE          -- 등록일시
+  created_at    DATE DEFAULT SYSDATE,          -- 등록일시
+  points            NUMBER DEFAULT 50    NOT NULL,  -- 초기 50p
+  intro_completed   CHAR(1) DEFAULT 'N'  NOT NULL   -- 인트로 본 여부: N/Y
 );
+
 
 -- 컬럼 주석
 COMMENT ON TABLE plant IS '회원의 반려식물';
@@ -34,5 +37,7 @@ CREATE SEQUENCE plant_seq
   MAXVALUE 9999999999
   NOCACHE
   NOCYCLE;
+  
+
 
 SELECT * FROM plant WHERE memberno = 169;

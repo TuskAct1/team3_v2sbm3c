@@ -3,104 +3,97 @@ package dev.mvc.point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-//@RequestMapping("/api/point")
 @RequestMapping("/api/point")
 public class PointCont {
-
   @Autowired
   private PointProcInter pointProc;
-  @Autowired
-  private dev.mvc.plant.PlantProcInter plantProc;
 
-  @GetMapping("/{memberno}")
-  public ResponseEntity<?> getPointByMemberno(@PathVariable("memberno") int memberno) {
+  /**
+   * GET /api/point/{memberno}
+   */
+  @GetMapping(path = "/{memberno:\\d+}",
+          produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> getPointByMemberno(@PathVariable int memberno) {
     PointVO pointVO = pointProc.readByMemberno(memberno);
-    if (pointVO != null) {
-      return ResponseEntity.ok(Map.of("amount", pointVO.getAmount()));
-    } else {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    if (pointVO == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+              .body(Map.of("status","fail","reason","user not found"));
     }
+    return ResponseEntity.ok(Map.of("status","success","amount",pointVO.getAmount()));
   }
 
-  
-
-  @PostMapping("/adjust")
-  public ResponseEntity<String> adjustPoint(@RequestBody Map<String, Object> data) {
-    if (data == null || data.get("memberno") == null || data.get("pointChange") == null) {
-      return ResponseEntity.badRequest().body("fail: invalid request");
+  /**
+   * POST /api/point/adjust
+   * { "memberno":123, "pointChange":-5 }
+   */
+  @PostMapping(path = "/adjust",
+          consumes = MediaType.APPLICATION_JSON_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> adjustPoint(@RequestBody Map<String,Integer> data) {
+    
+    // 1) 필수 키 체크
+    if (!data.containsKey("memberno") || !data.containsKey("pointChange")) {
+      return ResponseEntity.badRequest()
+              .body(Map.of("status","fail","reason","invalid request"));
     }
 
-    try {
-      int memberno = Integer.parseInt(data.get("memberno").toString());
-      int pointChange = Integer.parseInt(data.get("pointChange").toString());
+    int memberno    = data.get("memberno");
+    int pointChange = data.get("pointChange");
 
-      PointVO pointVO = pointProc.readByMemberno(memberno);
-      if (pointVO == null) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("fail: user not found");
-      }
-
-      int current = pointVO.getAmount();
-      int updated = current + pointChange;
-
-      if (updated < 0) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail: not enough points");
-      }
-
-      int result = pointProc.adjustPoint(memberno, pointChange);
-
-      if (result == 1) {
-        return ResponseEntity.ok("success");
-      } else {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail: db update error");
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("fail: exception");
-    }
-  }
-
-
-  // PointCont.java
-  @PostMapping("/init/{memberno}")
-  @ResponseBody
-  public String initPoint(@PathVariable("memberno") int memberno) {
+    // 2) 사용자 조회
     PointVO existing = pointProc.readByMemberno(memberno);
     if (existing == null) {
-      PointVO vo = new PointVO();
-      vo.setMemberno(memberno);
-      vo.setAmount(50); // ✅ 초기 포인트
-      pointProc.create(vo);
-      return "created";
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+              .body(Map.of("status","fail","reason","user not found"));
     }
-    return "exists";
+
+    // 3) 잔액 부족 체크
+    int updated = existing.getAmount() + pointChange;
+    if (updated < 0) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body(Map.of("status","fail","reason","not enough points"));
+    }
+
+    // 4) DB 반영
+    int result = pointProc.adjustPoint(memberno, pointChange);
+    if (result != 1) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body(Map.of("status","fail","reason","db update error"));
+    }
+
+    // 5) 성공 리턴 (바디에 최종 잔액까지 함께)
+    return ResponseEntity.ok(Map.of(
+            "status", "success",
+            "amount", updated
+    ));
   }
 
-//  @GetMapping("/exists/{memberno}")
-//  public ResponseEntity<Boolean> plantExists(@PathVariable int memberno) {
-//    boolean exists = plantProc.countByMemberno(memberno) > 0;
-//    return ResponseEntity.ok(exists);
-//  }
-
-//  @PostMapping("/increase-growth")
-//  @ResponseBody
-//  public String increaseGrowth(@RequestBody Map<String, Object> request) {
-//    try {
-//      int memberno = Integer.parseInt(request.get("memberno").toString());
-//      int value = Integer.parseInt(request.get("value").toString());
-//
-//      plantProc.increaseGrowth(memberno, value);  // ✅ 성장 증가 처리
-//
-//      return "success";
-//    } catch (Exception e) {
-//      e.printStackTrace(); // 콘솔 로그 찍기
-//      return "fail: " + e.getMessage();
-//    }
-//  }
+  /**
+   * POST /api/point/init/{memberno}
+   */
+  @PostMapping(path = "/init/{memberno}",
+          produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> initPoint(@PathVariable int memberno) {
+    PointVO existing = pointProc.readByMemberno(memberno);
+    if (existing != null) {
+      return ResponseEntity.ok(Map.of(
+              "status","exists",
+              "amount", existing.getAmount()
+      ));
+    }
+    PointVO vo = new PointVO();
+    vo.setMemberno(memberno);
+    vo.setAmount(50);
+    pointProc.create(vo);
+    return ResponseEntity.ok(Map.of(
+            "status","created",
+            "amount", 50
+    ));
+  }
 }
-

@@ -11,8 +11,32 @@
   // import './CalendarPage.css'; // 스타일 따로 구성 가능
 
   import moment from 'moment-timezone';
+  import { FaTrash } from 'react-icons/fa';
 
   axios.defaults.withCredentials = true;
+
+
+  function linkify(text) {
+    return text.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+      /^https?:\/\//.test(part)
+        ? (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: '#007bff',        // 파란색
+              textDecoration: 'underline' // 밑줄
+            }}
+          >
+            {part}
+          </a>
+        )
+        : part
+    );
+  }
+
 
   function CalendarPage() {
     const FIXED_CATEGORIES = ['급여', '복지', '취미', '생일'];
@@ -26,8 +50,11 @@
 
     const [formData, setFormData] = useState({
       title: '',  category: '', description: '',
-      alarm_yn: 'N', start_time: '', end_time: '', start_date: '', end_date: '', imageFile: null
+      alarm_yn: 'N', start_time: '', end_time: '', start_date: '', end_date: '', imageFile: null, removeImage: false
     });
+
+    const [previewModalData, setPreviewModalData] = useState(null);
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
       // ✅ 여기 넣기
     const formatKoreanDate = (dateStr) => {
@@ -42,6 +69,9 @@
     const [allMemberCategories, setAllMemberCategories] = useState([]);
     const [activeMemberCategories, setActiveMemberCategories] = useState([]);
     const [userInfo, setUserInfo] = useState(null);
+
+    // 이미지 확대
+    const [showImageModal, setShowImageModal] = useState(false);
 
     // 미니 캘린더에 달정보 전송
     const [mainViewMonth, setMainViewMonth] = useState(new Date());
@@ -107,9 +137,18 @@
       });
 
       const userEvents = userRes.data.map(item => {
+        // const isAdmin = item.adminno !== null;
+        // const isAllDay = (!item.start_time || item.start_time === '00:00') &&
+        //                 (!item.end_time || item.end_time === '00:00');
         const isAdmin = item.adminno !== null;
-        const isAllDay = (!item.start_time || item.start_time === '00:00') &&
-                        (!item.end_time || item.end_time === '00:00');
+        // “복지 일정” 고정 카테고리인지 체크
+        const category = item.category?.trim();
+        const isFixedCategory = FIXED_CATEGORIES.includes(category);
+        // 원래 all‑day 판단 (시간 정보가 없으면)
+        const isTimeMissing = (!item.start_time || item.start_time === '00:00') &&
+                              (!item.end_time   || item.end_time   === '00:00');
+        // 고정 카테고리면 무조건 allDay
+        const isAllDay = isFixedCategory || isTimeMissing;
         return {
           ...item,
           id: item.calendarno?.toString(),
@@ -229,23 +268,43 @@
       setShowForm(true);
     };
 
+    // const handleEventClick = (info) => {
+    //   const e = info.event;
+    //   setSelectedDate(e.startStr);
+    //   setEditingEventId(e.id);
+    //   setFormData({
+    //     title: e.title || '',
+    //     category: e.extendedProps.category || '',
+    //     description: e.extendedProps.description || '',
+    //     alarm_yn: e.extendedProps.alarm_yn || 'N',
+    //     start_date: e.extendedProps.start_date || '',
+    //     end_date: e.extendedProps.end_date || '',
+    //     image: e.extendedProps.image || '',         // ✅ 추가s
+    //     imageFile: null,
+    //     start_time: e.extendedProps.start_time || '',
+    //     end_time: e.extendedProps.end_time || '',
+    //   });
+    //   setShowForm(true);
+    // };
+
     const handleEventClick = (info) => {
       const e = info.event;
-      setSelectedDate(e.startStr);
-      setEditingEventId(e.id);
-      setFormData({
-        title: e.title || '',
-        category: e.extendedProps.category || '',
+
+      setPreviewModalData({
+        id: e.id,
+        title: e.title,
+        start: e.startStr,
+        end: e.endStr,
+        alarm_yn: e.extendedProps.alarm_yn,
+        category: e.extendedProps.category || '없음',
         description: e.extendedProps.description || '',
-        alarm_yn: e.extendedProps.alarm_yn || 'N',
+        image: e.extendedProps.image || '',
         start_date: e.extendedProps.start_date || '',
         end_date: e.extendedProps.end_date || '',
-        image: e.extendedProps.image || '',         // ✅ 추가s
-        imageFile: null,
         start_time: e.extendedProps.start_time || '',
         end_time: e.extendedProps.end_time || '',
+        color: e.backgroundColor,
       });
-      setShowForm(true);
     };
 
     const handleInputChange = (e) => {
@@ -304,6 +363,9 @@
 
         if (userInfo?.role === 'member') data.append('memberno', userInfo.memberno);
         if (userInfo?.role === 'admin') data.append('adminno', userInfo.adminno);
+        if (formData.removeImage) {
+          data.append('removeImage', 'Y');
+        }
 
         if (formData.imageFile) {
           data.append('image', formData.imageFile);  // ✅ 여기만 바꿔주면 됨
@@ -334,6 +396,68 @@
       }
     };
 
+    const onCloseClick = () => {
+      setPreviewModalData(null);
+      setConfirmDeleteOpen(false);
+    };
+
+    const onEditClick = () => {
+      // if (!previewModalData) return;
+
+      setEditingEventId(previewModalData.id);
+
+      setFormData({
+        title: previewModalData.title || '',
+        category: previewModalData.category || '',
+        description: previewModalData.description || '',
+        alarm_yn: previewModalData.alarm_yn || 'N',
+        start_date: previewModalData.start?.slice(0, 10) || '',
+        end_date: previewModalData.end?.slice(0, 10) || '',
+        start_time: previewModalData.start?.slice(11, 16) || '',
+        end_time: previewModalData.end?.slice(11, 16) || '',
+        image: previewModalData.image || '',
+        imageFile: null,
+        removeImage: false,
+      });
+
+      setSelectedDate(previewModalData.start?.slice(0, 10) || '');
+      setShowForm(true);
+      setPreviewModalData(null);
+    };
+
+    const onDeleteClick = () => {
+      setConfirmDeleteOpen(true);
+    };
+
+
+    // 검색 결과 클릭 시 호출할 함수
+    const handleSearchResultClick = (event) => {
+      // (선택) 바로 확인창을 띄우고 싶으면 아래처럼 window.confirm 사용
+      // if (!window.confirm(`${event.title} 일정을 보시겠습니까?`)) return;
+
+      // 기존에 쓰던 previewModalData 셋업 로직 재사용
+      // start_date, start_time, end_date, end_time 은 문자열로 보관 중
+      const startStr = `${event.start_date}T${event.start_time || '00:00'}`;
+      const endStr   = `${event.end_date}T${event.end_time   || '00:00'}`;
+
+      setPreviewModalData({
+        id:          event.id,
+        title:       event.title,
+        start:       startStr,     // 문자열이므로 .slice() 가능
+        end:         endStr,
+        alarm_yn:    event.alarm_yn,
+        category:    event.category,
+        description: event.description,
+        image:       event.image,
+        start_date:  event.start_date,
+        end_date:    event.end_date,
+        start_time:  event.start_time,
+        end_time:    event.end_time,
+        color:       event.color,
+      });
+    };
+
+
     const getFilteredEvents = () =>
       events.filter(event => {
         if (searchKeyword) {
@@ -351,7 +475,7 @@
 
     return (
       <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
-        <div style={{ width: '240px', padding: '1rem', overflowY: 'auto' }}>
+        <div style={{ width: '280px', padding: '1rem', overflowY: 'auto' }}>
           {/* ✅ 미니 캘린더 추가 */}
           <div style={{ marginBottom: '1rem' }}>
             <MiniCalendar
@@ -364,13 +488,15 @@
             />
           </div>
 
-          {userInfo ? (
+          {/* {userInfo ? (
             <div>로그인: {userInfo.role === 'admin' ? '관리자' : '회원'} ({userInfo.username || userInfo.name})</div>
           ) : (
             <div>로그인 정보 없음</div>
-          )}
+          )} */}
         <div className="filterContainer">
-            <h2>복지 일정</h2>
+            <h2 className="filter-header filter-header--welfare">
+              복지 일정
+            </h2>
             {FIXED_CATEGORIES.map(cat => (
               <label key={cat}>
                 <input
@@ -381,7 +507,10 @@
               </label>
             ))}
 
-            <h2>할 일</h2>
+            {/* “내 할 일” 헤더 */}
+            <h2 className="filter-header filter-header--task">
+              내 할 일
+            </h2>
             {allMemberCategories.map(cat => (
               <label key={cat}>
                 <input
@@ -409,35 +538,47 @@
             <div style={{ padding: '1rem', backgroundColor: '#fff' }}>
               <h3 style={{ marginBottom: '1rem' }}>검색 결과</h3>
               {getFilteredEvents().length === 0 ? (
-                              <p>일치하는 일정이 없습니다.</p>
-                            ) : (
-                              <ul style={{ listStyle: 'none', padding: 0 }}>
-                                {getFilteredEvents().map((event, idx) => {
-                  const date = new Date(event.start);
-                  const day = date.getDate(); // 일자
-                  const weekday = date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }); // 전체 날짜
-
-                  // 색상 분류
-                  const dotColor =
-                    event.color === '#ff3333' ? '#ff3333' : // 공휴일
-                    event.color === '#28a745' ? '#28a745' : // 관리자
-                    '#3788d8';                              // 회원
-
-                  return (
-                    <li key={idx} style={{
-                      display: 'flex', alignItems: 'center', padding: '0.8rem 1rem',
-                      borderBottom: '1px solid #eee', fontSize: '14px'
-                    }}>
-                      <div style={{ width: '40px', fontWeight: 'bold', textAlign: 'center' }}>{day}</div>
-                      <div style={{ width: '200px', color: '#555' }}>{weekday}</div>
+                <p>일치하는 일정이 없습니다.</p>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {getFilteredEvents().map((event, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => handleSearchResultClick(event)}
+                      style={{
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '0.8rem 1rem',
+                        borderBottom: '1px solid #eee',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {/* 일자 */}
+                      <div style={{ width: '40px', fontWeight: 'bold', textAlign: 'center' }}>
+                        {new Date(event.start).getDate()}
+                      </div>
+                      {/* 전체 날짜 + 요일 */}
+                      <div style={{ width: '200px', color: '#555' }}>
+                        {new Date(event.start).toLocaleDateString('ko-KR', {
+                          year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+                        })}
+                      </div>
+                      {/* 색상 점 */}
                       <div style={{
                         width: '12px', height: '12px', borderRadius: '50%',
-                        backgroundColor: dotColor, margin: '0 12px'
-                      }}></div>
-                      <div style={{ fontWeight: 'bold', flex: 1 }}>{event.title}</div>
+                        backgroundColor:
+                          event.color === '#ff3333' ? '#ff3333' :
+                          event.color === '#28a745' ? '#28a745' :
+                          '#3788d8',
+                        margin: '0 12px'
+                      }} />
+                      {/* 제목 */}
+                      <div style={{ fontWeight: 'bold', flex: 1 }}>
+                        {event.title}
+                      </div>
                     </li>
-                  );
-                })}
+                  ))}
                 </ul>
               )}
             </div>
@@ -540,67 +681,7 @@
                 dateClick={handleDateClick}
                 eventClick={handleEventClick}
 
-                // dayCellDidMount={(info) => {
-                //   const d = info.date;
-                //   const yyyy = d.getFullYear();
-                //   const mm   = String(d.getMonth()+1).padStart(2,'0');
-                //   const dd   = String(d.getDate()).padStart(2,'0');
-                //   const dateStr = `${yyyy}-${mm}-${dd}`;
-                //   const btn = document.createElement('button');
-                //   btn.className = 'custom-add-button';
-                //   btn.onclick = () => handleDateClick({ dateStr });
 
-                //   // 1) <img> 엘리먼트 생성해서 버튼에 추가
-                //   const icon = document.createElement('img');
-                //   icon.src = '/images/PlusCircle.png';        // 프로젝트 내 실제 경로로 바꿔주세요
-                //   icon.alt = '추가';
-                //   icon.style.width = '28px';
-                //   icon.style.height = '28px';
-                //   btn.appendChild(icon);
-
-                //   // 2) 프레임에 버튼 붙이기
-                //   const frame = info.el.querySelector('.fc-daygrid-day-frame');
-                //   if (frame) frame.appendChild(btn);
-                // }}
-              //   dayCellDidMount={(info) => {
-              //   const d = info.date;
-              //   const yyyy = d.getFullYear();
-              //   const mm   = String(d.getMonth()+1).padStart(2,'0');
-              //   const dd   = String(d.getDate()).padStart(2,'0');
-              //   const dateStr = `${yyyy}-${mm}-${dd}`;
-
-              //   const btn = document.createElement('button');
-              //   btn.className = 'custom-add-button';
-              //   btn.onclick = () => handleDateClick({ dateStr });
-
-              //   const icon = document.createElement('img');
-              //   icon.src = '/images/PlusCircle.png';
-              //   icon.alt = '추가';
-              //   icon.style.width = '28px';
-              //   icon.style.height = '28px';
-              //   btn.appendChild(icon);
-
-              //   // ✅ 요일+날짜 텍스트 추가 (예: 화 8)
-              //   const weekday = d.toLocaleDateString('ko-KR', { weekday: 'short' }); // 화
-              //   const day = d.getDate(); // 8
-
-              //   const label = document.createElement('div');
-              //   label.textContent = `${weekday} ${day}`;
-              //   label.style.fontSize = '12px';
-              //   label.style.marginTop = '4px';
-              //   label.style.color = '#333';
-              //   label.style.textAlign = 'center';
-
-              //   const container = document.createElement('div');
-              //   container.style.display = 'flex';
-              //   container.style.flexDirection = 'column';
-              //   container.style.alignItems = 'center';
-              //   container.appendChild(btn);
-              //   container.appendChild(label);
-
-              //   const frame = info.el.querySelector('.fc-daygrid-day-frame');
-              //   if (frame) frame.appendChild(container);
-              // }}
               dayCellDidMount={(info) => {
                 // if (info.view.type === 'dayGridMonth') return; // ❌ 월간에서는 무시하고 주간에서만 실행
 
@@ -661,50 +742,255 @@
           )}
 
           {showForm && (
+            <div className="modal calendar-modal">
             <div className="modal-overlay">
               <div className="modal">
                 <h3>{editingEventId ? '일정 수정' : '일정 등록'} - {formatKoreanDate(formData.start_date)}</h3>
-                <form onSubmit={handleFormSubmit} className="modal-form">
-                  <input name="title" placeholder="제목" value={formData.title} onChange={handleInputChange} required />
-                  <label>시작일: <input type="date" name="start_date" value={formData.start_date} onChange={handleInputChange} required /></label>
-                  <label>시작 시간:
+                <form onSubmit={handleFormSubmit} className="calendar-form">
+                <div className="form-group">
+                  <label>제목</label>
+                  <input name="title" value={formData.title} onChange={handleInputChange} required />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>시작일</label>
+                    <input type="date" name="start_date" value={formData.start_date} onChange={handleInputChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>시작 시간</label>
                     <input type="time" name="start_time" value={formData.start_time} onChange={handleInputChange} required />
-                  </label>
-                  <label>종료일: <input type="date" name="end_date" value={formData.end_date} onChange={handleInputChange} required /></label>
-                  <label>종료 시간:
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>종료일</label>
+                    <input type="date" name="end_date" value={formData.end_date} onChange={handleInputChange} required />
+                  </div>
+                  <div className="form-group">
+                    <label>종료 시간</label>
                     <input type="time" name="end_time" value={formData.end_time} onChange={handleInputChange} required />
-                  </label>
-                  <input name="category" placeholder="카테고리" value={formData.category} onChange={handleInputChange} />
-                  <textarea name="description" placeholder="설명" value={formData.description} onChange={handleInputChange} />
-                  <label>이미지 업로드:
-                  <input type="file" accept="image/*" onChange={(e) => setFormData(prev => ({ ...prev, imageFile: e.target.files[0] }))} /></label>
-                  {formData.imageFile && ( <img src={URL.createObjectURL(formData.imageFile)} alt="미리보기" style={{ width: '100px', marginTop: '10px' }} />)}
-                  {editingEventId && formData.image && (
-                    <div style={{ marginTop: '10px' }}>
-                      <p>등록된 이미지:</p>
-                      <img src={`/calendar/storage/${formData.image}`} alt="일정 이미지" style={{ width: '150px' }} />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>카테고리</label>
+                  <input name="category" value={formData.category} onChange={handleInputChange} />
+                </div>
+
+                <div className="form-group">
+                  <label>설명</label>
+                  <textarea name="description" value={formData.description} onChange={handleInputChange} />
+                </div>
+
+                <div className="form-group">
+                  <label>이미지 업로드</label>
+                  <input type="file" accept="image/*" onChange={(e) => setFormData(prev => ({ ...prev, imageFile: e.target.files[0] }))} />
+                </div>
+
+                {formData.imageFile && (
+                  <img src={URL.createObjectURL(formData.imageFile)} alt="미리보기" style={{ width: '100px', marginTop: '10px' }} />
+                )}
+
+                {editingEventId && formData.image && (
+                  <div>
+                    <p>등록된 이미지:</p>
+                    {/* ① 여기에 relative 컨테이너 추가 */}
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <img
+                        src={`/calendar/storage/${formData.image}`}
+                        alt="일정 이미지"
+                        style={{ width: '150px', display: 'block' }}
+                      />
+                      {/* ② 삭제 버튼은 이 컨테이너 안에서 absolute */}
+                      <button
+                        type="button"
+                        aria-label="이미지 삭제"
+                        style={{
+                          position: 'absolute',
+                          bottom: '4px',
+                          right: '4px',
+                          background: 'rgba(0,0,0,0.6)',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          color: '#fff'
+                        }}
+                        onClick={() =>
+                          setFormData(prev => ({
+                            ...prev,
+                            image: null,
+                            removeImage: true
+                          }))
+                        }
+                      >
+                        <FaTrash size={18} />
+                      </button>
                     </div>
+                  </div>
+                )}
+
+                <div className="form-group">
+                  <label>알람</label>
+                  <select name="alarm_yn" value={formData.alarm_yn} onChange={handleInputChange}>
+                    <option value="N">없음</option>
+                    <option value="Y">있음</option>
+                  </select>
+                </div>
+
+                <div className="form-button-group">
+                  {editingEventId ? (
+                    <>
+                      <button type="button" className="primary" onClick={handleUpdate}>수정</button>
+                      <button type="button" className="danger" onClick={handleDelete}>삭제</button>
+                      <button type="button" onClick={() => { setShowForm(false); setEditingEventId(null); }}>취소</button>
+                    </>
+                  ) : (
+                    <>
+                      <button type="submit" className="primary">등록</button>
+                      <button type="button" onClick={() => setShowForm(false)}>취소</button>
+                    </>
                   )}
-                  <label>알람: <select name="alarm_yn" value={formData.alarm_yn} onChange={handleInputChange}><option value="N">없음</option><option value="Y">있음</option></select></label>
-                  <div className="button-group">
-                    {editingEventId ? (
+                </div>
+              </form>
+
+              </div>
+            </div>
+            </div>
+          )}
+
+          {previewModalData && (
+            <div className="modal-overlay">
+              <div className="preview-modal">
+                <div className="modal-header">
+                  <div className="modal-title">{previewModalData.title}</div>
+                  {/* 🔽 조건부 렌더링 시작 */}
+                  <div className="modal-icons">
+                    {(userInfo?.role === 'admin' || previewModalData.color === '#3788d8') && (
                       <>
-                        <button type="button" onClick={handleUpdate}>수정</button>
-                        <button type="button" onClick={handleDelete}>삭제</button>
-                        <button type="button" onClick={() => { setShowForm(false); setEditingEventId(null); }}>취소</button>
-                      </>
-                    ) : (
-                      <>
-                        <button type="submit">등록</button>
-                        <button type="button" onClick={() => setShowForm(false)}>취소</button>
+                        <button onClick={onEditClick}>
+                          <img src="/images/cal_edit.png" alt="수정" className="icon-button" />
+                        </button>
+                        <button onClick={onDeleteClick}>
+                          <img src="/images/cal_delete.png" alt="삭제" className="icon-button" />
+                        </button>
                       </>
                     )}
+                    <button onClick={onCloseClick}>
+                      <img src="/images/cal_close.png" alt="닫기" className="icon-button" />
+                    </button>
                   </div>
-                </form>
+                </div>
+
+                <div className="modal-body">
+
+                  {/* <p>{formatKoreanDate(previewModalData.start)}<br />
+                    {previewModalData.start.slice(11, 16)} ~ {previewModalData.end.slice(11, 16)}</p> */}
+                  <p>
+                    {/* 날짜 범위: 시작일과 종료일이 같으면 한 번만, 다르면 “~”로 연결 */}
+                    {previewModalData.start_date === previewModalData.end_date
+                      ? formatKoreanDate(previewModalData.start_date)
+                      : `${formatKoreanDate(previewModalData.start_date)} ~ ${formatKoreanDate(previewModalData.end_date)}`
+                    }
+                    <br/>
+                    {/* 시간 표시: 시작 시간이 있으면, 종료 시간이 있을 때만 “~” 포함 */}
+                    {previewModalData.start_time && (
+                      <>
+                        {previewModalData.start_time}
+                        {previewModalData.end_time ? ` ~ ${previewModalData.end_time}` : ''}
+                      </>
+                    )}
+                  </p>  
+
+                  {/* ✅ 등록된 이미지가 있을 때만 표시 */}
+                  {previewModalData.image && (
+                    <div className="modal-preview-image-wrapper">
+                      <img
+                        src={`/calendar/storage/${previewModalData.image}`}
+                        alt="등록된 이미지"
+                        className="modal-preview-image"
+                        onClick={() => setShowImageModal(true)} // ✅ 클릭 시 모달 열기
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                  )}
+
+                  {/* 설명(일정 내용) */}
+                  {previewModalData.description && (
+                  <p
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      overflowWrap: 'break-word',
+                    }}
+                  >
+                    📝 {linkify(previewModalData.description)}
+                  </p>
+                  )}
+                  <p>🔔 {previewModalData.alarm_yn === 'Y' ? '알람 있음' : '알람 없음'}</p>
+                  <p>📅 {previewModalData.category}</p>
+                                      {/* <p>
+                      <img src="/images/cal_alarm.png" alt="알람" className="icon-inline" />
+                      {previewModalData.alarm_yn === 'Y' ? '알람 있음' : '알람 없음'}
+                    </p>
+
+                    <p>
+                      <img src="/images/cal_.png" alt="카테고리" className="icon-inline" />
+                      {previewModalData.category}
+                    </p> */}
+                </div>
               </div>
             </div>
           )}
 
+          {confirmDeleteOpen && (
+            <div className="modal-overlay">
+              <div className="confirm-modal">
+                <p>정말로 삭제하시겠습니까?</p>
+                <div className="form-button-group">
+                <button
+                  className="danger"
+                  onClick={async () => {
+                    try {
+                      // previewModalData.id 로 삭제 요청
+                      await axios.delete(`/calendar/delete/${previewModalData.id}`);
+                      // 삭제 후 이벤트 다시 불러오기
+                      await fetchUserEvents();
+                    } catch (err) {
+                      console.error('삭제 실패:', err);
+                    }
+                    // 모달 닫기
+                    setConfirmDeleteOpen(false);
+                    setPreviewModalData(null);
+                  }}
+                >
+                  삭제
+                </button>
+
+                  <button onClick={() => setConfirmDeleteOpen(false)}>취소</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showImageModal && (
+            <div className="image-modal-backdrop" onClick={() => setShowImageModal(false)}>
+              <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+                <img
+                  src={`/calendar/storage/${previewModalData.image}`}
+                  alt="확대 이미지"
+                  className="image-modal-large"
+                />
+                <button className="close-button" onClick={() => setShowImageModal(false)}>닫기</button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

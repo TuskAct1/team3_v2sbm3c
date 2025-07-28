@@ -10,4 +10,6 @@ public class ItemUsageLogVO {
     private int memberno;
     private String item_type;
     private Date used_at;
+
+    private int cnt;
 }

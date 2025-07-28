@@ -21,10 +21,6 @@
         AND TRUNC(quiz_date) = TRUNC(SYSDATE)
     </select>
 
-    <insert id="insertQuizLog" parameterType="int">
-        INSERT INTO quiz_log (logno, memberno)
-        VALUES (quiz_log_seq.NEXTVAL, #{memberno})
-    </insert>
 
     <insert id="insertQuestion" parameterType="dev.mvc.quiz.QuizQuestionVO">
         INSERT INTO quiz_question (
@@ -33,6 +29,11 @@
         quiz_question_seq.NEXTVAL,
         #{question}, #{option1}, #{option2}, #{option3}, #{option4}, #{answer}
         )
+    </insert>
+
+    <insert id="insert" parameterType="dev.mvc.quiz.QuizLogVO">
+        INSERT INTO quiz_log (logno, memberno, quiz_date)
+        VALUES (quiz_log_seq.NEXTVAL, #{memberno}, SYSDATE)
     </insert>
 
 </mapper>

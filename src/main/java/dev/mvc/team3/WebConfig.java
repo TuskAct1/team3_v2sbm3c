@@ -9,11 +9,11 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
 
-      registry.addMapping("/**")
-              .allowedOrigins("http://localhost:3000")
-              .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-              .allowedHeaders("*")
-              .allowCredentials(true); // 인증정보 포함 허용 시 사용
+    registry.addMapping("/**")
+            .allowedOrigins("http://localhost:3000")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true); // 인증정보 포함 허용 시 사용
 
   }
 
@@ -36,5 +36,13 @@ public class WebConfig implements WebMvcConfigurer {
     // 📌 게시판 첨부파일 경로 추가
     registry.addResourceHandler("/contents/storage/**")
             .addResourceLocations("file:///C:/kd/deploy/resort/contents/storage/");
+
+    // ✅ Calendar 일정 이미지 경로 추가
+    registry.addResourceHandler("/calendar/storage/**")
+            .addResourceLocations("file:///C:/kd/deploy/deploy/team3/calendar/storage/");
+    registry.addResourceHandler("/calendar/storage/**")
+            .addResourceLocations("file:/Users/imgwanghwan/kd/deploy/team3/calendar/storage/");
+    registry.addResourceHandler("/calendar/storage/**")
+            .addResourceLocations("file:/home/ubuntu/deploy/deploy/team3/calendar/storage/");
   }
 }

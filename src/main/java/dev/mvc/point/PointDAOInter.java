@@ -18,4 +18,5 @@ public interface PointDAOInter {
   public int insertLog(@Param("memberno") int memberno, @Param("amount") int amount, @Param("reason") String reason);  // 로그 기록
   public PointVO readByMemberno(@Param("memberno") int memberno);
   public int adjustPoint(@Param("memberno") int memberno, @Param("pointChange") int pointChange);
+
 }
