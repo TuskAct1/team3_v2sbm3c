@@ -61,7 +61,8 @@ public class AttendanceController {
      */
     @GetMapping("/check/{memberno}")
     public Map<String,Object> checkAttendance(@PathVariable int memberno) {
-        boolean attended = attendanceProc.checkToday(memberno) > 0;
-        return Map.of("attended", attended);
+        int todayCount = attendanceProc.checkToday(memberno);
+        System.out.println("✅ checkToday 반환값: " + todayCount); // 👈 반드시 확인
+        return Map.of("attended", todayCount > 0);
     }
 }

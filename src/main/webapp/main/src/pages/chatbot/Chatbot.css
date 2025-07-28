@@ -104,13 +104,13 @@
   color: #555;
   margin-top: 6px;
 }
-
-/* 메시지 목록 */
+/* 
+/* 메시지 목록
 .chat-messages {
   flex: 1;
   padding: 0 30px 20px;
-  overflow-y: auto;
-}
+  overflow-y: auto; 
+} */
 
 .message {
   display: flex;
@@ -252,12 +252,12 @@
   margin: 40px auto;
   text-align: center;
 }
-
+/* 
 .chat-layout {
   display: flex;
   height: 90vh;
   background: linear-gradient(to bottom right, #f3fef1, #e6f5e3);
-}
+} */
 
 .chat-sidebar {
   width: 280px;
@@ -341,10 +341,7 @@
   color: #67AD5B;
 }
 
-.chat-main {
-  flex: 1;
-  padding: 20px 40px;
-}
+
 .chat-input {
   background-color: transparent;
   padding: 20px 40px;
@@ -409,6 +406,7 @@
   padding-top: 20px;
 }
 
+
 /* 애니메이션 효과 */
 .message {
   animation: fadeIn 0.4s ease-in;
@@ -429,4 +427,315 @@
 .delete-icon-btn:hover {
   color: #e74c3c;
 }
+
+
+/* 이전에 .chat-wrapper 에 주셨던 centering 속성은 모두 제거! */
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;                    /* .chat-main 안에서 가변 높이 차지 */
+  /* remove: justify-content, align-items, min-height, width 제한 등 */
+}
+
+/* 2) 메시지 영역은 flex‑grow 해서 남은 공간을 채우고 스크롤 */
+/* .chat-messages {
+  flex: 1 1 auto;     /* 남은 공간을 다 차지 
+  overflow-y: auto;   /* 내용이 많아지면 스크롤 
+  padding: 0 30px 20px; 
+} */
+
+/* 3) 입력창은 flex-shrink 없이 바닥에 sticky 고정 */
+.chat-input {
+  flex: 0 0 auto;     /* 절대 높이 고정 */
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;        /* 메시지 뒤에 가려지지 않도록 */
+  display: flex;
+  padding: 16px 24px;
+  gap: 10px;
+  border-top: 1px solid #ddd;
+}
+
+/* (선택) 입력창 내부 버튼·input 스타일은 그대로 유지 */
+
+.chat-layout {
+  display: flex;
+  height: 100vh;              /* 화면 전체 높이 */
+}
+
+
+.chat-main {
+  flex: 1;                    /* 사이드바 제외한 나머지 공간 차지 */
+  display: flex;
+  flex-direction: column;     /* 내부를 세로 flex 로 */
+}
+
+ .chat-messages {
+  flex: 1;                    /* 남는 높이 모두 차지 */
+  overflow-y: auto;           /* 스크롤 */
+  padding: 0 30px 20px;
+} 
+
+.chat-input {
+  flex: 0 0 auto;             /* 절대 높이 고정 */
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
+  display: flex;
+  padding: 16px 24px;
+  border-top: 1px solid #ddd;
+}
+
+
+/* ──────────────────────────────────────────── */
+/* 1) 챗 영역 flex / sticky */
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;          /* 부모(.chat-main) 높이를 꽉 채움 */
+}
+
+.chat-messages {
+  flex: 1;               /* 남는 높이 모두 차지 */
+  overflow-y: auto;      /* 스크롤 */
+  padding: 0 30px 20px;
+}
+
+.chat-input {
+  flex: 0 0 auto;        /* 높이 고정 */
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
+  display: flex;
+  padding: 16px 24px;
+  border-top: 1px solid #ddd;
+}
+
+/* ──────────────────────────────────────────── */
+/* 2) 기존 사이드바 빈 공간 채우기 */
+.chat-sidebar {
+  /* 기존에 width 등 주신 곳에 height:100vh 만 추가 */
+  height: 100vh;
+}
+
+.room-list {
+  /* 방 목록이 사이드바 중간부터 바닥까지 채우고 스크롤 */
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chat-sidebar-actions {
+  /* (새 채팅 / 기록 삭제) 버튼들은 맨 아래로 */
+  margin-top: auto;
+}
+
+.chat-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* 1) 사이드바 기본 스타일 */
+.chat-sidebar {
+  background: #fff;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+/* 2) 열렸을 때 너비 */
+.chat-layout.sidebar-open .chat-sidebar {
+  width: 280px;
+}
+
+/* 3) 닫혔을 때 너비 */
+.chat-layout.sidebar-closed .chat-sidebar {
+  width: 0;
+  overflow: hidden;
+}
+
+/* 4) 토글 버튼 */
+.hamburger-toggle {
+  background: none;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+/* SVG 아이콘 사이즈 조정 */
+.hamburger-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* 5) 사이드바 내용 감싸기 */
+.chat-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* 닫혔을 때 아무것도 안 보이게 */
+  overflow: hidden;
+}
+
+/* 6) main 영역은 자동으로 남은 공간 차지 */
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── 채팅 레이아웃 ─── */
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;           /* 부모(.chat-main) 높이에 꽉 찹니다 */
+}
+
+/* ─── 메시지 영역 ─── */
+.chat-messages {
+  flex: 1;                /* 남는 높이를 모두 차지 */
+  overflow-y: auto;       /* 스크롤 */
+  padding: 0 30px 20px;
+}
+
+/* ─── 입력창 ─── */
+.chat-input {
+  flex: 0 0 auto;         /* 높이 고정 */
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
+  display: flex;
+  padding: 16px 24px;
+  gap: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+}
+
+.chat-input button {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chat-input button:first-of-type {
+  background-color: #67AD5B;
+  color: #fff;
+}
+
+.chat-input button:last-of-type {
+  background-color: #f0f0f0;
+  color: #444;
+}
+
+/* ─── 인삿말 ─── */
+.chat-greeting.center {
+  text-align: center;
+  margin: 40px auto;
+}
+
+/* ─── 메시지 풍선 ─── */
+.message {
+  display: flex;
+  margin-bottom: 12px;
+  animation: fadeIn 0.4s ease-in;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.bot {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 15px;
+  white-space: pre-line;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.message.user .bubble {
+  background-color: #67AD5B;
+  color: #fff;
+  border-bottom-right-radius: 0;
+}
+
+.message.bot .bubble {
+  background-color: #eaeff7;
+  color: #333;
+  border-bottom-left-radius: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── 통계 모달 ─── */
+.chat-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.modal-box button {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #67AD5B;
+  color: white;
+  font-weight: bold;
+}
+/* 
+─── 사이드바 토글용 (부모 레이아웃) ───
+
+  .sidebar-open .chat-room-panel { width: 280px; overflow: visible; }
+  .sidebar-closed .chat-room-panel { width: 0; overflow: hidden; }
+  .room-list { flex: 1; overflow-y: auto; }
+  .sidebar-actions { margin-top: auto; } */
 

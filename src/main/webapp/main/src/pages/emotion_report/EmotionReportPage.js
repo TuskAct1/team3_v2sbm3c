@@ -49,7 +49,7 @@ const EmotionReportPage = () => {
     fetchData("WEEKLY", weeklyPeriod, setWeeklyAverage);
     fetchData("MONTHLY", monthlyPeriod, setMonthlyAverage);
     fetchTestResults();
-  }, [memberno]);
+  }, [memberno, weeklyPeriod, monthlyPeriod]);
 
   // 👉 감정 변화 트렌드 불러오기
   useEffect(() => {
@@ -60,6 +60,7 @@ const EmotionReportPage = () => {
 
   useEffect(() => {
     if (weeklyAverage) {
+      console.log("✅ 렌더링에 반영된 weeklyAverage:", weeklyAverage);
       generateSummary(weeklyAverage, setWeeklySummary);
     }
   }, [weeklyAverage]);
@@ -118,6 +119,8 @@ const EmotionReportPage = () => {
       // 5. UTC로 변환
       startDate = new Date(startOfWeekKST.getTime() - KST_OFFSET_MS);
       endDate = new Date(endOfWeekKST.getTime() - KST_OFFSET_MS);
+      console.log("📌 주간 reportPeriod:", weeklyPeriod);  // 예: 2025-W30
+      console.log("📌 주간 날짜범위:", startDate, "~", endDate);
     } else if (reportType === "MONTHLY") {
       let [yearStr, monthStr] = reportPeriod.split("-");
 
@@ -148,7 +151,9 @@ const EmotionReportPage = () => {
         params: { memberno, reportType, reportPeriod }
       });
 
-      console.log("diaryres", diaryRes);
+      console.log("🟢 diary emotion counts:", diaryRes.data);
+      console.log("🟢 setWeeklyAverage 값 확인:", weeklyAverage);
+
       const chatbotRes = await axios.get("http://localhost:8000/emotion_report/summary", {
         params: { memberno, period_type: reportType, since: startDate.toISOString(), until: endDate.toISOString() }
       });
@@ -163,8 +168,11 @@ const EmotionReportPage = () => {
 
       const mergedPercent = convertCountsToPercent(mergedCounts);
 
-      setAverage(mergedPercent);
+      console.log("✅ mergedPercent 값:", mergedPercent);  // ✅ 이 줄 추가
+      
+      const prev = setAverage === setWeeklyAverage ? weeklyAverage : monthlyAverage;
 
+      setAverage({ ...mergedPercent });
       await saveReportToSpring(reportType, reportPeriod, mergedPercent);
     } catch (err) {
       console.error(`❌ ${reportType} API Error:`, err);

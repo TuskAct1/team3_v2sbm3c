@@ -28,8 +28,13 @@ SELECT * FROM attendance;
 
 
 
+UPDATE attendance
+SET last_check = TO_DATE('2024-01-01', 'YYYY-MM-DD')
+WHERE memberno = 268;  -- 실제 테스트 계정의 memberno
 
-
+SELECT memberno, last_check, TRUNC(last_check), TRUNC(SYSDATE)
+FROM attendance
+WHERE memberno = 268;
 
 DELETE FROM attendance
  WHERE memberno = 224;

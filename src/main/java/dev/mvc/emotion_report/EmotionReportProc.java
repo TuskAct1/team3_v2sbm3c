@@ -131,16 +131,21 @@ public class EmotionReportProc implements EmotionReportProcInter {
 
         if (reportType.equalsIgnoreCase("WEEKLY")) {
             LocalDate[] weekDates = getWeekStartAndEndDate(reportPeriod);
+            // ✅ 여기에서 하루 추가!
+            LocalDate adjustedEnd = weekDates[1].plusDays(1);
             result.put("startDate", weekDates[0].format(formatter));
-            result.put("endDate", weekDates[1].format(formatter));
+            result.put("endDate", adjustedEnd.format(formatter));
         } else if (reportType.equalsIgnoreCase("MONTHLY")) {
             LocalDate[] monthDates = getMonthStartAndEndDate(reportPeriod);
+            // ✅ 여기에서도 하루 추가!
+            LocalDate adjustedEnd = monthDates[1].plusDays(1);
             result.put("startDate", monthDates[0].format(formatter));
-            result.put("endDate", monthDates[1].format(formatter));
+            result.put("endDate", adjustedEnd.format(formatter));
         }
 
         return result;
     }
+
 
     private LocalDate[] getWeekStartAndEndDate(String reportPeriod) {
         // reportPeriod: 2025-W27
@@ -174,7 +179,25 @@ public class EmotionReportProc implements EmotionReportProcInter {
     public int saveReport(EmotionReportVO vo) {
         System.out.println("✔️ Service - saveReport() 호출");
         System.out.println("받은 내용: " + vo);
-        return emotionReportDAO.saveReport(vo);
+
+        // 1. 기존에 저장된 데이터가 있는지 확인
+        List<EmotionReportVO> existingList = emotionReportDAO.selectByMemberAndPeriod(
+                vo.getMemberno(),
+                vo.getReportType(),
+                vo.getReportPeriod()
+        );
+
+        if (existingList == null || existingList.isEmpty()) {
+            System.out.println("📌 새로운 리포트 → INSERT");
+            return emotionReportDAO.saveReport(vo);
+        } else {
+            System.out.println("📌 기존 리포트 존재 → UPDATE");
+
+            // 여러 개 있어도 가장 오래된 1개만 업데이트
+            EmotionReportVO existing = existingList.get(0);
+            vo.setReportno(existing.getReportno());
+            return emotionReportDAO.update(vo);
+        }
     }
 
     /**

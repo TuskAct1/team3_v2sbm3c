@@ -199,11 +199,12 @@
 // export default ChatBot;
 // ✅ ChatBot.js (완성된 UI 개선 포함 전체 코드)
 // ✅ ChatBot.js (두 번째 사진 UI에 맞게 최종 수정)
-// ✅ ChatBot.js (햄버거바 구조 반영, 인사말 랜덤, 첫 진입 시 중앙형 UI)
+// ChatBot.js (햄버거바 구조 반영, 인사말 랜덤, 첫 진입 시 중앙형 UI)
+// ✅ ChatBot.js (햄버거바 + 방 목록 + 새 채팅 + 방 전환 + 삭제 기능 포함)
 import React, { useEffect, useState, useRef } from "react";
 import './Chatbot.css';
 
-function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
+function ChatBot({ memberno, room_id: initialRoomId, room_title, setRoomTitle }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -212,6 +213,9 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
   const [statLoading, setStatLoading] = useState(false);
   const [isFirstMessage, setIsFirstMessage] = useState(true);
   const [hasHistory, setHasHistory] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [rooms, setRooms] = useState([]);
+  const [roomId, setRoomId] = useState(initialRoomId);
   const messageEndRef = useRef(null);
 
   const user = JSON.parse(localStorage.getItem("user") || '{}');
@@ -226,21 +230,35 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
 
   const [greeting] = useState(greetings[Math.floor(Math.random() * greetings.length)]);
 
-  useEffect(() => { fetchHistory(); }, [memberno, room_id]);
+  useEffect(() => { fetchHistory(); }, [memberno, roomId]);
+  useEffect(() => { fetchRooms(); }, [memberno]);
   useEffect(() => {
     if (messageEndRef.current) messageEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  //   if (messageEndRef.current) {
-  //     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-  //   }
-  // }, []);
+  const fetchRooms = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/chat/rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memberno }),
+      });
+      const data = await res.json();
+      const fetchedRooms = Array.isArray(data.rooms) ? data.rooms : [];
+      setRooms(fetchedRooms);
+      if (!roomId && fetchedRooms.length > 0) {
+        setRoomId(fetchedRooms[0].room_id);
+      }
+    } catch (err) {
+      console.error("방 목록 불러오기 실패", err);
+    }
+  };
 
   const fetchHistory = async () => {
     const res = await fetch("http://localhost:8000/chat/history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ memberno, room_id }),
+      body: JSON.stringify({ memberno, room_id: roomId }),
     });
     const data = await res.json();
     if (data.history && data.history.length > 0) {
@@ -252,6 +270,34 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     }
   };
 
+  const createNewRoom = async () => {
+    const res = await fetch("http://localhost:8000/chat/new-room", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberno }),
+    });
+    const data = await res.json();
+    if (data.room_id) {
+      setRoomId(data.room_id);
+      setIsFirstMessage(true);
+      fetchRooms();
+    }
+  };
+
+  const deleteRoom = async (rid) => {
+    await fetch("http://localhost:8000/chat/delete-room", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ room_id: rid })
+    });
+    if (rid === roomId) {
+      setMessages([]);
+      setHasHistory(false);
+      setRoomId(null);
+    }
+    fetchRooms();
+  };
+
   const handleSend = async () => {
     if (!input.trim()) return;
     const newMessages = [...messages, { from: "user", text: input }];
@@ -259,29 +305,28 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     setInput("");
     setLoading(true);
 
-    // 내가 보낸 메시지까지 스크롤!
     setTimeout(() => {
       if (messageEndRef.current) {
         messageEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
     }, 0);
 
-    // 여기에 실제 FastAPI 서버 주소로 POST 요청
     try {
       const res = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ memberno, room_id, message: input }),
+        body: JSON.stringify({ memberno, room_id: roomId, message: input }),
       });
       const data = await res.json();
       if (isFirstMessage) {
         await fetch("http://localhost:8000/chat/update-room-title", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ room_id, room_title: input }),
+          body: JSON.stringify({ room_id: roomId, room_title: input }),
         });
         if (setRoomTitle) setRoomTitle(input);
         setIsFirstMessage(false);
+        fetchRooms();
       }
       setMessages([...newMessages, { from: "bot", text: data.response || "답변을 받아오지 못했습니다." }]);
     } catch {
@@ -298,7 +343,7 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     const res = await fetch("http://localhost:8000/chat/weekly-report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ memberno, room_id }),
+      body: JSON.stringify({ memberno, room_id: roomId }),
     });
     const data = await res.json();
     setStat(data.raw);
@@ -309,58 +354,72 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
     if (e.key === "Enter") handleSend();
   };
 
-  return (
-    <div className="chat-wrapper">
-      {/* 인삿말 */}
-      {!hasHistory && (
-        <div className="chat-greeting center">
-          <h2>{greeting}</h2>
+  
+  
+return (
+  <div className="chat-wrapper">
+    {/* 인삿말 */}
+    {!hasHistory && (
+      <div className="chat-greeting center">
+        <h2>{greeting}</h2>
+      </div>
+    )}
+
+    {/* 메시지 영역 */}
+    <div className="chat-messages">
+      {messages.map((msg, i) => (
+        <div
+          key={i}
+          className={`message ${msg.from === "user" ? "user" : "bot"}`}
+        >
+          <div className="bubble">{msg.text}</div>
+        </div>
+      ))}
+      {loading && (
+        <div className="message bot">
+          <div className="bubble">토닥이 응답 중...</div>
         </div>
       )}
-
-      {/* 메시지 영역 */}
-      <div className="chat-messages">
-        {messages.map((msg, i) => (
-          <div key={i} className={`message ${msg.from === "user" ? "user" : "bot"}`}>
-            <div className="bubble">{msg.text}</div>
-          </div>
-        ))}
-        {loading && <div className="message bot"><div className="bubble">토닥이 응답 중...</div></div>}
-        <div ref={messageEndRef} />
-      </div>
-
-      {/* 입력창 */}
-      <div className={`chat-input ${!hasHistory ? "center-input" : ""}`}>
-        <input
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleInputKeyDown}
-          placeholder="메시지를 입력하세요"
-          disabled={loading}
-        />
-        <button onClick={handleSend} disabled={loading}>전송</button>
-        <button onClick={handleShowStat}>통계 보기</button>
-      </div>
-
-      {showStat && (
-        <div className="chat-modal">
-          <div className="modal-box">
-            <div className="modal-title">최근 1주일 감정 통계</div>
-            {statLoading ? <div>불러오는 중...</div> : (
-              <ul>
-                <li>😊 긍정: {stat["긍정"]}회</li>
-                <li>😥 부정: {stat["부정"]}회</li>
-                <li>😐 중립: {stat["중립"]}회</li>
-                <li>😨 불안: {stat["불안"]}회</li>
-                <li>😔 우울: {stat["우울"]}회</li>
-              </ul>
-            )}
-            <button onClick={() => setShowStat(false)}>닫기</button>
-          </div>
-        </div>
-      )}
+      <div ref={messageEndRef} />
     </div>
-  );
-}
 
+    {/* 입력창 */}
+    <div className={`chat-input ${!hasHistory ? "center-input" : ""}`}>
+      <input
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={handleInputKeyDown}
+        placeholder="메시지를 입력하세요"
+        disabled={loading}
+      />
+      <button onClick={handleSend} disabled={loading}>
+        전송
+      </button>
+      <button onClick={handleShowStat}>통계 보기</button>
+    </div>
+
+    {/* 통계 모달 */}
+    {showStat && (
+      <div className="chat-modal">
+        <div className="modal-box">
+          <div className="modal-title">최근 1주일 감정 통계</div>
+          {statLoading ? (
+            <div>불러오는 중...</div>
+          ) : (
+            <ul>
+              <li>😊 긍정: {stat["긍정"]}회</li>
+              <li>😥 부정: {stat["부정"]}회</li>
+              <li>😐 중립: {stat["중립"]}회</li>
+              <li>😨 불안: {stat["불안"]}회</li>
+              <li>😔 우울: {stat["우울"]}회</li>
+            </ul>
+          )}
+          <button onClick={() => setShowStat(false)}>닫기</button>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+}
 export default ChatBot;
