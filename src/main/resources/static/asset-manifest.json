@@ -1,15 +1,30 @@
 {
   "files": {
-    "main.css": "/static/css/main.1b03a957.css",
-    "main.js": "/static/js/main.f32a665a.js",
-    "static/js/453.4acdc3f0.chunk.js": "/static/js/453.4acdc3f0.chunk.js",
+    "main.css": "/static/css/main.46f285cb.css",
+    "main.js": "/static/js/main.cdef148d.js",
+    "static/js/453.b18492ab.chunk.js": "/static/js/453.b18492ab.chunk.js",
+    "static/media/product.jpg": "/static/media/product.ae1e4a6560c761eb9baa.jpg",
+    "static/media/coin.png": "/static/media/coin.44bd46cff5ec65f68687.png",
+    "static/media/fertilizer.png": "/static/media/fertilizer.fe60bffadc74c614a424.png",
+    "static/media/game.png": "/static/media/game.778603ad729b52378fcc.png",
+    "static/media/sticker.png": "/static/media/sticker.113b3aa9026d514fdccd.png",
+    "static/media/check.png": "/static/media/check.26a04296ba1b81f0ad26.png",
+    "static/media/quiz.png": "/static/media/quiz.e82ce4bba67439a91c6e.png",
+    "static/media/water.png": "/static/media/water.44ef5d278cc7a0090ce3.png",
+    "static/media/guide.png": "/static/media/guide.8ab93e44291e4aef49fc.png",
+    "static/media/seed.png": "/static/media/seed.eedb4e0a835c950ec9de.png",
+    "static/media/playlist.png": "/static/media/playlist.c9cea35553f97eeddfc9.png",
+    "static/media/plant.png": "/static/media/plant.a3739cba91369b71e40c.png",
+    "static/media/todaki.png": "/static/media/todaki.2f3e03411e33da2cb3f2.png",
+    "static/media/nutrient.png": "/static/media/nutrient.11360e9e36cce1d4ea5a.png",
+    "static/media/calendar.png": "/static/media/calendar.f7a7009a5d9914f0da9e.png",
     "index.html": "/index.html",
-    "main.1b03a957.css.map": "/static/css/main.1b03a957.css.map",
-    "main.f32a665a.js.map": "/static/js/main.f32a665a.js.map",
-    "453.4acdc3f0.chunk.js.map": "/static/js/453.4acdc3f0.chunk.js.map"
+    "main.46f285cb.css.map": "/static/css/main.46f285cb.css.map",
+    "main.cdef148d.js.map": "/static/js/main.cdef148d.js.map",
+    "453.b18492ab.chunk.js.map": "/static/js/453.b18492ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1b03a957.css",
-    "static/js/main.f32a665a.js"
+    "static/css/main.46f285cb.css",
+    "static/js/main.cdef148d.js"
   ]
 }

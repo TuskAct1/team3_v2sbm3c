@@ -12,14 +12,11 @@ public class Contents {
         String path = "";
 
         if (osName.contains("win")) { // Windows
-            path = "C:\\kd\\deploy\\resort\\contents\\storage\\";
-            // System.out.println("Windows: " + path);
+            path = "C:\\kd\\deploy\\tema3\\board\\storage\\";
         } else if (osName.contains("mac")) { // MacOS
-            path = "/Users/imgwanghwan/kd/deploy/team3/board/storage";
-            // System.out.println("MacOS: " + path);
+            path = "/Users/imgwanghwan/kd/deploy/team3/board/storage/";
         } else { // Linux
-            path = "/home/ubuntu/deploy/resort/contents/storage/";
-            // System.out.println("Linux: " + path);
+            path = "/home/ubuntu/deploy/tema3/board/storage/";
         }
 
         return path;

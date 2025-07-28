@@ -94,7 +94,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 6px;
+  margin-bottom: 1px;
   font-size: 1.05rem;
   color: #666;
 }
@@ -366,12 +366,10 @@
 /* ✅ 답글: 연회색 배경 + 왼쪽 선만 */
 .reply-item.level-2 {
   background-color: #f5f5f5;
-  padding: 4px 0 4px 16px;
+  padding: 4px 0 4px 8px;
   border: none;
-  border-left: 3px solid #bdbdbd;
+  border-left: 2px solid #bdbdbd;
   border-bottom: 1px solid #ddd;
   border-radius: 0;
-  margin: 0 0 0 32px;
+  margin: 0 0 0 10px;
 }
-
-

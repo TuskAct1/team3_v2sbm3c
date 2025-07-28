@@ -490,20 +490,11 @@ export default function DiaryReadModal({id, onClose, onSuccess, createMode = fal
                 dangerouslySetInnerHTML={{ __html: diary?.content }}
               />
 
-              <p style={{marginBottom: "10px"}}>
+              <p>
                 <strong>감정:</strong>{' '}
                 <span className="emotion-icon">{emotionObj.icon}</span>{' '}
                 <span className="emotion-label">{emotionObj.label}</span>
               </p>
-
-
-              <p><strong>날짜:</strong> {diary?.rdate}</p>
-{/* 
-//               <div className="diary-footer-buttons">
-//                 <button onClick={handleEnterEditMode} className="diary-btn diary-btn-edit">수정</button>
-//                 <button onClick={handleDelete} className="diary-btn diary-btn-delete">삭제</button> */}
-
-
               <div className="diary-bottom-row">
                 <p style={{marginBottom: "10px"}}><strong>날짜:</strong> {diary?.rdate}</p>
 

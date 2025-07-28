@@ -11,12 +11,13 @@ function MyInquiryList({ memberno }) {
 
   useEffect(() => {
     const fetchList = async () => {
-      try {
-        const res = await fetch(`/inquiry/list_all?memberno=${memberno}`);
-        const data = await res.json();
+      
+    const res = await fetch(`/inquiry/list_all?memberno=${memberno}`);
+    const data = await res.json();
 
-        console.log("📦 응답 데이터:", data);
-        console.log("👤 현재 로그인 memberno:", memberno);
+    const list = Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
+    console.log(list);
+    const myInquiries = list.filter(inquiry => String(inquiry.memberno) === String(memberno));
 
         // 응답에서 실제 배열을 추출
         const list = Array.isArray(data)
@@ -40,7 +41,6 @@ function MyInquiryList({ memberno }) {
         setFilteredList([]);
       }
     };
-
     fetchList();
   }, [memberno]);
 

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+//@Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -27,6 +27,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         .addResourceLocations("file:///C:/kd/deploy/team3/playlist/storage/");
 
         registry.addResourceHandler("/diary/storage/**").addResourceLocations("file:///C:/kd/deploy/team3/diary/storage/");
+
 
 
 

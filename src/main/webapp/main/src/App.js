@@ -68,7 +68,6 @@ import MemoryGame from './pages/plant/games/MemoryGame';
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
 
-
 import InquiryPage from './pages/inquiry/InquiryPage';
 import InquiryCreatePage from './pages/inquiry/InquiryCreatePage';
 
