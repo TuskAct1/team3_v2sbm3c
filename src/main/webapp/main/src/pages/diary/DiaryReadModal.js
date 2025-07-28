@@ -490,7 +490,7 @@ export default function DiaryReadModal({id, onClose, onSuccess, createMode = fal
                 dangerouslySetInnerHTML={{ __html: diary?.content }}
               />
 
-              <p style={{marginBottom: "10px"}}>
+              <p>
                 <strong>감정:</strong>{' '}
                 <span className="emotion-icon">{emotionObj.icon}</span>{' '}
                 <span className="emotion-label">{emotionObj.label}</span>
