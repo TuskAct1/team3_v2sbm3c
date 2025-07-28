@@ -99,7 +99,7 @@ function Navbar() {
   const handleMouseLeaveDropdown = () => {
     timeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 200);
+    }, 200);  // 마우스를 올리면 드롭다운 열고, 내려가면 0.2초 후에 닫음
   };
 
   // 페이지 이동 + 드롭다운 닫기
@@ -116,7 +116,7 @@ function Navbar() {
           <span
             className="navbar-logo"
             onClick={() => {
-              window.scrollTo(0, 0);    // ✅ 맨 위로 스크롤
+              // window.scrollTo(0, 0);    // ✅ 맨 위로 스크롤
               navigate('/');            // ✅ 홈으로 이동
             }}
             style={{ cursor: 'pointer' }}  // ✅ 마우스 손가락 모양
