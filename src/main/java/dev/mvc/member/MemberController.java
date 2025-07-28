@@ -211,7 +211,21 @@ public class MemberController {
         }
     }
 
-    
+    /** 로그아웃: 세션 무효화 */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        // 1) 특정 속성만 지우고 싶다면 removeAttribute 로 개별 삭제
+        // session.removeAttribute("role");
+        // session.removeAttribute("memberno");
+        // session.removeAttribute("adminno");
+        // session.removeAttribute("user");
+
+        // 2) 전체 세션 무효화 (위 removeAttribute 4줄과 동일 효과 + 안전)
+        session.invalidate();
+
+        return ResponseEntity.ok(Map.of("message", "로그아웃 성공"));
+    }
+
 
     /** 회원 조회 */
     @GetMapping("/{memberno}")

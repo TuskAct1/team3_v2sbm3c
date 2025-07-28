@@ -95,5 +95,13 @@
         ORDER BY schedule_date ASC, schedule_time ASC
     </select>
 
+    <!-- 오늘 일정 가져오기 -->
+    <select id="listByMembernoAndDate" resultType="dev.mvc.calendar.CalendarVO">
+        SELECT *
+        FROM calendar
+        WHERE memberno = #{memberno}
+        AND start_date = #{date}
+        ORDER BY start_time
+    </select>
 
 </mapper>

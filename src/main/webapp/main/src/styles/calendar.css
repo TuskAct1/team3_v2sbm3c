@@ -176,7 +176,7 @@ html, body, #root {
 
 /* ✅ FullCalendar "더보기" 팝업 스크롤 처리 */
 .fc-popover {
-  max-height: 300px;         /* 높이 제한 */
+  max-height: 200px;         /* 높이 제한 */
   overflow-y: auto;          /* 세로 스크롤 */
 }
 .fc .fc-col-header-cell-cushion {

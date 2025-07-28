@@ -161,7 +161,8 @@ public class CalendarCont {
                 List<CalendarVO> list = calendarProc.list_allByMember(memberno);
                 return ResponseEntity.ok(list);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                List<CalendarVO> list = calendarProc.list_allByAdmin();
+                return ResponseEntity.ok(list);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,103 +181,6 @@ public class CalendarCont {
         }
     }
 
-//    @PostMapping("/update/{calendarno}")
-//    public ResponseEntity<String> update(
-//            @PathVariable int calendarno,
-//            @RequestParam("title") String title,
-//            @RequestParam("category") String category,
-//            @RequestParam("description") String description,
-//            @RequestParam("alarm_yn") String alarm_yn,
-//            @RequestParam("start_date") String start_date,
-//            @RequestParam("end_date") String end_date,
-//            @RequestParam("start_time") String start_time,
-//            @RequestParam("end_time") String end_time,
-//            @RequestParam(value = "memberno", required = false) Integer memberno,
-//            @RequestParam(value = "adminno", required = false) Integer adminno,
-//            @RequestPart(value = "image", required = false) MultipartFile image,
-//            HttpSession session
-//    ) {
-//        CalendarVO calendarVO = new CalendarVO();
-//        calendarVO.setCalendarno(calendarno);
-//        calendarVO.setTitle(title);
-//        calendarVO.setCategory(category);
-//        calendarVO.setDescription(description);
-//        calendarVO.setAlarm_yn(alarm_yn);
-//        calendarVO.setStart_date(start_date);
-//        calendarVO.setEnd_date(end_date);
-//        calendarVO.setStart_time(start_time);
-//        calendarVO.setEnd_time(end_time);
-//        calendarVO.setMemberno(memberno);
-//        calendarVO.setAdminno(adminno);
-//
-//        Integer sessionMemberno = (Integer) session.getAttribute("memberno");
-//        Integer sessionAdminno = (Integer) session.getAttribute("adminno");
-//
-//        // 기존 데이터 조회
-//        CalendarVO oldVO = calendarProc.read(calendarno);
-//        if (oldVO == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        String uploadDir = Tool.getUploadDir() + "calendar/storage/";
-//
-//        try {
-//            // 이미지 처리
-//            if (image != null && !image.isEmpty()) {
-//                if (oldVO.getImage() != null) {
-//                    Tool.deleteFile(uploadDir + oldVO.getImage());
-//                }
-//                if (oldVO.getThumbnail() != null) {
-//                    Tool.deleteFile(uploadDir + oldVO.getThumbnail());
-//                }
-//
-//                String savedFilename = Tool.getRandomDate() + "_" + image.getOriginalFilename();
-//                File file = new File(uploadDir + savedFilename);
-//                image.transferTo(file);
-//
-//                String thumbnail = Tool.preview(uploadDir, savedFilename, 200, 150);
-//
-//                calendarVO.setImage(savedFilename);
-//                calendarVO.setThumbnail(thumbnail);
-//            } else {
-//                calendarVO.setImage(oldVO.getImage());
-//                calendarVO.setThumbnail(oldVO.getThumbnail());
-//            }
-//            System.out.println(oldVO.getMemberno());
-//            // DB 업데이트
-//            int cnt = calendarProc.update(calendarVO);
-//            if (cnt > 0) {
-//                System.out.println(memberno);
-//                // ✅ 알람 ON/OFF 처리
-//                if ("Y".equals(alarm_yn)) {
-//                    CalendarAlarmVO existingAlarm = calendarAlarmProc.readByCalendarno(calendarno);
-//                    if (existingAlarm == null) {
-//                        // 알람 새로 생성
-//                        CalendarAlarmVO newAlarm = new CalendarAlarmVO();
-//                        newAlarm.setCalendarno(calendarno);
-//                        newAlarm.setMemberno(oldVO.getMemberno()); // admin이라면 null
-//                        newAlarm.setAlarm_dt(Timestamp.valueOf(start_date + " " + start_time + ":00"));
-//                        newAlarm.setAlarm_type("SMS");
-//                        newAlarm.setSent_flag("N");
-//                        newAlarm.setRetry_count(0);
-//
-//                        calendarAlarmProc.create(newAlarm);
-//                    }
-//                } else {
-//                    // 알람 꺼짐 상태 → 삭제
-//                    calendarAlarmProc.deleteByCalendar(calendarno);
-//                }
-//
-//                return ResponseEntity.ok("수정 성공");
-//            } else {
-//                return ResponseEntity.status(500).body("수정 실패");
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).body("이미지 수정 중 오류 발생");
-//        }
-//    }
 
     @PostMapping("/update/{calendarno}")
     public ResponseEntity<String> update(
@@ -431,10 +335,20 @@ public class CalendarCont {
         return ResponseEntity.ok(response);
     }
 
+//    // ✅ 오늘 일정만 조회 (memberno 기준)
+//    @GetMapping("")
+//    public ResponseEntity<List<CalendarVO>> getTodaySchedules(@RequestParam("memberno") int memberno) {
+//        List<CalendarVO> todayList = calendarProc.listTodayByMember(memberno);
+//        return ResponseEntity.ok(todayList);
+//    }
+
     // ✅ 오늘 일정만 조회 (memberno 기준)
-    @GetMapping("")
-    public ResponseEntity<List<CalendarVO>> getTodaySchedules(@RequestParam("memberno") int memberno) {
-        List<CalendarVO> todayList = calendarProc.listTodayByMember(memberno);
-        return ResponseEntity.ok(todayList);
-    }
+    @GetMapping("/calendar/list_by_date")
+    public ResponseEntity<List<CalendarVO>> listByDate(
+            @RequestParam("memberno") int memberno,
+            @RequestParam("date") String date  // "YYYY-MM-DD"
+    ) {
+        List<CalendarVO> list = calendarProc.listByMembernoAndDate(memberno, date);
+        return ResponseEntity.ok(list);
+}
 }
