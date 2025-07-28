@@ -263,7 +263,30 @@ const fetchSchedules = (memberno) => {
               {activeTab === "inquiry" && <MyInquiryList memberno={user.memberno} />}
               {activeTab === "info" && <EditProfileForm user={user} />}
               {/* {activeTab === "info" && <div>내정보 탭 내용</div>} */}
-              {activeTab === "settings" && <div>설정 탭 내용</div>}
+              {activeTab === "settings" && (
+                <div className="settings-wrapper">
+                  <div className="settings-container">
+                    <div className="setting-item" onClick={() => navigate('/terms')}>
+                      <span>서비스 이용약관</span>
+                      <span className="arrow"><FaChevronRight /></span>
+                    </div>
+                    <div className="setting-item" onClick={() => navigate('/privacy')}>
+                      <span>개인정보 처리방침</span>
+                      <span className="arrow"><FaChevronRight /></span>
+                    </div>
+                    <div className="setting-item" onClick={() => navigate('/marketing')}>
+                      <span>마케팅 정보 수신 동의</span>
+                      <span className="arrow"><FaChevronRight /></span>
+                    </div>
+                  </div>
+
+                  <div className="settings-footer">
+                    <span className="footer-link">회원탈퇴</span>
+                    <span className="footer-link">로그아웃</span>
+                  </div>
+                </div>
+              )}
+
             </motion.div>
           </AnimatePresence>
           </div>

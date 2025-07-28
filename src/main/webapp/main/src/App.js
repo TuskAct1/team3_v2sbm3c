@@ -63,7 +63,7 @@ import GameSelect from './pages/plant/games/GameSelect';
 
 import DiaryPage from './pages/diary/DiaryPage';
 import PlantHomePage from './pages/plant/PlantHomePage'; // 또는 실제 사용하는 쪽만 남기세요
-import MemoryGame from './pages/plant/games/MemoryGame';
+// import MemoryGame from './pages/plant/games/MemoryGame';
 // import PlantMain from './pages/plant/PlantMain';
 import ReplyReportListPage from './pages/reply/ReplyReportListPage';
 import EmotionReportPage from './pages/emotion_report/EmotionReportPage';
@@ -82,8 +82,20 @@ import SeedSelect from './pages/plant/SeedSelect';
 import SeedNamePage from './pages/plant/SeedNamePage'; // ✅ 반드시 import
 import PlantLoading from './pages/plant/PlantLoading';
 import QuizPage from './pages/plant/quiz/QuizPage'; // 경로가 맞는지 확인
+import TermsOfService from './pages/member/TermsOfService';
+import PrivacyPolicy from './pages/member/PrivacyPolicy';
+import MarketingConsent from './pages/member/MarketingConsent';
+import ChatBotContainer from './pages/chatbot/ChatBotContainer';
+
+import MemoryGame from './pages/plant/games/MemoryGame'; // 기억력 게임
+import ClickGame from './pages/plant/games/ClickGame';   // 클릭 게임
+
 
 function App() {
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const userNo = user.memberno;  // 여기에 꼭 정의해 줍니다!
+
   return (
     <BrowserRouter>
       <Routes>
@@ -183,7 +195,19 @@ function App() {
           <Route path="/plant/main" element={<MainPageWrapper />} />
 
           <Route path="/plant/quiz" element={<QuizPage />} />
+
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/marketing" element={<MarketingConsent />} />
+
+          <Route
+              path="/todaki"
+              element={<ChatBotContainer memberno={userNo} />}
+            />
         </Route>
+
+        <Route path="/plant/games/memory" element={<MemoryGame />} />
+        <Route path="/plant/games/click" element={<ClickGame />} />
       </Routes>
 
     </BrowserRouter>

@@ -1,6 +1,7 @@
 // src/pages/plant/games/MemoryGame.js
 import React, { useState, useEffect } from "react";
 import "./MemoryGame.css";
+import GameSelect from './GameSelect';
 
 const items = ["🍓", "🍅", "🌽", "🍇", "🥕"];
 
