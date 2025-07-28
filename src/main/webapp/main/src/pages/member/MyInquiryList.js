@@ -7,15 +7,20 @@ function MyInquiryList({ memberno }) {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
     const fetchList = async () => {
-      const res = await fetch(`/inquiry/list_all/${memberno}`);
-      const data = await res.json();
-      const myInquiries = data.filter(inquiry => String(inquiry.memberno) === String(memberno));
-      setList(myInquiries);
-      setFilteredList(myInquiries);
-    };
+    const res = await fetch(`/inquiry/list_all?memberno=${memberno}`);
+    const data = await res.json();
+
+    const list = Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
+    console.log(list);
+    const myInquiries = list.filter(inquiry => String(inquiry.memberno) === String(memberno));
+
+    setList(myInquiries);
+    setFilteredList(myInquiries);
+  };
     fetchList();
   }, [memberno]);
 
@@ -32,7 +37,7 @@ function MyInquiryList({ memberno }) {
   const handleSelect = async (inquiryno) => {
     setLoading(true);
     try {
-      const res = await fetch(`/inquiry/${memberno}/${inquiryno}`);
+      const res = await fetch(`/inquiry/${inquiryno}?memberno=${memberno}`);
       const data = await res.json();
       setSelected(data);
     } catch (err) {
