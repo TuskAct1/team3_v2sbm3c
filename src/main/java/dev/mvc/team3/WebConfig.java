@@ -25,6 +25,8 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("file:///C:/kd/deploy/team3/member/storage/");
     registry.addResourceHandler("/profile/**")
             .addResourceLocations("file:///Users/imgwanghwan/kd/deploy/team3/profile/");
+    registry.addResourceHandler("/profile/**")
+            .addResourceLocations("file:///C:/kd/deploy/deploy/team3/profile/");
 
     // FAQ 이미지 경로
     registry.addResourceHandler("/faq/storage/**")
