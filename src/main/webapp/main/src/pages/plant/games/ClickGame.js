@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import GameSelect from './GameSelect';
 
 const ClickGame = ({ onComplete }) => {
   const [score, setScore] = useState(0);

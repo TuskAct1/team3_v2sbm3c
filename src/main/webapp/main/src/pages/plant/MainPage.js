@@ -572,6 +572,18 @@ function MainPage() {
         await reloadAll();
       };
 
+      const handleMemoryGame = () => {
+        navigate('/plant/game/memory');
+      };
+
+      const handleClickGame = () => {
+        navigate('/plant/game/click');
+      };
+
+      const handleGameBack = () => {
+        setMode('menu'); // 또는 navigate('/plant') 등
+      };
+
       return (
   <div className="plant-wrapper">
     <p className="plant-guide-text">

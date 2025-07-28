@@ -739,7 +739,7 @@ const handleTermsChange = (e) => {
               />
               <span>개인정보 처리방침 <span className="required">(필수)</span></span>
             </label>
-            <span className="view-link" onClick={() => window.open('https://link2', '_blank')}>자세히보기</span>
+            <span className="view-link" onClick={() => window.open('https://heemintest.notion.site/230bf84fec7280df88aeeca8275c6779?source=copy_link', '_blank')}>자세히보기</span>
           </div>
 
           <div className="terms-item">
@@ -752,7 +752,7 @@ const handleTermsChange = (e) => {
               />
               <span>마케팅 수신 정보동의 <span className="optional">(선택)</span></span>
             </label>
-            <span className="view-link" onClick={() => window.open('https://link3', '_blank')}>자세히보기</span>
+            <span className="view-link" onClick={() => window.open('https://heemintest.notion.site/230bf84fec7280fe90b2d59feab1d705?source=copy_link', '_blank')}>자세히보기</span>
           </div>
         </div>
         <button type="submit" className="sign-submit-btn">가입완료</button>

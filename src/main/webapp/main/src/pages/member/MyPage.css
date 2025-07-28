@@ -345,3 +345,43 @@ body {
   align-items: center;
   justify-content: center;
 }
+.settings-wrapper {
+
+  padding: 40px 0;
+  text-align: center;
+}
+
+.settings-container {
+  background: white;
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  font-size: 17px;
+  font-weight: 600;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.arrow {
+  font-size: 20px;
+  color: #333;
+}
+
+.settings-footer {
+  margin-top: 40px;
+  color: #999;
+  font-size: 14px;
+}
+
+.footer-link {
+  margin: 0 15px;
+  cursor: pointer;
+}
