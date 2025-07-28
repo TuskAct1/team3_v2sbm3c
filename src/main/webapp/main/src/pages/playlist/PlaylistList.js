@@ -123,6 +123,7 @@ function PlaylistList() {
     );
   };
 
+  // 폼 닫기 함수들 (ESC 포함)
   const closeForm = useCallback(() => {
     setFormMode(null);
     setSelectedPlaylist(null);

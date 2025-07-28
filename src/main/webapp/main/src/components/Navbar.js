@@ -42,12 +42,25 @@ function Navbar() {
     }
   }, [activeDropdown]);
 
-  const handleLogout = () => {
-    const provider = user?.provider;
+  // const handleLogout = () => {
+  //   const provider = user?.provider;
 
-    // 1️⃣ localStorage 정리
-    localStorage.removeItem("user");
-    setUser(null);
+  //   // 1️⃣ localStorage 정리
+  //   localStorage.removeItem("user");
+  //   setUser(null);
+
+  const handleLogout = async () => {
+    const provider = user?.provider;
+    try {
+      // 백엔드 로그아웃 API 호출
+      await axios.post('/api/members/logout');
+    } catch (err) {
+      console.error('서버 로그아웃 실패', err);
+    } finally {
+      // 로컬 스토리지와 리액트 상태 정리
+      localStorage.removeItem('user');
+      setUser(null);
+    }
 
     
 
@@ -86,7 +99,7 @@ function Navbar() {
   const handleMouseLeaveDropdown = () => {
     timeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 200);
+    }, 200);  // 마우스를 올리면 드롭다운 열고, 내려가면 0.2초 후에 닫음
   };
 
   // 페이지 이동 + 드롭다운 닫기
@@ -103,7 +116,7 @@ function Navbar() {
           <span
             className="navbar-logo"
             onClick={() => {
-              window.scrollTo(0, 0);    // ✅ 맨 위로 스크롤
+              // window.scrollTo(0, 0);    // ✅ 맨 위로 스크롤
               navigate('/');            // ✅ 홈으로 이동
             }}
             style={{ cursor: 'pointer' }}  // ✅ 마우스 손가락 모양

@@ -300,7 +300,7 @@ function ReplySection({ boardno }) {
 
               {/* 답글들 출력 */}
               {replyMap[reply.replyno]?.map(child => (
-                <li key={child.replyno} className="reply-item level-2" style={{ paddingLeft: '40px' }}>
+                <li key={child.replyno} className="reply-item level-2">
                   <div className="reply-left">
                     <img 
                       src={child.profile ? `/profile/${child.profile}` : '/images/default_profile.png'}

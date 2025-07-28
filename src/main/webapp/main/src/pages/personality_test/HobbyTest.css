@@ -153,11 +153,11 @@
 }
 
 /* ✅ 돌아가기 버튼 */
-.back-btn {
+.hobby-back-btn {
   background-color: #e0e0e0;
   color: #333;
 }
-.back-btn:hover {
+.hobby-back-btn:hover {
   background-color: #bdbdbd;
   transform: scale(1.05);
 }
