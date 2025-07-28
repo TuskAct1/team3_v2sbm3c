@@ -114,7 +114,7 @@ public class MemberController {
             // ✅ 기본 이미지 파일명 저장 (정적 자원 경로에 있어야 함)
             memberVO.setProfile("default_profile.png");
         }
-        
+
         // 3. 포인트 기본값
         memberVO.setPoint(50);
 
@@ -211,24 +211,38 @@ public class MemberController {
         }
     }
 
-    
+    /** 로그아웃: 세션 무효화 */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        // 1) 특정 속성만 지우고 싶다면 removeAttribute 로 개별 삭제
+        // session.removeAttribute("role");
+        // session.removeAttribute("memberno");
+        // session.removeAttribute("adminno");
+        // session.removeAttribute("user");
+
+        // 2) 전체 세션 무효화 (위 removeAttribute 4줄과 동일 효과 + 안전)
+        session.invalidate();
+
+        return ResponseEntity.ok(Map.of("message", "로그아웃 성공"));
+    }
+
 
     /** 회원 조회 */
     @GetMapping("/{memberno}")
     public ResponseEntity<MemberVO> read(@PathVariable("memberno") int memberno) {
         MemberVO vo = memberProc.read(memberno);
         return (vo != null)
-            ? ResponseEntity.ok(vo)
-            : ResponseEntity.notFound().build();
+                ? ResponseEntity.ok(vo)
+                : ResponseEntity.notFound().build();
     }
 
     /** 회원 목록 */
- // 🔄 전체 리스트만 보고 싶을 경우
+    // 🔄 전체 리스트만 보고 싶을 경우
     @GetMapping("/all")
     public List<MemberVO> list() {
         return memberProc.list();
     }
-    
+
     /** 회원 정보 수정 */
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(@ModelAttribute MemberVO memberVO,
@@ -282,8 +296,8 @@ public class MemberController {
         }
 
         return (cnt == 1)
-            ? ResponseEntity.ok("✅ 수정 성공")
-            : ResponseEntity.status(500).body("❌ 수정 실패");
+                ? ResponseEntity.ok("✅ 수정 성공")
+                : ResponseEntity.status(500).body("❌ 수정 실패");
     }
 
 
@@ -309,7 +323,7 @@ public class MemberController {
 //        return plantProc.readByMemberno(memberno);
 //    }
 
- // 아이디 중복 확인
+    // 아이디 중복 확인
     @GetMapping("/check-id")
     public ResponseEntity<Map<String, Object>> checkId(@RequestParam("id") String id) {
         Map<String, Object> response = new HashMap<>();
@@ -319,20 +333,20 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
- // ID로 회원 조회
+    // ID로 회원 조회
     @GetMapping("/id")
     public ResponseEntity<MemberVO> readById(@RequestParam("id") String id) {
         MemberVO vo = memberProc.readById(id);
         return (vo != null) ? ResponseEntity.ok(vo) : ResponseEntity.notFound().build();
     }
 
- // 회원 탈퇴 (개인 계정 삭제)
+    // 회원 탈퇴 (개인 계정 삭제)
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteByMember(@RequestParam("memberno") int memberno) { // ✅ 이름 명시
         int cnt = memberProc.delete(memberno);
         return (cnt == 1)
-            ? ResponseEntity.ok("탈퇴 성공")
-            : ResponseEntity.status(500).body("탈퇴 실패");
+                ? ResponseEntity.ok("탈퇴 성공")
+                : ResponseEntity.status(500).body("탈퇴 실패");
     }
 
     @GetMapping("/point")
@@ -378,12 +392,12 @@ public class MemberController {
         return ResponseEntity.ok(Map.of("msg", "일치하는 회원 정보가 없습니다."));
     }
 
-    
+
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> listWithSearchPaging(
-        @RequestParam(name = "keyword", required = false) String keyword,
-        @RequestParam(name = "now_page", defaultValue = "1") int nowPage,
-        @RequestParam(name = "records_per_page", defaultValue = "10") int recordsPerPage
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "now_page", defaultValue = "1") int nowPage,
+            @RequestParam(name = "records_per_page", defaultValue = "10") int recordsPerPage
     ) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("keyword", keyword);
@@ -428,8 +442,5 @@ public class MemberController {
             return ResponseEntity.status(500).body("프로필 변경 실패");
         }
     }
-
-
-
 
 }

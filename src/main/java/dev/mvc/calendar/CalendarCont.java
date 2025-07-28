@@ -161,7 +161,8 @@ public class CalendarCont {
                 List<CalendarVO> list = calendarProc.list_allByMember(memberno);
                 return ResponseEntity.ok(list);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                List<CalendarVO> list = calendarProc.list_allByAdmin();
+                return ResponseEntity.ok(list);
             }
         } catch (Exception e) {
             e.printStackTrace();

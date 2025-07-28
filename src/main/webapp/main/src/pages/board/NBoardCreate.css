@@ -48,7 +48,7 @@
   flex: 1;
   max-width: 500px;
   padding: 14px 16px;
-  font-size: 18px;
+  font-size: 17px !important;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fafafa;
@@ -80,6 +80,9 @@
   height: auto;
   border: 1px solid #ccc;
   border-radius: 8px;
+  /* ✅ 가운데 정렬을 위한 추가 */
+  display: block;
+  margin: 10px auto;
 }
 
 /* ✅ 등록 버튼 */

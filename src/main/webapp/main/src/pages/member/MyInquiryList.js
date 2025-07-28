@@ -19,10 +19,28 @@ function MyInquiryList({ memberno }) {
     console.log(list);
     const myInquiries = list.filter(inquiry => String(inquiry.memberno) === String(memberno));
 
-    setList(myInquiries);
-    setFilteredList(myInquiries);
-  };
+        // 응답에서 실제 배열을 추출
+        const list = Array.isArray(data)
+          ? data
+          : Array.isArray(data.data)
+          ? data.data
+          : [];
 
+        // 🔍 내 문의만 필터링 (memberno 비교)
+        const myInquiries = list.filter(
+          (inquiry) => String(inquiry.memberno) === String(memberno)
+        );
+
+        console.log("✅ 나의 문의 리스트:", myInquiries);
+
+        setList(myInquiries);
+        setFilteredList(myInquiries);
+      } catch (err) {
+        console.error("❌ 문의 목록 불러오기 실패:", err);
+        setList([]);
+        setFilteredList([]);
+      }
+    };
     fetchList();
   }, [memberno]);
 

@@ -96,7 +96,8 @@ function BoardReadPage() {
   }, [boardno]);
 
   useEffect(() => {
-    axios.get(`/boardRecommend/count/${boardno}`).then((res) => setRecom(res.data.recom));
+    axios.get(`/boardRecommend/count/${boardno}`)
+    .then((res) => {setRecom(res.data.recom); console.log(res.data.recom)});
   }, [boardno]);
 
   return (
@@ -139,7 +140,7 @@ function BoardReadPage() {
 
       {isImage(boardVO.file1) && (
         <img
-          src={`/contents/storage/${boardVO.file1saved}`}
+          src={`/board/storage/${boardVO.file1saved}`}
           alt="첨부 이미지"
           className="board-image"
         />
