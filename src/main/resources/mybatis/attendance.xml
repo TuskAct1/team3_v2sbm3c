@@ -30,7 +30,7 @@
     attendanceno, memberno, total_days, last_check
     ) VALUES (
     attendance_seq.NEXTVAL,
-    #{memberno}, 1, SYSDATE
+    #{memberno}, 0, SYSDATE - 1  <!-- ✅ 어제로 설정 -->
     )
   </insert>
 

@@ -1,5 +1,7 @@
 package dev.mvc.emotion_report;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface EmotionReportDAOInter {
@@ -14,4 +16,13 @@ public interface EmotionReportDAOInter {
 
     /** 심리테스트 결과 조회 */
     public List<TestResultDTO> getTestResults(int memberno);
+
+    List<EmotionReportVO> selectByMemberAndPeriod(
+            @Param("memberno") int memberno,
+            @Param("reportType") String reportType,
+            @Param("reportPeriod") String reportPeriod
+    );
+
+    public int update(EmotionReportVO vo);
+
 }

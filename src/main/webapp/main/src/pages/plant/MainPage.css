@@ -165,7 +165,7 @@
   align-items: center;
   justify-content: center;
   background: #e3f2dc;
-  padding: 18px 93px;
+  padding: 18px 73px;
   border-radius: 12px;
   margin: 16px auto;
   width: fit-content;
@@ -173,17 +173,18 @@
 }
 
 .point-icon {
-  width: 20px;
-  height: 20px;
+  width: 38px;
+  height: 38px;
 }
 
 .point-label {
   font-weight: bold;
+  font-size: 18px;
   color: #4d774e;
 }
 
 .point-value {
-  font-size: 14px;
+  font-size: 18px;
   color: #777;
 }
 

@@ -277,7 +277,6 @@ function ChatBotContainer({ memberno }) {
         <div className="chat-sidebar-actions">
           <button className="sidebar-btn" onClick={handleCreateRoom}><FaPlus /> 새 채팅</button>
           <button className="sidebar-btn" onClick={handleDeleteAllRooms}><FaTrash /> 모든 대화 기록 삭제하기</button>
-          <button className="sidebar-btn"><FaCog /> 설정</button>
         </div>
       </aside>
 
