@@ -11,8 +11,32 @@
   // import './CalendarPage.css'; // 스타일 따로 구성 가능
 
   import moment from 'moment-timezone';
+  import { FaTrash } from 'react-icons/fa';
 
   axios.defaults.withCredentials = true;
+
+
+  function linkify(text) {
+    return text.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+      /^https?:\/\//.test(part)
+        ? (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: '#007bff',        // 파란색
+              textDecoration: 'underline' // 밑줄
+            }}
+          >
+            {part}
+          </a>
+        )
+        : part
+    );
+  }
+
 
   function CalendarPage() {
     const FIXED_CATEGORIES = ['급여', '복지', '취미', '생일'];
@@ -26,7 +50,7 @@
 
     const [formData, setFormData] = useState({
       title: '',  category: '', description: '',
-      alarm_yn: 'N', start_time: '', end_time: '', start_date: '', end_date: '', imageFile: null
+      alarm_yn: 'N', start_time: '', end_time: '', start_date: '', end_date: '', imageFile: null, removeImage: false
     });
 
     const [previewModalData, setPreviewModalData] = useState(null);
@@ -113,9 +137,18 @@
       });
 
       const userEvents = userRes.data.map(item => {
+        // const isAdmin = item.adminno !== null;
+        // const isAllDay = (!item.start_time || item.start_time === '00:00') &&
+        //                 (!item.end_time || item.end_time === '00:00');
         const isAdmin = item.adminno !== null;
-        const isAllDay = (!item.start_time || item.start_time === '00:00') &&
-                        (!item.end_time || item.end_time === '00:00');
+        // “복지 일정” 고정 카테고리인지 체크
+        const category = item.category?.trim();
+        const isFixedCategory = FIXED_CATEGORIES.includes(category);
+        // 원래 all‑day 판단 (시간 정보가 없으면)
+        const isTimeMissing = (!item.start_time || item.start_time === '00:00') &&
+                              (!item.end_time   || item.end_time   === '00:00');
+        // 고정 카테고리면 무조건 allDay
+        const isAllDay = isFixedCategory || isTimeMissing;
         return {
           ...item,
           id: item.calendarno?.toString(),
@@ -330,6 +363,9 @@
 
         if (userInfo?.role === 'member') data.append('memberno', userInfo.memberno);
         if (userInfo?.role === 'admin') data.append('adminno', userInfo.adminno);
+        if (formData.removeImage) {
+          data.append('removeImage', 'Y');
+        }
 
         if (formData.imageFile) {
           data.append('image', formData.imageFile);  // ✅ 여기만 바꿔주면 됨
@@ -381,6 +417,7 @@
         end_time: previewModalData.end?.slice(11, 16) || '',
         image: previewModalData.image || '',
         imageFile: null,
+        removeImage: false,
       });
 
       setSelectedDate(previewModalData.start?.slice(0, 10) || '');
@@ -438,7 +475,7 @@
 
     return (
       <div style={{ display: 'flex', height: 'calc(100vh - 60px)' }}>
-        <div style={{ width: '240px', padding: '1rem', overflowY: 'auto' }}>
+        <div style={{ width: '280px', padding: '1rem', overflowY: 'auto' }}>
           {/* ✅ 미니 캘린더 추가 */}
           <div style={{ marginBottom: '1rem' }}>
             <MiniCalendar
@@ -457,7 +494,9 @@
             <div>로그인 정보 없음</div>
           )} */}
         <div className="filterContainer">
-            <h2>복지 일정</h2>
+            <h2 className="filter-header filter-header--welfare">
+              복지 일정
+            </h2>
             {FIXED_CATEGORIES.map(cat => (
               <label key={cat}>
                 <input
@@ -468,7 +507,10 @@
               </label>
             ))}
 
-            <h2>할 일</h2>
+            {/* “내 할 일” 헤더 */}
+            <h2 className="filter-header filter-header--task">
+              내 할 일
+            </h2>
             {allMemberCategories.map(cat => (
               <label key={cat}>
                 <input
@@ -754,7 +796,43 @@
                 {editingEventId && formData.image && (
                   <div>
                     <p>등록된 이미지:</p>
-                    <img src={`/calendar/storage/${formData.image}`} alt="일정 이미지" style={{ width: '150px' }} />
+                    {/* ① 여기에 relative 컨테이너 추가 */}
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <img
+                        src={`/calendar/storage/${formData.image}`}
+                        alt="일정 이미지"
+                        style={{ width: '150px', display: 'block' }}
+                      />
+                      {/* ② 삭제 버튼은 이 컨테이너 안에서 absolute */}
+                      <button
+                        type="button"
+                        aria-label="이미지 삭제"
+                        style={{
+                          position: 'absolute',
+                          bottom: '4px',
+                          right: '4px',
+                          background: 'rgba(0,0,0,0.6)',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          color: '#fff'
+                        }}
+                        onClick={() =>
+                          setFormData(prev => ({
+                            ...prev,
+                            image: null,
+                            removeImage: true
+                          }))
+                        }
+                      >
+                        <FaTrash size={18} />
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -843,7 +921,18 @@
                     </div>
                   )}
 
-
+                  {/* 설명(일정 내용) */}
+                  {previewModalData.description && (
+                  <p
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      overflowWrap: 'break-word',
+                    }}
+                  >
+                    📝 {linkify(previewModalData.description)}
+                  </p>
+                  )}
                   <p>🔔 {previewModalData.alarm_yn === 'Y' ? '알람 있음' : '알람 없음'}</p>
                   <p>📅 {previewModalData.category}</p>
                                       {/* <p>

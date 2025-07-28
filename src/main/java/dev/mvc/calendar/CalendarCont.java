@@ -79,7 +79,7 @@ public class CalendarCont {
                 String uploadDir = "";
 
                 if (osName.contains("win")) {
-                    uploadDir = "C:/kd/deploy/team3/calendar/storage/";
+                    uploadDir = "C:/kd/deploy/deploy/team3/calendar/storage/";
                 } else if (osName.contains("mac")) {
                     uploadDir = "/Users/사용자이름/kd/deploy/team3/calendar/storage/";
                 } else {
@@ -291,6 +291,8 @@ public class CalendarCont {
             @RequestParam("end_time") String end_time,
             @RequestParam(value = "memberno", required = false) Integer memberno,
             @RequestParam(value = "adminno", required = false) Integer adminno,
+            // 삭제 요청용 플래그
+            @RequestParam(value = "removeImage", required = false) String removeImage,
             @RequestPart(value = "image", required = false) MultipartFile image,
             HttpSession session
     ) {
@@ -337,11 +339,20 @@ public class CalendarCont {
                 String thumbnail = Tool.preview(uploadDir, savedFilename, 200, 150);
                 calendarVO.setImage(savedFilename);
                 calendarVO.setThumbnail(thumbnail);
-            } else {
-                calendarVO.setImage(oldVO.getImage());
-                calendarVO.setThumbnail(oldVO.getThumbnail());
-            }
-
+                }
+                // 2) “이미지 삭제” 버튼을 눌러 removeImage=Y 를 보냈다면
+                else if ("Y".equals(removeImage)) {
+                        // 파일 시스템에서도 지우고 DB 컬럼은 null 처리
+                                Tool.deleteFile(uploadDir + oldVO.getImage());
+                        Tool.deleteFile(uploadDir + oldVO.getThumbnail());
+                        calendarVO.setImage(null);
+                        calendarVO.setThumbnail(null);
+                    }
+                // 3) 아무 것도 하지 않았다면 이전 이미지 유지
+                else {
+                    calendarVO.setImage(oldVO.getImage());
+                    calendarVO.setThumbnail(oldVO.getThumbnail());
+                }
             int cnt = calendarProc.update(calendarVO);
             if (cnt > 0) {
                 // ✅ 알람 처리
