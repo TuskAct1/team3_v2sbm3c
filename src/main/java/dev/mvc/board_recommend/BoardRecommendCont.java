@@ -44,7 +44,6 @@ public class BoardRecommendCont {
 
 //         int memberno = (int) session.getAttribute("memberno");
 
-
         boolean recommended = boardRecommendProc.exist(boardno, memberno);
 
         Map<String, Object> result = new HashMap<>();
@@ -60,7 +59,6 @@ public class BoardRecommendCont {
         Integer memberno = (Integer) session.getAttribute("memberno");
 
 //         int memberno = (int) session.getAttribute("memberno");
-
 
         boolean success = boardRecommendProc.create(boardno, memberno);
         boardProc.increaseRecommend(boardno);
