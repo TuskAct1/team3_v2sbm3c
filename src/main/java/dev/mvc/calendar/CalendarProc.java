@@ -47,4 +47,9 @@ public class CalendarProc implements CalendarProcInter {
     public List<CalendarVO> listTodayByMember(int memberno) {
         return this.calendarDAO.listTodayByMember(memberno);
     }
+
+    @Override
+    public List<CalendarVO> listByMembernoAndDate(int memberno, String date) {
+        return calendarDAO.listByMembernoAndDate(memberno, date);
+    }
 }

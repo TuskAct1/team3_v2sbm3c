@@ -1,5 +1,7 @@
 package dev.mvc.calendar;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface CalendarDAOInter {
@@ -26,4 +28,15 @@ public interface CalendarDAOInter {
   List<CalendarVO> list_allByMember(int memberno);
 
   List<CalendarVO> listTodayByMember(int memberno);
+
+  /**
+   * 지정된 회원의 특정 날짜 일정 조회
+   * @param memberno 회원번호
+   * @param date     조회할 날짜(YYYY-MM-DD)
+   * @return 일정 목록
+   */
+  List<CalendarVO> listByMembernoAndDate(
+          @Param("memberno") int memberno,
+          @Param("date") String date
+  );
 }

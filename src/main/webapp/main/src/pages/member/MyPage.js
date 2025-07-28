@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronRight } from 'react-icons/fa'; // ⬅️ 아이콘 추가
 import { useNavigate } from 'react-router-dom'; // ⬅️ useNavigate 추가
 import EditProfileForm from './EditProfileForm'; // 추가
-
+import moment from 'moment';
 
 function MyPage() {
   const navigate = useNavigate();
@@ -97,6 +97,8 @@ function MyPage() {
   return isMorning ? hour < 12 : hour >= 12;
 });
 
+
+
   const handleToggleComplete = (calendarno) => {
     const idStr = String(calendarno);
     setCompletedScheduleMap(prev => {
@@ -108,12 +110,25 @@ function MyPage() {
       return updated;
     });
   };
-  const fetchSchedules = (memberno) => {
+//   const fetchSchedules = (memberno) => {
+//   if (!memberno) return;
+//   axios.get(`/calendar/list_all?memberno=${memberno}`)
+//     .then(res => {
+//       console.log("📅 일정 데이터:", res.data); // ✅ 여기에 로그 추가
+//       setSchedules(res.data);
+//     })
+//     .catch(err => console.error("일정 불러오기 실패", err));
+// };
+
+const fetchSchedules = (memberno) => {
   if (!memberno) return;
   axios.get(`/calendar/list_all?memberno=${memberno}`)
     .then(res => {
-      console.log("📅 일정 데이터:", res.data); // ✅ 여기에 로그 추가
-      setSchedules(res.data);
+      const today = moment().format('YYYY-MM-DD');
+      // 서버에서 받은 일정 중 start_date 가 오늘인 것만
+      const todayEvents = res.data.filter(item => item.start_date === today);
+      console.log("📅 오늘 일정:", todayEvents);
+      setSchedules(todayEvents);
     })
     .catch(err => console.error("일정 불러오기 실패", err));
 };
