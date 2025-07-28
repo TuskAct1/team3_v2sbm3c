@@ -1,94 +1,94 @@
+// src/main/java/dev/mvc/item/ItemUsageLogCont.java
 package dev.mvc.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/item-usage")
 public class ItemUsageLogCont {
 
-    // ✅ ItemUsageLogCont.java
-    @Autowired
-    @Qualifier("dev.mvc.item.ItemUsageLogProc") // 또는 Bean 이름
-    private ItemUsageLogProcInter itemUsageLogProc;
+    private final ItemUsageLogProcInter proc;
 
-    private ItemUsageLogProcInter itemUsageLogProcInter;
-
-    @GetMapping("/{memberno}")
-    public ResponseEntity<?> getItemUsage(@PathVariable int memberno) {
-        ItemUsageLogVO usage = itemUsageLogProc.getUsageForToday(memberno);  // ✅ 변수명 수정
-        if (usage == null) {
-            usage = new ItemUsageLogVO(); // 사용 내역 없으면 0으로 채운 새 VO
-        }
-        return ResponseEntity.ok(usage);
+    public ItemUsageLogCont(ItemUsageLogProcInter proc) {
+        this.proc = proc;
     }
 
-    @PostMapping("/use")
-    public String useItem(@RequestBody ItemUsageLogVO vo) {
-        // 제한 체크
-        Map<String, Object> map = new HashMap<>();
-        map.put("memberno", vo.getMemberno());
-        map.put("item_type", vo.getItem_type());
+    /** 오늘 사용 내역 조회 */
+//    @GetMapping("/{memberno}")
+//    public ResponseEntity<ItemUsageLogVO> getItemUsage(@PathVariable int memberno) {
+//        ItemUsageLogVO usage = proc.getUsageForToday(memberno);
+//        if (usage == null) {
+//            usage = new ItemUsageLogVO();
+//            usage.setMemberno(memberno);
+//            usage.setItem_type("none");
+//            usage.setCnt(0);
+//        }
+//        return ResponseEntity.ok(usage);
+//    }
 
-        int usedToday = itemUsageLogProc.countUsedToday(map);
+    /**
+     * 아이템 사용
+     */
+    @PostMapping("/use")
+    public ResponseEntity<Map<String, String>> useItem(@RequestBody ItemUsageLogVO vo) {
+        int used = proc.countUsedToday(Map.of(
+                "memberno", vo.getMemberno(),
+                "item_type", vo.getItem_type()
+        ));
         int limit = switch (vo.getItem_type()) {
             case "물" -> 2;
             case "비료" -> 1;
-            case "영양제" -> 999;
-            default -> 0;
+            case "영양제" -> Integer.MAX_VALUE;
+            default -> Integer.MAX_VALUE;
         };
-
-        if (usedToday >= limit) {
-            return "limit";
+        if (used >= limit) {
+            return ResponseEntity.ok(Map.of("status", "limit"));
         }
-
-        int inserted = itemUsageLogProc.insert(vo);
-        return inserted > 0 ? "success" : "fail";
+        boolean success = proc.insert(vo) > 0;
+        return ResponseEntity.ok(Map.of("status", success ? "success" : "fail"));
     }
 
+    /**
+     * 남은 사용 가능 횟수 조회
+     */
     @GetMapping("/remaining")
-    public ResponseEntity<?> getRemaining(@RequestParam int memberno, @RequestParam String item_type) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("memberno", memberno);
-        map.put("item_type", item_type);
-
-        int usedToday = itemUsageLogProc.countUsedToday(map);
-
+    public ResponseEntity<Map<String, Integer>> getRemaining(
+            @RequestParam int memberno,
+            @RequestParam String item_type
+    ) {
+        int used = proc.countUsedToday(Map.of(
+                "memberno", memberno,
+                "item_type", item_type
+        ));
         int limit = switch (item_type) {
             case "물" -> 2;
             case "비료" -> 1;
-            case "영양제" -> 3; // UI 기준 (예시)
+            case "영양제" -> 3;
             default -> 0;
         };
-
-        int remaining = Math.max(limit - usedToday, 0);
-        Map<String, Object> result = new HashMap<>();
-        result.put("remaining", remaining);
-        result.put("limit", limit);
-        return ResponseEntity.ok(result);
+        int remaining = Math.max(limit - used, 0);
+        return ResponseEntity.ok(Map.of(
+                "remaining", remaining,
+                "limit", limit
+        ));
     }
 
-    // ItemUsageLogCont.java
+    /**
+     * 범용 로그 엔드포인트
+     */
     @PostMapping("/log")
-    @ResponseBody
-    public String logItemUsage(@RequestBody Map<String, Object> body) {
-        try {
-            int memberno = Integer.parseInt(body.get("memberno").toString());
-            String itemType = body.get("itemType").toString();
+    public ResponseEntity<Map<String, String>> logItemUsage(@RequestBody ItemUsageLogVO vo) {
+        boolean success = proc.insert(vo) > 0;
+        return ResponseEntity.ok(Map.of("status", success ? "success" : "fail"));
+    }
 
-            ItemUsageLogVO log = new ItemUsageLogVO();
-            log.setMemberno(memberno);
-            log.setItem_type(itemType);
-            itemUsageLogProcInter.insert(log);
-            return "success";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "fail";
-        }
+    @GetMapping("/today/all/{memberno}")
+    public ResponseEntity<List<ItemUsageLogVO>> getTodayUsageAll(@PathVariable int memberno) {
+        List<ItemUsageLogVO> usageList = proc.getTodayUsageByMember(memberno);
+        return ResponseEntity.ok(usageList);
     }
 }

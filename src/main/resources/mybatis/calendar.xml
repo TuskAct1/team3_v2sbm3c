@@ -20,6 +20,7 @@
         start_time,
         end_time,
         alarm_yn,
+        image,
         rdate
         ) VALUES (
         #{calendarno},
@@ -30,9 +31,10 @@
         #{description},
         #{start_date},
         #{end_date},
-        #{end_time},
         #{start_time},
+        #{end_time},
         #{alarm_yn},
+        #{image, jdbcType=VARCHAR},
         SYSTIMESTAMP
         )
     </insert>
@@ -42,7 +44,7 @@
     SELECT calendarno, memberno, adminno, title,
            category, description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time
     FROM calendar
-    ORDER BY schedule_date ASC, schedule_time ASC
+    ORDER BY start_date    ASC, start_time    ASC
   </select>
 
   <!-- 특정 일정 조회 -->

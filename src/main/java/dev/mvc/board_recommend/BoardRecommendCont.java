@@ -65,6 +65,7 @@ public class BoardRecommendCont {
     @DeleteMapping("/{boardno}")
     public ResponseEntity<?> removeRecommend(@PathVariable("boardno") int boardno, HttpSession session) {
         Integer memberno = (Integer) session.getAttribute("memberno");
+
         boolean success = boardRecommendProc.delete(boardno, memberno);
         boardProc.decreaseRecommend(boardno);
 

@@ -5,21 +5,33 @@
 
 <mapper namespace="dev.mvc.plant.PlantDAOInter">
   <!-- 식물 등록 -->
+  <!-- 기존에 useGeneratedKeys="true" keyProperty="plantno" 으로 돼 있던 <insert> 대신 이렇게 바꿔주세요 -->
   <insert id="create" parameterType="dev.mvc.plant.PlantVO">
+    <selectKey keyProperty="plantno"
+               resultType="int"
+               order="BEFORE">
+      SELECT plant_seq.NEXTVAL FROM DUAL
+    </selectKey>
+
     INSERT INTO plant (
     plantno,
     memberno,
     plant_name,
     plant_type,
-    growth
+    growth,
+    points,
+    intro_completed
     ) VALUES (
-    plant_seq.NEXTVAL,  <!-- 🔑 시퀀스 사용 필수 -->
-    #{memberno},
-    #{plant_name},
-    #{plant_type},
-    #{growth}
+    #{plantno,       jdbcType=INTEGER},
+    #{memberno,      jdbcType=INTEGER},
+    #{plant_name,    jdbcType=VARCHAR},
+    #{plant_type,    jdbcType=VARCHAR},
+    #{growth,        jdbcType=INTEGER},
+    #{points,        jdbcType=INTEGER},
+    'N'
     )
   </insert>
+
 
   <!-- 식물 단건 조회 -->
   <select id="read" parameterType="int" resultType="dev.mvc.plant.PlantVO">
@@ -28,7 +40,8 @@
 
   <!-- 회원 번호로 식물 조회 (필요시) -->
   <select id="readByMemberno" resultType="dev.mvc.plant.PlantVO" parameterType="int">
-    SELECT * FROM plant
+    SELECT *
+    FROM plant
     WHERE memberno = #{memberno}
     ORDER BY created_at DESC
     FETCH FIRST 1 ROWS ONLY
@@ -41,6 +54,12 @@
     WHERE plantno = #{plantno}
   </update>
 
+  <!-- 인트로 완료 처리 -->
+  <update id="updateIntroCompleted" parameterType="int">
+    UPDATE plant
+    SET intro_completed = 'Y'
+    WHERE plantno = #{plantno}
+  </update>
   <!-- 식물 삭제 -->
   <delete id="delete" parameterType="int">
     DELETE FROM plant WHERE plantno = #{plantno}
@@ -59,6 +78,69 @@
   <select id="countByMemberno" resultType="int" parameterType="int">
     SELECT COUNT(*) FROM plant WHERE memberno = #{memberno}
   </select>
+
+
+  <select id="existsByMemberno" resultType="boolean" parameterType="int">
+    SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+    FROM plant
+    WHERE memberno = #{memberno}
+  </select>
+
+  <update id="markIntroCompleted" parameterType="int">
+    UPDATE plant
+    SET intro_completed = 'Y'
+    WHERE plantno = #{plantno}
+  </update>
+
+  <!-- 3) 오늘 사용 내역 조회 (사용 횟수만 필요하면 countUsedToday만 사용해도 무방)-->
+  <select id="getUsageForToday" parameterType="int" resultType="dev.mvc.item.ItemUsageLogVO">
+    SELECT memberno,
+    item_type,
+    COUNT(*) AS cnt
+    FROM item_usage_log
+    WHERE memberno = #{memberno}
+    AND TRUNC(used_at) = TRUNC(SYSDATE)
+    GROUP BY memberno, item_type
+  </select>
+
+  <!-- ① memberno → plantno 조회 -->
+  <select id="selectPlantnoByMemberno" parameterType="int" resultType="int">
+    SELECT plantno
+    FROM plant
+    WHERE memberno = #{memberno}
+  </select>
+
+  <!-- ② 오늘 누적 성장량 (growth_after – growth_before) 합산 -->
+  <select id="sumTodayGrowth" parameterType="int" resultType="int">
+    SELECT NVL(SUM(growth_after - growth_before), 0)
+    FROM plant_growth_log
+    WHERE plantno      = #{plantno}
+    AND TRUNC(change_date) = TRUNC(SYSDATE)
+  </select>
+
+  <!-- ③ 현재 growth 조회 -->
+  <select id="getGrowthByPlantno" parameterType="int" resultType="int">
+    SELECT growth
+    FROM plant
+    WHERE plantno = #{plantno}
+  </select>
+
+  <!-- ④ 로그 삽입 -->
+  <insert id="insertGrowthLog" parameterType="map">
+    INSERT INTO plant_growth_log
+    (logno, plantno, growth_before, growth_after, reason, change_date)
+    VALUES
+    (plant_growth_log_seq.NEXTVAL,
+    #{plantno}, #{growthBefore}, #{growthAfter}, #{reason}, SYSDATE)
+  </insert>
+
+  <!-- ⑤ plant 테이블 growth 업데이트 -->
+  <update id="updatePlantGrowth" parameterType="map">
+    UPDATE plant
+    SET growth = #{growthAfter}
+    WHERE plantno = #{plantno}
+  </update>
+
 
 
 </mapper>

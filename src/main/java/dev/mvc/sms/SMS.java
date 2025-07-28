@@ -105,6 +105,7 @@ public class SMS {
     // 2) 수신번호 (회원 휴대폰)
     String receivers = member.getTel().toString();
 
+    System.out.println(receivers);
     System.out.println(alarm);
     Timestamp alarmDt = alarm.getAlarm_dt();
     LocalDateTime ldt = alarmDt.toLocalDateTime();

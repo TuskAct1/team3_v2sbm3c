@@ -123,10 +123,6 @@ public class PointProc implements PointProcInter {
     return pointVO;
   }
 
-  @Override
-  public int adjustPoint(int memberno, int pointChange) {
-    return pointDAO.adjustPoint(memberno, pointChange);
-  }
 
   @Override
   public int createIfNotExists(int memberno, int initialAmount) {
@@ -138,6 +134,12 @@ public class PointProc implements PointProcInter {
       return pointDAO.create(pointVO);  // 50P 생성
     }
     return 0; // 이미 있으면 아무것도 안 함
+  }
+
+  @Override
+  public int adjustPoint(int memberno, int pointChange) {
+    // pointDAO 쪽에 @Param으로 선언된 메서드를 바로 호출
+    return pointDAO.adjustPoint(memberno, pointChange);
   }
 
 

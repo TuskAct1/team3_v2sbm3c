@@ -140,7 +140,7 @@ function BoardReadPage() {
 
       {isImage(boardVO.file1) && (
         <img
-          src={`/contents/storage/${boardVO.file1saved}`}
+          src={`/board/storage/${boardVO.file1saved}`}
           alt="첨부 이미지"
           className="board-image"
         />

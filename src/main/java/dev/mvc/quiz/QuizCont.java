@@ -1,12 +1,16 @@
 package dev.mvc.quiz;
 
+import dev.mvc.item.ItemUsageLogDAOInter;
+import dev.mvc.member.MemberVO;
 import dev.mvc.point.PointProcInter;
 import dev.mvc.point.PointVO;
 import dev.mvc.quiz.QuizProcInter;
 import dev.mvc.quiz.QuizQuestionVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -18,6 +22,8 @@ public class QuizCont {
 
     @Autowired
     private PointProcInter pointProc;  // ✅ 추가
+    @Autowired
+    private QuizLogProcInter quizLogProc; // ✅ 올바른 타입
 
 
     // 🔹 랜덤 퀴즈 가져오기
@@ -41,10 +47,18 @@ public class QuizCont {
 
     // 🔹 퀴즈 참여 기록 삽입
     @PostMapping("/log")
-    public String insertQuizLog(@RequestBody Map<String, Object> body) {
-        int memberno = Integer.parseInt(body.get("memberno").toString());
-        int result = quizProc.insertQuizLog(memberno);
-        return result > 0 ? "success" : "fail";
+    public ResponseEntity<String> logQuiz(@RequestBody Map<String, Object> payload) {
+        Integer memberno = (Integer) payload.get("memberno");
+        if (memberno == null) {
+            return ResponseEntity.badRequest().body("memberno required");
+        }
+
+        QuizLogVO vo = new QuizLogVO();
+        vo.setMemberno(memberno);
+
+        quizLogProc.insert(vo);
+
+        return ResponseEntity.ok("success");
     }
 
     // 🔹 관리자 퀴즈 등록
@@ -61,4 +75,17 @@ public class QuizCont {
         return vo != null ? vo.getAmount() : 0;
     }
 
+    /**
+     * 세션에 저장된 로그인 사용자 memberno만 반환
+     * (로그인 시 session.setAttribute("user", MemberVO) 했다고 가정)
+     */
+    @GetMapping("/session")                   // 👉 경로는 /api/quiz/session
+    public Map<String,Integer> getSessionMemberno(jakarta.servlet.http.HttpSession session) {
+        MemberVO user = (MemberVO) session.getAttribute("user");
+        Integer memberno = (user != null) ? user.getMemberno() : null;
+
+        Map<String,Integer> result = new HashMap<>();
+        result.put("memberno", memberno);
+        return result;
+    }
 }

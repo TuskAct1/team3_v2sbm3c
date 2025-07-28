@@ -186,7 +186,7 @@ function SeniorHobbyTest() {
             </button>
             <button
               onClick={() => navigate('/personality_test')}
-              className="back-btn"
+              className="result-back-btn"
             >
               자가진단 홈
             </button>

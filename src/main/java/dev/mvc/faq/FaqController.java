@@ -45,8 +45,19 @@ public class FaqController {
                     String savedname = UUID.randomUUID() + "_" + filename;
                     long filesize = mf.getSize();
 
+                    String osName = System.getProperty("os.name").toLowerCase();
+                    String path = "";
+
+                    if (osName.contains("win")) { // Windows
+                        path = "C:\\kd\\deploy\\team3\\faq\\storage";
+                    } else if (osName.contains("mac")) { // MacOS
+                        path = "/Users/imgwanghwan/kd/deploy/team3/faq/storage/";
+                    } else { // Linux
+                        path = "/home/ubuntu/deploy/team3/faq/storage/";
+                    }
+
                     // 실제 파일 저장 (경로는 예시, 환경에 맞게)
-                    mf.transferTo(new File("/Users/imgwanghwan/kd/deploy/team3/faq/storage/" + savedname));
+                    mf.transferTo(new File(path + savedname));
 
                     FaqFileVO fileVO = new FaqFileVO();
                     fileVO.setFaqno(faqno);

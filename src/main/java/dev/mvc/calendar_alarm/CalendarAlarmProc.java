@@ -58,4 +58,11 @@ public class CalendarAlarmProc implements CalendarAlarmProcInter {
     public CalendarAlarmVO readByCalendarno(int calendarno) {
         return calendarAlarmDAO.readByCalendarno(calendarno);
     }
+
+    @Override
+    public int update(CalendarAlarmVO vo) {
+        return calendarAlarmDAO.update(vo);
+    }
+
+
 }

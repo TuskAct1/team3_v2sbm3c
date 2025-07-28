@@ -8,6 +8,7 @@ function TodakiPage() {
     <div>
       {/* <ChatBot /> */}
       <ChatBotContainer memberno={memberno} />;
+      
     </div>
   );
 }

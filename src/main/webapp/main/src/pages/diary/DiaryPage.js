@@ -241,7 +241,7 @@ function DiaryPage() {
         <button onClick={() => setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() - 1))} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           <img src="/diary/images/left.png" alt="이전 달" style={{ width: '18px', height: '18px' }} />
         </button>
-        <h2 style={{ margin: 0 }}>{headText}</h2>
+        <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: '500' }}>{headText}</h2>
         <button onClick={() => setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() + 1))} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           <img src="/diary/images/right.png" alt="다음 달" style={{ width: '18px', height: '18px' }} />
         </button>

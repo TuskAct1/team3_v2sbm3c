@@ -159,10 +159,10 @@ const handleTermsChange = (e) => {
       return;
     }
 
-    if (!telVerified) {
-      alert("휴대폰 인증을 완료해주세요!");
-      return;
-    }
+    // if (!telVerified) {
+    //   alert("휴대폰 인증을 완료해주세요!");
+    //   return;
+    // }
 
     try {
       const formData = new FormData();
@@ -541,7 +541,7 @@ const handleTermsChange = (e) => {
               value="남자"
               checked={form.gender === "남자"}
               onChange={handleChange}
-            />
+            />&nbsp;
             남자
           </label>
           <label className="gender-option">
@@ -551,7 +551,7 @@ const handleTermsChange = (e) => {
               value="여자"
               checked={form.gender === "여자"}
               onChange={handleChange}
-            />
+            />&nbsp;
             여자
           </label>
         </div>

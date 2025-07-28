@@ -32,8 +32,8 @@
 .tabs-wrapper {
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 20px;
+  /* border-bottom: 1px solid #ccc; */
+  /* margin-bottom: 20px; */
 }
 
 .tab-item {
@@ -49,16 +49,16 @@
 }
 
 .tab-item.active {
-  color: #67AD5B;
-  border-bottom: 3px solid #67AD5B;
+  color: #111;
+  border-bottom: 3px solid #66bb6a;
 }
 
-.tab-content-wrapper {
+/* .tab-content-wrapper {
   padding: 20px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+} */
 
 .admin-info-box p {
   font-size: 16px;

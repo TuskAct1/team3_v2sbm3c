@@ -84,9 +84,9 @@
 }
 
 /* ✅ 버튼 공통 */
-.retry-btn,
-.test-save-btn,
-.back-btn {
+.result-retry-btn,
+.result-test-save-btn,
+.result-back-btn {
   padding: 1rem 2.2rem;
   font-size: 1.15rem;
   font-weight: 700;
@@ -98,31 +98,31 @@
 }
 
 /* 초록 버튼 */
-.retry-btn {
+.result-retry-btn {
   background-color: #81c784;
   color: white;
 }
-.retry-btn:hover {
+.result-retry-btn:hover {
   background-color: #66bb6a;
   transform: scale(1.04);
 }
 
 /* 노랑 버튼 */
-.test-save-btn {
+.result-test-save-btn {
   background-color: #fff59d;
   color: #4e4e4e;
 }
-.test-save-btn:hover {
+.result-test-save-btn:hover {
   background-color: #fdd835;
   transform: scale(1.04);
 }
 
 /* 회색 버튼 */
-.back-btn {
+.result-back-btn {
   background-color: #e0e0e0;
   color: #333;
 }
-.back-btn:hover {
+.result-back-btn:hover {
   background-color: #bdbdbd;
   transform: scale(1.04);
 }

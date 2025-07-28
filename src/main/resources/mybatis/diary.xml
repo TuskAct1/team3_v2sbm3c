@@ -45,7 +45,8 @@
         SELECT risk_flag AS riskFlag, COUNT(*) AS count
         FROM diary
         WHERE memberno = #{memberno}
-        AND rdate BETWEEN #{startDate} AND #{endDate}
+        AND rdate &gt;= #{startDate}
+        AND rdate &lt; #{endDate}  <!-- 종료일을 다음 날 자정으로 설정하세요 -->
         GROUP BY risk_flag
     </select>
 
@@ -107,21 +108,21 @@
 
 
     <!-- 추가 기능 -->
-<!--
-    &lt;!&ndash; 특정 달의 일기 조회 &ndash;&gt;
-    <select id="list_diary" resultType="dev.mvc.diary.DiaryVO" parameterType="String">
-        SELECT diaryno, title, content, created_at
-        FROM diary
-        WHERE SUBSTR(created_at, 1, 7) = #{created_at}
-        ORDER BY created_at ASC
-    </select>
+    <!--
+        &lt;!&ndash; 특정 달의 일기 조회 &ndash;&gt;
+        <select id="list_diary" resultType="dev.mvc.diary.DiaryVO" parameterType="String">
+            SELECT diaryno, title, content, created_at
+            FROM diary
+            WHERE SUBSTR(created_at, 1, 7) = #{created_at}
+            ORDER BY created_at ASC
+        </select>
 
-    &lt;!&ndash; 특정 날짜 조회 &ndash;&gt;
-    <select id="list_calendar_day" resultType="dev.mvc.diary.DiaryVO" parameterType="String">
-        SELECT diaryno, title, content, created_at
-        FROM diary
-        WHERE created_at = #{created_at}
-    </select>
--->
+        &lt;!&ndash; 특정 날짜 조회 &ndash;&gt;
+        <select id="list_calendar_day" resultType="dev.mvc.diary.DiaryVO" parameterType="String">
+            SELECT diaryno, title, content, created_at
+            FROM diary
+            WHERE created_at = #{created_at}
+        </select>
+    -->
 
 </mapper>

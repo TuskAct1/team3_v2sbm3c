@@ -22,4 +22,7 @@ public interface CalendarAlarmProcInter {
     CalendarAlarmVO read(int alarmno);  // ← 여기 추가
 
     CalendarAlarmVO readByCalendarno(int calendarno);
+
+    /** 알람 수정 **/
+    public int update(CalendarAlarmVO vo);
 }
