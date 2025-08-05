@@ -5,7 +5,7 @@ const PlantStatus = ({ plantno }) => {
   const [plant, setPlant] = useState(null);
 
   useEffect(() => {
-    axios.get(`/api/plants/read?plantno=${plantno}`)
+    axios.get(`http://121.78.128.139:9093/api/plants/read?plantno=${plantno}`)
       .then(res => setPlant(res.data))
       .catch(err => console.error('식물 조회 실패:', err));
   }, [plantno]);

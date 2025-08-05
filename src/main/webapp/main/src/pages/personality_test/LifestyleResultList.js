@@ -25,7 +25,7 @@ function LifestyleResultList() {
       setMname(loginMname);
 
       try {
-        const res = await axios.get(`http://localhost:9093/lifestyle_test/list/${loginMemberno}`);
+        const res = await axios.get(`http://121.78.128.139:9093/lifestyle_test/list/${loginMemberno}`);
         const sorted = res.data.sort((a, b) => new Date(b.rdate) - new Date(a.rdate));
         setRoutineList(sorted);
       } catch (err) {
@@ -49,7 +49,7 @@ function LifestyleResultList() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:9093/lifestyle_test/delete/${routineId}`);
+      await axios.delete(`http://121.78.128.139:9093/lifestyle_test/delete/${routineId}`);
       const updatedList = routineList.filter(item => item.lifestyleresultno !== routineId);
       setRoutineList(updatedList);
       setCurrentIndex(0);

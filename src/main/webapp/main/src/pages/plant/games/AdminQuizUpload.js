@@ -17,7 +17,7 @@ function AdminQuizUpload() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/api/quiz/admin/add', form);
+    await axios.post('http://121.78.128.139:9093/api/quiz/admin/add', form);
     alert("퀴즈가 등록되었습니다!");
     setForm({question: '', option1: '', option2: '', option3: '', option4: '', answer: ''});
   };

@@ -90,7 +90,7 @@ function MainPage() {
     }
 
     try {
-      const response = await axios.get(`http://localhost:9093/api/point/${memberno}`);
+      const response = await axios.get(`http://121.78.128.139:9093/api/point/${memberno}`);
       
       console.log("📦 응답 전체:", response);
       console.log("📦 response.data:", response.data);
@@ -124,7 +124,7 @@ function MainPage() {
   try {
     const memberno = localStorage.getItem("memberno");
     const res = await axios.get(
-      `http://localhost:9093/api/item-usage/today/all/${memberno}`
+      `http://121.78.128.139:9093/api/item-usage/today/all/${memberno}`
     );
     console.log("🛠️ fetchItemUsage raw:", res.data);
 
@@ -163,7 +163,7 @@ function MainPage() {
     const memberno = localStorage.getItem("memberno");
     if (!memberno) return;
     try {
-      const res = await axios.get(`/api/plant/member/${memberno}`);
+      const res = await axios.get(`http://121.78.128.139:9093/api/plant/member/${memberno}`);
       if (res.data && typeof res.data.growth === 'number') {
         setGrowth(res.data.growth);
       }
@@ -191,7 +191,7 @@ function MainPage() {
     try {
       if (type === 'quiz') {
         await axios.post('/api/point/adjust', { memberno, pointChange: 10 });
-        const growthRes = await axios.post('/api/plant/increase-growth', { memberno, value: 1 });
+        const growthRes = await axios.post('http://121.78.128.139:9093/api/plant/increase-growth', { memberno, value: 1 });
         if (growthRes.data && typeof growthRes.data.growth === 'number') {
           setGrowth(growthRes.data.growth); // ✅
         }
@@ -201,8 +201,8 @@ function MainPage() {
         const bonusGrowth = Math.floor(Math.random() * 2) + 1;
         const bonusPoint = Math.floor(Math.random() * 11) + 5;
 
-        await axios.post('/api/point/adjust', { memberno, pointChange: bonusPoint });
-        const growthRes = await axios.post('/api/plant/increase-growth', { memberno, value: bonusGrowth });
+        await axios.post('http://121.78.128.139:9093/api/point/adjust', { memberno, pointChange: bonusPoint });
+        const growthRes = await axios.post('http://121.78.128.139:9093/api/plant/increase-growth', { memberno, value: bonusGrowth });
         if (growthRes.data && typeof growthRes.data.growth === 'number') {
           setGrowth(growthRes.data.growth); // ✅
         }
@@ -211,7 +211,7 @@ function MainPage() {
 
       } else if (type === 'attendance') {
         try {
-          const res = await axios.post('http://localhost:9093/api/attendance/plant/attendance');
+          const res = await axios.post('http://121.78.128.139:9093/api/attendance/plant/attendance');
           const { status, message } = res.data;
 
           if (status === 'success') {
@@ -252,17 +252,17 @@ function MainPage() {
 
     try {
       // 1) 포인트 차감
-      const adjustRes = await axios.post('/api/point/adjust', { memberno, pointChange: -cost });
+      const adjustRes = await axios.post('http://121.78.128.139:9093/api/point/adjust', { memberno, pointChange: -cost });
 
         if (adjustRes.data.status !== 'success') {
           return alert('포인트가 부족합니다.');
         }
 
       // 2) 성장 증가
-      await axios.post('/api/plant/increase-growth', { memberno, value: amount });
+      await axios.post('http://121.78.128.139:9093/api/plant/increase-growth', { memberno, value: amount });
 
       // 3) 사용 로그 저장 (영어 key)
-       await axios.post('/api/item-usage/log', {
+       await axios.post('http://121.78.128.139:9093/api/item-usage/log', {
         memberno,
         item_type: key   // ← 'water' / 'fertilizer' / 'nutrient' 중 하나가 기록됩니다
       });
@@ -338,7 +338,7 @@ function MainPage() {
   useEffect(() => {
     const memberno = localStorage.getItem("memberno");
     if (memberno) {
-      axios.get(`/api/quiz/check/count/${memberno}`)
+      axios.get(`http://121.78.128.139:9093/api/quiz/check/count/${memberno}`)
         .then(res => setQuizCount(res.data)) // 예: 1, 2, 3
         .catch(() => console.warn("퀴즈 카운트 불러오기 실패"));
     }
@@ -355,7 +355,7 @@ function MainPage() {
 
    useEffect(() => {
     console.log('🌱 fetching plant info for memberno', memberno);
-    axios.get(`/api/plant/info/${memberno}`)
+    axios.get(`http://121.78.128.139:9093/api/plant/info/${memberno}`)
       .then(res => {
         console.log('🌱 plant info response:', res.data);
         // 👇 여기를 점검!
@@ -374,7 +374,7 @@ function MainPage() {
 
         try {
           const res = await axios.post(
-            'http://localhost:9093/api/attendance/plant/attendance'
+            'http://121.78.128.139:9093/api/attendance/plant/attendance'
           );
           const { status, message } = res.data;
 
@@ -396,7 +396,7 @@ function MainPage() {
    // 퀴즈 횟수 체크
   useEffect(() => {
     if (memberno) {
-      axios.get(`/api/quiz/check/count/${memberno}`)
+      axios.get(`http://121.78.128.139:9093/api/quiz/check/count/${memberno}`)
         .then(res => setQuizCount(res.data))
         .catch(() => console.warn("퀴즈 카운트 불러오기 실패"));
     }
@@ -428,7 +428,7 @@ function MainPage() {
   const fetchQuizCount = async () => {
     if (!memberno) return;
     try {
-      const res = await axios.get(`http://localhost:9093/api/quiz/check/count/${memberno}`);
+      const res = await axios.get(`http://121.78.128.139:9093/api/quiz/check/count/${memberno}`);
       setQuizCount(res.data);
     } catch {
       console.warn("퀴즈 카운트 불러오기 실패");
@@ -454,7 +454,7 @@ function MainPage() {
   const fetchGameCount = async () => {
     if (!memberno) return;
     try {
-      const res = await axios.get(`http://localhost:9093/api/game/check/count/${memberno}`);
+      const res = await axios.get(`http://121.78.128.139:9093/api/game/check/count/${memberno}`);
       console.log('게임 카운트 응답:', res.data);
       // res.data 가 { count: number } 형태라면 .count,
       // 혹은 숫자만 내려오면 res.data 그대로
@@ -481,7 +481,7 @@ function MainPage() {
     // }, [memberno]);
 
     useEffect(() => {
-      axios.get(`/api/attendance/check/${memberno}`)
+      axios.get(`http://121.78.128.139:9093/api/attendance/check/${memberno}`)
         .then(res => {
           console.log('🟢 출석 여부 응답:', res.data);  // 👈 반드시 확인
           setAttendanceChecked(res.data.attended);
@@ -499,7 +499,7 @@ function MainPage() {
     async function performGrowth(memberno, value, reason) {
       try {
         const res = await axios.post(
-          'http://localhost:9093/api/plant/increase-growth',
+          'http://121.78.128.139:9093/api/plant/increase-growth',
           { memberno, value, reason }
         );
         const { status, message, added, growth } = res.data;
@@ -523,7 +523,7 @@ function MainPage() {
       async function performGrowth(value, reason) {
         try {
           const res = await axios.post(
-            'http://localhost:9093/api/plant/increase-growth',
+            'http://121.78.128.139:9093/api/plant/increase-growth',
             { memberno, value, reason }
           );
           const { status, message, added, growth } = res.data;
@@ -748,12 +748,12 @@ function MainPage() {
           onComplete={async (earnedPoint) => {
             if (earnedPoint > 0) {
               await axios.post(
-                `http://localhost:9093/api/point/adjust`,
+                `http://121.78.128.139:9093/api/point/adjust`,
                 { memberno, pointChange: earnedPoint }
               );
             }
             await axios.post(
-              `http://localhost:9093/api/game/log`,
+              `http://121.78.128.139:9093/api/game/log`,
               { memberno }
             );
             await reloadAll();

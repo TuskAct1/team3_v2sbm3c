@@ -8,14 +8,14 @@ function PointPanel({ memberno }) {
 
   // 포인트 조회
   useEffect(() => {
-    axios.get(`/api/point/${memberno}`)
+    axios.get(`http://121.78.128.139:9093/api/point/${memberno}`)
       .then(res => setPoint(res.data.amount))
       .catch(err => console.error('포인트 조회 실패', err));
   }, [memberno]);
 
   // 포인트 차감 테스트 함수
   const deductPoint = (amount) => {
-    axios.post(`/api/point/adjust`, { memberno, amount: -amount })
+    axios.post(`http://121.78.128.139:9093/api/point/adjust`, { memberno, amount: -amount })
       .then(res => {
         setMessage('포인트 차감 완료!');
         setPoint(prev => prev - amount);

@@ -19,7 +19,7 @@ const BoardCreate = () => {
   // 카테고리 목록 불러오기
   useEffect(() => {
     axios
-      .get(`/board/list_all?word=all&now_page=1`)
+      .get(`http://121.78.128.139:9093/board/list_all?word=all&now_page=1`)
       .then((res) => setCategoryGroup(res.data.categoryGroup))
       .catch((err) => console.error('게시판 데이터 불러오기 실패:', err));
   }, []);
@@ -50,7 +50,7 @@ const BoardCreate = () => {
     formData.append('passwd', passwd);
 
     try {
-      const response = await axios.post('/board/create', formData, {
+      const response = await axios.post('http://121.78.128.139:9093/board/create', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

@@ -82,3 +82,11 @@ ALTER TABLE CALENDAR
     START_TIME VARCHAR2(5 BYTE),
     END_TIME   VARCHAR2(5 BYTE)
   );
+  
+SELECT calendarno, memberno, adminno, title,
+       category, description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time
+FROM calendar
+ORDER BY schedule_date ASC, schedule_time ASC;  
+
+-- 시간 확인
+SELECT SYSDATE, SYSTIMESTAMP FROM DUAL;

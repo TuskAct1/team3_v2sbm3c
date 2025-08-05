@@ -13,7 +13,7 @@ export const PointProvider = ({ children, memberno }) => {
   // ✅ 처음 마운트될 때 포인트 불러오기
   useEffect(() => {
     if (memberno) {
-      axios.get(`/api/point/${memberno}`)
+      axios.get(`http://121.78.128.139:9093/api/point/${memberno}`)
         .then(res => {
           setPoint(res.data.amount); // ✅ amount로 응답받음 (백엔드 확인 필요)
           setLoading(false);
@@ -29,7 +29,7 @@ export const PointProvider = ({ children, memberno }) => {
   const updatePoint = (delta) => {
     if (!memberno) return;
 
-    axios.post('/api/point/adjust', {
+    axios.post('http://121.78.128.139:9093/api/point/adjust', {
       memberno,
       pointChange: delta
     })

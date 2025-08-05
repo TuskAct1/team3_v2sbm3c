@@ -73,7 +73,7 @@ const EmotionReportPage = () => {
 
   async function saveReportToSpring(reportType, reportPeriod, data) {
     try {
-      await axios.post("http://localhost:9093/emotion_report/save", {
+      await axios.post("http://121.78.128.139:9093/emotion_report/save", {
         memberno,
         reportType,
         reportPeriod,
@@ -147,14 +147,14 @@ const EmotionReportPage = () => {
       const { startDate, endDate } = getPeriodRange(reportType, reportPeriod);
       console.log(`🗓️ ${reportType} 기간: ${startDate.toISOString()} ~ ${endDate.toISOString()}`);
 
-      const diaryRes = await axios.get("http://localhost:9093/emotion_report/diary", {
+      const diaryRes = await axios.get("http://121.78.128.139:9093/emotion_report/diary", {
         params: { memberno, reportType, reportPeriod }
       });
 
       console.log("🟢 diary emotion counts:", diaryRes.data);
       console.log("🟢 setWeeklyAverage 값 확인:", weeklyAverage);
 
-      const chatbotRes = await axios.get("http://localhost:8000/emotion_report/summary", {
+      const chatbotRes = await axios.get("http://121.78.128.139:8000/emotion_report/summary", {
         params: { memberno, period_type: reportType, since: startDate.toISOString(), until: endDate.toISOString() }
       });
       const diaryCounts = diaryRes.data;
@@ -181,7 +181,7 @@ const EmotionReportPage = () => {
 
   async function fetchTestResults() {
     try {
-      const res = await axios.get("http://localhost:9093/emotion_report/test/result", {
+      const res = await axios.get("http://121.78.128.139:9093/emotion_report/test/result", {
         params: { memberno }
       });
       setTestResults(res.data);
@@ -194,7 +194,7 @@ const EmotionReportPage = () => {
     try {
       if (!current) return;
 
-      const res = await axios.post("http://localhost:8000/emotion_report/generate-summary", {
+      const res = await axios.post("http://121.78.128.139:8000/emotion_report/generate-summary", {
         current,
         previous
       });
@@ -207,10 +207,10 @@ const EmotionReportPage = () => {
   async function loadAllTrendData() {
   try {
     const [weeklyRes, monthlyRes] = await Promise.all([
-      axios.get("http://localhost:8000/emotion_report/trend", {
+      axios.get("http://121.78.128.139:8000/emotion_report/trend", {
         params: { memberno, period_type: "WEEKLY" }
       }),
-      axios.get("http://localhost:8000/emotion_report/trend", {
+      axios.get("http://121.78.128.139:8000/emotion_report/trend", {
         params: { memberno, period_type: "MONTHLY" }
       })
     ]);

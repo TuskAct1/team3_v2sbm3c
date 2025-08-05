@@ -11,6 +11,24 @@ CREATE TABLE board_recommend(
         FOREIGN KEY (memberno) REFERENCES member (memberno)
 );
 
+
+CREATE TABLE replyRecommend (
+    replyRecommendno  NUMBER(10)   NOT NULL,
+    replyno           NUMBER(10)   NOT NULL,
+    memberno          NUMBER(10)   NOT NULL,
+    rdate             DATE         NOT NULL,
+    CONSTRAINT pk_replyRecommend
+        PRIMARY KEY (replyRecommendno),
+    CONSTRAINT fk_replyRecommend_replyno
+        FOREIGN KEY (replyno)
+        REFERENCES reply (replyno)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_replyRecommend_memberno
+        FOREIGN KEY (memberno)
+        REFERENCES member (memberno)
+);
+
+
 COMMENT ON TABLE board_recommend is '게시글 추천';
 COMMENT ON COLUMN board_recommend.board_recommendno is '게시글 추천 번호';
 COMMENT ON COLUMN board_recommend.boardno is '게시글 번호';

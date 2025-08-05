@@ -43,7 +43,7 @@ function AdminEditForm({ admin }) {
     }
 
     try {
-      const response = await axios.post('/api/admin/update-info', form);
+      const response = await axios.post('http://121.78.128.139:9093/api/admin/update-info', form);
 
       if (response.data === 'SUCCESS') {
         alert('관리자 정보가 성공적으로 수정되었습니다.');

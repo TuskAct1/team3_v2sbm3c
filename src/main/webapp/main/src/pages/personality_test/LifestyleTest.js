@@ -111,7 +111,7 @@ function LifestyleTest() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:9093/lifestyle_test/submit', answers);
+      const res = await axios.post('http://121.78.128.139:9093/lifestyle_test/submit', answers);
       navigate('/lifestyle_test/result', {
         state: { result: res.data } // GPT 결과를 다음 페이지에 넘김
       });

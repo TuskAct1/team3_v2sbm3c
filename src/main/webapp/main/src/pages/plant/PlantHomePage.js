@@ -24,7 +24,7 @@ const PlantHomePage = () => {
   useEffect(() => {
     if (!member) return;
 
-    axios.get("/api/plants/list", {
+    axios.get("http://121.78.128.139:9093/api/plants/list", {
       params: { memberno: member.memberno }
     })
       .then(res => {

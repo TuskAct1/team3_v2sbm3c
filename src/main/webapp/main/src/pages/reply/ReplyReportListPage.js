@@ -19,7 +19,7 @@ function ReplyReportListPage() {
   useEffect(() => {
     fetchGroupedReplyReports();
     fetchGroupedBoardReports();
-    axios.get('/board/sessionInfo').then(res => {
+    axios.get('http://121.78.128.139:9093/board/sessionInfo').then(res => {
       if (res.data.adminno) setIsAdmin(true);
     });
 
@@ -35,7 +35,7 @@ function ReplyReportListPage() {
 
   const fetchGroupedReplyReports = async () => {
     try {
-      const res = await axios.get('/replyReport/grouped');
+      const res = await axios.get('http://121.78.128.139:9093/replyReport/grouped');
       setReplyGroups(res.data);
     } catch (err) {
       alert('댓글 신고 목록 불러오기 실패');
@@ -44,7 +44,7 @@ function ReplyReportListPage() {
 
   const fetchGroupedBoardReports = async () => {
     try {
-      const res = await axios.get('/boardReport/grouped');
+      const res = await axios.get('http://121.78.128.139:9093/boardReport/grouped');
       setBoardGroups(res.data);
     } catch (err) {
       alert('게시글 신고 목록 불러오기 실패');
@@ -62,10 +62,10 @@ function ReplyReportListPage() {
     try {
       if (type === 'board') {
         if (!isAdmin) return alert('관리자만 삭제할 수 있습니다.');
-        await axios.delete(`/board/delete/${id}`, { params: { admin: true }, withCredentials: true });
+        await axios.delete(`http://121.78.128.139:9093/board/delete/${id}`, { params: { admin: true }, withCredentials: true });
         fetchGroupedBoardReports();
       } else {
-        await axios.post('/reply/delete', { replyno: id });
+        await axios.post('http://121.78.128.139:9093/reply/delete', { replyno: id });
         fetchGroupedReplyReports();
       }
     } catch (err) {

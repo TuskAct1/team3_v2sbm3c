@@ -35,7 +35,7 @@ function TwoweekResultList() {
       setMname(loginMname);
 
       try {
-        const res = await axios.get(`http://localhost:9093/twoweek_test/testlist/${loginMemberno}`);
+        const res = await axios.get(`http://121.78.128.139:9093/twoweek_test/testlist/${loginMemberno}`);
         setResultList(res.data);
       } catch (err) {
         console.error('❌ 검사 결과 불러오기 실패', err);
@@ -49,7 +49,7 @@ function TwoweekResultList() {
     if (!window.confirm('정말 삭제하시겠어요?')) return;
 
     try {
-      await axios.delete(`http://localhost:9093/twoweek_test/delete/${twoweektestno}`);
+      await axios.delete(`http://121.78.128.139:9093/twoweek_test/delete/${twoweektestno}`);
       setResultList(prev => prev.filter(t => t.twoweektestno !== twoweektestno));
     } catch (err) {
       alert('삭제에 실패했어요.');

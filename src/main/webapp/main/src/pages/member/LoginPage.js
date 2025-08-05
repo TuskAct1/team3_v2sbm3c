@@ -127,7 +127,7 @@ const LoginPage = () => {
       : localStorage.removeItem("saved_passwd");
 
     try {
-      const response = await axios.post("/api/members/login", {
+      const response = await axios.post("http://121.78.128.139:9093/api/members/login", {
         id: form.id,
         passwd: form.passwd,
       });
@@ -219,21 +219,21 @@ const LoginPage = () => {
             <h4 style={{ marginBottom: "12px" }}>소셜 로그인</h4>
 
               <div className="social-login-buttons">
-                <a href="http://localhost:9093/oauth2/authorization/kakao?prompt=login" className="kakao social-login-button">
+                <a href="http://121.78.128.139:9093/oauth2/authorization/kakao?prompt=login" className="kakao social-login-button">
                   <span className="social-content">
                     <img src="/images/kakao-icon.png" alt="Kakao" className="social-icon" />
                     Kakao로 시작하기
                   </span>
                 </a>
 
-                <a href="http://localhost:9093/oauth2/authorization/naver?prompt=login" className="naver social-login-button">
+                <a href="http://121.78.128.139:9093/oauth2/authorization/naver?prompt=login" className="naver social-login-button">
                   <span className="social-content">
                     <img src="/images/naver-icon.png" alt="Naver" className="social-icon" />
                     Naver로 시작하기
                   </span>
                 </a>
 
-                <a href="http://localhost:9093/oauth2/authorization/google?prompt=select_account" className="google social-login-button">
+                <a href="http://121.78.128.139:9093/oauth2/authorization/google?prompt=select_account" className="google social-login-button">
                   <span className="social-content">
                     <img src="/images/google-icon.png" alt="Google" className="social-icon" />
                     Google로 시작하기

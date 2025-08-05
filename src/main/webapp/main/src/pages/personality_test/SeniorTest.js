@@ -80,7 +80,7 @@ function SeniorTest() {
         return;
       }
 
-      await axios.post('http://localhost:9093/personality_test/create', { // 서버에 결과 전송
+      await axios.post('http://121.78.128.139:9093/personality_test/create', { // 서버에 결과 전송
         personalitytestno: 0, // 번호는 서버에서 처리
         memberno,
         score,

@@ -13,7 +13,7 @@ const RewardApply = ({ memberno }) => {
   });
 
   useEffect(() => {
-    axios.get(`/api/members/${memberno}`)
+    axios.get(`http://121.78.128.139:9093/api/members/${memberno}`)
       .then(res => setSticker(res.data.sticker))
       .catch(() => alert("스티커 조회 실패"));
   }, [memberno]);
@@ -31,7 +31,7 @@ const RewardApply = ({ memberno }) => {
     };
 
     try {
-      const res = await axios.post('/api/reward/apply', payload);
+      const res = await axios.post('http://121.78.128.139:9093/api/reward/apply', payload);
       alert(res.data.message);
     } catch (err) {
       alert("신청 중 오류가 발생했습니다.");

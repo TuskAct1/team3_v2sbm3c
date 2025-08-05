@@ -21,7 +21,7 @@ const LightboxViewer = ({ fileList, lightboxIndex, setLightboxIndex }) => {
         <div
           className="lightbox-image"
           style={{
-            backgroundImage: `url(http://localhost:9093/diary/storage/${fileList[lightboxIndex]})`
+            backgroundImage: `url(http://121.78.128.139:9093/diary/storage/${fileList[lightboxIndex]})`
           }}
         />
 
@@ -40,7 +40,7 @@ const LightboxViewer = ({ fileList, lightboxIndex, setLightboxIndex }) => {
         {fileList.map((filename, idx) => (
           <img
             key={idx}
-            src={`http://localhost:9093/diary/storage/${filename}`}
+            src={`http://121.78.128.139:9093/diary/storage/${filename}`}
             alt={`썸네일 ${idx + 1}`}
             onClick={() => setLightboxIndex(idx)}
             className={`lightbox-thumb ${idx === lightboxIndex ? 'active' : ''}`}

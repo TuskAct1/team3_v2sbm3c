@@ -83,7 +83,7 @@
         category, description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time
         FROM calendar
         WHERE adminno IS NOT NULL
-        ORDER BY schedule_date ASC, schedule_time ASC
+        ORDER BY start_date ASC, start_time ASC
     </select>
 
     <!-- 회원용: 관리자 일정 + 본인 일정 -->
@@ -92,7 +92,7 @@
         category, description, alarm_yn, rdate, favorite_yn, start_date, end_date, image, thumbnail, start_time, end_time
         FROM calendar
         WHERE adminno IS NOT NULL OR memberno = #{memberno}
-        ORDER BY schedule_date ASC, schedule_time ASC
+        ORDER BY start_date ASC, start_time ASC
     </select>
 
     <!-- 오늘 일정 가져오기 -->

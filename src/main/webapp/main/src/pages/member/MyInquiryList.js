@@ -11,13 +11,12 @@ function MyInquiryList({ memberno }) {
 
   useEffect(() => {
     const fetchList = async () => {
-      
-    const res = await fetch(`/inquiry/list_all?memberno=${memberno}`);
-    const data = await res.json();
+      try {
+        const res = await fetch(`http://121.78.128.139:9093/inquiry/list_all?memberno=${memberno}`);
+        const data = await res.json();
 
-    const list = Array.isArray(data) ? data : Array.isArray(data.data) ? data.data : [];
-    console.log(list);
-    const myInquiries = list.filter(inquiry => String(inquiry.memberno) === String(memberno));
+        console.log("📦 응답 데이터:", data);
+        console.log("👤 현재 로그인 memberno:", memberno);
 
         // 응답에서 실제 배열을 추출
         const list = Array.isArray(data)
@@ -41,6 +40,7 @@ function MyInquiryList({ memberno }) {
         setFilteredList([]);
       }
     };
+
     fetchList();
   }, [memberno]);
 
@@ -58,7 +58,7 @@ function MyInquiryList({ memberno }) {
   const handleSelect = async (inquiryno) => {
     setLoading(true);
     try {
-      const res = await fetch(`/inquiry/${inquiryno}?memberno=${memberno}`);
+      const res = await fetch(`http://121.78.128.139:9093/inquiry/${inquiryno}?memberno=${memberno}`);
       const data = await res.json();
       setSelected(data);
     } catch (err) {

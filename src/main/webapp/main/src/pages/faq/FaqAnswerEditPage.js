@@ -10,7 +10,7 @@ function FaqAnswerEditPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/faq/${faqno}`)
+    axios.get(`http://121.78.128.139:9093/faq/${faqno}`)
       .then(res => {
         setQuestion(res.data.faq.question);
         setAnswer(res.data.faq.answer || "");
@@ -20,7 +20,7 @@ function FaqAnswerEditPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/faq/${faqno}/answer`, { answer });
+      await axios.put(`http://121.78.128.139:9093/faq/${faqno}/answer`, { answer });
       alert("답변이 수정되었습니다.");
       navigate("/faq");
     } catch (err) {

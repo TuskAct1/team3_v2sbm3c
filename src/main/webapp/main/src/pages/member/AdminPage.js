@@ -24,7 +24,7 @@ function AdminPage() {
   useEffect(() => {
     if (!adminEmail) return;
 
-    axios.get(`/api/admin/info`, {
+    axios.get(`http://121.78.128.139:9093/api/admin/info`, {
       params: { email: adminEmail }
     })
     .then(res => setAdmin(res.data))
@@ -36,7 +36,7 @@ function AdminPage() {
   // 관리자 탈퇴
   const handleDelete = () => {
     if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-      axios.delete(`/api/admin/delete`, {
+      axios.delete(`http://121.78.128.139:9093/api/admin/delete`, {
         params: { adminno: admin.adminno }
       })
         .then(() => {

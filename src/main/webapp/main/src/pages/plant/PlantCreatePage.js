@@ -34,7 +34,7 @@ const PlantCreatePage = () => {
       memberno: user.memberno
     });
 
-    axios.post("/api/plants/create", {
+    axios.post("http://121.78.128.139:9093/api/plants/create", {
       ...form,
       memberno: user.memberno
     })

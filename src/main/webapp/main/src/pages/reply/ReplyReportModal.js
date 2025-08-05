@@ -9,7 +9,7 @@ function ReplyReportModal({ replyno, show, onClose, onReportSuccess }) {
   useEffect(() => {
     if (show && replyno) {
       // 신고 여부 확인
-      axios.post('/replyReport/check', { replyno }, { withCredentials: true })
+      axios.post('http://121.78.128.139:9093/replyReport/check', { replyno }, { withCredentials: true })
         .then((res) => {
           const result = res.data;
           if (result === -1) {
@@ -36,7 +36,7 @@ function ReplyReportModal({ replyno, show, onClose, onReportSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/replyReport/report', { replyno, reason }, { withCredentials: true });
+      const res = await axios.post('http://121.78.128.139:9093/replyReport/report', { replyno, reason }, { withCredentials: true });
       if (res.data === 1) {
         setResultMsg('신고가 접수되었습니다.');
         if (onReportSuccess) onReportSuccess();

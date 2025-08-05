@@ -196,7 +196,7 @@ const PlantPage = () => {
 
   // ✔️ 1) 마운트 시 식물 존재 여부만 체크
   useEffect(() => {
-  axios.get(`/api/plant/exists/${memberno}`)
+  axios.get(`http://121.78.128.139:9093/api/plant/exists/${memberno}`)
     .then(res => {
       console.log('🌱 exists 호출 응답:', res.data);
       // ★ res.data = { exists: true } 이므로 .exists 프로퍼티를 사용
@@ -245,7 +245,7 @@ const PlantPage = () => {
         };
 
         // 1) 식물 생성
-        const createRes = await axios.post('/api/plant/create', payload);
+        const createRes = await axios.post('http://121.78.128.139:9093/api/plant/create', payload);
         console.log('🍀 createRes.status ➡', createRes.status);
         console.log('🍀 createRes.data   ➡', createRes.data);
 
@@ -256,7 +256,7 @@ const PlantPage = () => {
         }
 
         // 2) 포인트 초기화
-        const initRes = await axios.post(`/api/point/init/${memberno}`);
+        const initRes = await axios.post(`http://121.78.128.139:9093/api/point/init/${memberno}`);
         console.log('✅ initRes.data ➡', initRes.data);
 
         // 3) 메인 진입

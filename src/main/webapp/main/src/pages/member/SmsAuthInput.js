@@ -14,7 +14,7 @@ const SmsAuthInput = ({ value, onChange, verified, onVerified }) => {
       return;
     }
     setWaiting(true);
-    await axios.post("/alert/auth/sms/send", { phone: value });
+    await axios.post("http://121.78.128.139:9093/alert/auth/sms/send", { phone: value });
     setSent(true);
     setWaiting(false);
     alert("인증번호가 발송되었습니다.");
@@ -22,7 +22,7 @@ const SmsAuthInput = ({ value, onChange, verified, onVerified }) => {
 
   // 인증번호 확인
   const handleVerify = async () => {
-    const res = await axios.post("/alert/auth/sms/verify", { phone: value, code: codeInput });
+    const res = await axios.post("http://121.78.128.139:9093/alert/auth/sms/verify", { phone: value, code: codeInput });
     if (res.data.verified) {
       alert("인증 성공!");
       onVerified();

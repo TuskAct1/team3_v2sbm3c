@@ -33,7 +33,7 @@ function SeniorTestList() {
       setMname(loginMname);
 
       try {
-        const res = await axios.get(`http://localhost:9093/personality_test/testlist/${loginMemberno}`);
+        const res = await axios.get(`http://121.78.128.139:9093/personality_test/testlist/${loginMemberno}`);
         setTestList(res.data);
       } catch (err) {
         console.error('❌ 데이터 불러오기 실패', err);
@@ -47,7 +47,7 @@ function SeniorTestList() {
     if (!window.confirm('정말 삭제하시겠어요?')) return;
 
     try {
-      await axios.delete(`http://localhost:9093/personality_test/delete/${personalitytestno}`);
+      await axios.delete(`http://121.78.128.139:9093/personality_test/delete/${personalitytestno}`);
       setTestList(prevList =>
         prevList.filter(test => test.personalitytestno !== personalitytestno)
       );

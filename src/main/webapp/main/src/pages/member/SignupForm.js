@@ -200,7 +200,7 @@ const handleTermsChange = (e) => {
         formData.append("guardian2_phone", guardians[1].phone);
       }
 
-      const res = await axios.post("/api/members/signup", formData, {
+      const res = await axios.post("http://121.78.128.139:9093/api/members/signup", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -231,7 +231,7 @@ const handleTermsChange = (e) => {
     }
 
     try {
-      const res = await fetch(`/api/members/check-id?id=${encodeURIComponent(form.id)}`);
+      const res = await fetch(`http://121.78.128.139:9093/api/members/check-id?id=${encodeURIComponent(form.id)}`);
       const data = await res.json();
       if (data.available) {
         setIdMsg("사용 가능한 이메일입니다.");
@@ -284,7 +284,7 @@ const handleTermsChange = (e) => {
   }
 
   try {
-    const res = await axios.post("/api/members/send-code", null, {
+    const res = await axios.post("http://121.78.128.139:9093/api/members/send-code", null, {
       params: { tel: form.tel },
     });
     setServerCode(res.data.code);
@@ -298,7 +298,7 @@ const handleTermsChange = (e) => {
 
   const handleRequestCode = async () => {
     try {
-      const res = await axios.post("/api/sms/send-code", null, {
+      const res = await axios.post("http://121.78.128.139:9093/api/sms/send-code", null, {
         params: { tel: form.tel },
       });
 
@@ -314,7 +314,7 @@ const handleTermsChange = (e) => {
 
   const handleVerifyCode = async () => {
     try {
-      const res = await axios.post("/api/sms/verify-code", null, {
+      const res = await axios.post("http://121.78.128.139:9093/api/sms/verify-code", null, {
         params: { tel: form.tel, code: form.phoneCode },
       });
 

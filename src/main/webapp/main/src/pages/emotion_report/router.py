@@ -73,7 +73,7 @@ def get_month_range(kst_now=None):
 async def fetch_diary_counts(memberno, reportType, reportPeriod):
     async with httpx.AsyncClient() as client:
         res = await client.get(
-            "http://localhost:9093/emotion_report/diary",
+            "http://121.78.128.139:9093/emotion_report/diary",
             params={"memberno": memberno, "reportType": reportType, "reportPeriod": reportPeriod}
         )
         if res.status_code == 200:
@@ -84,7 +84,7 @@ async def fetch_diary_counts(memberno, reportType, reportPeriod):
 async def fetch_chatbot_counts(memberno, period_type, since, until):
     async with httpx.AsyncClient() as client:
         res = await client.get(
-            "http://localhost:8000/emotion_report/summary",
+            "http://121.78.128.139:8000/emotion_report/summary",
             params={
                 "memberno": memberno,
                 "period_type": period_type,

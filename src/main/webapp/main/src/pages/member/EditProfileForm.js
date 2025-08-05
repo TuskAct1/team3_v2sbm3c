@@ -109,7 +109,7 @@ const EditProfileForm = ({ user }) => {
     }
 
     try {
-      await axios.post("/api/members/update", formData);
+      await axios.post("http://121.78.128.139:9093/api/members/update", formData);
       alert("회원 정보가 수정되었습니다.");
       window.location.reload();
     } catch (err) {

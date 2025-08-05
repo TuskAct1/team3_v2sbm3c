@@ -24,7 +24,7 @@ const useItem = (memberno, plantno, fetchGrowth) => {
     if (!success) return;
 
     try {
-      await axios.post('/api/plant/increase', {
+      await axios.post('http://121.78.128.139:9093/api/plant/increase', {
         plantno,
         amount: config[item_type].growth,
         reason: item_type,

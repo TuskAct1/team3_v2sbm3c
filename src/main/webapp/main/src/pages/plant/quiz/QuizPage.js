@@ -120,7 +120,7 @@ export default function QuizPage({ onBack }) {
 
   // 👉 1) 마운트 시 session 또는 localStorage 에서 memberno 가져오기
   useEffect(() => {
-    axios.get('http://localhost:9093/api/quiz/session')
+    axios.get('http://121.78.128.139:9093/api/quiz/session')
       .then(res => {
         setMemberno(res.data.memberno);
       })
@@ -131,7 +131,7 @@ export default function QuizPage({ onBack }) {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:9093/api/quiz/random')  // 👉 절대 URL로 변경
+    axios.get('http://121.78.128.139:9093/api/quiz/random')  // 👉 절대 URL로 변경
       .then(res => setQuiz(res.data))
       .catch(() => alert('퀴즈 불러오기 실패'));
   }, []);
@@ -153,14 +153,14 @@ export default function QuizPage({ onBack }) {
 
         // ✅ 포인트 지급
         await axios.post(
-          'http://localhost:9093/api/point/adjust',
+          'http://121.78.128.139:9093/api/point/adjust',
           { memberno, pointChange: 10 },
           { headers: { 'Content-Type': 'application/json' } }
         );
 
         // ✅ 퀴즈 로그 기록
         await axios.post(
-          'http://localhost:9093/api/quiz/log',
+          'http://121.78.128.139:9093/api/quiz/log',
           { memberno },
           { headers: { 'Content-Type': 'application/json' } }
         );

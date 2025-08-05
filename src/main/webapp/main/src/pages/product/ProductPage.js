@@ -45,7 +45,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`/product/update/${product.productno}`, {
+      await axios.put(`http://121.78.128.139:9093/product/update/${product.productno}`, {
         adminno: 1,
         product_name: editProduct.name,
         product_description: editProduct.description,
@@ -69,7 +69,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
   // 기존 handleIncrease, handleDecrease, handleDelete, handlePurchase 함수는 그대로 유지
   const handleIncrease = async () => {
     try {
-      await axios.put(`/product/increaseCnt/${product.productno}`);
+      await axios.put(`http://121.78.128.139:9093/product/increaseCnt/${product.productno}`);
       dispatch({ type: 'UPDATE_CNT', productno: product.productno, cnt: product.cnt + 1 });
     } catch {
       alert('수량 증가 실패');
@@ -79,7 +79,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
   const handleDecrease = async () => {
     if (product.cnt <= 1) return;
     try {
-      await axios.put(`/product/decreaseCnt/${product.productno}`);
+      await axios.put(`http://121.78.128.139:9093/product/decreaseCnt/${product.productno}`);
       dispatch({ type: 'UPDATE_CNT', productno: product.productno, cnt: product.cnt - 1 });
     } catch {
       alert('수량 감소 실패');
@@ -88,7 +88,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
 
     const handleIncrease10 = async () => {
     try {
-        await axios.put(`/product/increaseCnt10/${product.productno}`);
+        await axios.put(`http://121.78.128.139:9093/product/increaseCnt10/${product.productno}`);
         dispatch({ type: 'UPDATE_CNT', productno: product.productno, cnt: product.cnt + 10 });
     } catch {
         alert('수량 10 증가 실패');
@@ -100,7 +100,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
     if (product.cnt === 1) return;
 
     try {
-        await axios.put(`/product/decreaseCnt10/${product.productno}`);
+        await axios.put(`http://121.78.128.139:9093/product/decreaseCnt10/${product.productno}`);
         const newCnt = Math.max(1, product.cnt - 10);
         dispatch({ type: 'UPDATE_CNT', productno: product.productno, cnt: newCnt });
     } catch {
@@ -113,7 +113,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
   const handleDelete = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`/product/delete/${product.productno}`, { data: { adminno: 1 } });
+      await axios.delete(`http://121.78.128.139:9093/product/delete/${product.productno}`, { data: { adminno: 1 } });
       dispatch({ type: 'DELETE_PRODUCT', productno: product.productno });
     } catch {
       alert('삭제 실패');
@@ -127,7 +127,7 @@ function ProductCard({ product, dispatch, isAdmin }) {
   if (memberPoint < requiredPoint) return alert('포인트 부족');
 
   try {
-    await axios.post(`/product/purchase`, null, {
+    await axios.post(`http://121.78.128.139:9093/product/purchase`, null, {
       params: { memberno: 13, productno: product.productno, cnt: product.cnt },
     });
     alert('구매 성공');
@@ -347,7 +347,7 @@ function ProductPage() {
   useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('/product/list_all');
+      const res = await axios.get('http://121.78.128.139:9093/product/list_all');
       // 각 상품에 cnt 초기값 1 설정
       const productsWithCnt = res.data.map(product => ({
         ...product,
@@ -370,7 +370,7 @@ function ProductPage() {
     formData.append('cnt', 1);
     formData.append('image', newProduct.imageFile); // ✅ 파일 자체를 첨부
 
-    const res = await axios.post('/product/create', formData, {
+    const res = await axios.post('http://121.78.128.139:9093/product/create', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

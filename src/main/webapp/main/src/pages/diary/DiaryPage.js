@@ -109,7 +109,7 @@ function DiaryPage() {
     try {
       const year = curDate.getFullYear();
       const month = curDate.getMonth() + 1;
-      const res = await axios.get('/diary/list', {
+      const res = await axios.get('http://121.78.128.139:9093/diary/list', {
         params: { memberno, page, size, year, month },
       });
 
@@ -148,7 +148,7 @@ function DiaryPage() {
       return;
     }
     try {
-      const res = await axios.get('/diary/search', {
+      const res = await axios.get('http://121.78.128.139:9093/diary/search', {
         params: { memberno, keyword, type: searchType, page: 0, size },
       });
       const list = res.data.content || [];

@@ -17,7 +17,7 @@ function MemberListPage() {
 
   const fetchMembers = () => {
     axios
-      .get('/api/members', {
+      .get('http://121.78.128.139:9093/api/members', {
         params: {
           keyword,
           field: searchField,
@@ -62,7 +62,7 @@ function MemberListPage() {
 
   const handleConfirmDelete = (memberno) => {
     axios
-      .delete(`/api/admin/members/delete`, { params: { memberno } })
+      .delete(`http://121.78.128.139:9093/api/admin/members/delete`, { params: { memberno } })
       .then((res) => {
         alert(res.data);
         setShowModal(false);

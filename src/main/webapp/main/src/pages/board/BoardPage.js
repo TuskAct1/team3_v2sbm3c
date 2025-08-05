@@ -22,7 +22,7 @@ function BoardPage() {
   const fetchBoardList = async (page = 1, searchWord = '', searchTypeParam = searchType) => {
     const queryWord = searchWord.trim() !== '' ? searchWord : 'all';
     try {
-      const res = await axios.get(`/board/list_all?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`);
+      const res = await axios.get(`http://121.78.128.139:9093/board/list_all?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`);
       setCategoryGroup(res.data.categoryGroup);
       setBoardList(res.data.boardList);
       setTotalPage(res.data.totalPage || 1);
@@ -36,7 +36,7 @@ function BoardPage() {
   const fetchBoardListByCategory = async (categoryno, page = 1, searchWord = '') => {
     const queryWord = searchWord.trim() !== '' ? searchWord : 'all';
     try {
-      const res = await axios.get(`/board/list_category/${categoryno}?word=${queryWord}&now_page=${page}`);
+      const res = await axios.get(`http://121.78.128.139:9093/board/list_category/${categoryno}?word=${queryWord}&now_page=${page}`);
       setCategoryGroup(res.data.categoryGroup);
       setBoardList(res.data.listByCategoryBoard);
       setTotalPage(res.data.totalPage || 1);
@@ -50,7 +50,7 @@ function BoardPage() {
   // ✅ 내가 쓴 글 조회
   const fetchMyBoardList = async (page = 1) => {
     try {
-      const res = await axios.get(`/board/my_list/${memberno}?now_page=${page}`);
+      const res = await axios.get(`http://121.78.128.139:9093/board/my_list/${memberno}?now_page=${page}`);
       setCategoryGroup(res.data.categoryGroup || []);
       setBoardList(res.data.boardList || []);
       setTotalPage(res.data.totalPage || 1);

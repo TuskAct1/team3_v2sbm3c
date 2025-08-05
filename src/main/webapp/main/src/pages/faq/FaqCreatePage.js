@@ -22,7 +22,7 @@ function FaqCreatePage() {
     formData.append('adminno', adminno);
     files.forEach(file => formData.append('files', file));
 
-    await axios.post('/faq/create', formData, {
+    await axios.post('http://121.78.128.139:9093/faq/create', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
     alert("FAQ 등록 완료!");

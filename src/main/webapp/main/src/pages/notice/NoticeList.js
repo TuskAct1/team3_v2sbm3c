@@ -42,7 +42,7 @@ function NoticeList() {
 
   const fetchSearchResults = async () => {
     try {
-      const res = await axios.get('http://localhost:9093/notice/search', {
+      const res = await axios.get('http://121.78.128.139:9093/notice/search', {
         params: { keyword: searchKeyword },
       });
       setNotices(res.data);
@@ -178,7 +178,7 @@ function NoticeList() {
                         const ok = window.confirm('정말 삭제하시겠습니까?');
                         if (!ok) return;
                         try {
-                          await axios.delete(`http://localhost:9093/notice/delete/${notice.noticeno}`);
+                          await axios.delete(`http://121.78.128.139:9093/notice/delete/${notice.noticeno}`);
                           alert('✅ 삭제가 완료되었습니다.');
                           setNotices((prev) => prev.filter((n) => n.noticeno !== notice.noticeno));
                         } catch (err) {

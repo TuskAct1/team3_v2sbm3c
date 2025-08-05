@@ -23,8 +23,8 @@ const RewardRequestForm = ({ memberno }) => {
     const fetchData = async () => {
       try {
         const [plantRes, memberRes] = await Promise.all([
-          axios.get(`/api/plants/member`, { params: { memberno } }),
-          axios.get(`/api/members/${memberno}`),
+          axios.get(`http://121.78.128.139:9093/api/plants/member`, { params: { memberno } }),
+          axios.get(`http://121.78.128.139:9093/api/members/${memberno}`),
         ]);
 
         const plant = plantRes.data;
@@ -69,7 +69,7 @@ const RewardRequestForm = ({ memberno }) => {
     }
 
     axios
-      .post("/api/reward/create", { ...form, memberno })
+      .post("http://121.78.128.139:9093/api/reward/create", { ...form, memberno })
       .then((res) => {
         if (res.data.success) {
           alert("보상 신청 완료!");

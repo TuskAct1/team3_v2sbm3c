@@ -4,11 +4,11 @@ import axios from 'axios';
 export default function useRecommend(replies, setReplies) {
   const handleRecommend = (reply) => {
     // 추천 여부 확인
-    axios.get(`/replyRecommend/hartCnt?replyno=${reply.replyno}`, { withCredentials: true })
+    axios.get(`http://121.78.128.139:9093/replyRecommend/hartCnt?replyno=${reply.replyno}`, { withCredentials: true })
       .then((res) => {
         if (res.data > 0) {
           // 이미 추천했으면 추천 취소 시도
-          axios.delete(`/replyRecommend/delete_by_reply_member/${reply.replyno}`, { withCredentials: true })
+          axios.delete(`http://121.78.128.139:9093/replyRecommend/delete_by_reply_member/${reply.replyno}`, { withCredentials: true })
             .then((res) => {
               if (res.data > 0) {
                 alert('추천이 취소되었습니다.');
@@ -34,7 +34,7 @@ export default function useRecommend(replies, setReplies) {
             });
         } else {
           // 추천 안 했으면 추천 등록
-          axios.post('/replyRecommend/create_session', { replyno: reply.replyno }, { withCredentials: true })
+          axios.post('http://121.78.128.139:9093/replyRecommend/create_session', { replyno: reply.replyno }, { withCredentials: true })
             .then((res) => {
               if (res.data === 1) {
                 alert('추천이 등록되었습니다.');

@@ -34,7 +34,7 @@ function BoardUpdatePage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`/board/update/${boardno}`);
+        const response = await axios.get(`http://121.78.128.139:9093/board/update/${boardno}`);
         const board = response.data.boardVO;
         const categories = response.data.categoryGroup || [];
 
@@ -83,7 +83,7 @@ function BoardUpdatePage() {
     if (file1MF) formData.append('file1MF', file1MF);
 
     try {
-      const response = await axios.put('/board/update', formData, {
+      const response = await axios.put('http://121.78.128.139:9093/board/update', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

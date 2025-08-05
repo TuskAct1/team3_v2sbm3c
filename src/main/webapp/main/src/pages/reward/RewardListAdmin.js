@@ -7,7 +7,7 @@ const RewardListAdmin = () => {
 
   // 보상 목록 불러오기
   const fetchRewards = () => {
-    axios.get("/api/reward/list")
+    axios.get("http://121.78.128.139:9093/api/reward/list")
       .then((res) => {
         setRewards(res.data);
       })
@@ -22,7 +22,7 @@ const RewardListAdmin = () => {
 
   // 상태 변경 처리
   const handleStatusChange = (rewardno) => {
-    axios.put("/api/reward/update-status", { rewardno })
+    axios.put("http://121.78.128.139:9093/api/reward/update-status", { rewardno })
       .then(() => {
         alert("상태가 '발송 완료'로 변경되었습니다.");
         fetchRewards();

@@ -27,7 +27,7 @@ function NoticeRead() {
 
   // ✅ 공지사항 상세 불러오기
   useEffect(() => {
-    axios.get(`http://localhost:9093/notice/read/${noticeno}`)
+    axios.get(`http://121.78.128.139:9093/notice/read/${noticeno}`)
       .then(res => setNotice(res.data))
       .catch(err => console.error('❌ 공지사항 상세 불러오기 실패', err));
   }, [noticeno]);
@@ -38,7 +38,7 @@ function NoticeRead() {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:9093/notice/delete/${noticeno}`);
+      await axios.delete(`http://121.78.128.139:9093/notice/delete/${noticeno}`);
       alert("✅ 삭제가 완료되었습니다.");
       navigate('/notice/list');
     } catch (err) {

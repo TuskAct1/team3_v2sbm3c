@@ -8,7 +8,7 @@ const MyRewardList = ({ memberno }) => {
     if (!memberno) return;
 
     axios
-      .get(`/api/reward/list/member?memberno=${memberno}`)
+      .get(`http://121.78.128.139:9093/api/reward/list/member?memberno=${memberno}`)
       .then((res) => setList(res.data))
       .catch((err) => console.error(err));
   }, [memberno]);

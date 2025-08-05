@@ -10,7 +10,7 @@ const ShopPanel = ({ memberno, onPurchase }) => {
   ];
 
   const handleBuy = async (item) => {
-    const res = await axios.post('/api/point/decrease', null, {
+    const res = await axios.post('http://121.78.128.139:9093/api/point/decrease', null, {
       params: { memberno, amount: item.cost },
     });
 

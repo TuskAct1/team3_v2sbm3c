@@ -28,7 +28,7 @@ function PersonalityTest() {
       if (!loginMemberno) return;
 
       try {
-        const res = await fetch(`http://localhost:9093/twoweek_test/latest/${loginMemberno}`);
+        const res = await fetch(`http://121.78.128.139:9093/twoweek_test/latest/${loginMemberno}`);
         const data = await res.json();
 
         if (data.rdate) {

@@ -44,7 +44,7 @@ function MyPage() {
 
   useEffect(() => {
     if (!userId) return;
-    axios.get("/api/members/id", { params: { id: userId } })
+    axios.get("http://121.78.128.139:9093/api/members/id", { params: { id: userId } })
       .then(res => {
         setUser(res.data);
         fetchRewards(res.data.memberno);
@@ -53,11 +53,23 @@ function MyPage() {
       .catch(err => console.error("회원 정보 불러오기 실패", err));
   }, [userId]);
 
-  const fetchRewards = (memberno) => {
-    axios.get("/api/rewards", { params: { memberno } })
-      .then(res => setRewards(res.data))
-      .catch(err => console.error("보상 정보 불러오기 실패", err));
-  };
+  // const fetchRewards = (memberno) => {
+  //   axios.get("/api/rewards", { params: { memberno } })
+  //     .then(res => setRewards(res.data))
+  //     .catch(err => console.error("보상 정보 불러오기 실패", err));
+  // };
+
+
+const fetchRewards = (memberno) => {
+  axios.get("http://121.78.128.139:9093/api/rewards", { params: { memberno } })
+    .then(res => {
+      console.log("🏆 보상 API 응답 전체:", res.data);
+      // 진짜 배열인 items 필드만 꺼내서 setRewards에 넘기기
+      setRewards(res.data.items);
+    })
+    .catch(err => console.error("보상 정보 불러오기 실패", err));
+};
+
 
   // const fetchSchedules = (memberno) => {
   //   if (!memberno) return;
@@ -73,10 +85,10 @@ function MyPage() {
     formData.append("memberno", user.memberno);
     formData.append("profileFile", file);
 
-    axios.post("/api/members/update-profile", formData)
+    axios.post("http://121.78.128.139:9093/api/members/update-profile", formData)
       .then(() => {
         alert("프로필 이미지가 변경되었습니다.");
-        axios.get(`/api/members/${user.memberno}`).then(res => setUser(res.data));
+        axios.get(`http://121.78.128.139:9093/api/members/${user.memberno}`).then(res => setUser(res.data));
       })
       .catch(err => {
         alert("업로드 실패");
@@ -122,7 +134,7 @@ function MyPage() {
 
 const fetchSchedules = (memberno) => {
   if (!memberno) return;
-  axios.get(`/calendar/list_all?memberno=${memberno}`)
+  axios.get(`http://121.78.128.139:9093/calendar/list_all?memberno=${memberno}`)
     .then(res => {
       const today = moment().format('YYYY-MM-DD');
       // 서버에서 받은 일정 중 start_date 가 오늘인 것만
@@ -250,7 +262,7 @@ const fetchSchedules = (memberno) => {
                         </div>
                       ) : (
                         <div className="mypage-reward-list">
-                          {rewards.map((reward) => (
+                          {(rewards || []).map((reward) => (
                             <div key={reward.reward_id || `${reward.itemName}-${reward.status}`} className="mypage-reward-item">
                               <p>{reward.itemName} ({reward.status})</p>
                             </div>

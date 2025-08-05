@@ -95,7 +95,7 @@ function MainPage() {
         const user = userStr ? JSON.parse(userStr) : null;
         const isAdmin = user?.adminno !== undefined;
 
-        const res = await axios.get("http://localhost:9093/notice/search", {
+        const res = await axios.get("http://121.78.128.139:9093/notice/search", {
           params: { keyword: "" },
         });
 

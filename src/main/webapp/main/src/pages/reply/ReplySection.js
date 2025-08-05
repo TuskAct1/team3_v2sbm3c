@@ -55,7 +55,7 @@ function ReplySection({ boardno }) {
 
   const fetchReplies = async () => {
     try {
-      const res = await axios.get('/reply/m_list', {
+      const res = await axios.get('http://121.78.128.139:9093/reply/m_list', {
         params: { boardno, page: 1, size: 999 } // 전체 받아오기
       });
       const all = res.data?.comments || [];
@@ -103,7 +103,7 @@ function ReplySection({ boardno }) {
     if (!content) return;
 
     try {
-      await axios.post('/reply/create', {
+      await axios.post('http://121.78.128.139:9093/reply/create', {
         boardno,
         content,
         parent_replyno: isReply ? parentReplyno : null,
@@ -126,7 +126,7 @@ function ReplySection({ boardno }) {
 
   const handleDelete = (reply) => {
     if (!window.confirm('댓글을 삭제하시겠습니까?')) return;
-    axios.post('/reply/delete', {
+    axios.post('http://121.78.128.139:9093/reply/delete', {
       replyno: reply.replyno,
       memberno: reply.memberno
     })
@@ -148,7 +148,7 @@ function ReplySection({ boardno }) {
   };
 
   const handleEditSave = (reply) => {
-    axios.post('/reply/update', {
+    axios.post('http://121.78.128.139:9093/reply/update', {
       replyno: reply.replyno,
       memberno: reply.memberno,
       content: editingContent

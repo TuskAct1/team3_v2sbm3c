@@ -13,7 +13,7 @@ function PlaylistSongList() {
 
   // ✅ playlist 정보 불러오기 + 설명(description) 파싱
   useEffect(() => {
-    axios.get(`http://localhost:9093/playlist/read/${playlistno}`)
+    axios.get(`http://121.78.128.139:9093/playlist/read/${playlistno}`)
       .then(res => {
         const data = res.data;
         setPlaylist(data);

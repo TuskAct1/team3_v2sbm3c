@@ -281,7 +281,7 @@ const SignupPageAdmin = () => {
     }
 
     try {
-      const res = await fetch(`/api/admin/check-email?email=${encodeURIComponent(form.id)}`);
+      const res = await fetch(`http://121.78.128.139:9093/api/admin/check-email?email=${encodeURIComponent(form.id)}`);
       const data = await res.json();
 
       if (data.available) {
@@ -309,7 +309,7 @@ const SignupPageAdmin = () => {
     }
 
     try {
-      const response = await fetch("/api/admin/signup", {
+      const response = await fetch("http://121.78.128.139:9093/api/admin/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

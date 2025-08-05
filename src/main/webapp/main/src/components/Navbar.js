@@ -14,7 +14,7 @@ function Navbar() {
 
   // 게시판 카테고리 불러오기
   useEffect(() => {
-    axios.get('/board/category_group')
+    axios.get('http://121.78.128.139:9093/board/category_group')
       .then(res => setCategoryGroup(res.data))
       .catch(err => console.error("❌ 카테고리 목록 불러오기 실패", err));
   }, []);
@@ -53,7 +53,7 @@ function Navbar() {
     const provider = user?.provider;
     try {
       // 백엔드 로그아웃 API 호출
-      await axios.post('/api/members/logout');
+      await axios.post('http://121.78.128.139:9093/api/members/logout');
     } catch (err) {
       console.error('서버 로그아웃 실패', err);
     } finally {

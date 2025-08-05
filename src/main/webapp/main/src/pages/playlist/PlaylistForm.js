@@ -13,7 +13,7 @@ function PlaylistForm({ mode, playlist, onClose }) {
 
   // 감정 카테고리 목록 불러오기
   useEffect(() => {
-    axios.get('http://localhost:9093/playlist_emotion/list')
+    axios.get('http://121.78.128.139:9093/playlist_emotion/list')
       .then(res => setEmotionList(res.data))
       .catch(err => console.error('❌ 감정 목록 실패:', err));
   }, []);
@@ -35,7 +35,7 @@ function PlaylistForm({ mode, playlist, onClose }) {
     formData.append('file', file);
 
     try {
-      const res = await axios.post('http://localhost:9093/playlist/upload-thumbnail', formData, {
+      const res = await axios.post('http://121.78.128.139:9093/playlist/upload-thumbnail', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       callback(res.data); // 업로드된 서버 경로 콜백으로 전달
@@ -61,14 +61,14 @@ function PlaylistForm({ mode, playlist, onClose }) {
 
       try {
         if (mode === 'create') {
-          await axios.post('http://localhost:9093/playlist/create', payload);
+          await axios.post('http://121.78.128.139:9093/playlist/create', payload);
           alert('✅ 플레이리스트가 등록되었습니다!');
         } else if (mode === 'update') {
           payload.playlistno = playlist.playlistno;
-          await axios.put('http://localhost:9093/playlist/update', payload);
+          await axios.put('http://121.78.128.139:9093/playlist/update', payload);
           alert('✏️ 플레이리스트가 수정되었습니다!');
         } else if (mode === 'delete') {
-          await axios.delete(`http://localhost:9093/playlist/delete/${playlist.playlistno}`);
+          await axios.delete(`http://121.78.128.139:9093/playlist/delete/${playlist.playlistno}`);
           alert('🗑️ 플레이리스트가 삭제되었습니다!');
         }
 
@@ -206,7 +206,7 @@ function PlaylistForm({ mode, playlist, onClose }) {
       {thumbnail && (thumbnailInputType === 'upload' || thumbnail.startsWith('/playlist/storage/')) && (
         <div className="thumbnail-preview">
           <p>🖼️ 썸네일 미리보기</p>
-          <img src={thumbnail.startsWith('blob:') ? thumbnail : `http://localhost:9093${thumbnail}`} alt="썸네일 미리보기" />
+          <img src={thumbnail.startsWith('blob:') ? thumbnail : `http://121.78.128.139:9093${thumbnail}`} alt="썸네일 미리보기" />
         </div>
       )}
 

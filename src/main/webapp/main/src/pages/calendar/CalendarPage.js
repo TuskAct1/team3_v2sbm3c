@@ -119,8 +119,8 @@
     try {
       // 병렬 요청
       const [holidayRes, userRes] = await Promise.all([
-        axios.get('/calendar/holidays', { params: { year } }),
-        axios.get('/calendar/list_all')
+        axios.get('http://121.78.128.139:9093/calendar/holidays', { params: { year } }),
+        axios.get('http://121.78.128.139:9093/calendar/list_all')
       ]);
 
       const holidays = holidayRes.data?.response?.body?.items?.item || [];
@@ -183,7 +183,7 @@
 
   const fetchHolidays = async (year) => {
     try {
-      const res = await axios.get('/calendar/holidays', { params: { year } });
+      const res = await axios.get('http://121.78.128.139:9093/calendar/holidays', { params: { year } });
       const items = res.data?.response?.body?.items?.item;
       if (!items) return;
 
@@ -212,7 +212,7 @@
 
     const fetchUserEvents = async () => {
       try {
-        const res = await axios.get('/calendar/list_all');
+        const res = await axios.get('http://121.78.128.139:9093/calendar/list_all');
         const formatted = res.data.map(item => {
           const isAdmin = item.adminno !== null;
           const isHoliday = item.color === '#ff3333';  // ✅ 공휴일 기준은 color
@@ -338,7 +338,7 @@
 
 
       try {
-        await axios.post('/calendar/create', data, {
+        await axios.post('http://121.78.128.139:9093/calendar/create', data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         await fetchUserEvents();
@@ -371,7 +371,7 @@
           data.append('image', formData.imageFile);  // ✅ 여기만 바꿔주면 됨
         }
 
-        await axios.post(`/calendar/update/${editingEventId}`, data, {
+        await axios.post(`http://121.78.128.139:9093/calendar/update/${editingEventId}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 
@@ -387,7 +387,7 @@
 
     const handleDelete = async () => {
       try {
-        await axios.delete(`/calendar/delete/${editingEventId}`);
+        await axios.delete(`http://121.78.128.139:9093/calendar/delete/${editingEventId}`);
         await fetchUserEvents();
         setShowForm(false);
         setEditingEventId(null);
@@ -959,7 +959,7 @@
                   onClick={async () => {
                     try {
                       // previewModalData.id 로 삭제 요청
-                      await axios.delete(`/calendar/delete/${previewModalData.id}`);
+                      await axios.delete(`http://121.78.128.139:9093/calendar/delete/${previewModalData.id}`);
                       // 삭제 후 이벤트 다시 불러오기
                       await fetchUserEvents();
                     } catch (err) {

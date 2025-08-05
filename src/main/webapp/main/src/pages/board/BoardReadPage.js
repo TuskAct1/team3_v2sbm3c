@@ -41,7 +41,7 @@ function BoardReadPage() {
     if (!confirmDelete) return;
 
     try {
-      const res = await axios.delete(`/board/delete/${boardno}/${passwd}`);
+      const res = await axios.delete(`http://121.78.128.139:9093/board/delete/${boardno}/${passwd}`);
       if (res.status === 200) {
         alert('삭제 완료!');
         navigate(`/board/list_all/all/1`);
@@ -62,13 +62,13 @@ function BoardReadPage() {
   const handleRecommend = async () => {
     try {
       if (!isRecommended) {
-        await axios.post(`/boardRecommend/${boardno}`);
+        await axios.post(`http://121.78.128.139:9093/boardRecommend/${boardno}`);
         setBoardVO((prev) => ({
           ...prev,
           recom: prev.recom + 1,
         }));
       } else {
-        await axios.delete(`/boardRecommend/${boardno}`);
+        await axios.delete(`http://121.78.128.139:9093/boardRecommend/${boardno}`);
         setBoardVO((prev) => ({
           ...prev,
           recom: Math.max(prev.recom - 1, 0),
@@ -81,12 +81,12 @@ function BoardReadPage() {
   };
 
   const fetchRecommendStatus = async () => {
-    const res = await axios.get(`/boardRecommend/check/${boardno}`);
+    const res = await axios.get(`http://121.78.128.139:9093/boardRecommend/check/${boardno}`);
     setIsRecommended(res.data.recommended);
   };
 
   useEffect(() => {
-    axios.get(`/board/read/${boardno}`).then((res) => {
+    axios.get(`http://121.78.128.139:9093/board/read/${boardno}`).then((res) => {
       setCategoryGroup(res.data.categoryGroup);
       setBoardVO(res.data.boardVO);
       setLoading(false);
@@ -96,7 +96,7 @@ function BoardReadPage() {
   }, [boardno]);
 
   useEffect(() => {
-    axios.get(`/boardRecommend/count/${boardno}`)
+    axios.get(`http://121.78.128.139:9093/boardRecommend/count/${boardno}`)
     .then((res) => {setRecom(res.data.recom); console.log(res.data.recom)});
   }, [boardno]);
 

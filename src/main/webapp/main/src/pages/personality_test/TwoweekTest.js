@@ -72,7 +72,7 @@ const TwoweekQuestionnaire = () => {
         return;
       }
 
-      await axios.post('http://localhost:9093/twoweek_test/create', {
+      await axios.post('http://121.78.128.139:9093/twoweek_test/create', {
         memberno,
         score: totalScore,
         result: resultText

@@ -18,7 +18,7 @@ function FaqPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('/faq/list').then(res => {
+    axios.get('http://121.78.128.139:9093/faq/list').then(res => {
       setFaqAll(res.data);
       setFaqList(res.data);
     });
@@ -62,7 +62,7 @@ function FaqPage() {
 
   const handleDelete = async (faqno) => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
-      await axios.delete(`/faq/${faqno}`);
+      await axios.delete(`http://121.78.128.139:9093/faq/${faqno}`);
       setFaqList(prev => prev.filter(faq => faq.faqno !== faqno));
     }
   };

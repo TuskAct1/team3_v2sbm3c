@@ -9,7 +9,7 @@ function EmotionForm({ onClose }) {
 
   // ✅ 감정 목록 불러오기
   const fetchEmotions = () => {
-    axios.get('http://localhost:9093/playlist_emotion/list')
+    axios.get('http://121.78.128.139:9093/playlist_emotion/list')
       .then(res => setEmotionList(res.data))
       .catch(err => console.error('❌ 감정 목록 실패:', err));
   };
@@ -23,7 +23,7 @@ function EmotionForm({ onClose }) {
     e.preventDefault();
     if (!newEmotion.trim()) return;
     try {
-      await axios.post('http://localhost:9093/playlist_emotion/create', {
+      await axios.post('http://121.78.128.139:9093/playlist_emotion/create', {
         emotion: newEmotion.trim(),
       });
       setNewEmotion('');
@@ -37,7 +37,7 @@ function EmotionForm({ onClose }) {
   const handleUpdate = async (emotionId) => {
     if (!editText.trim()) return;
     try {
-      await axios.put('http://localhost:9093/playlist_emotion/update', {
+      await axios.put('http://121.78.128.139:9093/playlist_emotion/update', {
         playlistemotionno: emotionId,
         emotion: editText.trim(),
       });
@@ -53,7 +53,7 @@ function EmotionForm({ onClose }) {
   const handleDelete = async (emotionId) => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`http://localhost:9093/playlist_emotion/delete/${emotionId}`);
+      await axios.delete(`http://121.78.128.139:9093/playlist_emotion/delete/${emotionId}`);
       fetchEmotions();
     } catch (err) {
       console.error('❌ 감정 삭제 실패:', err);

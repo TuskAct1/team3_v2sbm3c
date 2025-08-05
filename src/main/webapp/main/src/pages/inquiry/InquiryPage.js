@@ -16,7 +16,7 @@ function InquiryPage() {
 
   // ✅ 전체 문의 목록 불러오기
   const fetchList = async () => {
-    const res = await fetch(`/inquiry/list_all?memberno=${memberno || ''}&adminno=${adminno || ''}`);
+    const res = await fetch(`http://121.78.128.139:9093/inquiry/list_all?memberno=${memberno || ''}&adminno=${adminno || ''}`);
     const data = await res.json();
     setList(data);
   };
@@ -30,7 +30,7 @@ function InquiryPage() {
       return;
     }
 
-    const res = await fetch(`/inquiry/${inquiryno}?memberno=${memberno || ''}&adminno=${adminno || ''}`);
+    const res = await fetch(`http://121.78.128.139:9093/inquiry/${inquiryno}?memberno=${memberno || ''}&adminno=${adminno || ''}`);
     const data = await res.json();
     setSelected(data);
     setAnswerInput(data.answer || "");
@@ -41,7 +41,7 @@ function InquiryPage() {
     if (!answerInput.trim()) return alert("답변을 입력해주세요.");
     setAnswerLoading(true);
     try {
-      const res = await fetch(`/inquiry/answer/${selected.inquiryno}`, {
+      const res = await fetch(`http://121.78.128.139:9093/inquiry/answer/${selected.inquiryno}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answer: answerInput }),

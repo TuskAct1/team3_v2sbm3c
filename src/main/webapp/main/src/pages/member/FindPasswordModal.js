@@ -13,7 +13,7 @@ const FindPasswordModal = ({ open, onClose }) => {
     setLoading(true);
     setMsg("");
     try {
-      const res = await axios.post("/api/members/find-password", { id: email });
+      const res = await axios.post("http://121.78.128.139:9093/api/members/find-password", { id: email });
       setMsg(res.data.msg || "메일을 확인해주세요.");
     } catch (err) {
       setMsg("서버 오류입니다. 다시 시도해주세요.");

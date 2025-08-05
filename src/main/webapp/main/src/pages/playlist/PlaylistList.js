@@ -34,7 +34,7 @@ function PlaylistList() {
   }, []);
 
   const fetchEmotions = useCallback(() => {
-    axios.get('http://localhost:9093/playlist_emotion/list')
+    axios.get('http://121.78.128.139:9093/playlist_emotion/list')
       .then(res => setEmotions(res.data))
       .catch(err => console.error('❌ 감정 목록 실패:', err));
   }, []);
@@ -43,15 +43,15 @@ function PlaylistList() {
     const memberno = user?.memberno || 0;
 
     if (showOnlyLiked) {
-      axios.get(`http://localhost:9093/playlist_like/my_likes/${user.memberno}`)
+      axios.get(`http://121.78.128.139:9093/playlist_like/my_likes/${user.memberno}`)
         .then(res => setSongs(res.data))
         .catch(err => console.error('❌ 좋아요 목록 실패:', err));
     } else if (selectedEmotion) {
-      axios.get(`http://localhost:9093/playlist/list_by_emotionno_with_like/${selectedEmotion}/${memberno}`)
+      axios.get(`http://121.78.128.139:9093/playlist/list_by_emotionno_with_like/${selectedEmotion}/${memberno}`)
         .then(res => setSongs(res.data))
         .catch(err => console.error('❌ 감정별 필터 실패:', err));
     } else {
-      axios.get(`http://localhost:9093/playlist/list_with_like/${memberno}`)
+      axios.get(`http://121.78.128.139:9093/playlist/list_with_like/${memberno}`)
         .then(res => setSongs(res.data))
         .catch(err => console.error('❌ 플레이리스트 실패:', err));
     }
@@ -96,7 +96,7 @@ function PlaylistList() {
 
     try {
       // 1️⃣ 좋아요 토글 실행
-      await axios.post(`http://localhost:9093/playlist_like/toggle`, {
+      await axios.post(`http://121.78.128.139:9093/playlist_like/toggle`, {
         playlistno,
         memberno: user.memberno
       });
@@ -242,7 +242,7 @@ function PlaylistList() {
                   const confirmDelete = window.confirm('🗑️ 삭제할까요?');
                   if (!confirmDelete) return;
                   try {
-                    await axios.delete(`http://localhost:9093/playlist/delete/${song.playlistno}`);
+                    await axios.delete(`http://121.78.128.139:9093/playlist/delete/${song.playlistno}`);
                     alert('✅ 삭제 완료!');
                     fetchPlaylists();
                   } catch (err) {

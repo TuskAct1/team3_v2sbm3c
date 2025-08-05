@@ -71,7 +71,7 @@ const MemberEditForm = ({ initialData, onUpdated, onCancel }) => {
         guardians,
       };
 
-      await axios.put("/api/members", updatedMember); // 서버로 수정 요청
+      await axios.put("http://121.78.128.139:9093/api/members", updatedMember); // 서버로 수정 요청
 
       // ✅ 수정된 데이터 localStorage에 반영
       localStorage.setItem("user", JSON.stringify(updatedMember));

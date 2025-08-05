@@ -12,7 +12,7 @@ const AttendanceButton = () => {
   // ✅ 페이지 진입 시 출석 여부 확인
   useEffect(() => {
     if (memberno) {
-      axios.get(`/api/attendance/check?memberno=${memberno}`)
+      axios.get(`http://121.78.128.139:9093/api/attendance/check?memberno=${memberno}`)
         .then((res) => {
           setChecked(res.data); // true or false
         })
@@ -25,7 +25,7 @@ const AttendanceButton = () => {
   // ✅ 출석 버튼 클릭 처리
   const handleCheckAttendance = async () => {
     try {
-      const res = await axios.post('/api/attendance/plant/attendance');
+      const res = await axios.post('http://121.78.128.139:9093/api/attendance/plant/attendance');
       const { status, message } = res.data;
 
       if (status === 'success') {

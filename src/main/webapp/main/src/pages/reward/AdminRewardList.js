@@ -5,11 +5,11 @@ const AdminRewardList = () => {
   const [list, setList] = useState([]);
 
   const fetchList = () => {
-    axios.get("/api/reward/list/all").then((res) => setList(res.data));
+    axios.get("http://121.78.128.139:9093/api/reward/list/all").then((res) => setList(res.data));
   };
 
   const updateStatus = (requestno, status) => {
-    axios.put("/api/reward/status", { requestno, status }).then((res) => {
+    axios.put("http://121.78.128.139:9093/api/reward/status", { requestno, status }).then((res) => {
       if (res.data.success) {
         alert("상태 변경 성공");
         fetchList();

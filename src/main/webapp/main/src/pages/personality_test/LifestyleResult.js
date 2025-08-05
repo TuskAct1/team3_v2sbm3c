@@ -43,7 +43,7 @@ function LifestyleResult() {
         return;
       }
 
-      await axios.post('http://localhost:9093/lifestyle_test/save', {
+      await axios.post('http://121.78.128.139:9093/lifestyle_test/save', {
         memberno: memberno,
         result: resultText
       });

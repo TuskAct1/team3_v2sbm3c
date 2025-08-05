@@ -11,7 +11,7 @@ function BoardReportModal({ boardno, show, onClose, onReported }) {
     setLoading(true);
     setResultMsg('');
     try {
-      await axios.post(`/boardReport/report/${boardno}`, {
+      await axios.post(`http://121.78.128.139:9093/boardReport/report/${boardno}`, {
         reason: reason
       });
       setResultMsg("신고가 접수되었습니다.");

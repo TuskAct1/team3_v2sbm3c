@@ -5,13 +5,13 @@ const HarvestButton = ({ plantno, memberno }) => {
   const [growth, setGrowth] = useState(0);
 
   useEffect(() => {
-    axios.get(`/api/plants/read?plantno=${plantno}`)
+    axios.get(`http://121.78.128.139:9093/api/plants/read?plantno=${plantno}`)
       .then(res => setGrowth(res.data.growth_percent));
   }, [plantno]);
 
   const handleHarvest = async () => {
     try {
-      const res = await axios.post('/api/plants/harvest', null, {
+      const res = await axios.post('http://121.78.128.139:9093/api/plants/harvest', null, {
         params: { plantno, memberno }
       });
       alert(res.data);

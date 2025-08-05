@@ -16,7 +16,7 @@ function NoticeEdit() {
 
   // ✅ 공지 불러오기
   useEffect(() => {
-    axios.get(`http://localhost:9093/notice/read/${noticeno}`)
+    axios.get(`http://121.78.128.139:9093/notice/read/${noticeno}`)
       .then(res => setNotice(res.data))
       .catch(err => console.error('❌ 상세 불러오기 실패', err));
   }, [noticeno]);
@@ -30,7 +30,7 @@ function NoticeEdit() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:9093/notice/update', notice);
+      await axios.post('http://121.78.128.139:9093/notice/update', notice);
       alert('✅ 수정 완료!');
       navigate('/notice/list');
     } catch (err) {
@@ -45,7 +45,7 @@ function NoticeEdit() {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:9093/notice/delete/${noticeno}`);
+      await axios.delete(`http://121.78.128.139:9093/notice/delete/${noticeno}`);
       alert('✅ 삭제가 완료되었습니다.');
       navigate('/notice/list');
     } catch (err) {

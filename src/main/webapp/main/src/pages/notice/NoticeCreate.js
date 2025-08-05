@@ -23,7 +23,7 @@ function NoticeCreate() {
     };
 
     try {
-      await axios.post('http://localhost:9093/notice/create', data);
+      await axios.post('http://121.78.128.139:9093/notice/create', data);
       alert('공지 등록 완료!');
       navigate('/notice/list');
     } catch (err) {

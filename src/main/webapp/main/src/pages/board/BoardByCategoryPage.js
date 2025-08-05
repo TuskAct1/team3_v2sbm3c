@@ -26,7 +26,7 @@ function BoardByCategoryPage() {
     const queryWord = searchWord && searchWord.trim() !== '' ? searchWord : 'all';
     if (!catNo || catNo === 'all' || catNo === undefined) {
       try {
-        const res = await axios.get(`/board/list_all?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`);
+        const res = await axios.get(`http://121.78.128.139:9093/board/list_all?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`);
         setCategoryGroup(res.data.categoryGroup);
         setListByCategoryBoard(res.data.boardList);
         setTotalPage(res.data.totalPage || 1);
@@ -40,7 +40,7 @@ function BoardByCategoryPage() {
 
     try {
       const res = await axios.get(
-        `/board/list_category/${catNo}?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`
+        `http://121.78.128.139:9093/board/list_category/${catNo}?word=${queryWord}&now_page=${page}&searchType=${searchTypeParam}`
       );
       setCategoryGroup(res.data.categoryGroup);
       setCategoryVO(res.data.categoryVO);
@@ -89,7 +89,7 @@ function BoardByCategoryPage() {
     if (categoryno === 'all' || categoryno === undefined) {
       try {
         const res = await axios.get(
-          `/board/list_all?word=all&now_page=1&searchType=${searchType}`
+          `http://121.78.128.139:9093/board/list_all?word=all&now_page=1&searchType=${searchType}`
         );
         setListByCategoryBoard(res.data.boardList);
         setNowPage(1);

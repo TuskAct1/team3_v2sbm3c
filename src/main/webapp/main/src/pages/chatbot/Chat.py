@@ -29,7 +29,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://121.78.128.139:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -157,7 +157,7 @@ def check_emotion_alert(memberno, recent_emotions):
     risk = sum(1 for emo in recent_emotions if emo in ["우울", "불안", "부정"])
     if risk >= 3:
         # Spring REST API로 보호자 번호 가져와서 SMS 발송 요청
-        url = f"http://localhost:9093/alert/emotion/{memberno}"
+        url = f"http://121.78.128.139:9093/alert/emotion/{memberno}"
         payload = {
             "memberno": memberno,
             "emotions": recent_emotions

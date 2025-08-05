@@ -86,7 +86,7 @@ export default function DiaryReadModal({id, onClose, onSuccess, createMode = fal
       return;
     }
 
-    axios.get(`/diary/read/${id}`)
+    axios.get(`http://121.78.128.139:9093/diary/read/${id}`)
       .then(res => {
         setDiary(res.data);
         setEditTitle(res.data.title);
@@ -195,7 +195,7 @@ export default function DiaryReadModal({id, onClose, onSuccess, createMode = fal
   const handleDelete = async () => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return;
     try {
-      await axios.delete(`/diary/delete/${id}`);
+      await axios.delete(`http://121.78.128.139:9093/diary/delete/${id}`);
       alert('삭제되었습니다.');
       onClose();
       onSuccess?.(id);
@@ -246,7 +246,7 @@ export default function DiaryReadModal({id, onClose, onSuccess, createMode = fal
       }
 
       if (createMode) {
-        const res = await axios.post('/diary/create', formData, {
+        const res = await axios.post('http://121.78.128.139:9093/diary/create', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         alert('작성 완료!');
@@ -254,7 +254,7 @@ export default function DiaryReadModal({id, onClose, onSuccess, createMode = fal
         onClose();
         window.location.reload();
       } else {
-        await axios.put(`/diary/update/${id}`, formData, {
+        await axios.put(`http://121.78.128.139:9093/diary/update/${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         alert('수정 완료!');

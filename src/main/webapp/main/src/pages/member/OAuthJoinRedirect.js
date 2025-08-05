@@ -7,7 +7,7 @@ function OAuthJoinRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:9093/api/oauth/me', { withCredentials: true })
+    axios.get('http://121.78.128.139:9093/api/oauth/me', { withCredentials: true })
       .then((res) => {
         const user = res.data;
         console.log("✅ 사용자 정보:", user);

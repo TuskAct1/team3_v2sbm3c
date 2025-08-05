@@ -30,7 +30,7 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
   }, [messages]);
 
   const fetchHistory = async () => {
-    const res = await fetch("http://localhost:8000/chat/history", {
+    const res = await fetch("http://121.78.128.139:8000/chat/history", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno, room_id }),
@@ -61,14 +61,14 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
 
     // 여기에 실제 FastAPI 서버 주소로 POST 요청
     try {
-      const res = await fetch("http://localhost:8000/chat", {
+      const res = await fetch("http://121.78.128.139:8000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ memberno, room_id, message: input }),
       });
       const data = await res.json();
       if (isFirstMessage) {
-        await fetch("http://localhost:8000/chat/update-room-title", {
+        await fetch("http://121.78.128.139:8000/chat/update-room-title", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ room_id, room_title: input }),
@@ -88,7 +88,7 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
   const handleShowStat = async () => {
     setStatLoading(true);
     setShowStat(true);
-    const res = await fetch("http://localhost:8000/chat/weekly-report", {
+    const res = await fetch("http://121.78.128.139:8000/chat/weekly-report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno, room_id }),
@@ -103,7 +103,7 @@ function ChatBot({ memberno, room_id, room_title, setRoomTitle }) {
   };
 
   const handleDeleteMessage = async (messageId) => {
-  await fetch(`http://localhost:8000/chat/delete/${messageId}`, {
+  await fetch(`http://121.78.128.139:8000/chat/delete/${messageId}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ memberno, room_id }),

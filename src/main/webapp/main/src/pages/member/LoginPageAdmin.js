@@ -64,7 +64,7 @@ const LoginPageAdmin = () => {
       : localStorage.removeItem("admin_saved_passwd");
 
     try {
-      const response = await fetch("api/admin/login", {
+      const response = await fetch("http://121.78.128.139:9093/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: form.id, passwd: form.passwd }),

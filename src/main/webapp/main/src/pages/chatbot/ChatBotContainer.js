@@ -22,7 +22,7 @@ function ChatBotContainer({ memberno }) {
   }, [memberno]);
 
   const fetchRooms = async () => {
-    const res = await fetch("http://localhost:8000/chat/room-list", {
+    const res = await fetch("http://121.78.128.139:8000/chat/room-list", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno: String(memberno) }),
@@ -40,7 +40,7 @@ function ChatBotContainer({ memberno }) {
 
   const handleCreateRoom = async () => {
     const title = roomTitleInput.trim() || "새 채팅";
-    const res = await fetch("http://localhost:8000/chat/create-room", {
+    const res = await fetch("http://121.78.128.139:8000/chat/create-room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno, room_title: title }),
@@ -61,7 +61,7 @@ function ChatBotContainer({ memberno }) {
     e.stopPropagation();
     if (!window.confirm("정말 이 대화방을 삭제할까요?")) return;
 
-    const res = await fetch("http://localhost:8000/chat/delete-room", {
+    const res = await fetch("http://121.78.128.139:8000/chat/delete-room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno: String(memberno), room_id: room.room_id }),
@@ -88,7 +88,7 @@ function ChatBotContainer({ memberno }) {
 
   const handleDeleteAllRooms = async () => {
     if (!window.confirm("모든 대화 기록을 삭제하시겠습니까?")) return;
-    const res = await fetch("http://localhost:8000/chat/delete-all-rooms", {
+    const res = await fetch("http://121.78.128.139:8000/chat/delete-all-rooms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno: String(memberno) }),
@@ -105,7 +105,7 @@ function ChatBotContainer({ memberno }) {
 
   const handleStartChat = async () => {
     const title = startInput.trim() || "새 채팅";
-    const res = await fetch("http://localhost:8000/chat/create-room", {
+    const res = await fetch("http://121.78.128.139:8000/chat/create-room", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberno, room_title: title }),
