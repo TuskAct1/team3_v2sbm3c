@@ -57,7 +57,7 @@ AI 챗봇, 감정 분석, 일정 관리 기능을 통합한 서비스입니다.
 ---
 
 ## 🧩 시스템 구조
-
+<img width="364" height="271" alt="image" src="https://github.com/user-attachments/assets/d7cc588c-48e1-41be-b7b2-92a1bf9a024a" />
 <img src = "https://github.com/user-attachments/assets/8f1b5437-eddc-4781-88ee-70665d539a8d">
 
 ---
